@@ -1,13 +1,13 @@
 # Quantities: Spw Branch
 #
-# Counts the reflexive spw class reads: code inventories pinned to a commit, study measurements still to recheck, persona verdict tallies, live cut receipts, and the research numbers the reading surfaces cite.
+# Counts the reflexive spw class reads: code inventories pinned to a commit, study measurements still to recheck, persona verdict tallies, cut receipts pinned to a commit, and the research numbers the reading surfaces cite.
 
 #>q_spw_registry
 #:layer #!reference
 #:domain #!registry
 #:form #!registry
 #:level #!mixed
-#:review #!spot_checked
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"provenance"{
@@ -22,12 +22,25 @@
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
- status_legend: "settled cells were counted by the writer at the named commit or read from the linked source; verify cells hold a study measurement or vendor fact that must be re-run or re-read before use"
- recount: "code and cut counts are dated stills; recount with the command in at before citing them in a later revision"
+ status_legend: "settled cells were counted at the named commit or read from the linked source; verify cells hold a study measurement or vendor fact that must be re-run or re-read before use"
+ recount: "code and cut counts are dated stills; rerun the command in at, at the commit it names, before citing a cell in a later revision"
  corrections: #[
   "the critic count of 1,091 receipts was itself a still; the live cut cells below were recounted at write time and will drift as wave 3 lands",
-  "the three editor cells moved from verify to settled after a recount of package.json and a recomputed contrast on 2026-10-03"
+  "the three editor cells moved from verify to settled after a recount of package.json and a recomputed contrast on 2026-10-03",
+  "the two census cells are superseded: since c79a096a census resolves anchored links as spw resolve does, and a rerun reports none broken",
+  "the LSP legend moved to semantic-tokens.ts:101-104 at 651b535b with the same types and modifiers",
+  "the cut counts and probe ids were recounted over 651b535b on 2026-10-03, and the probe cells were added for the probe registry",
+  "the cut and probe cells were working-tree stills marked settled with no commit; the fact check found 2305 receipts later that day, so every cut cell is now pinned to commit 651b535b",
+  "the hash-prose, wonder-anchor, read-aloud, wip-file, and Meyer cells moved from verify to settled after a rerun or a re-read on 2026-10-03",
+  "the raw-shelf lens and handle counts and the VS Code command and setting counts became cells, so the claims that print them read them"
  ]
 }
 
@@ -42,270 +55,178 @@
  ^["cut"]{ id: spw_cut, identifier: spw.cut }
  ^["research"]{ id: spw_research, identifier: spw.research }
  ^["keys"]{ id: spw_keys, identifier: spw.keys }
+ ^["probes"]{ id: spw_probes, identifier: spw.probes }
 }
 
 #>q_spw_seed
 ^"seed"{
- %spw.seed.token_types{
-  value: 32, unit: "token types", abs: 0
-  at: "TokenType union, packages/spw-seed/src/types/token.ts:39-71 at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_seed_lexer", status: #settled
- }
- %spw.seed.ast_node_types{
-  value: 28, unit: "node types", abs: 0
-  at: "ASTNodeType union, packages/spw-seed/src/types/ast/index.ts:13-41 at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_seed_ast", status: #settled
- }
- %spw.seed.ir_kinds{
-  value: 28, unit: "IR kinds", abs: 0
-  at: "IR_KINDS, packages/spw-seed/src/ir/kinds.ts:9-41 at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_seed_ir", status: #settled
- }
- %spw.seed.ir_edge_kinds{
-  value: 9, unit: "edge kinds", abs: 0
-  at: "IR_EDGE_KINDS, packages/spw-seed/src/ir/kinds.ts:46-56 at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_seed_ir", status: #settled
- }
- %spw.seed.granularity_depths{
-  value: 4, unit: "depths", abs: 0
-  at: "GranularityDepth skim, card, field, full, packages/spw-seed/src/ir/granularity.ts:14", src: ~"../sources/spw-branch.spw#src_spw_seed_ir", status: #settled
- }
- %spw.seed.ir_lens_levels{
-  value: 7, unit: "levels", abs: 0
-  at: "IrLensLevel file to corpus, packages/spw-seed/src/ir/ref.ts:26", src: ~"../sources/spw-branch.spw#src_spw_seed_ir", status: #settled
- }
+ %spw.seed.token_types{ value: 32, unit: "token types", abs: 0
+  at: "TokenType union, packages/spw-seed/src/types/token.ts:39-71 at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_seed_lexer", status: #settled }
+ %spw.seed.ast_node_types{ value: 28, unit: "node types", abs: 0
+  at: "ASTNodeType union, packages/spw-seed/src/types/ast/index.ts:13-41 at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_seed_ast", status: #settled }
+ %spw.seed.ir_kinds{ value: 28, unit: "IR kinds", abs: 0
+  at: "IR_KINDS, packages/spw-seed/src/ir/kinds.ts:9-41 at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_seed_ir", status: #settled }
+ %spw.seed.ir_edge_kinds{ value: 9, unit: "edge kinds", abs: 0
+  at: "IR_EDGE_KINDS, packages/spw-seed/src/ir/kinds.ts:46-56 at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_seed_ir", status: #settled }
+ %spw.seed.granularity_depths{ value: 4, unit: "depths", abs: 0
+  at: "GranularityDepth skim, card, field, full, packages/spw-seed/src/ir/granularity.ts:14", src: ~"../sources/spw-branch.spw#src_spw_seed_ir", status: #settled }
+ %spw.seed.ir_lens_levels{ value: 7, unit: "levels", abs: 0
+  at: "IrLensLevel file to corpus, packages/spw-seed/src/ir/ref.ts:26", src: ~"../sources/spw-branch.spw#src_spw_seed_ir", status: #settled }
 }
 
 #>q_spw_cli
 ^"cli"{
- %spw.cli.commands{
-  value: 40, unit: "canonical commands", abs: 0
-  at: "name entries in packages/spw-cli/src/commands.ts at 1aa1dc23; aliases not counted", src: ~"../sources/spw-branch.spw#src_spw_cli_commands", status: #settled
- }
- %spw.cli.emit_hosts{
-  value: 9, unit: "hosts", abs: 0
-  at: "EMIT_HOSTS, packages/spw-cli/src/emit/types.ts:21-31 at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_cli_emit", status: #settled
- }
+ %spw.cli.commands{ value: 40, unit: "canonical commands", abs: 0
+  at: "name entries in packages/spw-cli/src/commands.ts at 1aa1dc23; aliases not counted", src: ~"../sources/spw-branch.spw#src_spw_cli_commands", status: #settled }
+ %spw.cli.emit_hosts{ value: 9, unit: "hosts", abs: 0
+  at: "EMIT_HOSTS, packages/spw-cli/src/emit/types.ts:21-31 at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_cli_emit", status: #settled }
 }
 
 #>q_spw_lsp
 ^"lsp"{
- %spw.lsp.legend_types{
-  value: 9, unit: "token types", abs: 0
-  at: "SEMANTIC_TOKENS_LEGEND, packages/spw-lsp/src/handlers/semantic-tokens.ts:75-78 at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_lsp", status: #settled
- }
- %spw.lsp.legend_modifiers{
-  value: 6, unit: "modifiers", abs: 0
-  at: "SEMANTIC_TOKENS_LEGEND, packages/spw-lsp/src/handlers/semantic-tokens.ts:75-78 at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_lsp", status: #settled
- }
- %spw.lsp.wip_files{
-  value: 77, unit: "wip.spw files", abs: 0
-  at: "plan wip files parsed with and without a path, tokens study at 229aedcf", src: ~"../sources/spw-branch.spw#src_spw_study_tokens", status: #verify
- }
- %spw.lsp.wip_errors_pathless{
-  value: 71, unit: "files with lexer errors", abs: 0
-  at: "of the wip files, parsed without a path as the LSP does, tokens study at 229aedcf", src: ~"../sources/spw-branch.spw#src_spw_study_tokens", status: #verify
- }
+ %spw.lsp.legend_types{ value: 9, unit: "token types", abs: 0
+  at: "SEMANTIC_TOKENS_LEGEND, packages/spw-lsp/src/handlers/semantic-tokens.ts:101-104 at 651b535b, lines 75-78 at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_lsp", status: #settled }
+ %spw.lsp.legend_modifiers{ value: 6, unit: "modifiers", abs: 0
+  at: "SEMANTIC_TOKENS_LEGEND, packages/spw-lsp/src/handlers/semantic-tokens.ts:101-104 at 651b535b, lines 75-78 at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_lsp", status: #settled }
+ %spw.lsp.wip_files{ value: 77, unit: "wip.spw files", abs: 0
+  at: "non-archived plan wip.spw files at 229aedcf, recounted with git ls-tree on 2026-10-03", src: ~"../sources/spw-branch.spw#src_spw_study_tokens", status: #settled }
+ %spw.lsp.wip_errors_pathless{ value: 71, unit: "files with lexer errors", abs: 0
+  at: "of the wip files, parsed without a path as the LSP does, tokens study at 229aedcf; the fact check found 72 of 78 on the later tree", src: ~"../sources/spw-branch.spw#src_spw_study_tokens", status: #verify }
 }
 
 #>q_spw_editor
 ^"editor"{
- %spw.editor.color_ids{
-  value: 23, unit: "color ids", abs: 0
-  at: "spw color contributions in extensions/vscode-spw/package.json, recounted at 1aa1dc23 on 2026-10-03", src: ~"../sources/spw-branch.spw#src_spw_vscode", status: #settled
- }
- %spw.editor.distinct_hex_dark{
-  value: 13, unit: "hex values", abs: 0
-  at: "distinct dark-theme hex values behind the 23 color ids, recounted at 1aa1dc23 on 2026-10-03", src: ~"../sources/spw-branch.spw#src_spw_vscode", status: #settled
- }
- %spw.editor.contrast_bone_light{
-  value: 3.12, unit: "contrast ratio", abs: 0.01
-  at: "valenceBone light hex BF8803 on white, package.json:251, WCAG relative luminance recomputed on 2026-10-03", src: ~"../sources/spw-branch.spw#src_spw_wcag_22", status: #settled
- }
+ %spw.editor.color_ids{ value: 23, unit: "color ids", abs: 0
+  at: "spw color contributions in extensions/vscode-spw/package.json, recounted at 1aa1dc23 on 2026-10-03", src: ~"../sources/spw-branch.spw#src_spw_vscode", status: #settled }
+ %spw.editor.commands{ value: 22, unit: "commands", abs: 0
+  at: "contributes.commands in extensions/vscode-spw/package.json, counted at 651b535b on 2026-10-03, unchanged since 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_vscode", status: #settled }
+ %spw.editor.settings{ value: 14, unit: "settings", abs: 0
+  at: "configuration properties in extensions/vscode-spw/package.json, same count", src: ~"../sources/spw-branch.spw#src_spw_vscode", status: #settled }
+ %spw.editor.distinct_hex_dark{ value: 13, unit: "hex values", abs: 0
+  at: "distinct dark-theme hex values behind the 23 color ids, recounted at 1aa1dc23 on 2026-10-03", src: ~"../sources/spw-branch.spw#src_spw_vscode", status: #settled }
+ %spw.editor.contrast_bone_light{ value: 3.12, unit: "contrast ratio", abs: 0.01
+  at: "valenceBone light hex BF8803 on white, package.json:251, WCAG relative luminance recomputed on 2026-10-03", src: ~"../sources/spw-branch.spw#src_spw_wcag_22", status: #settled }
 }
 
 #>q_spw_corpus
 ^"corpus"{
- %spw.corpus.hash_prose_canon{
-  value: 2557, unit: "hash-prose comments", abs: 0
-  at: "canon .spw files, tokens study at 229aedcf", src: ~"../sources/spw-branch.spw#src_spw_study_tokens", status: #verify
- }
- %spw.corpus.hash_prose_painted_canon{
-  value: 1149, unit: "comments with LSP paint inside", abs: 0
-  at: "canon .spw files, tokens study at 229aedcf", src: ~"../sources/spw-branch.spw#src_spw_study_tokens", status: #verify
- }
- %spw.corpus.wonder_anchors{
-  value: 631, unit: "wonder anchors", abs: 0
-  at: "#>wonder_ anchors outside the caches, tokens study at 229aedcf", src: ~"../sources/spw-branch.spw#src_spw_study_tokens", status: #verify
- }
- %spw.corpus.readaloud_templated{
-  value: 48, unit: "probe copies", abs: 0
-  at: "templated read-aloud probes in 48 canon files, three variants, render study", src: ~"../sources/spw-branch.spw#src_spw_study_render", status: #verify
- }
- %spw.corpus.onf_water_spanned{
-  value: 0, unit: "ONF nodes with source spans", abs: 0
-  at: "water.spw, of 376 ONF nodes, machine-empathy study at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_study_machine_empathy", status: #verify
- }
+ %spw.corpus.hash_prose_canon{ value: 2557, unit: "hash-prose comments", abs: 0
+  at: "seed COMMENT tokens of kind hash-prose in the 378 canon .spw files at 229aedcf, rerun on 2026-10-03 with the same count at 651b535b", src: ~"../sources/spw-branch.spw#src_spw_study_tokens", status: #settled }
+ %spw.corpus.hash_prose_painted_canon{ value: 1149, unit: "comments with LSP paint inside", abs: 0
+  at: "of those comments, ones with any LSP semantic token inside, same rerun", src: ~"../sources/spw-branch.spw#src_spw_study_tokens", status: #settled }
+ %spw.corpus.wonder_anchors{ value: 631, unit: "wonder anchors", abs: 0
+  at: "#>wonder_ in .spw files outside .spw/caches at 229aedcf, 624 distinct, recounted with git grep on 2026-10-03", src: ~"../sources/spw-branch.spw#src_spw_study_tokens", status: #settled }
+ %spw.corpus.readaloud_templated{ value: 48, unit: "probe copies", abs: 0
+  at: "files carrying the templated read-aloud probe at 229aedcf: 17 grain boundaries, 16 biome edges, 15 structural joints; recounted with git grep on 2026-10-03", src: ~"../sources/spw-branch.spw#src_spw_study_render", status: #settled }
+ %spw.corpus.onf_water_spanned{ value: 0, unit: "ONF nodes with source spans", abs: 0
+  at: "water.spw, of 376 ONF nodes, machine-empathy study at 1aa1dc23", src: ~"../sources/spw-branch.spw#src_spw_study_machine_empathy", status: #verify }
+ %spw.corpus.raw_lens_uses{ value: 232, unit: "lens appositions", abs: 0
+  at: "git grep of lens appositions in .spw/caches at 229aedcf; the scorecard counted 167 on an earlier 152-file snapshot", src: ~"../sources/spw-branch.spw#src_spw_raw_shelf", status: #settled }
+ %spw.corpus.raw_lens_distinct{ value: 231, unit: "distinct lens phrases", abs: 0
+  at: "same count, one phrase used twice; the scorecard counted 165 distinct", src: ~"../sources/spw-branch.spw#src_spw_raw_shelf", status: #settled }
+ %spw.corpus.raw_handles{ value: 469, unit: "metric handles", abs: 0
+  at: "comma-separated handles in the 233 dollar-percent lines of .spw/caches at 229aedcf, all distinct; the scorecard counted 337 on the earlier snapshot", src: ~"../sources/spw-branch.spw#src_spw_raw_shelf", status: #settled }
 }
 
 #>q_spw_fam
 ^"familiarity"{
- %spw.fam.forms{
-  value: 32, unit: "forms", abs: 0
-  at: "rows of the persona familiarity matrix", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
- }
- %spw.fam.clusters{
-  value: 12, unit: "clusters", abs: 0
-  at: "columns of the persona familiarity matrix", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
- }
- %spw.fam.false_friend{
-  value: 119, unit: "cells", abs: 0
-  at: "false_friend verdicts of 384", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
- }
- %spw.fam.mixed{
-  value: 97, unit: "cells", abs: 0
-  at: "mixed verdicts of 384", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
- }
- %spw.fam.bridge{
-  value: 90, unit: "cells", abs: 0
-  at: "helpful_bridge verdicts of 384", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
- }
- %spw.fam.neutral{
-  value: 78, unit: "cells", abs: 0
-  at: "neutral verdicts of 384", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
- }
+ %spw.fam.forms{ value: 32, unit: "forms", abs: 0
+  at: "rows of the persona familiarity matrix", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled }
+ %spw.fam.clusters{ value: 12, unit: "clusters", abs: 0
+  at: "columns of the persona familiarity matrix", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled }
+ %spw.fam.false_friend{ value: 119, unit: "cells", abs: 0
+  at: "false_friend verdicts of 384", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled }
+ %spw.fam.mixed{ value: 97, unit: "cells", abs: 0
+  at: "mixed verdicts of 384", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled }
+ %spw.fam.bridge{ value: 90, unit: "cells", abs: 0
+  at: "helpful_bridge verdicts of 384", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled }
+ %spw.fam.neutral{ value: 78, unit: "cells", abs: 0
+  at: "neutral verdicts of 384", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled }
  ^["false_friends_by_cluster"]{
-  %spw.fam.ff_c_programmers{
-   value: 12, unit: "of 32 forms", abs: 0
-   at: "C-family programmers", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
-  }
-  %spw.fam.ff_physics{
-   value: 13, unit: "of 32 forms", abs: 0
-   at: "physics students and physicists", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
-  }
-  %spw.fam.ff_designers{
-   value: 9, unit: "of 32 forms", abs: 0
-   at: "designers", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
-  }
-  %spw.fam.ff_mathematicians{
-   value: 13, unit: "of 32 forms", abs: 0
-   at: "mathematicians", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
-  }
-  %spw.fam.ff_engineers_chemists{
-   value: 10, unit: "of 32 forms", abs: 0
-   at: "engineers and chemists", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
-  }
-  %spw.fam.ff_life_clinical{
-   value: 10, unit: "of 32 forms", abs: 0
-   at: "life and clinical scientists", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
-  }
-  %spw.fam.ff_linguists{
-   value: 8, unit: "of 32 forms", abs: 0
-   at: "linguists", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
-  }
-  %spw.fam.ff_social_scientists{
-   value: 9, unit: "of 32 forms", abs: 0
-   at: "social scientists", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
-  }
-  %spw.fam.ff_librarians{
-   value: 8, unit: "of 32 forms", abs: 0
-   at: "librarians and archivists", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
-  }
-  %spw.fam.ff_production_crews{
-   value: 6, unit: "of 32 forms", abs: 0
-   at: "production crews", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
-  }
-  %spw.fam.ff_creators{
-   value: 11, unit: "of 32 forms", abs: 0
-   at: "creators and streamers", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
-  }
-  %spw.fam.ff_educators{
-   value: 10, unit: "of 32 forms", abs: 0
-   at: "educators and community members", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled
-  }
+  %spw.fam.ff_c_programmers{ value: 12, unit: "of 32 forms", abs: 0
+   at: "C-family programmers", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled }
+  %spw.fam.ff_physics{ value: 13, unit: "of 32 forms", abs: 0
+   at: "physics students and physicists", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled }
+  %spw.fam.ff_designers{ value: 9, unit: "of 32 forms", abs: 0
+   at: "designers", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled }
+  %spw.fam.ff_mathematicians{ value: 13, unit: "of 32 forms", abs: 0
+   at: "mathematicians", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled }
+  %spw.fam.ff_engineers_chemists{ value: 10, unit: "of 32 forms", abs: 0
+   at: "engineers and chemists", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled }
+  %spw.fam.ff_life_clinical{ value: 10, unit: "of 32 forms", abs: 0
+   at: "life and clinical scientists", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled }
+  %spw.fam.ff_linguists{ value: 8, unit: "of 32 forms", abs: 0
+   at: "linguists", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled }
+  %spw.fam.ff_social_scientists{ value: 9, unit: "of 32 forms", abs: 0
+   at: "social scientists", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled }
+  %spw.fam.ff_librarians{ value: 8, unit: "of 32 forms", abs: 0
+   at: "librarians and archivists", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled }
+  %spw.fam.ff_production_crews{ value: 6, unit: "of 32 forms", abs: 0
+   at: "production crews", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled }
+  %spw.fam.ff_creators{ value: 11, unit: "of 32 forms", abs: 0
+   at: "creators and streamers", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled }
+  %spw.fam.ff_educators{ value: 10, unit: "of 32 forms", abs: 0
+   at: "educators and community members", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #settled }
  }
 }
 
 #>q_spw_cut
 ^"cut"{
- %spw.cut.files{
-  value: 268, unit: "surfaces", abs: 0
-  at: "find .spw/caches/2026-09-30 -name *.spw, working tree over 1aa1dc23 on 2026-10-02 mid wave 3", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled
- }
- %spw.cut.receipts{
-  value: 1136, unit: "receipts", abs: 0
-  at: "care bindings in the same working tree, before this package landed", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled
- }
- %spw.cut.receipts_glance{
-  value: 135, unit: "receipts", abs: 0
-  at: "care glance, same count", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled
- }
- %spw.cut.receipts_skim{
-  value: 390, unit: "receipts", abs: 0
-  at: "care skim, same count", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled
- }
- %spw.cut.receipts_read{
-  value: 115, unit: "receipts", abs: 0
-  at: "care read, same count", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled
- }
- %spw.cut.receipts_audit{
-  value: 277, unit: "receipts", abs: 0
-  at: "care audit, same count", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled
- }
- %spw.cut.receipts_adversarial{
-  value: 219, unit: "receipts", abs: 0
-  at: "care adversarial, same count", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled
- }
- %spw.cut.census_links_registries{
-  value: 556, unit: "path links", abs: 0
-  at: "spw census .spw/caches/2026-09-30/registries, 2026-10-02 at 1aa1dc23 plus the wave 3 working tree", src: ~"../sources/spw-branch.spw#src_spw_cli_commands", status: #settled
- }
- %spw.cut.census_broken_registries{
-  value: 283, unit: "links reported broken", abs: 0
-  at: "same census run; the cut gate reported no unresolved ref in those files, so the count is anchored links misread as broken", src: ~"../sources/spw-branch.spw#src_spw_cli_commands", status: #settled
- }
- %spw.cut.probe_ids{
-  value: 328, unit: "probe ids", abs: 0
-  at: "=id[p_ occurrences in the same working tree, before this package landed", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled
- }
+ note: "every settled cut cell is pinned to commit 651b535b, so a reader can rerun its command; the working tree drifts while wave 3 lands"
+ %spw.cut.files{ value: 394, unit: "surfaces", abs: 0
+  at: "git ls-tree of .spw files under .spw/caches/2026-09-30 at 651b535b, counted 2026-10-03; the cut gate on an export of that tree agrees", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled }
+ %spw.cut.receipts{ value: 1777, unit: "receipts", abs: 0
+  at: "git grep of care bindings under .spw/caches/2026-09-30 at 651b535b, counted 2026-10-03; the working tree held 2305 at the fact check the same day", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled }
+ %spw.cut.receipts_glance{ value: 154, unit: "receipts", abs: 0
+  at: "care glance, same count at 651b535b", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled }
+ %spw.cut.receipts_skim{ value: 666, unit: "receipts", abs: 0
+  at: "care skim, same count at 651b535b", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled }
+ %spw.cut.receipts_read{ value: 223, unit: "receipts", abs: 0
+  at: "care read, same count at 651b535b", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled }
+ %spw.cut.receipts_audit{ value: 447, unit: "receipts", abs: 0
+  at: "care audit, same count at 651b535b", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled }
+ %spw.cut.receipts_adversarial{ value: 287, unit: "receipts", abs: 0
+  at: "care adversarial, same count at 651b535b", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled }
+ %spw.cut.census_links_registries{ value: 556, unit: "path links", abs: 0
+  at: "spw census .spw/caches/2026-09-30/registries, 2026-10-02 at 1aa1dc23 plus the wave 3 working tree, before c79a096a", src: ~"../sources/spw-branch.spw#src_spw_cli_commands", status: #superseded }
+ %spw.cut.census_broken_registries{ value: 283, unit: "links reported broken", abs: 0
+  at: "same census run; the cut gate reported no unresolved ref in those files, so the count is anchored links misread as broken", src: ~"../sources/spw-branch.spw#src_spw_cli_commands", status: #superseded }
+ %spw.cut.census_broken_registries_corpus2{ value: 0, unit: "links reported broken", abs: 0
+  at: "spw census on the registries of a git archive export of 651b535b, product spw.corpus/2, 2026-10-03: 39 files, 645 path links; working-tree reruns that day found 648 and 706 links, also none broken", src: ~"../sources/spw-branch.spw#src_spw_cli_commands", status: #settled }
+ %spw.cut.probe_ids{ value: 518, unit: "probe ids", abs: 0
+  at: "distinct probe ids at 651b535b, the contract example excluded; the cut gate on an export of that tree agrees", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled }
 }
 
 #>q_spw_research
 ^"research"{
- %spw.research.sarkar_n{
-  value: 10, unit: "participants", abs: 0
-  at: "syntax colouring study, Python tasks", src: ~"../sources/spw-branch.spw#src_spw_sarkar_2015", status: #settled
- }
- %spw.research.hannebauer_n{
-  value: 390, unit: "participants", abs: 0
-  at: "novice programmers, correctness outcome", src: ~"../sources/spw-branch.spw#src_spw_hannebauer_2018", status: #settled
- }
- %spw.research.meyer_experiments{
-  value: 17, unit: "experiments", abs: 0
-  at: "pooled tests of the disfluent-font effect on Cognitive Reflection Test problems, as reported by the render study", src: ~"../sources/spw-branch.spw#src_spw_meyer_2015", status: #verify
- }
- %spw.research.oral_wpm{
-  value: 183, unit: "words per minute", abs: 0
-  at: "adult oral reading rate in English, meta-analysis", src: ~"../sources/spw-branch.spw#src_spw_brysbaert_2019", status: #settled
- }
- %spw.research.cvd_men_pct{
-  value: 8, unit: "percent", abs: 0
-  at: "red-green colour deficiency, men of European descent", src: ~"../sources/spw-branch.spw#src_spw_birch_2012", status: #settled
- }
- %spw.research.wcag_text_contrast{
-  value: 4.5, unit: "contrast ratio", abs: 0
-  at: "WCAG 2.2 success criterion 1.4.3, normal-size text, level AA", src: ~"../sources/spw-branch.spw#src_spw_wcag_22", status: #settled
- }
+ %spw.research.sarkar_n{ value: 10, unit: "participants", abs: 0
+  at: "syntax colouring study, Python tasks", src: ~"../sources/spw-branch.spw#src_spw_sarkar_2015", status: #settled }
+ %spw.research.hannebauer_n{ value: 390, unit: "participants", abs: 0
+  at: "novice programmers, correctness outcome", src: ~"../sources/spw-branch.spw#src_spw_hannebauer_2018", status: #settled }
+ %spw.research.meyer_experiments{ value: 17, unit: "experiments", abs: 0
+  at: "the original disfluent-font experiment pooled with 16 replication attempts on Cognitive Reflection Test problems, per the abstract in PubMed record 25844628, read 2026-10-03", src: ~"../sources/spw-branch.spw#src_spw_meyer_2015", status: #settled }
+ %spw.research.oral_wpm{ value: 183, unit: "words per minute", abs: 0
+  at: "adult oral reading rate in English, meta-analysis", src: ~"../sources/spw-branch.spw#src_spw_brysbaert_2019", status: #settled }
+ %spw.research.cvd_men_pct{ value: 8, unit: "percent", abs: 0
+  at: "red-green colour deficiency, men of European descent", src: ~"../sources/spw-branch.spw#src_spw_birch_2012", status: #settled }
+ %spw.research.wcag_text_contrast{ value: 4.5, unit: "contrast ratio", abs: 0
+  at: "WCAG 2.2 success criterion 1.4.3, normal-size text, level AA", src: ~"../sources/spw-branch.spw#src_spw_wcag_22", status: #settled }
 }
 
 #>q_spw_keys
 ^"keys"{
- %spw.keys.operator_sigils{
-  value: 13, unit: "sigils", abs: 0
-  at: "the 12 single-sigil operators plus the couple pair, docs/theory/spw/operators.spw:28-42", src: ~"../sources/spw-branch.spw#src_spw_canon_operators", status: #settled
- }
- %spw.keys.us_shifted{
-  value: 11, unit: "sigils", abs: 0
-  at: "operator sigils that need Shift on a US ANSI layout, all but the period and the equals sign; check against the platform keyboard viewer", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #verify
- }
- %spw.keys.uk_shifted{
-  value: 10, unit: "sigils", abs: 0
-  at: "operator sigils that need Shift on the Windows United Kingdom layout, all but the period, equals, and hash; check against the platform keyboard viewer", src: ~"../sources/spw-branch.spw#src_spw_ms_keyboard_layouts", status: #verify
- }
+ %spw.keys.operator_sigils{ value: 13, unit: "sigils", abs: 0
+  at: "the 12 single-sigil operators plus the couple pair, docs/theory/spw/operators.spw:28-42", src: ~"../sources/spw-branch.spw#src_spw_canon_operators", status: #settled }
+ %spw.keys.us_shifted{ value: 11, unit: "sigils", abs: 0
+  at: "operator sigils that need Shift on a US ANSI layout, all but the period and the equals sign; check against the platform keyboard viewer", src: ~"../sources/spw-branch.spw#src_spw_study_persona", status: #verify }
+ %spw.keys.uk_shifted{ value: 10, unit: "sigils", abs: 0
+  at: "operator sigils that need Shift on the Windows United Kingdom layout, all but the period, equals, and hash; check against the platform keyboard viewer", src: ~"../sources/spw-branch.spw#src_spw_ms_keyboard_layouts", status: #verify }
+}
+
+#>q_spw_probes
+^"probes"{
+ %spw.probes.people_facing{ value: 135, unit: "probe ids", abs: 0
+  at: "kind field or interview at 651b535b, the same count the working tree held earlier that day", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled }
+ %spw.probes.census_kind{ value: 93, unit: "probe ids", abs: 0
+  at: "kind census at 651b535b, the most common kind, ahead of lit at 81 and field at 80", src: ~"../sources/spw-branch.spw#src_spw_cut_gate", status: #settled }
 }

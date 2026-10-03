@@ -7,7 +7,7 @@
 #:domain #!spw
 #:form #!comparison
 #:level #!advanced
-#:review #!spot_checked
+#:review #!adversarial_checked
 #:valence #!bane
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -35,12 +35,21 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the study labeled the care ladder canon; it is a-cut vocabulary from vocabulary.spw, and no care ladder exists in .spw/conventions or docs/theory/spw",
   "ir/lens.ts and IrLensLevel were missing from the study; they are rows here, and care maps onto GranularityDepth, IrLensLevel, and IndexDepth as a mapping only",
   "spw cycle already produces before and after receipts; it is named before any new receipt field is proposed",
-  "the dated CLI probes from the dropped hosts/cli-readings surface are folded into tool trust below"
+  "the dated CLI probes from the dropped hosts/cli-readings surface are folded into tool trust below",
+  "census stopped counting anchored links as broken at c79a096a; the old census row is kept as superseded beside a rerun at 651b535b",
+  "the receipt and census cells this surface reads were working-tree stills; they are now pinned to commit 651b535b, and the census rerun ran on an export of that commit"
  ]
 }
 
@@ -219,10 +228,18 @@
  #>spw_ir_trust_census
  ^["census_and_graph"]{
   #:claim #!settled
-  statement: "Run on the registries, spw census reported about half of its path links broken while the cut gate found none unresolved, because census counts anchored links as broken."
+  statement: "Since c79a096a, spw census and spw graph split the fragment off a link and resolve it as spw resolve does, and a rerun on the registries reported no link broken."
   source: ~"../registries/sources/spw-branch.spw#src_spw_cli_commands"
-  reads: %[spw.cut.census_links_registries, spw.cut.census_broken_registries]
-  trust: "use census for counts and roles, never for link health"
+  reads: %[spw.cut.census_broken_registries_corpus2]
+  cites: [ "packages/spw-cli/src/corpus-scan.ts:424-432", "packages/spw-cli/src/citation-candidates.ts:21" ]
+  probe_run: "spw census on the cut registries of a git archive export of 651b535b, 2026-10-03, product spw.corpus/2; working-tree reruns the same day also found none broken"
+  trust: "census and graph now agree with resolve on links; resolve and the cut gate stay the link checkers by design"
+  ^["before_c79a096a"]{
+   #:claim #!superseded
+   statement: "At 1aa1dc23, spw census on the registries reported about half of its path links broken while the cut gate found none unresolved, because census counted anchored links as broken."
+   source: ~"../registries/sources/spw-branch.spw#src_spw_cli_commands"
+   reads: %[spw.cut.census_links_registries, spw.cut.census_broken_registries]
+  }
  }
  #>spw_ir_trust_outline
  ^["outline"]{
@@ -269,4 +286,5 @@
  !probe{ "map review to the highest passing care for every surface in the cut and list the mismatches" =id[p_spw_ir_honesty] =kind[census] }
  $%[spw.cut.receipts, spw.cut.files]
  ~"./inspection-and-ir.spw#spw_ir_receipts_today" ~#neighbor(nearest)
+ last_run: ~"../registries/probes.spw#registry_probe_spw_ir_honesty"
 }

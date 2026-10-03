@@ -11,12 +11,12 @@
 #:valence #!bone
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
- evidence: #[ "Europe PMC and Crossref lookups 2026-10-01 for journal entries marked checked", "entries without a checked field were entered from the writer record and await a lookup", "Europe PMC lookups 2026-10-02 confirmed the 2026 Surviving Sepsis Campaign venues, the 2022 SHEA oral care categories, and the 2024 ATS ARDS recommendations", "Europe PMC and Crossref lookups 2026-10-02 confirmed the 2025 AHA resuscitation executive summary, published commentary on the 2025 ANA code, and the Ellis and Roberts 1980 record", "fix pass 2026-10-02: Europe PMC, Crossref, Open Library, DTIC, and publisher pages confirmed each entry added or corrected after the fact-check" ]
+ evidence: #[ "Europe PMC and Crossref lookups 2026-10-01 for journal entries marked checked", "entries without a checked field were entered from the writer record and await a lookup", "Europe PMC lookups 2026-10-02 confirmed the 2026 Surviving Sepsis Campaign venues, the 2022 SHEA oral care categories, and the 2024 ATS ARDS recommendations", "Europe PMC and Crossref lookups 2026-10-02 confirmed the 2025 AHA resuscitation executive summary, published commentary on the 2025 ANA code, and the Ellis and Roberts 1980 record", "fix pass 2026-10-02: Europe PMC, Crossref, Open Library, DTIC, and publisher pages confirmed each entry added or corrected after the fact-check", "fix pass 2026-10-03: Europe PMC records confirmed the Oliva 2019 author list and both venues of the 2026 pediatric sepsis guideline" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #partial }
@@ -28,6 +28,11 @@
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #corrected }
   ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  revision_2026_10_03: "r6 redated the r4 fact-check to 2026-10-02, the day its sources were read"
  review_note: "spot_checked because some monographs and books were entered from the writer record and have not been looked up"
@@ -37,7 +42,9 @@
   "Heald and Chapman now cite the 2012 University of Illinois Law Review version of record, with the 2011 SSRN paper as preprint",
   "Mind over Machine 1986 is labelled the later book statement; the 1980 Dreyfus report is the model Benner applied",
   "Frank 1877 is added as the coiner of the symbiosis term before de Bary",
-  "the 2025 PADIS focused update, the 2020 and 2026 pediatric sepsis guidelines, and sources for NLR domain history, plant transformation, breeding, propagation, holiday cactus bud set, and Seacole historiography are added"
+  "the 2025 PADIS focused update, the 2020 and 2026 pediatric sepsis guidelines, and sources for NLR domain history, plant transformation, breeding, propagation, holiday cactus bud set, and Seacole historiography are added",
+  "fact-check 2026-10-03: the Oliva 2019 author list named Chern M, who is not an author, and read as complete; it now follows the Europe PMC record with et al. in the middle",
+  "fact-check 2026-10-03: the 2026 pediatric sepsis guideline now lists its Pediatric Critical Care Medicine venue beside Intensive Care Medicine"
  ]
 }
 
@@ -142,7 +149,15 @@
  #>src_eco_urbach_ausubel_2017
  ^["urbach_ausubel_2017"]{ title: "The NBS-LRR architectures of plant R-proteins and metazoan NLRs evolved in independent events", authors: "Urbach JM; Ausubel FM", year: 2017, venue: "PNAS 114(5):1063-1068", kind: #article, checked: "europepmc" }
  #>src_eco_oliva_2019
- ^["oliva_2019"]{ title: "Broad-spectrum resistance to bacterial blight in rice using genome editing", authors: "Oliva R; Ji C; Atienza-Grande G; Huguet-Tapia JC; Perez-Quintero A; Li T; Eom JS; Yang B; Frommer WB; Chern M", year: 2019, venue: "Nature Biotechnology 37(11):1344-1350", kind: #article, checked: "europepmc" }
+ ^["oliva_2019"]{
+  title: "Broad-spectrum resistance to bacterial blight in rice using genome editing"
+  authors: "Oliva R; Ji C; Atienza-Grande G; Huguet-Tapia JC; Perez-Quintero A; Li T; Eom JS; et al.; Frommer WB; White FF; Yang B"
+  year: 2019
+  venue: "Nature Biotechnology 37(11):1344-1350"
+  note: "22 authors in the record; the middle of the list is shortened"
+  kind: #article
+  checked: "europepmc, author list read 2026-10-03"
+ }
  #>src_eco_adams_yang_1979
  ^["adams_yang_1979"]{ title: "Ethylene biosynthesis: identification of 1-aminocyclopropane-1-carboxylic acid as an intermediate in the conversion of methionine to ethylene", authors: "Adams DO; Yang SF", year: 1979, venue: "PNAS 76(1):170-174", kind: #article, checked: "europepmc" }
  #>src_eco_sisler_serek_1997
@@ -458,7 +473,7 @@
  #>src_eco_weiss_2020
  ^["weiss_2020"]{ title: "Surviving Sepsis Campaign International Guidelines for the Management of Septic Shock and Sepsis-Associated Organ Dysfunction in Children", authors: "Weiss SL; Peters MJ; Alhazzani W; et al.", year: 2020, venue: "Pediatric Critical Care Medicine 21(2):e52-e106; also Intensive Care Medicine 46(Suppl 1):10-67", kind: #guideline, checked: "europepmc" }
  #>src_eco_weiss_2026
- ^["weiss_2026"]{ title: "Surviving Sepsis Campaign International Guidelines for the Management of Sepsis and Septic Shock in Children 2026", authors: "Weiss SL; Peters MJ; Oczkowski SJW; Belley-Cote E; Buysse C; Choong KLM; et al.", year: 2026, venue: "Intensive Care Medicine 52(5):937-983", kind: #guideline, checked: "europepmc, title and venue only" }
+ ^["weiss_2026"]{ title: "Surviving Sepsis Campaign International Guidelines for the Management of Sepsis and Septic Shock in Children 2026", authors: "Weiss SL; Peters MJ; Oczkowski SJW; Belley-Cote E; Buysse C; Choong KLM; et al.", year: 2026, venue: "Pediatric Critical Care Medicine 27(4):379-434; also Intensive Care Medicine 52(5):937-983", kind: #guideline, checked: "europepmc, both venues read 2026-10-03" }
  #>src_eco_spiegel_2026
  ^["spiegel_2026"]{ title: "The 2026 Surviving Sepsis Campaign Guidelines: the dissenting opinion", authors: "Spiegel R; Haycock K; Miller A; Weingart S; Farkas J; Ajmo I; Rola P", year: 2026, venue: "American Journal of Emergency Medicine 110:411-415", kind: #article, checked: "europepmc" }
  #>src_eco_kitabchi_2009

@@ -11,7 +11,7 @@
 #:valence #!bone
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -27,7 +27,16 @@
    care: #adversarial, outcome: #corrected }
   ^["r8"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #skim, outcome: #pass }
   ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r10"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r11"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r12"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[
+  "2026-10-03: ISO 9706:1994 is marked withdrawn on 29 May 2025; ISO 9706:2025 and ANSI/NISO Z39.48-1992 (R2009) were added as entries",
+  "2026-10-03: Dreyer 1998 and the woodblock, Aguera y Arcas, hieroglyph, and Italian Carta entries were added; the Aguera y Arcas 2003 chapter stays single-author"
+ ]
  reverified: "2026-10-03: the W3C EPUB 3.3 status line and the cassette, LaserDisc, and phonograph record entries were reread against the claims that cite them; no entry changed"
  rechecked: "2026-10-02: the cassette, LaserDisc, and LP encyclopedia entries and the W3C EPUB 3.3 status line were reread; the DASH edition list was widened"
  tiers: "monographs, standards, statutes, and primary documents first; encyclopedia entries are kind encyclopedia and carry accessed"
@@ -41,6 +50,8 @@
  ^["suarez_woudhuysen_2013"]{ title: "The Book: A Global History", editors: "Michael F. Suarez; H. R. Woudhuysen", year: 2013, publisher: "Oxford University Press", kind: #reference }
  #>src_media_nissen_damerow_englund_1993
  ^["nissen_1993"]{ title: "Archaic Bookkeeping: Early Writing and Techniques of Economic Administration in the Ancient Near East", authors: "Hans J. Nissen; Peter Damerow; Robert K. Englund", year: 1993, publisher: "University of Chicago Press", kind: #monograph }
+ #>src_media_dreyer_1998
+ ^["dreyer_1998"]{ title: "Umm el-Qaab I: Das prädynastische Königsgrab U-j und seine frühen Schriftzeugnisse", authors: "Günter Dreyer", year: 1998, publisher: "Philipp von Zabern, Mainz", kind: #monograph }
  #>src_media_schmandt_besserat_1992
  ^["schmandt_besserat_1992"]{ title: "Before Writing, Volume 1: From Counting to Cuneiform", authors: "Denise Schmandt-Besserat", year: 1992, publisher: "University of Texas Press", kind: #monograph }
  #>src_media_zimansky_1993
@@ -110,7 +121,35 @@
  #>src_media_barrow_1959
  ^["barrow_1959"]{ title: "Deterioration of Book Stock: Causes and Remedies", authors: "W. J. Barrow; ed. Randolph W. Church", year: 1959, publisher: "Virginia State Library", kind: #report }
  #>src_media_iso_9706_1994
- ^["iso_9706_1994"]{ title: "ISO 9706:1994 Information and documentation, Paper for documents, Requirements for permanence", publisher: "International Organization for Standardization", year: 1994, kind: #standard }
+ ^["iso_9706_1994"]{
+  title: "ISO 9706:1994 Information and documentation, Paper for documents, Requirements for permanence"
+  publisher: "International Organization for Standardization"
+  year: 1994
+  status_note: "first edition; withdrawn on 29 May 2025 and replaced by ISO 9706:2025"
+  record: "https://www.evs.ee/en/iso-9706-1994"
+  accessed: "2026-10-03"
+  kind: #standard
+ }
+ #>src_media_iso_9706_2025
+ ^["iso_9706_2025"]{
+  title: "ISO 9706:2025 Information and documentation, Paper for documents, Requirements for permanence"
+  publisher: "International Organization for Standardization"
+  year: 2025
+  published: "29 May 2025"
+  status_note: "current edition as of 2026-10-03; same scope as 1994, unprinted papers for documents, not boards; its numeric limits were not read"
+  record: "https://www.evs.ee/en/iso-9706-2025"
+  accessed: "2026-10-03"
+  kind: #standard
+ }
+ #>src_media_ansi_niso_z39_48
+ ^["ansi_niso_z39_48"]{
+  title: "ANSI/NISO Z39.48-1992 (R2009) Permanence of Paper for Publications and Documents in Libraries and Archives"
+  publisher: "National Information Standards Organization"
+  year: 1992
+  reaffirmed: "2009"
+  issn: "1041-5653"
+  kind: #standard
+ }
 }
 
 ^["sound"]{
@@ -252,6 +291,10 @@
 ^["encyclopedia"]{
  #>src_media_enc_movable_type
  ^["enc_movable_type"]{ title: "Movable type", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
+ #>src_media_enc_woodblock
+ ^["enc_woodblock"]{ title: "Woodblock printing", venue: "Wikipedia", accessed: "2026-10-03", kind: #encyclopedia }
+ #>src_media_enc_aguera_y_arcas
+ ^["enc_aguera_y_arcas"]{ title: "Blaise Agüera y Arcas", venue: "Wikipedia", accessed: "2026-10-03", kind: #encyclopedia }
  #>src_media_enc_gutenberg_bible
  ^["enc_gutenberg_bible"]{ title: "Gutenberg Bible", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
  #>src_media_enc_offset
@@ -260,6 +303,10 @@
  ^["enc_print_on_demand"]{ title: "Print on demand", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
  #>src_media_enc_history_of_paper
  ^["enc_history_of_paper"]{ title: "History of paper", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
+ #>src_media_enc_carta_it
+ ^["enc_carta_it"]{ title: "Carta", venue: "Wikipedia, Italian edition", accessed: "2026-10-03", kind: #encyclopedia }
+ #>src_media_enc_egyptian_hieroglyphs
+ ^["enc_egyptian_hieroglyphs"]{ title: "Egyptian hieroglyphs", venue: "Wikipedia", accessed: "2026-10-03", kind: #encyclopedia }
  #>src_media_enc_shellac
  ^["enc_shellac"]{ title: "Shellac", venue: "Wikipedia", accessed: "2026-10-02", kind: #encyclopedia }
  #>src_media_enc_phonograph_record

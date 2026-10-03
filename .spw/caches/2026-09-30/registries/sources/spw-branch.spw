@@ -7,7 +7,7 @@
 #:domain #!registry
 #:form #!bibliography
 #:level #!mixed
-#:review #!spot_checked
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"provenance"{
@@ -18,7 +18,9 @@
  method: #authored
  evidence: #[
   "repository rows re-read at commit 1aa1dc23 on 2026-10-02; locators give the file, and claims quote the path:line they use",
-  "Crossref records matched on 2026-10-02 for Brysbaert 2019 and Kennedy 2010; the rest come from the writer and the study reports"
+  "Crossref records matched on 2026-10-02 for Brysbaert 2019 and Kennedy 2010; the rest come from the writer and the study reports",
+  "Crossref records matched on 2026-10-03 for Alter 2007 and Meyer 2015, and the Meyer abstract read from PubMed record 25844628",
+  "the fact check of 2026-10-03 found every research row a real work and confirmed the repository and canon locators it sampled"
  ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5", care: #read, outcome: #raw }
@@ -26,18 +28,32 @@
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the tokens study gave v0.1 Spw.x as index only; v0.1 itself is split, index in CHANGELOG.md:25 and linkage in dialects/PHASES.md:176",
   "the render study placed the canon hold role at flow-protocol-sigils.spw:38; at 1aa1dc23 it sits at :40",
   "the study reports labeled cut rules and the owner note as canon; rows here keep three labels: a-canon, a-cut, and owner hold",
-  "Kennedy units-of-measure chapter is dated 2010 in LNCS 6299, from the 2009 Central European Functional Programming School"
+  "Kennedy units-of-measure chapter is dated 2010 in LNCS 6299, from the 2009 Central European Functional Programming School",
+  "the CLI, LSP, and history rows now name 651b535b too, since c79a096a changed how census and graph resolve links and 6690d686 taught the LSP to index lens readings",
+  "the disfluency counter cited Diemand-Yauman 2011, a study of retention in learning; the reasoning claim Meyer failed to replicate is Alter, Oppenheimer, Epley, and Eyre 2007, now its own row",
+  "the scorecard locator covered only lines 6-39; the tree-wide handle and lens counts sit at lines 154-155",
+  "the keyboard row named one French AZERTY layout; the Microsoft page lists the legacy 0000040C beside the AFNOR standard 0001040C",
+  "the NVDA row named a user guide version that was never checked; the row now names only the symbol file read"
  ]
  added: "the 2026-10-03 entries for the canonical seed modules, the dialect registry, the Microsoft layout pages, and the NVDA symbol file were read at their locators on that date"
  groups: #[ repository, canon, owner, studies, research ]
 }
 
 ^["repository"]{
+ #>src_spw_raw_shelf
+ ^["raw_shelf"]{ title: "The raw generated shelf before the dated cut", authors: "gemini-3.8-flash-high, shelved by spw-workbench", year: 2026, locator: ".spw/caches at commit 229aedcf, 209 .spw files", kind: #repository }
  #>src_spw_seed_lexer
  ^["seed_lexer"]{ title: "spw-seed token types and lexer matchers", authors: "spw-workbench", year: 2026, locator: "packages/spw-seed/src/types/token.ts and src/lexer/ at 1aa1dc23", kind: #repository }
  #>src_spw_seed_ast
@@ -53,11 +69,11 @@
  #>src_spw_runtime
  ^["runtime"]{ title: "spw-runtime interpreter", authors: "spw-workbench", year: 2026, locator: "packages/spw-runtime/src/ at 1aa1dc23: interpreter/interpreter.ts and session/channels.ts", kind: #repository }
  #>src_spw_cli_commands
- ^["cli_commands"]{ title: "spw CLI command registry and outline view", authors: "spw-workbench", year: 2026, locator: "packages/spw-cli/src/ at 1aa1dc23: commands.ts, view.ts, skim.ts, run.ts, format.ts, pulse.ts, resolve.ts, expand.ts", kind: #repository }
+ ^["cli_commands"]{ title: "spw CLI command registry and outline view", authors: "spw-workbench", year: 2026, locator: "packages/spw-cli/src/ at 1aa1dc23: commands.ts, view.ts, skim.ts, run.ts, format.ts, pulse.ts, resolve.ts, expand.ts; corpus-scan.ts at 651b535b", kind: #repository }
  #>src_spw_cli_emit
  ^["cli_emit"]{ title: "spw CLI emit packs: hosts, continuity, positive ground", authors: "spw-workbench", year: 2026, locator: "packages/spw-cli/src/emit/ at 1aa1dc23", kind: #repository }
  #>src_spw_lsp
- ^["lsp"]{ title: "spw-lsp server, analysis, and semantic tokens", authors: "spw-workbench", year: 2026, locator: "packages/spw-lsp/src/ at 1aa1dc23", kind: #repository }
+ ^["lsp"]{ title: "spw-lsp server, analysis, and semantic tokens", authors: "spw-workbench", year: 2026, locator: "packages/spw-lsp/src/ at 1aa1dc23; handlers/semantic-tokens.ts and server-index.ts re-read at 651b535b", kind: #repository }
  #>src_spw_vscode
  ^["vscode"]{ title: "VS Code Spw extension: grammar, decorations, client", authors: "spw-workbench", year: 2026, locator: "extensions/vscode-spw/ at 1aa1dc23", kind: #repository }
  #>src_spw_intellij
@@ -67,7 +83,7 @@
  #>src_spw_validator
  ^["validator"]{ title: "Spw syntax validator", authors: "spw-workbench", year: 2026, locator: "scripts/analyzers/spw-syntax-validate.ts at 1aa1dc23", kind: #repository }
  #>src_spw_git_history
- ^["git_history"]{ title: "spw-workbench commit history, rewritten episodes-only", authors: "spw-workbench", year: 2026, locator: "git log at 1aa1dc23; commits a1e509c6, 9fe3b73c, f6f62161, e35f98cc, 4763a29f, 8cdaf2a9, 25ca2e29, 925e982e, c855e832", kind: #repository }
+ ^["git_history"]{ title: "spw-workbench commit history, rewritten episodes-only", authors: "spw-workbench", year: 2026, locator: "git log at 651b535b; commits a1e509c6, 9fe3b73c, f6f62161, e35f98cc, 4763a29f, 8cdaf2a9, 25ca2e29, 925e982e, c855e832, 6690d686, c79a096a", kind: #repository }
  #>src_spw_lib_archives
  ^["lib_archives"]{ title: "Spw specification libraries v0.1.0-alpha, v0.2.0-alpha, and v0.3.0", authors: "spw-workbench", year: 2026, locator: "lib/ at 1aa1dc23", kind: #repository }
 }
@@ -114,7 +130,7 @@
  #>src_spw_study_critic
  ^["study_critic"]{ title: "Critic of the spw branch plan", authors: "claude-opus-5.5 critic", year: 2026, locator: ".agents/plans/caches-cut-2026-09-30/references/spw-branch/critic.json", kind: #report }
  #>src_spw_study_scorecard
- ^["study_scorecard"]{ title: "Review scorecard of the raw shelf, editor caches section", authors: "claude-opus-5.5 reviewers", year: 2026, locator: ".agents/plans/caches-cut-2026-09-30/references/review/scorecard.md:6-39", kind: #report }
+ ^["study_scorecard"]{ title: "Review scorecard of the raw shelf: editor caches and tree-wide measurements", authors: "claude-opus-5.5 reviewers", year: 2026, locator: ".agents/plans/caches-cut-2026-09-30/references/review/scorecard.md:6-39 for the editor caches and seven code bugs, and :154-155 for the tree-wide handle and lens counts", kind: #report }
 }
 
 ^["research"]{
@@ -133,20 +149,22 @@
   ^["ms_keyboard_layouts"]{
    title: "Windows keyboard layouts", authors: "Microsoft", year: 2026
    publisher: "Microsoft Learn, Globalization documentation", kind: #documentation
-   locator: "learn.microsoft.com/globalization/windows-keyboard-layouts, page dated 2026-09-28, read 2026-10-03; US 00000409, United Kingdom 00000809, German 00000407, French AZERTY 0000040C"
+   locator: "learn.microsoft.com/globalization/windows-keyboard-layouts, page dated 2026-09-28, read 2026-10-03; US 00000409, United States-International 00020409, United Kingdom 00000809, German 00000407, French (Legacy, AZERTY) 0000040C, with French (Standard, AZERTY) 0001040C listed beside it and not read"
   }
   #>src_spw_nvda_symbols
   ^["nvda_symbols"]{
    title: "NVDA English symbol pronunciation file, source/locale/en/symbols.dic", authors: "NV Access", year: 2026
    publisher: "NV Access, nvaccess/nvda repository", kind: #repository
-   locator: "master branch read 2026-10-03; user guide for NVDA 2026.2"
+   locator: "master branch read 2026-10-03; no release version checked"
   }
  }
  ^["metacognition"]{
   #>src_spw_kalyuga_2003
   ^["kalyuga_2003"]{ title: "The expertise reversal effect", authors: "Slava Kalyuga; Paul Ayres; Paul Chandler; John Sweller", year: 2003, venue: "Educational Psychologist 38(1):23-31", kind: #article }
   #>src_spw_meyer_2015
-  ^["meyer_2015"]{ title: "Disfluent fonts don't help people solve math problems", authors: "Andrew Meyer; Shane Frederick; and eight coauthors", year: 2015, venue: "Journal of Experimental Psychology: General 144(2):e16-e30", kind: #article }
+  ^["meyer_2015"]{ title: "Disfluent fonts don't help people solve math problems", authors: "Andrew Meyer; Shane Frederick; Terence C. Burnham; Juan D. Guevara Pinto; Ty W. Boyer; Linden J. Ball; Gordon Pennycook; Rakefet Ackerman; Valerie A. Thompson; Jonathon P. Schuldt", year: 2015, venue: "Journal of Experimental Psychology: General 144(2):e16-e30", doi: "10.1037/xge0000049", kind: #article }
+  #>src_spw_alter_2007
+  ^["alter_2007"]{ title: "Overcoming intuition: Metacognitive difficulty activates analytic reasoning", authors: "Adam L. Alter; Daniel M. Oppenheimer; Nicholas Epley; Rebecca N. Eyre", year: 2007, venue: "Journal of Experimental Psychology: General 136(4):569-576", doi: "10.1037/0096-3445.136.4.569", kind: #article }
   #>src_spw_diemand_yauman_2011
   ^["diemand_yauman_2011"]{ title: "Fortune favors the bold (and the italicized): Effects of disfluency on educational outcomes", authors: "Connor Diemand-Yauman; Daniel M. Oppenheimer; Erikka B. Vaughan", year: 2011, venue: "Cognition 118(1):111-115", kind: #article }
   #>src_spw_rhodes_castel_2008

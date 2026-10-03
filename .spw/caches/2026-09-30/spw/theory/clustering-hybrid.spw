@@ -7,7 +7,7 @@
 #:domain #!spw_theory
 #:form #!comparison
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -34,7 +34,15 @@
  ^["receipts"]{
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[
+  "the style claim gave 0.97 and credited graph strands; the study reports 0.976 and 0.977 from the spw graph --compare familiarity check, and 0.969 was the ocean comparison"
+ ]
 }
 
 ^["edges"]{
@@ -175,7 +183,7 @@
  #>spw_theory_clustering_style_not_topic
  ^["style_not_topic"]{
   #:claim #!settled
-  statement: "In the understand pass, graph strands scored a thermodynamics corpus near 0.97 sigil cosine against both live-streaming and economics corpora, so strands measured notation style, not topic."
+  statement: "In the understand pass, the spw graph --compare familiarity check scored a thermodynamics corpus at 0.976 and 0.977 sigil cosine against live-streaming and economics corpora, so it measured notation style, not topic."
   source: ~"../../registries/sources/spw-design-studies.spw#src_lab_study_ocean"
   as_of: "229aedcf"
  }

@@ -7,7 +7,7 @@
 #:domain #!registry
 #:form #!registry
 #:level #!mixed
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"provenance"{
@@ -24,16 +24,21 @@
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{ event: #fact_checked, at: "2026-10-03",
+   agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #corrected }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  receipt_note: "r3 was first written as a pass while every src link pointed at a sources registry that did not exist yet; it now records fail, and r5 the run after the registry was written"
- checked: "values marked from an abstract were read from the Europe PMC or publisher abstract on 2026-10-02; the rest come from the cited paper or textbook as the writer knows it"
+ checked: "values marked from an abstract were read from the Europe PMC or publisher abstract on 2026-10-02; the rest come from the cited paper or textbook as the writer knows it; the 2026-10-03 fact-check compared the genome, chromatin, enzyme, cell-count, brain, kinetochore, shear, loss-aversion, replication, and Conway and Cowan cells with their sources and found one superseded value; the Stevens and dCas9 cells stay verify"
  status_legend: "settled cells were read from the linked source or its abstract; verify cells hold a value not confirmed against the source and its published corrections in this pass; a bound field names an upper or lower bound"
  corrections: #[
   "created in the fact-check pass: four handles cited by the cells branch had no cell, so their numbers lived only in prose",
   "the loss-aversion meta-analysis interval ends at 2.102, not 2.105, as the published abstract gives it",
   "the three Stevens exponents now cite his 1961 table and are marked verify, since neither paper was read in this pass",
   "two Registered Reports cells added for the replication ledger",
-  "2026-10-03: the two dCas9 cells are now verify, since PubMed lists errata to Jones 2017 from 2024 and 2026-10-01 that were not read; the loss-aversion, nudge meta-analysis, ego-depletion, money-priming, Registered Reports, energy-budget, and kinetochore cells were rechecked against their abstracts"
+  "2026-10-03: the two dCas9 cells are now verify, since PubMed lists errata to Jones 2017 from 2024 and 2026-10-01 that were not read; the loss-aversion, nudge meta-analysis, ego-depletion, money-priming, Registered Reports, energy-budget, and kinetochore cells were rechecked against their abstracts",
+  "2026-10-03 fact-check: the nudge meta-analysis cell held the original 0.45 [0.39, 0.52]; PNAS published a correction in May 2022 (e2204059119) that removed four effect sizes from a since-retracted study and fixed coding errors, so the cell now holds d = 0.43 [0.38, 0.48], k = 447, n = 2,148,439; the earlier recheck read an abstract that still shows the original text",
+  "2026-10-03 fact-check: the at-most-15-percent active fraction from Attwell and Laughlin lived only in prose, so it now has its own cell"
  ]
 }
 
@@ -63,7 +68,7 @@
  cells: #[ human_count_e13_2013, human_count_e13_2016, bacteria_count_e13_2016 ]
  kinesin: #[ step_nm, atp_per_step ]
  sac: #[ kinetochores_human_mitosis, anaphase_lag_min ]
- brain: #[ neurons_e9, nonneuronal_e9, mass_share_pct, energy_share_pct, active_neurons_pct_max, ap_energy_share_pct, synaptic_energy_share_pct ]
+ brain: #[ neurons_e9, nonneuronal_e9, mass_share_pct, energy_share_pct, active_neurons_pct_max, ap_energy_share_pct, distributed_code_active_pct_max, synaptic_energy_share_pct ]
  shear: #[ atheroprotective_dyn_cm2_min, atheroprone_dyn_cm2_max ]
  psychophysics: #[ stevens_brightness_exponent, stevens_length_exponent, stevens_shock_exponent ]
  memory: #[ miller_span_chunks, cowan_capacity_chunks, own_name_notice_pct ]
@@ -243,6 +248,15 @@
   src: ~"../sources/life-and-mind.spw#src_life_attwell_laughlin_2001"
   status: #settled
  }
+ %life.brain.distributed_code_active_pct_max{
+  value: 15
+  unit: "percent of neurons simultaneously active"
+  at: "upper bound on the active fraction for the energy-efficient distributed codes the rodent grey-matter budget predicts"
+  abs: 0
+  bound: #upper
+  src: ~"../sources/life-and-mind.spw#src_life_attwell_laughlin_2001"
+  status: #settled
+ }
  %life.brain.synaptic_energy_share_pct{
   value: 34
   unit: "percent of signaling energy"
@@ -386,10 +400,10 @@
   status: #settled
  }
  %life.replication.nudge_meta_d{
-  value: 0.45
+  value: 0.43
   unit: "Cohen d"
-  at: "uncorrected pooled effect of choice architecture across more than 200 studies; 95 percent interval 0.39 to 0.52"
-  abs: 0.07
+  at: "overall pooled effect of choice architecture, not adjusted for publication bias, across more than 200 studies (447 effect sizes, n = 2,148,439); 95 percent interval 0.38 to 0.48, as corrected in PNAS 2022 e2204059119"
+  abs: 0.05
   src: ~"../sources/life-and-mind.spw#src_life_mertens_2022"
   status: #settled
  }

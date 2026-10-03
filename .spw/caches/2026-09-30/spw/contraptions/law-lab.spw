@@ -7,7 +7,7 @@
 #:domain #!spw
 #:form #!probe_battery
 #:level #!graduate
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 
 ^"emit"{
@@ -31,10 +31,15 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
  }
  corrections: #[
   "the sketch wrote explicit Euler as a parallel schedule; it is now a separate row with its energy growth computed, since parallel means may commute and not simultaneous",
-  "the canon spelling of the complement law is tested as written, star then tilde then X, beside the braced spelling the sketch used"
+  "the canon spelling of the complement law is tested as written, star then tilde then X, beside the braced spelling the sketch used",
+  "the complement row said the unbraced *~x returned a pair of nulls; it returns a null beside a deferred wrapper of null"
  ]
 }
 
@@ -106,7 +111,7 @@
   right: "x"
   verdict: .{ value: "differs", writes: "differs", trace: "differs" }
   sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_canon_wonder_calculus", ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_interpreter" ]
-  ~#(the unbraced spelling returned a pair of nulls on the same commit)
+  ~#(the unbraced spelling gave a null beside a deferred null on the same commit)
  }
  #>spw_lab_law_lab_confluence
  ^["action_and_defer"]{

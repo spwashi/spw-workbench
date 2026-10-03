@@ -7,7 +7,7 @@
 #:domain #!spw_perspectives
 #:form #!comparison
 #:level #!intro
-#:review #!unreviewed
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
@@ -34,7 +34,22 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r7"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r8"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[
+  "the authority row said the command compares declarations with observed runtime behavior; it reads the subject source with a syntactic extractor and runs nothing",
+  "the ISBD row called the colon and slash area separators; only the period-dash separates areas, and the colon and slash are prescribed punctuation inside the title area"
+ ]
 }
 
 ^["edges"]{
@@ -47,7 +62,7 @@
  #>spw_perspectives_librarians_standing
  ^["hypothesis"]{
   #:claim #!interpretive
-  statement: "These rows were written by an agent outside the cluster; they stay unreviewed until a cataloger or archivist checks each correspondence against the standard it names."
+  statement: "These rows were written by an agent outside the cluster; they stay hypotheses until a cataloger or archivist checks each correspondence against the standard it names."
   member_probe: "a cataloger describes this cut as a collection, using their own standard, and lists which rows below helped and which misled"
  }
 }
@@ -62,7 +77,7 @@
   standard: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_marc21_bib"
  }
  marc_subfields: .{ scheme: "MARC 21", mark: "dollar-sign subfield codes", spw: "substrate operations", see: ~"../specimens/language-and-library.spw#spw_spec_language_library_subfields" }
- isbd: .{ scheme: "ISBD", mark: "colon, slash, and period-dash area separators", spw: "bindings and lexer errors", see: ~"../specimens/language-and-library.spw#spw_spec_language_library_isbd_areas" }
+ isbd: .{ scheme: "ISBD", mark: "the period-dash area separator, plus colon and slash prescribed punctuation within an area", spw: "bindings and lexer errors", see: ~"../specimens/language-and-library.spw#spw_spec_language_library_isbd_areas" }
  dewey: .{ scheme: "Dewey Decimal", mark: "a decimal class number", spw: "one decimal literal, a rare clean row", see: ~"../specimens/language-and-library.spw#spw_spec_language_library_dewey" }
  lc_call: .{ scheme: "LC call number", mark: "dotted cutters", spw: "a name, a bare dot, and loose parts", see: ~"../specimens/language-and-library.spw#spw_spec_language_library_lc_call" }
  edtf_approx: .{ scheme: "EDTF", mark: "a trailing tilde for approximate", spw: "a loose tilde operation", see: ~"../specimens/language-and-library.spw#spw_spec_language_library_approximate" }
@@ -86,9 +101,9 @@
  #>spw_perspectives_librarians_authority_command
  ^["authority_command"]{
   #:claim #!settled
-  statement: "The spw authority command compares declared writes and joins with observed runtime behavior; it does no authority control over names."
+  statement: "The spw authority command compares declared writes and joins with what a syntactic extractor finds in the subject source; it does no authority control over names."
   source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cli"
-  cites: [ "packages/spw-cli/src/commands.ts:240-245" ]
+  cites: [ "packages/spw-cli/src/commands.ts:240-245", "packages/spw-cli/src/authority.ts:93-101" ]
  }
  #>spw_perspectives_librarians_vocabulary
  ^["controlled_vocabulary"]{

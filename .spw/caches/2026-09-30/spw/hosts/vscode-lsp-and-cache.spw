@@ -7,7 +7,7 @@
 #:domain #!editor_hosts
 #:form #!state_machine
 #:level #!practitioner
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 #:era #!current
 
@@ -31,6 +31,17 @@
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #skim, outcome: #pass
+   note: "client id, bundled path guard, initialization options, and cache planes reread at 1aa1dc23; dropped layers rechecked on main at 651b535b"
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+   note: "client id, bundled-path guard, one-time initialization options, the inert trace setting, and the cacheReflection fields confirmed"
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: [
   "the raw lsp-client cache gave a five-step server ladder from tool root to installed package; startup uses only the bundled server, as README line 28 says",
@@ -151,6 +162,7 @@
   sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_cache_reflection", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_instruments" ]
   cites: [ "packages/spw-lsp/src/handlers/cache-reflection.ts:164-171", "extensions/vscode-spw/src/lsp/custom-requests.ts:377-387", "extensions/vscode-spw/src/instruments/commands.ts:33-44,165" ]
   peer: "Neovim renders the server layers as sent, extensions/neovim-spw/lua/spw/instruments.lua:116-122"
+  still_open: "unchanged on main at 651b535b, where the method sits at custom-requests.ts:390-400"
  }
  ^["card_rows"]{
   editor_probe_cache: .{ vscode_card: "present with snapshot stats when the cache exists", cites: "instruments/commands.ts:46-58" }

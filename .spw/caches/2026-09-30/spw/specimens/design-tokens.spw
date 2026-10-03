@@ -7,7 +7,7 @@
 #:domain #!spw
 #:form #!probe_battery
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!honk
 
 ^"emit"{
@@ -37,9 +37,17 @@
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #corrected
+  }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
-  "the persona design limits said #3a3a3a becomes prose; at 1aa1dc23 it is a # operation carrying the prose chunk 3a3a3a, and the surface does not degrade"
+  "the persona design limits said #3a3a3a becomes prose; at 1aa1dc23 it is a # operation carrying the prose chunk 3a3a3a, and the surface does not degrade",
+  "neither group cited the specifications behind its habits; the CSS rows now cite CSS Color 4, Media Queries 4, and CSS Custom Properties 1, and the Figma rows cite the variants help page",
+  "the font row read 16px/1.5 as a complete CSS font shorthand; the shorthand also requires a family"
  ]
 }
 
@@ -56,10 +64,7 @@
  cites: [ "packages/spw-seed/src/canonical/fingerprint.ts:49-70", "scripts/analyzers/spw-cut-gate.ts:193-217" ]
 }
 
-^["fixture"]{
- status: #proposed
- runner: "no repository code replays these rows as regression fixtures at 1aa1dc23; the writer probe script was scratch"
-}
+^["fixture"]{ status: #proposed, runner: "no repository code replays these rows as regression fixtures at 1aa1dc23; the writer probe script was scratch" }
 
 ^["css"]{
  #>spw_spec_design_class_rule
@@ -152,6 +157,7 @@
   verdict: #splits, loudness: #silent
   signature: "Binding=1 Expression=3 Identifier=2 Literal=2 Seed=1 Sequence=1"
   observed: "font binds 16; px and 1.5 follow joined by a / connector"
+  field_note: "the CSS font shorthand also requires a family, as in 16px/1.5 serif; the row probes the size and line-height pair alone"
   write_instead: "font: .{ size: \"16px\", line_height: 1.5 }"
   case_of: ~"../glossary/false-friends.spw#spw_ff_numbers"
  }
@@ -189,6 +195,8 @@
   signature: "Binding=1 Expression=6 Identifier=2 Literal=4 Scope=1 Seed=1 Sequence=2"
   observed: "rgba is followed by a Scope holding all four numbers"
  }
+ refs: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_css_color_4", ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_mediaqueries_4", ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_css_variables_1" ]
+ writer_knowledge: "selectors, the :hover state, px and percent units, the font shorthand, and !important are named from writer knowledge of CSS; the rows record only what the parser did"
 }
 
 ^["figma"]{
@@ -198,6 +206,7 @@
   verdict: #restructures, loudness: #silent
   signature: "Binding=1 Expression=3 Identifier=2 Operation=1 Seed=1 Sequence=1"
   observed: "variant binds Size, and =Large becomes a separate = operation"
+  field_note: "the Property=Value form is how the Figma editor names a variant layer, from writer knowledge; the cited help page documents variant properties and the slash names that convert to them"
   write_instead: "variant: .{ Size: Large }"
   case_of: ~"../glossary/false-friends.spw#spw_ff_equals"
  }
@@ -208,6 +217,7 @@
   signature: "Binding=1 Expression=2 Identifier=3 Seed=1 Sequence=1"
   observed: "both names stay in one expression joined by a / connector"
  }
+ refs: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_figma_variants" ]
 }
 
 ^["try"]{

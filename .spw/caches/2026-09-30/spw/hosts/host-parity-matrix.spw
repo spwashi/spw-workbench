@@ -7,7 +7,7 @@
 #:domain #!editor_hosts
 #:form #!comparison
 #:level #!practitioner
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 #:era #!current
 
@@ -31,7 +31,19 @@
   ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #skim, outcome: #corrected
+   note: "plane rows rechecked against main at 651b535b; the JetBrains rename release corrected from the feature table"
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+   note: "callers per host, Neovim launch order, changedtick probes, and the cache card confirmed"
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[ "the caret rename row gave native LSP rename from 2026.1; the JetBrains table marks 2026.1.1" ]
  rule: "a cell is filled only after its host code was read at 1aa1dc23; an empty cell says unverified and is a gap, not a no"
 }
 
@@ -115,7 +127,7 @@
  }
  ^["caret_rename"]{
   vscode: "editor.action.rename to the server"
-  jetbrains: "platform rename; native LSP rename is listed from 2026.1, so older builds are unverified"
+  jetbrains: "platform rename; native LSP rename is listed from 2026.1.1, so older builds are unverified"
   neovim: "vim.lsp.buf.rename to the server"
   cites: [ "instruments/commands.ts:192-195", "SpwInstrumentActions.kt:75-78", "extensions/neovim-spw/lua/spw/commands.lua:46" ]
  }

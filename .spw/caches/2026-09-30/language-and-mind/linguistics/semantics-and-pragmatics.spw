@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/university-education/linguistics/semantics-pragmatics-and-discourse.spw" ]
@@ -34,11 +34,21 @@
    care: #adversarial, outcome: #pass
   }
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass
+  }
+  ^["r8"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: [
   "the raw file typed the determiners every, some, and most as the generalized quantifier type; a determiner is a relation between two sets, and the noun phrase it heads is the generalized quantifier",
   "the raw file reduced the locutionary act to phonetic articulation; Austin includes uttering words with sense and reference",
-  "the raw wonder stated Rational Speech Act inference as how humans work; it is credited to Frank and Goodman and kept as an emerging model"
+  "the raw wonder stated Rational Speech Act inference as how humans work; it is credited to Frank and Goodman and kept as an emerging model",
+  "fact check 2026-10-03: the intension entry credited necessity as truth in all accessible worlds to Montague; in his logic necessity is truth at every index, and accessibility comes from Kripke's relational semantics"
  ]
 }
 
@@ -97,10 +107,13 @@
  #>linguistics_semantics_intension
  ^["intension"]{
   #:claim #!settled
-  statement: "An intension maps each possible world to an extension, so a proposition is a function from worlds to truth values and necessity is truth in all accessible worlds."
+  statement: "In Montague's intensional logic an intension maps each index, a pair of a possible world and a time, to an extension."
+  consequence: "a proposition is then a function from indices to truth values, and necessity is truth at every index"
   broader: [ ~"./semantics-and-pragmatics.spw#linguistics_semantics_composition" ]
   narrower: [ ~"./semantics-and-pragmatics.spw#linguistics_semantics_modality" ]
   source: ~"../../registries/sources/language-and-communities.spw#src_lang_montague_1973"
+  accessibility: "necessity as truth in every world accessible from the world of evaluation comes from Kripke's relational semantics, and Kratzer's modal bases restrict the worlds further"
+  accessibility_source: ~"../../registries/sources/language-and-communities.spw#src_lang_kripke_1963"
  }
  #>linguistics_semantics_modality
  ^["modality"]{

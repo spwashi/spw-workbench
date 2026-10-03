@@ -7,7 +7,7 @@
 #:domain #!spw
 #:form #!ledger
 #:level #!practitioner
-#:review #!spot_checked
+#:review #!adversarial_checked
 #:valence #!bane
 
 ^"emit"{
@@ -34,10 +34,19 @@
   ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the raw editor caches invented settings, URIs, and fallbacks; this ledger reads only host rows that cite code at a commit",
-  "the anti-echo doctrine is credited to the raw VS Code taste file and stays a proposal until canon adopts it"
+  "the anti-echo doctrine is credited to the raw VS Code taste file and stays a proposal until canon adopts it",
+  "the lens index server gap is marked closed for hover, inlay, and symbols after 6690d686, matching the superseded host row",
+  "the contribution row printed command and setting counts that read no cell; both are now registry cells, and the defect row names no count of its own"
  ]
 }
 
@@ -86,9 +95,9 @@
  ^["vscode_contributions"]{
   #:claim #!settled
   statement: "The VS Code extension contributes twenty-two commands, fourteen settings, and twenty-three color ids."
-  reads: %[spw.editor.color_ids]
+  reads: %[spw.editor.commands, spw.editor.settings, spw.editor.color_ids]
   source: ~"../registries/sources/spw-branch.spw#src_spw_vscode"
-  probe_run: "count of contributes in extensions/vscode-spw/package.json at 1aa1dc23 on 2026-10-03"
+  probe_run: "count of contributes in extensions/vscode-spw/package.json at 1aa1dc23 and again at 651b535b on 2026-10-03"
   row: ~"./hosts/vscode-commands-and-views.spw#editor_hosts_vscode_command_count"
  }
  ^["rows"]{
@@ -103,7 +112,7 @@
  #>spw_plugin_defects_client
  ^["all_client_side"]{
   #:claim #!interpretive
-  statement: "All seven verified plugin defects sit in client glue or client regexes, so a plugin fails where it reads Spw or rebuilds a server answer on its own."
+  statement: "Every plugin defect the review scorecard verified sits in client glue or client regexes, so a plugin fails where it reads Spw or rebuilds a server answer on its own."
   source: ~"../registries/sources/spw-branch.spw#src_spw_study_scorecard"
   rows: ~"./hosts/known-defects.spw#editor_hosts_defects"
  }
@@ -120,6 +129,7 @@
   ~"./hosts/known-defects.spw#editor_hosts_defects_anchor_line",
   ~"./hosts/known-defects.spw#editor_hosts_defects_lens_index"
  ]
+ lens_gap: "the lens index gap closed at 6690d686 for hover, inlay, and symbols; references, rename, and highlight still read lens readings by regex"
 }
 
 ^["stale_canon"]{

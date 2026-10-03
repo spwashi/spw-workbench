@@ -7,12 +7,12 @@
 #:domain #!spw_perspectives
 #:form #!state_machine
 #:level #!intro
-#:review #!unreviewed
+#:review #!adversarial_checked
 #:valence #!honk
 
 ^"emit"{
  ~#title: "Perspective: Engineers and Chemists"
- ~#claim: "A unit operation reads as named states with guarded transitions and a registry cell as a data sheet row, but every sign and exponent typed bare can drop without a word."
+ ~#claim: "A unit operation reads as guarded states and a cell as a data sheet row, but every sign and exponent typed bare breaks: exponents split silently, and signs drop with only a lexer error."
  ~#proof: "Probes at commit 1aa1dc23 drop the sign of -40 and split 1e-3 with success still true; a quoted match arm and a cell with a unit string survive whole."
  ~#door: "Run the two hazard rows first, then read the tank states as a statechart."
  ~#audience: "process, chemical, mechanical, and control engineers, and chemists who keep lab and plant notes"
@@ -34,9 +34,23 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r7"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r8"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
-  "the study read the rel and abs slots of a cell as measurement uncertainties; the contract does not say whether they are tolerances or uncertainties, so this file names the ambiguity instead of resolving it"
+  "the study read the rel and abs slots of a cell as measurement uncertainties; the contract does not say whether they are tolerances or uncertainties, so this file names the ambiguity instead of resolving it",
+  "the card claim said every bare sign and exponent can drop without a word; a bare sign reports a lexer error in the parse errors while the parse still reports success, and only exponents and units split silently",
+  "the note above first said the parse result does not surface the sign error; parse lists it in its errors and keeps success true, as the dropped-sign row says"
  ]
 }
 
@@ -49,7 +63,7 @@
  #>spw_perspectives_engineers_standing
  ^["hypothesis"]{
   #:claim #!interpretive
-  statement: "This reading was written by an agent outside the cluster; it stays unreviewed until a practicing engineer or chemist runs the hazard rows on lines from their own logs."
+  statement: "This reading was written by an agent outside the cluster; it stays a hypothesis until a practicing engineer or chemist runs the hazard rows on lines from their own logs."
   member_probe: "an engineer types ten lines from a data sheet or log from memory, predicts each parse, and marks which hazard rows matched practice"
  }
 }
@@ -60,7 +74,7 @@
   #:claim #!settled
   habit: "a setpoint, a vacuum reading, or a temperature below zero, typed with a leading minus"
   statement: "A leading minus is a lexer error that drops the sign and keeps the magnitude, and the parse still reports success."
-  probe_run: "T: -40 bound T to 40 with one lexer error at 1aa1dc23; the cut gate fails the file, the parse result does not"
+  probe_run: "T: -40 bound T to 40 at 1aa1dc23, and the parse listed one lexer error while reporting success; the cut gate fails the file"
   write_instead: "a string such as minus forty written in quotes, or a cell whose value string carries the sign"
   see: ~"../specimens/code-habits.spw#spw_spec_code_negative"
   source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_lexer"

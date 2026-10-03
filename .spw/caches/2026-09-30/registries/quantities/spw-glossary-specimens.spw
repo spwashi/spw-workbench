@@ -7,7 +7,7 @@
 #:domain #!registry
 #:form #!registry
 #:level #!mixed
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"provenance"{
@@ -22,10 +22,15 @@
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #pass }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  entropy_rule: "label spread is the Shannon entropy in bits of the first label word per table, case-folded, with integrate and integration, and config and configuration, counted as one stem"
  census_rule: "specimen counts come from the writer probe run; a row is validator when the parse warns, gate when it has a lexer error, a cross-line swallow, or a cut-banned character outside double quotes, and silent otherwise"
  recount: "on 2026-10-03 the writer replayed all specimen rows against the parser and recounted the batteries; rows, silent, gate, and validator counts matched every spec cell, and the five naming tables were re-read"
+ added: "clean_n was added on 2026-10-03 after a second full replay matched all one hundred twenty rows, so the index can say how many silent rows changed shape"
  status_legend: "every cell here is settled at commit 1aa1dc23; a later parser or canon change makes it a historical reading, not a wrong one"
 }
 
@@ -41,7 +46,7 @@
 ^["keys"]{
  naming: #[ tables_n, hash_label_bits, dot_label_bits, equals_label_bits, amp_label_bits, caret_label_bits, dollar_label_bits ]
  lexer: #[ particle_aims_n, lattice_aims_n ]
- spec: #[ rows_n, silent_n, gate_n, validator_n ]
+ spec: #[ rows_n, silent_n, gate_n, validator_n, clean_n ]
  terms: #[ lens_senses_n, cut_senses_n ]
 }
 
@@ -106,6 +111,10 @@
  %gloss.spec.validator_n{
   value: 13, unit: "rows", abs: 0
   at: "rows that degrade to prose, which the validator warns on and the gate fails", src: ~"../sources/spw-glossary-specimens.spw#src_gloss_parser_probes", status: #settled
+ }
+ %gloss.spec.clean_n{
+  value: 19, unit: "rows", abs: 0
+  at: "silent rows that keep the shape a reader of that field expects; the other silent rows changed shape", src: ~"../sources/spw-glossary-specimens.spw#src_gloss_parser_probes", status: #settled
  }
 }
 

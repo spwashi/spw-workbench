@@ -7,11 +7,11 @@
 #:domain #!registry
 #:form #!registry
 #:level #!mixed
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -19,7 +19,13 @@
  ^["receipts"]{
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ checked: "the fact check of 2026-10-03 recomputed the birthday bounds and the contrast ratio, reproduced the shelf recount, and read the ocean constants at their commits"
  derivations: #[
   "half-collision counts use the birthday approximation n = sqrt(2 ln 2 x 2^b) for a uniform b-bit hash; the writer computed 301.4 for b = 16 and 5.06e9 for b = 64",
   "the contrast ratio uses the WCAG 2.1 relative-luminance formula for #BF8803 against #FFFFFF; the writer computed 3.12",

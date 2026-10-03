@@ -7,17 +7,17 @@
 #:domain #!spw
 #:form #!probe_battery
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!honk
 
 ^"emit"{
  ~#title: "Language and Library Specimens"
- ~#claim: "Interlinear glosses and catalog punctuation lose their boundaries in bindings, and survive verbatim inside a gloss apposition."
+ ~#claim: "Most interlinear glosses and catalog punctuation lose boundaries in bindings; every Leipzig row mirrored as a gloss apposition keeps every mark, because apposition bodies are read raw."
  ~#proof: "Each row was run through the parser at commit 1aa1dc23; apposition bodies are read raw to the matching paren."
  ~#door: "Start with the gloss rows and their apposition mirrors, then the blank indicator row."
  ~#audience: "linguists, catalogers, and archivists writing records in Spw"
  continuity: "Language and Library Specimens | gloss apposition"
- cold_open: "A gloss line loses its boundaries in a binding but keeps every mark inside a gloss apposition."
+ cold_open: "A gloss line can lose its boundaries in a binding but keeps every mark inside a gloss apposition."
 }
 
 ^"provenance"{
@@ -37,7 +37,17 @@
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #corrected
+  }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[
+  "the card said glosses and catalog punctuation survive verbatim in a gloss apposition; only Leipzig rows were mirrored, and two Leipzig rows already keep their boundary in a plain binding",
+  "the 245 write_instead dropped the indicators and subfield c; the facet now keeps ind, the ISBD punctuation inside each subfield, and the statement of responsibility"
+ ]
 }
 
 ^["edges"]{
@@ -53,10 +63,7 @@
  cites: [ "packages/spw-seed/src/canonical/fingerprint.ts:49-70", "scripts/analyzers/spw-cut-gate.ts:193-217" ]
 }
 
-^["fixture"]{
- status: #proposed
- runner: "no repository code replays these rows as regression fixtures at 1aa1dc23; the writer probe script was scratch"
-}
+^["fixture"]{ status: #proposed, runner: "no repository code replays these rows as regression fixtures at 1aa1dc23; the writer probe script was scratch" }
 
 ^["leipzig"]{
  #>spw_spec_language_library_morpheme_boundary
@@ -112,9 +119,11 @@
   signature: "Binding=2 Capsule=1 Expression=3 Identifier=4 Literal=1 Seed=1 Sequence=1"
   observed: "with no right arm on its line, the capsule takes the key next from the following line"
   write_instead: "form: \"b<um>\","
+  ~#gloss(b<um>)
   case_of: ~"../glossary/false-friends.spw#spw_ff_swallow"
  }
  refs: [ ~"../../registries/sources/spw-branch.spw#src_spw_leipzig_glossing" ]
+ mirrors: "on 2026-10-03 the parsed body of each of the six gloss appositions matched its habit value character for character"
 }
 
 ^["judgments"]{
@@ -184,7 +193,7 @@
   verdict: #restructures, loudness: #silent
   signature: "Binding=2 Expression=7 Identifier=2 Literal=2 ModifierChain=3 Operation=4 Seed=1 Sequence=1"
   observed: "$a, $b, and $c become substrate operations, and a colon binds two of them"
-  write_instead: "f245: .{ tag: \"245\", a: \"Water\", b: \"a history\" }"
+  write_instead: "f245: .{ tag: \"245\", ind: \"10\", a: \"Water :\", b: \"a history /\", c: \"anon.\" }"
   case_of: ~"../glossary/false-friends.spw#spw_ff_colon"
  }
  #>spw_spec_language_library_isbd_areas
@@ -252,8 +261,7 @@
  }
  #>spw_spec_language_library_ipa_value
  ^["ipa_value"]{
-  habit: "pron: ʃ", followed_by: "next: 1"
-  codepoints: "U+0283"
+  habit: "pron: ʃ", followed_by: "next: 1", codepoints: "U+0283"
   verdict: #swallows, loudness: #gate, lexer_errors: 1
   signature: "Binding=2 Expression=3 Identifier=2 Literal=1 Seed=1 Sequence=1"
   observed: "the IPA letter is a lexer error, which leaves pron empty, so it binds the next line"
@@ -275,11 +283,11 @@
 }
 
 #>spw_spec_language_library_mirror_q
-?["Does a gloss apposition keep every Leipzig boundary that a binding loses?"]{
+?["Would catalog records keep their punctuation inside a gloss apposition, as the Leipzig rows do?"]{
  #:depth #!educational ~#lens(curated collection)
  #:claim #!speculative
- ~#hypothesis: "Yes in direction: apposition bodies are taken raw to the matching paren, so hyphens, periods, equals signs, and angle brackets survive where bindings split them."
- !probe{ "rewrite every Leipzig row as a gloss apposition and diff the body text against the habit" =id[p_gloss_language_mirror] =kind[build] }
+ ~#hypothesis: "Yes in direction: subfield codes and ISBD area marks carry no stray closing paren, so the raw body would keep them, though no tool would then read them as fields."
+ !probe{ "mirror each cataloging row as a gloss apposition and diff the parsed body against the habit" =id[p_gloss_language_mirror] =kind[build] }
  $%[gloss.spec.rows_n, gloss.spec.silent_n]
  ~"./language-and-library.spw#spw_spec_language_library_observed" ~#neighbor(nearest)
 }

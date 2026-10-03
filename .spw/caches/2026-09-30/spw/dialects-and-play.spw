@@ -7,7 +7,7 @@
 #:domain #!spw
 #:form #!comparison
 #:level #!advanced
-#:review #!spot_checked
+#:review #!adversarial_checked
 #:valence #!boon
 
 ^"emit"{
@@ -34,12 +34,18 @@
   ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the study said an apostrophe in a raw chat line opens an unterminated string; at 1aa1dc23 it parses with no error into a stray quoted literal",
   "pack rows are anchored spw_play_<pack>, never spw_dialect_<pack>, because canon owns spw_dialect_registry",
   "the chat sample carries a synthetic handle only, and pseudonymization is written as protocol, never as data",
-  "the gloss sample uses an ASCII Turkish form, ev-ler-imiz, so the sample stays inside the cut ASCII rule"
+  "the gloss sample uses an ASCII Turkish form, ev-ler-imiz, so the sample stays inside the cut ASCII rule",
+  "the kin row said evidentials are obligatory wherever a language grammaticalizes them; Aikhenvald also documents systems where the marking is optional"
  ]
 }
 
@@ -134,7 +140,7 @@
   lexer: "a line ending in a question mark opens a wonder, and I saw, I heard, and I guess become evidential moods"
   lowers_to: `?["Why is the sky blue?"]{ #:evidence #!heard because: "light bounces off the air" #:evidence #!saw noticed: "at sunset it turns orange" }`
   bound: "parsed on separate lines, each evidential particle bound to its own claim line"
-  breaks: "evidentials are obligatory where a language grammaticalizes them; here they are optional, so a missing mark does not mean no source"
+  breaks: "many languages that grammaticalize evidentials make the marking obligatory, though some systems leave it optional; here it is always optional, so a missing mark does not mean no source"
   source: ~"../registries/sources/spw-branch.spw#src_spw_aikhenvald_2004"
   privacy: "a kin surface stays on the family device; the sample holds no child data"
  }

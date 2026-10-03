@@ -7,13 +7,13 @@
 #:domain #!spw
 #:form #!index
 #:level #!intro
-#:review #!spot_checked
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
  ~#title: "Spw"
  ~#claim: "In this class Spw is read as material: what its glyphs mean to readers with other notations, how its tools disclose and hide, and what is still open."
- ~#proof: "Every child cites code or canon at commit 1aa1dc23 as quoted path and line, and every number reads a registry cell."
+ ~#proof: "The reading surfaces cite code or canon at 1aa1dc23 or 651b535b as quoted path and line, and the corpus and editor counts their claims use read registry cells."
  ~#door: "Readers with a notation habit start at the familiarity matrix; tool authors start at inspection and IR."
  ~#audience: "readers learning Spw, and authors of its tools and plugins"
  continuity: "Spw | read as material"
@@ -31,16 +31,25 @@
   ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the plan once filed the CLI readings under editor hosts; they live in inspection and IR and in rendering and the CLI",
-  "no tour starts here: the persona seven-step door paths were not written, and each cluster keeps one fragment door"
+  "no tour starts here: the persona seven-step door paths were not written, and each cluster keeps one fragment door",
+  "the proof said every number in every child reads a registry cell; several printed counts had no cell, so the counts became cells and the proof names the reading surfaces only",
+  "the ladder listed practitioner before graduate; the vocabulary order is intro, foundation, advanced, graduate, practitioner"
  ]
 }
 
 ^["edges"]{
  grounds: [ ~"../contract.spw#cut_contract" ]
- see: [ ~"../vocabulary.spw#cut_vocabulary" ]
+ see: [ ~"../vocabulary.spw#cut_vocabulary", ~"../registries/probes.spw#registry_probes" ]
 }
 
 ^["tree"]{
@@ -81,7 +90,7 @@
 }
 
 ^["ladder"]{
- rungs: << "intro" ; "foundation" ; "advanced" ; "practitioner" ; "graduate" >>
+ rungs: << "intro" ; "foundation" ; "advanced" ; "graduate" ; "practitioner" >>
  intro: [ ~"./familiarity-matrix.spw#spw_familiarity_matrix", ~"./perspectives/index.spw#spw_perspectives_index", ~"./history/index.spw#workbench_history_index" ]
  foundation: [
   ~"./glossary/index.spw#spw_glossary",
@@ -100,6 +109,7 @@
   ~"./theory/index.spw#spw_theory_index",
   ~"./design-research/index.spw#lang_design_index"
  ]
+ graduate: [ ~"./open-questions.spw#spw_open_questions" ]
  practitioner: [
   ~"./practice-modes.spw#spw_practice_modes",
   ~"./recipes.spw#spw_recipes",
@@ -108,7 +118,6 @@
   ~"./graph-idioms.spw#spw_graph_idioms",
   ~"./hosts/index.spw#editor_hosts_index"
  ]
- graduate: [ ~"./open-questions.spw#spw_open_questions" ]
  standing: "a rung names who a surface is written for; it never ranks a reader, and any reader may read any rung"
 }
 

@@ -7,7 +7,7 @@
 #:domain #!spw_perspectives
 #:form #!probe_battery
 #:level #!intro
-#:review #!unreviewed
+#:review #!adversarial_checked
 #:valence #!bonk
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -39,23 +39,40 @@
    event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #partial
    note: "forward refs to planned files of other packages that were not yet written: the concept hubs"
   }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r8"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r9"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r10"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
-  "the plan asks this battery to link the concept hubs; see edges to their planned anchors were added on 2026-10-03"
+  "the plan asks this battery to link the concept hubs; see edges to their planned anchors were added on 2026-10-03",
+  "those see edges failed the cut gate because the concept hubs are wave 4 files not yet written; they were withdrawn on 2026-10-03 and the targets are kept below as strings",
+  "the units probe named a tolerance slot; the contract writes only rel or abs and does not say whether that slot is a tolerance or an uncertainty"
  ]
- links_out: "the concept hubs on conservation, symmetry, and scaling are planned in the same wave; the see edges below name their planned anchors"
+ links_pending: "the concept hubs on conservation, symmetry, and scaling are planned for wave 4, and the plan has hubs link keystones while wave 3 writers link only files that exist, so no edge points at them yet"
+ pending_targets: #[
+  "concepts/conservation.spw#concepts_conservation",
+  "concepts/symmetry.spw#concepts_symmetry",
+  "concepts/scaling-and-dimension.spw#concepts_scaling_and_dimension"
+ ]
 }
 
 ^["edges"]{
  feeds: [ ~"../doors/caret.spw#spw_door_caret", ~"../contraptions/dimension-bench.spw#spw_lab_dimension_bench", ~"../specimens/math-physics-notation.spw#spw_spec_math_physics" ]
- see: [ ~"../../concepts/conservation.spw#concepts_conservation", ~"../../concepts/symmetry.spw#concepts_symmetry", ~"../../concepts/scaling-and-dimension.spw#concepts_scaling_and_dimension" ]
 }
 
 ^["standing"]{
  #>spw_perspectives_physics_standing
  ^["hypothesis"]{
   #:claim #!interpretive
-  statement: "This battery was written by an agent outside the cluster; it stays unreviewed until a physics student or physicist runs each probe and says which ones match how the field checks a model."
+  statement: "This battery was written by an agent outside the cluster; it stays a hypothesis until a physics student or physicist runs each probe and says which ones match how the field checks a model."
   member_probe: "run the four habit probes on one surface you choose and mark which answer the way a units check or a symmetry argument would"
  }
 }
@@ -65,7 +82,7 @@
  ^["units"]{
   #:claim #!interpretive
   habit: "a quantity without its unit is not yet a quantity"
-  probe: "open any registry cell and find value, unit, conditions, tolerance, and source in its body"
+  probe: "open any registry cell and find value, unit, conditions, a rel or abs spread, and source in its body"
   observable: "the water heat capacity cell carries the unit J/(g K) as a string beside its value"
   reads: %[mateng.water.cp_j_per_g_k]
   sources: [ ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_si_brochure_2019", ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_buckingham_1914" ]

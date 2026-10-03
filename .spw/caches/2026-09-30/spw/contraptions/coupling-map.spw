@@ -7,7 +7,7 @@
 #:domain #!spw
 #:form #!probe_battery
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!boon
 
 ^"emit"{
@@ -31,10 +31,15 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
  }
  corrections: #[
   "the persona study counted 9 claims, 7 sources, 6 coupled pairs, and 2 cocited pairs on an earlier water surface; the revised surface gives the counts below",
-  "the sketch invented local source anchors; this map reads the registry anchors the water surface already binds"
+  "the sketch invented local source anchors; this map reads the registry anchors the water surface already binds",
+  "the water table cited the 2026-10-02 parse runs; it came from the 2026-10-03 scratch read of claim frames at 651b535b and now cites the bench runs, with its counts unchanged"
  ]
 }
 
@@ -93,7 +98,7 @@
 ^["water_table"]{
  #:claim #!settled
  statement: "The water surface has ten sourced claims over nine sources, giving six coupled claim pairs and four cocited source pairs, every one at cosine one."
- source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_parse_runs"
+ source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_bench_runs"
  observed: "on 2026-10-03, from the claim frames of physical/materials/water.spw"
  ^["coupled_by"]{
   handbook: "density maximum, heat capacity, and permittivity share the CRC Handbook"

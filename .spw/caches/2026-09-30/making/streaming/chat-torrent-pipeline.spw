@@ -7,7 +7,7 @@
 #:domain #!streaming
 #:form #!state_machine
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 #:era #!current
 
@@ -22,7 +22,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -36,9 +36,18 @@
  ^["receipts"]{
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
-  "the tokens study prototype kept 16 bits of a salted hash and raw mentions in its span map; this protocol requires a keyed hash of 64 bits or more and no raw handle anywhere"
+  "the tokens study prototype kept 16 bits of a salted hash and raw mentions in its span map; this protocol requires a keyed hash of 64 bits or more and no raw handle anywhere",
+  "the pseudonym claim now says personal data for the key holder, and its limit names the recipient question instead of asserting one answer for everyone",
+  "the fact check left the C-413/23 P limit as self-declared unchecked; the fix pass read the judgment on EUR-Lex and the limit now states its holding with a source"
  ]
 }
 
@@ -167,12 +176,13 @@
  #>streaming_chat_torrent_still_personal
  ^["still_personal"]{
   #:claim #!settled
-  statement: "Under the GDPR a keyed-hash pseudonym is pseudonymised data and still personal data, because whoever holds the key can link it back to a person."
+  statement: "Under the GDPR a keyed-hash pseudonym is pseudonymised data, and for a host who holds the key it stays personal data, because the key links it back to a person."
   source: ~"../../registries/sources/spw-design-studies.spw#src_lab_gdpr_2016"
   as_of: "Regulation (EU) 2016/679, applying since 2018-05-25"
   ^["limits"]{
    holds: "processing that falls under EU data protection law"
-   fails: "other jurisdictions define pseudonymous data differently; check the law where the stream runs"
+   fails: "a recipient without the key may stand differently: in C-413/23 P, judged 4 September 2025, the Court of Justice held that pseudonymised data are not personal data for every recipient by default; other jurisdictions differ too"
+   see: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_cjeu_2025" ]
   }
  }
  #>streaming_chat_torrent_protocol

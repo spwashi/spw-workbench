@@ -1,0 +1,205 @@
+# Conservation
+#
+# Balances that keep a sum fixed across physics, chemistry, cells, ecosystems, accounts, and the Spw field model, paired so each analogy names where it breaks.
+
+#>concepts_conservation
+#:layer #!reference
+#:domain #!concepts
+#:form #!comparison
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Conservation"
+ ~#claim: "Energy, atoms, charge, and money each keep a sum fixed across a boundary, but only the physical conservation laws follow from a symmetry; the others hold by identity, assumption, definition, or rule."
+ ~#proof: "Each pairing links keystones from at least two classes or names the missing one, and each break cites the source or code that limits the match."
+ ~#door: "Start with the energy ledger, then read the five reasons a sum stays fixed."
+ ~#audience: "physics students, ecologists, economists, and designers who sort ideas by what stays fixed"
+ continuity: "Conservation | what stays fixed"
+ cold_open: "Ask what stays fixed when something flows, then ask why it stays fixed, because the answers differ."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new", "persona study tree_amendments[18] and metaphor_limits, references/studies/persona-synthesis.json" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "the persona study read the seed transfer as conserving the field sum while clamping at zero; the code floors a negative source to zero, which changes the sum, so it conserves only while sources stay non-negative",
+  "the plan lists sectoral balances among the pairings, but no surface in the cut states that identity, so the hub records a gap instead of a link",
+  "the control-volume break said only element balances close without a generation term; in a nonnuclear reacting system total mass and charge close too, and for momentum the term is the applied force"
+ ]
+ rule: "a hub links keystones and names where each pairing breaks; it restates no keystone and makes no claim of its own"
+}
+
+^["edges"]{
+ grounds: [ ~"../registries/symmetries.spw#registry_sym_noether" ]
+ see: [ ~"./symmetry.spw#concepts_symmetry", ~"./phase-and-transition.spw#concepts_phase_and_transition" ]
+ contrasts: [ ~"../spw/contraptions/field-beat.spw#spw_lab_field_beat_model" ]
+}
+
+^["concepts"]{
+ primary: [ #conservation, #steady_state ]
+ transfers: [ #energy_budget, #invariant ]
+ tensions: [ #false_analogy ]
+}
+
+^["fed_by"]{
+ tags: [ #conservation, #energy_budget, #steady_state, #trophic_level ]
+ rule: "a tag feeds this hub when the concepts frames of at least two surfaces carry it"
+}
+
+^["pairings"]{
+ #>concepts_conservation_energy_ledger
+ ^["energy_ledger"]{
+  kept: "energy"
+  ^["edges"]{
+   analog: [
+    ~"../physical/physics/classical-thermodynamics.spw#physics_thermo_first",
+    ~"../living/development-and-ecology/ecology-foundations.spw#development_ecology_foundations_lindeman"
+   ]
+  }
+  ^["reading"]{
+   #:claim #!interpretive
+   statement: "Both write energy in as energy stored plus energy out, so a budget closes only when every exit is counted."
+  }
+  breaks: "the first law balances every trophic step, but the energy passed up a food chain shrinks at each level because most leaves as respiration heat, so trophic efficiency is a ratio of flows and nothing about it is conserved"
+  reads: %[eco.ecosystem.transfer_eff]
+  sources: [ ~"../registries/sources/plants-ecology-care.spw#src_eco_lindeman_1942", ~"../registries/sources/plants-ecology-care.spw#src_eco_begon_2006" ]
+  see: ~"../living/development-and-ecology/ecology-foundations.spw#development_ecology_foundations_second_law"
+ }
+ #>concepts_conservation_control_volume
+ ^["control_volume"]{
+  kept: "mass, momentum, energy, and each element"
+  ^["edges"]{
+   analog: [
+    ~"../formal/mathematics/engineering-core/calculus-and-linear-algebra.spw#mathematics_calc_conservation",
+    ~"../physical/engineering/transport-phenomena.spw#engineering_transport_analogy",
+    ~"../physical/chemistry/chemical-engineering.spw#chemistry_chemeng_balances"
+   ]
+  }
+  ^["reading"]{
+   #:claim #!interpretive
+   statement: "Each draws a boundary and sets accumulation equal to inflow minus outflow plus generation, so one equation form serves momentum, heat, species, and whole flowsheets."
+  }
+  breaks: "the shared form needs a generation term wherever something is made or applied, the applied force for momentum and the chemistry for a reacting species, while in a nonnuclear system total mass, charge, and each element close without one, which is why balancing an equation is a kernel problem"
+  sources: [ ~"../registries/sources/materials-and-engineering.spw#src_mateng_bsl_2002", ~"../registries/sources/spw-contraptions.spw#src_contrap_blakley_1982" ]
+  see: ~"../spw/contraptions/dimension-bench.spw#spw_lab_dimension_bench_balance"
+ }
+ #>concepts_conservation_node_balance
+ ^["node_balance"]{
+  kept: "charge at a circuit node, metabolites at a network node"
+  ^["edges"]{
+   analog: [
+    ~"../physical/engineering/electrical-core.spw#engineering_electrical_lumped",
+    ~"../living/bioengineering/synthetic-and-metabolic.spw#bioengineering_synthetic_fba"
+   ]
+  }
+  ^["reading"]{
+   #:claim #!interpretive
+   statement: "At every node of a network what flows in flows out, written as the current law for charge and as S v = 0 for metabolites."
+  }
+  breaks: "the current law is charge conservation that holds in the lumped limit, while flux balance imposes steady state as an assumption and then picks one flux vector by an objective the cell need not share"
+  sources: [ ~"../registries/sources/materials-and-engineering.spw#src_mateng_sedra_smith_2014", ~"../registries/sources/life-and-mind.spw#src_life_orth_2010" ]
+  see: ~"../physical/physics/electromagnetism.spw#physics_em_induction"
+ }
+ #>concepts_conservation_element_cycles
+ ^["element_cycles"]{
+  kept: "atoms of carbon, nitrogen, and phosphorus"
+  ^["edges"]{
+   analog: [
+    ~"../living/development-and-ecology/ecology-foundations.spw#development_ecology_foundations_cycles",
+    ~"../living/development-and-ecology/limiting-nutrients.spw#development_ecology_limiting_nutrients_redfield",
+    ~"../physical/chemistry/chemical-engineering.spw#chemistry_chemeng_haber_bosch"
+   ]
+  }
+  ^["reading"]{
+   #:claim #!interpretive
+   statement: "Atoms are neither made nor lost in these cycles, so living systems reuse the same elements while energy passes through once."
+  }
+  breaks: "a local cycle is open at its edges, since nitrogen escapes as gas, phosphorus settles into sediment, and industry fixes nitrogen from the air into fertilizer, so conserved atoms do not make one lake or field a closed loop"
+  sources: [ ~"../registries/sources/concepts.spw#src_concepts_schlesinger_bernhardt_2013" ]
+ }
+ #>concepts_conservation_sector_gap
+ ^["sector_balances"]{
+  kept: "money moving between households, firms, government, and the rest of the world"
+  gap: "no surface in the cut states the sector balance identity yet; a writer could draft that keystone from the source below"
+  ^["edges"]{
+   contrasts: [ ~"../spw/contraptions/field-beat.spw#spw_lab_field_beat_model" ]
+  }
+  ^["reading"]{
+   #:claim #!interpretive
+   statement: "A seed transfer debits one site and credits another and leaves the field sum unchanged, the way a payment moves money between sectors."
+  }
+  breaks: "the seed transfer floors a negative source site at zero, so it keeps the sum only while sources stay non-negative, while ledgers record debt; a flows-only check is a sector balance check, not stock-flow consistency"
+  cites: [ "packages/spw-seed/src/math/field.ts:116-131", "packages/spw-seed/src/math/field.ts:273-276" ]
+  sources: [ ~"../registries/sources/concepts.spw#src_concepts_godley_lavoie_2007", ~"../registries/sources/concepts.spw#src_concepts_code_field" ]
+  ~#(a beat of decay and injection is the contrast case: it is built not to conserve)
+ }
+}
+
+#>concepts_conservation_why
+^["why_fixed"]{
+ note: "the same word, conserved, covers five different reasons a sum stays fixed"
+ ^["symmetry"]{
+  members: [ ~"../physical/physics/core-sequence.spw#physics_core_noether" ]
+  because: "energy, momentum, and charge stay fixed because the laws do not change under shifts of time, place, or phase"
+  source: ~"../registries/sources/physical-sciences-and-image.spw#src_phys_noether_1918"
+ }
+ ^["identity"]{
+  members: [ ~"../physical/chemistry/chemical-engineering.spw#chemistry_chemeng_balances" ]
+  because: "chemical reactions rearrange atoms without changing elements, so each element closes its own balance"
+  source: ~"../registries/sources/spw-contraptions.spw#src_contrap_blakley_1982"
+ }
+ ^["assumption"]{
+  members: [ ~"../living/bioengineering/synthetic-and-metabolic.spw#bioengineering_synthetic_fba" ]
+  because: "flux balance holds metabolite levels fixed by assuming steady state, not by any law"
+  source: ~"../registries/sources/life-and-mind.spw#src_life_orth_2010"
+ }
+ ^["definition"]{
+  members: [ ~"./conservation.spw#concepts_conservation_sector_gap" ]
+  because: "sector balances sum to zero because every payment is someone else's receipt, an identity of double-entry national accounts"
+  source: ~"../registries/sources/concepts.spw#src_concepts_godley_lavoie_2007"
+ }
+ ^["rule"]{
+  members: [ ~"../spw/perspectives/physicists.spw#spw_perspectives_physics_conservation" ]
+  because: "a handle or an anchor stays unique in this cut because the gate fails a second definition; nothing flows"
+  cites: [ "scripts/analyzers/spw-cut-gate.ts:203,223" ]
+  source: ~"../registries/sources/concepts.spw#src_concepts_code_gate"
+ }
+ limits: ~"../registries/symmetries.spw#registry_sym_noether"
+ ~#(only symmetry survives new bookkeeping; the rest hold inside a drawn boundary)
+}
+
+#>concepts_conservation_q
+?["Which balance in this hub fails first when its system is opened at one edge?"]{
+ #:depth #!physical ~#lens(energy budget)
+ #:claim #!speculative
+ ~#hypothesis: "Balances fixed by assumption or by a drawn boundary, such as flux balance and a lake nutrient cycle, should fail first when opened, while symmetry and element balances survive by adding a source term."
+ !probe{ "for each pairing, add one inflow nobody counted and note which balance needs a new term and which stops holding" =id[p_concepts_conservation_open_edge] =kind[thought] }
+ $%[eco.ecosystem.transfer_eff]
+ ~"./conservation.spw#concepts_conservation_why" ~#neighbor(nearest)
+ breaks: "an open lake still conserves energy and atoms; what fails is the bookkeeping that treated its boundary as closed"
+}
+
+#>concepts_conservation_debt_q
+?["Would a field that let sites go negative model a ledger better than one floored at zero?"]{
+ #:depth #!computational ~#lens(market flow)
+ #:claim #!speculative
+ ~#hypothesis: "Dropping the zero floor should make the field sum hold under any sequence of transfers, at the cost of sites no longer reading as amounts of a substance."
+ !probe{ "run one random sequence of transfers on a three-site field with one negative site, with and without the floor, and print the sum after each step" =id[p_concepts_conservation_debt_floor] =kind[calc] }
+ ~"./conservation.spw#concepts_conservation_sector_gap" ~#neighbor(nearest)
+ breaks: "a ledger also records who owes whom, a stock the field never keeps, so even an exact sum would not make it stock-flow consistent"
+}

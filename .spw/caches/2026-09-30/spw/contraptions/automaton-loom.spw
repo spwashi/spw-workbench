@@ -1,0 +1,188 @@
+# Automaton Loom
+#
+# Elementary cellular automata as eight-row rule tables and generation streams; the mirror reads the lexer gap classes of one Spw line as a row of cells that no neighbour rule yet updates.
+
+#>spw_lab_automaton_loom
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Automaton Loom"
+ ~#claim: "An elementary cellular automaton is an eight-row rule table applied to every cell at once; written as a stream of generations, rule 90 weaves a Sierpinski triangle and rule 30 weaves irregular texture."
+ ~#proof: "Wolfram numbered the 256 elementary rules in 1983; rule 30 as a random generator is Wolfram 1986, additive rules such as 90 are Martin, Odlyzko, and Wolfram 1984, and rule 110 universality is Cook 2004."
+ ~#door: "Read rule 90 off its number in binary, then weave four generations from one live cell on squared paper."
+ ~#audience: "school students, weavers and knitters, programmers, and Spw authors who read lexer gaps"
+ continuity: "Automaton Loom | eight-row rule table"
+ cold_open: "Each new row of cells reads only the three cells above it, and eight-row rule tables are enough to weave triangles, noise, or a computer."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new", "final-plan-v2 tree, contraptions kit", "tokens synthesis section 1 on lexer gaps, references/studies/tokens-synthesis.md" ]
+ method: #authored
+ evidence: #[
+  "the generations below and the symmetry classes of all 256 rules were computed with a scratch script on 2026-10-03",
+  "classifyGap was read at packages/spw-seed/src/lexer/gaps.ts at commit 1aa1dc23, unchanged at 651b535b"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+ }
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/spw-contraptions.spw#q_contrap_num" ]
+ see: [ ~"../../registries/symmetries.spw#registry_symmetries", ~"./kerning.spw#spw_lab_kerning" ]
+ analog: [ ~"./number-garden.spw#spw_lab_number_garden" ]
+}
+
+^["concepts"]{
+ primary: [ #rule_table, #symmetry ]
+ transfers: [ #state_machine, #reflexive_mirror ]
+ tensions: [ #overclaim ]
+}
+
+^["tool"]{
+ status: #proposed
+ verb: "a verb that would read a rule number and a seed row and print generations as a stream; not yet a command"
+ implemented: #[
+  "packages/spw-seed/src/lexer/gaps.ts:11-17 classifyGap, the four gap classes",
+  "packages/spw-cli/src/commands.ts:277 spw inspect spacing, which prints the class of every gap"
+ ]
+ scratch: "the generations and symmetry counts below came from a scratch script outside the repository"
+ sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_gaps", ~"../../registries/sources/spw-contraptions.spw#src_contrap_bench_runs" ]
+}
+
+#>spw_lab_automaton_loom_parameters
+^["parameters"]{
+ cells: "each cell is live or dead"
+ neighbourhood: "a cell and its left and right neighbours, read as a three-bit number from 7 for 111 down to 0 for 000"
+ rule_number: "the eight new states, written from neighbourhood 7 down to 0, read as one binary number from 0 to 255"
+ edges: "cells beyond the ends of the row count as dead"
+}
+
+^["world"]{
+ #>spw_lab_automaton_loom_numbering
+ ^["numbering"]{
+  #:claim #!settled
+  statement: "Wolfram numbered the elementary automata by reading their rule tables as binary numbers, which gives one number for each possible table."
+  reads: %[contrap.num.eca_rule_count]
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_wolfram_1983"
+ }
+ #>spw_lab_automaton_loom_additive
+ ^["additive"]{
+  #:claim #!settled
+  statement: "Rule 90 sets each cell to the sum modulo two of its two neighbours, so it is additive and can be analysed algebraically, as Martin, Odlyzko, and Wolfram did."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_martin_odlyzko_wolfram_1984"
+ }
+ #>spw_lab_automaton_loom_random
+ ^["random"]{
+  #:claim #!settled
+  statement: "Wolfram proposed the centre column of rule 30, grown from one live cell, as a source of pseudorandom bits."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_wolfram_1986"
+ }
+ #>spw_lab_automaton_loom_universal
+ ^["universal"]{
+  #:claim #!settled
+  statement: "Cook proved that rule 110 is computationally universal, so one eight-row table can in principle emulate any computation, given a suitable unbounded starting row."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_cook_2004"
+ }
+ #>spw_lab_automaton_loom_von_neumann
+ ^["self_reproduction"]{
+  #:claim #!settled
+  statement: "Von Neumann designed a self-reproducing automaton on a two-dimensional grid of twenty-nine-state cells; Burks edited and completed the work after his death."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_von_neumann_1966"
+ }
+}
+
+#>spw_lab_automaton_loom_tables
+^["rule_tables"]{
+ #>spw_lab_automaton_loom_rule_90
+ ^["rule_90"]{
+  binary: "01011010"
+  table: .{ n111: 0, n110: 1, n101: 0, n100: 1, n011: 1, n010: 0, n001: 1, n000: 0 }
+  generations: << ".......#......." ; "......#.#......" ; ".....#...#....." ; "....#.#.#.#...." ; "...#.......#..." >>
+ }
+ #>spw_lab_automaton_loom_rule_30
+ ^["rule_30"]{
+  binary: "00011110"
+  table: .{ n111: 0, n110: 0, n101: 0, n100: 1, n011: 1, n010: 1, n001: 1, n000: 0 }
+  generations: << ".......#......." ; "......###......" ; ".....##..#....." ; "....##.####...." ; "...##..#...#..." >>
+ }
+ ~#(a hash is a live cell and a dot a dead one; each stream item is one generation)
+}
+
+^["battery"]{
+ #>spw_lab_automaton_loom_read
+ ^["read_the_rule"]{
+  !probe{ "write 90 in eight binary digits and match each digit to a neighbourhood from 111 down to 000" =id[p_contrap_loom_read] =kind[calc] }
+  predict: ?{ "which neighbourhoods give a live cell" } ~<guess>
+  expect: "110, 100, 011, and 001: exactly those whose two outer cells differ, so rule 90 ignores the centre cell"
+  shows: ~"./automaton-loom.spw#spw_lab_automaton_loom_additive"
+ }
+ #>spw_lab_automaton_loom_weave
+ ^["weave_rule_30"]{
+  !probe{ "grow the fifth generation of rule 30 by hand and compare it with the stream" =id[p_contrap_loom_weave] =kind[calc] }
+  expect: "the left edge grows a regular diagonal while the right side turns irregular, the asymmetry that made the rule a candidate for random bits"
+  shows: ~"./automaton-loom.spw#spw_lab_automaton_loom_random"
+ }
+ #>spw_lab_automaton_loom_orbits
+ ^["count_the_classes"]{
+  !probe{ "act on all 256 rules by left-right reflection and by swapping live and dead, and count the classes" =id[p_contrap_loom_orbits] =kind[calc] }
+  expect: "88 classes by the orbit-counting lemma, the average of 256, 64, 16, and 16 fixed rules; rule 30 shares its class with 86, 135, and 149"
+  shows: ~"../../registries/symmetries.spw#registry_symmetries"
+ }
+}
+
+#>spw_lab_automaton_loom_mirror
+^["language_mirror"]{
+ #>spw_lab_automaton_loom_gaps
+ ^["gap_row"]{
+  #:claim #!settled
+  statement: "The lexer gives each gap between tokens one of four classes from that gap text alone: empty is tight, spaces are open, one line break is cadence, and two or more are an episode."
+  cites: [ "packages/spw-seed/src/lexer/gaps.ts:11-17" ]
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_gaps"
+ }
+ reading: "the gaps of one line form a row of four-state cells, but each class depends on its own gap only, a rule of radius zero with no generations"
+ question: "If a formatter rewrote each gap from its neighbours, would it be an automaton, and would it settle?"
+ standing: "a-canon: classifyGap is repository code; a-cut: reading a gap row as cells is this bench analogy"
+ !probe{ "run spw inspect spacing on this file and write the gap classes of the rule tables frame as rows of cells" =id[p_contrap_loom_gaps] =kind[calc] }
+}
+
+^["limits"]{
+ holds: "what a stated rule does to a stated row on a finite strip with dead edges"
+ fails: "finite strips change long-run behaviour near their edges; pictures of a few generations show no theorem; and the parser stores the rows without computing any of them"
+}
+
+^["try"]{
+ #>spw_lab_automaton_loom_try
+ ^["squared_paper"]{
+  materials: [ "squared paper", "a pencil", "the rule 90 table" ]
+  steps: << "shade one square in the middle of the top row" ; "for each square of the next row, look at the three squares above it" ; "shade it when the table says 1" ; "repeat for eight rows and look for the triangle" ; "try rule 30 on a fresh sheet" >>
+  time: .{ n: 25, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./automaton-loom.spw#spw_lab_automaton_loom_rule_90"
+ }
+}
+
+#>spw_lab_automaton_loom_q
+?["Would a formatter that rewrites each gap from its two neighbours settle after one pass?"]{
+ #:depth #!computational ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "A neighbour rule that only pulls gaps toward their neighbours classes should settle within a few passes, and one that is idempotent should settle in a single pass."
+ !probe{ "define a radius-one rule on the four gap classes, apply it repeatedly to the gap rows of several surfaces, and count passes to a fixed point" =id[p_contrap_loom_q] =kind[sim] }
+ $%[contrap.num.eca_rule_count, file.lines]
+ ~"./automaton-loom.spw#spw_lab_automaton_loom_gaps" ~#neighbor(nearest)
+ breaks: "gaps sit between tokens of different kinds, so a rule blind to the tokens would rewrite spacing that the parser reads as meaning"
+}

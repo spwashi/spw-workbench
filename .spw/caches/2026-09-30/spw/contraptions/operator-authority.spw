@@ -1,0 +1,244 @@
+# Operator Authority
+#
+# One authority record per sigil: a heading chosen by a stated warrant, variant names traced to the table and line where each was found, and a spoken-name hole left open.
+
+#>spw_lab_operator_authority
+#:layer #!semantics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!honk
+
+^"emit"{
+ ~#title: "Operator Authority"
+ ~#claim: "Written as authority records, the five operator name tables give a heading for every sigil, and the heading changes for three sigils when usage rather than canon is the warrant."
+ ~#proof: "Name tables read at commit 1aa1dc23; the record shape follows the MARC 21 authority format, with heading, see-from variants, and source data found."
+ ~#door: "Read the hash record, choose a warrant, and say which name you would file it under."
+ ~#audience: "catalogers and librarians, linguists, C programmers, and Spw maintainers who name things"
+ continuity: "Operator Authority | which name"
+ cold_open: "Every sigil has several names in the code and canon, and an authority record makes you say which name wins and why."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new", "persona study contraption_catalog[11], references/studies/persona-synthesis.json", "sketch references/spw-branch/seeds/contraptions/operator-authority.spw" ]
+ method: #authored
+ evidence: #[
+  "the five name tables were read line by line at commit 1aa1dc23 on 2026-10-03 and are unchanged at 651b535b",
+  "head words were compared by the glossary convention: the first word of each entry, case folded"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+ }
+ corrections: #[
+  "the sketch gave label entropies near 0.31 with no base; the glossary cells hold Shannon entropy in bits, and the sketch figures equal those divided by the log of five",
+  "the persona study said the split names entered in one commit; that history was not rechecked here and is left out",
+  "the sketch marked each record contested; a record is a reading of tables, so statuses sit on claims about the tables",
+  "the sketch named the verb spw authority, which already names a different check; the proposed pass is renamed"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../glossary/operators.spw#spw_gloss_op_naming" ]
+ analog: [ ~"../perspectives/librarians-and-archivists.spw#spw_perspectives_librarians_authority" ]
+ see: [ ~"./opcode-map.spw#spw_lab_opcode_map", ~"./false-friend-lab.spw#spw_lab_false_friend" ]
+}
+
+^["concepts"]{
+ primary: [ #authority_control, #notation ]
+ transfers: [ #entropy, #reflexive_mirror ]
+ tensions: [ #overclaim ]
+}
+
+^["tool"]{
+ status: #proposed
+ verb: "a names pass that would read the five tables and write one authority record per sigil, with a warrant flag; not yet a command"
+ not_this: "spw authority already exists and compares declared writes and joins with observed behavior, so it does no name control"
+ cites: [ "packages/spw-cli/src/commands.ts:240-245" ]
+ run_today: "read the five tables by hand from the glossary naming frame, which lists their path and line ranges"
+ sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_cli", ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_naming_tables" ]
+}
+
+^["parameters"]{
+ #>spw_lab_operator_authority_shape
+ ^["record_shape"]{
+  heading: "the one established name, like a MARC 1XX field"
+  see_from: "variant names that lead to the heading, like 4XX tracings"
+  found_in: "each table and line where a form appears, like 670 source data found"
+  spoken: "a hole for a name said aloud; readers fill it in their own roots, never in the cut"
+ }
+ #>spw_lab_operator_authority_warrants
+ ^["warrants"]{
+  usage: "the head word most of the five tables use"
+  canon: "the interpretive name in docs/theory/spw/operators.spw, which canon calls stable reader vocabulary at line 44"
+  rule: "a record states its warrant; two warrants may file one sigil under two headings"
+ }
+ tables: #[ canon_operators, runtime_affinities, register_bank, geometry_roles, form_ladders ]
+ convention: "compare the first word of each entry, case folded, counting clipped or derived forms such as config and integrate under the full name, as the glossary cells do"
+}
+
+^["world"]{
+ #>spw_lab_operator_authority_marc
+ ^["authority_record"]{
+  #:claim #!settled
+  statement: "A MARC 21 authority record holds one established heading, tracings for variant forms that lead to it, and source-data notes on where each form was found."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_marc_authority"
+  ~#(credit Henriette Avram, who led the design of MARC at the Library of Congress)
+  see: [ ~"../../registries/sources/provenance-and-reference.spw#src_prov_avram_1975" ]
+ }
+ #>spw_lab_operator_authority_entropy
+ ^["label_entropy"]{
+  #:claim #!settled
+  statement: "Shannon entropy over the names five tables give a sigil is zero when all agree and grows as names split; the hash sign splits most."
+  reads: %[
+   gloss.naming.tables_n,
+   gloss.naming.hash_label_bits,
+   gloss.naming.dot_label_bits
+  ]
+  sources: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_naming_tables", ~"../../registries/sources/materials-and-engineering.spw#src_mateng_shannon_1948" ]
+ }
+ #>spw_lab_operator_authority_warrant_split
+ ^["warrant_split"]{
+  #:claim #!settled
+  statement: "Usage warrant and canon warrant give the same heading for ten sigils and different headings for three: the hash sign, the ampersand, and the caret."
+  source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_naming_tables"
+  canon_names: "vibration, subject, and ascension at docs/theory/spw/operators.spw:30,35,37"
+  usage_names: "resonance, confluence, and integration, each used by three or four of the five tables"
+ }
+}
+
+#>spw_lab_operator_authority_records
+^["records"]{
+ #>spw_lab_operator_authority_hash
+ ^["hash"]{
+  sigil: "#"
+  heading: "resonance"
+  warrant: #usage,
+  see_from: #[ "vibration", "annotation" ]
+  found_in: [
+   "docs/theory/spw/operators.spw:30 vibration",
+   "packages/spw-runtime/src/state/type-affinities.ts:26 Resonance",
+   ".spw/registries/register-bank.spw:20 Resonance",
+   "packages/spw-seed/src/canonical/geometry-inspect.ts:63 annotation / resonance",
+   "packages/spw-seed/src/canonical/form-ladders.ts:407 Resonance"
+  ]
+  spoken: _
+ }
+ #>spw_lab_operator_authority_amp
+ ^["ampersand"]{
+  sigil: "&"
+  heading: "confluence"
+  warrant: #usage,
+  see_from: #[ "subject" ]
+  found_in: [
+   "docs/theory/spw/operators.spw:35 subject",
+   "packages/spw-runtime/src/state/type-affinities.ts:28 Confluence",
+   ".spw/registries/register-bank.spw:16 Confluence",
+   "packages/spw-seed/src/canonical/geometry-inspect.ts:65 confluence / merge",
+   "packages/spw-seed/src/canonical/form-ladders.ts:307 Confluence"
+  ]
+  spoken: _
+ }
+ #>spw_lab_operator_authority_dot
+ ^["dot"]{
+  sigil: "."
+  heading: "ground"
+  warrant: #usage,
+  see_from: #[ "subject" ]
+  found_in: [
+   "docs/theory/spw/operators.spw:31 ground",
+   "packages/spw-runtime/src/state/type-affinities.ts:27 Subject",
+   ".spw/registries/register-bank.spw:21 Subject",
+   "packages/spw-seed/src/canonical/geometry-inspect.ts:64 ground / facet",
+   "packages/spw-seed/src/canonical/form-ladders.ts:427 Ground"
+  ]
+  spoken: _
+ }
+ #>spw_lab_operator_authority_caret
+ ^["caret"]{
+  sigil: "^"
+  heading: "integration"
+  warrant: #usage,
+  see_from: #[ "ascension", "integrate" ]
+  found_in: [
+   "docs/theory/spw/operators.spw:37 ascension",
+   "packages/spw-runtime/src/state/type-affinities.ts:20 Integration",
+   ".spw/registries/register-bank.spw:18 Integration",
+   "packages/spw-seed/src/canonical/geometry-inspect.ts:56 integrate / frame",
+   "packages/spw-seed/src/canonical/form-ladders.ts:467 Integration"
+  ]
+  spoken: _
+ }
+ ~#(four of the six split sigils; the dollar and equals records follow the same shape)
+}
+
+#>spw_lab_operator_authority_collision
+^["collision"]{
+ #:claim #!settled
+ statement: "The word subject is a variant in two records at once, naming the ampersand in canon and the dot in two code tables, so one see-from tracing would lead to two headings."
+ source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_naming_tables"
+ see: [ ~"../glossary/operators.spw#spw_gloss_op_naming" ]
+ practice: "an authority file breaks such a tie with a qualifier, such as subject in canon against subject in the register bank"
+}
+
+^["battery"]{
+ #>spw_lab_operator_authority_file
+ ^["file_the_dollar"]{
+  !probe{ "write the dollar and equals records from the five tables, choose a warrant for each, and list every see-from form" =id[p_contrap_authority_file] =kind[lookup] }
+  predict: ?{ "under which heading does each sigil file by usage, and by canon" } ~<guess>
+  expect: "substrate for the dollar and configuration for equals under both warrants; select and set become see-from forms"
+  shows: ~"./operator-authority.spw#spw_lab_operator_authority_warrant_split"
+ }
+ #>spw_lab_operator_authority_tie
+ ^["break_the_tie"]{
+  !probe{ "find every name that appears as a variant in more than one record and write the qualifier that separates them" =id[p_contrap_authority_tie] =kind[lookup] }
+  expect: "subject is the only shared variant; the runtime alias subject = bias at docs/theory/spw/operators.spw:136 is a colour token name, not a third sense"
+  shows: ~"./operator-authority.spw#spw_lab_operator_authority_collision"
+ }
+}
+
+#>spw_lab_operator_authority_mirror
+^["language_mirror"]{
+ question: "Does the cut practise authority control on its own anchors?"
+ reading: "the permanence rule keeps a renamed anchor on a stub with a supersedes edge, which is a see-from tracing written by hand"
+ gap: "no frame field holds variant names for an anchor, so a reader who knows only an old spoken name has no tracing to follow"
+ standing: "a-cut: the permanence rule is this cut contract; a-canon: the interpretive names are canon reader vocabulary"
+ contract: ~"../../contract.spw#cut_contract"
+ !probe{ "list every supersedes edge in the cut and count anchors that carry one" =id[p_contrap_authority_stubs] =kind[census] }
+}
+
+^["limits"]{
+ holds: "which names each table gives each sigil at one commit, and which heading a stated warrant picks"
+ fails: "entropy counts disagreement, not confusion; one owner can rename every table at once, so a split records editing history rather than drift among speakers, and no record ranks a reader"
+}
+
+^["try"]{
+ #>spw_lab_operator_authority_try
+ ^["card_file"]{
+  materials: [ "thirteen index cards", "a pencil", "the five table locations from the glossary naming frame" ]
+  steps: << "write one sigil at the top of each card" ; "copy every name each table gives it, with the file and line" ; "circle the heading your warrant picks" ; "write the other names below as see-from forms" ; "leave a line for a spoken name and do not fill it yet" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./operator-authority.spw#spw_lab_operator_authority_shape"
+ }
+}
+
+#>spw_lab_operator_authority_q
+?["Do sigils with split names draw more false-friend specimen rows than sigils with one name?"]{
+ #:depth #!stylistic ~#lens(curated collection)
+ #:claim #!speculative
+ ~#hypothesis: "Specimen rows that misread a sigil should cluster on split sigils, because a reader who meets two names for one mark has two habits to pull from."
+ !probe{ "tag each specimen row by the sigil it misreads and compare rows per sigil against its label entropy" =id[p_contrap_authority_q] =kind[census] }
+ $%[gloss.naming.hash_label_bits, gloss.spec.rows_n]
+ ~"./operator-authority.spw#spw_lab_operator_authority_entropy" ~#neighbor(nearest)
+ breaks: "specimen rows were written by one writer from field habits, so their spread measures that writer sampling, not how readers in a field misread a mark"
+}

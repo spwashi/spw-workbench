@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/university-education/horticulture-and-botany/undergrad-botany-and-plant-biology.spw" ]
@@ -36,13 +36,19 @@
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #corrected }
   ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  revision_2026_10_03: "r6 redated the r4 fact-check to 2026-10-02, the day its sources were read; a singleton concept tag was swapped for a recurring one where the fit is real: hydrogen_bond was added and wood_wide_web became overclaim"
  corrections: #[
   "the Casparian strip is a lignin polymer, not suberin; suberin lamellae form later as a separate barrier (raw line 20)",
   "a forest as a cooperative fungal super-organism trading warning signals is contested, not settled (raw line 71)",
   "oxygen comes from all photosynthesizers; close to half of global primary production is marine (raw line 66)",
-  "an invented 25 percent stomatal effect size in the raw wonder was dropped"
+  "an invented 25 percent stomatal effect size in the raw wonder was dropped",
+  "fact-check 2026-10-03: the polar auxin claim cited only Galweiler 1998, which covers AtPIN1 in vascular tissue; the Taiz textbook now carries apical dominance and phototropism"
  ]
 }
 
@@ -143,7 +149,8 @@
  ^["polar_auxin"]{
   #:claim #!settled
   statement: "Auxin moves cell to cell in one direction through PIN efflux carriers, and that polar flow patterns apical dominance, phototropic bending, and vascular strands."
-  source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_galweiler_1998"
+  sources: [ ~"../../registries/sources/plants-ecology-care.spw#src_eco_galweiler_1998", ~"../../registries/sources/plants-ecology-care.spw#src_eco_taiz_2015" ]
+  split: "Galweiler and colleagues 1998 tie AtPIN1 to polar transport in vascular tissue; the roles in apical dominance and in phototropism, where other PIN proteins such as PIN3 also act, rest on the Taiz textbook synthesis"
  }
  #>plant_science_botany_hormone_set
  ^["hormone_set"]{

@@ -7,7 +7,7 @@
 #:domain #!spw_perspectives
 #:form #!curriculum
 #:level #!intro
-#:review #!unreviewed
+#:review #!adversarial_checked
 #:valence #!boon
 
 ^"emit"{
@@ -34,9 +34,21 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r7"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r8"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
-  "the study proposed community minutes, volunteer, and story files of its own; this perspective keeps the facilitation rows as roles and counts and links the interview protocol for collection"
+  "the study proposed community minutes, volunteer, and story files of its own; this perspective keeps the facilitation rows as roles and counts and links the interview protocol for collection",
+  "the expand row said spw expand prints an index with all its children digests; at 1aa1dc23 it projects only the first target of each reflexive edge, and a run on the doors index unfolded one of thirteen"
  ]
 }
 
@@ -50,7 +62,7 @@
  #>spw_perspectives_educators_standing
  ^["hypothesis"]{
   #:claim #!interpretive
-  statement: "This curriculum was written by an agent outside the cluster; it stays unreviewed until a working teacher or organizer runs one rung with a group and reports what the group could do."
+  statement: "This curriculum was written by an agent outside the cluster; it stays a hypothesis until a working teacher or organizer runs one rung with a group and reports what the group could do."
   member_probe: "a teacher runs the read-aloud kit once and reports which marks the group could say and which it could not, never which people"
  }
  no_logging: "no rung, kit, or wonder here ranks, scores, or logs a learner; a tally counts marks or questions, never people"
@@ -136,7 +148,8 @@
 
 ^["tools"]{
  outline: .{ command: "spw outline", use: "print frame landmarks as a lesson handout skeleton", status: #implemented, cites: "packages/spw-cli/src/commands.ts:338-343" }
- expand: .{ command: "spw expand", use: "print an index with its children digests as one packet", status: #implemented, cites: "packages/spw-cli/src/commands.ts:368-373" }
+ expand: .{ command: "spw expand", use: "project the first target of each reflexive path edge inline as a read-only view", status: #implemented, cites: "packages/spw-cli/src/expand.ts:59-65" }
+ expand_limit: "a bundle edge with many targets unfolds only its first, so a packet with every child needs one reflexive edge per child"
  rubric_lens: .{ contraption: "rubric-lens", use: "show how three aggregation rules rank the same profiles", status: #proposed }
  grid_gap_finder: .{ contraption: "grid-gap-finder", use: "find holes in a scope grid as invitations", status: #proposed }
 }

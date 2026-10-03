@@ -7,7 +7,7 @@
 #:domain #!workbench_history
 #:form #!dossier
 #:level #!practitioner
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 #:era #!current
 
@@ -31,7 +31,24 @@
   ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #skim, outcome: #pass
+   note: "package commit count and help groups rechecked at 1aa1dc23; one rung added for c79a096a"
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+   note: "command, group, and route counts, npm routes, mutation verbs, and every rung commit and date confirmed"
+  }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[ "the names-lag claim counted four npm scripts on compatibility routes; six do, since spw:map and spw:invent call routes to graph and census" ]
  method_note: "spw help was run on 2026-10-03 at 1aa1dc23; command rows were matched to the registry in packages/spw-cli/src/commands.ts"
 }
 
@@ -84,10 +101,11 @@
  #>workbench_history_cli_names_lag
  ^["names_lag"]{
   #:claim #!settled
-  statement: "Four npm scripts call skim, seq, surface, and analyze, and the harness notes teach three of them, though help lists all four as routes to outline, ls, stack, and density."
+  statement: "Six npm scripts call compatibility routes, skim, seq, map, invent, surface, and analyze, though help lists them as routes to outline, ls, graph, census, stack, and density."
   source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_root_manifest"
   sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_cli_help", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_claude_md" ]
-  cites: [ "package.json:101,107,113,115", "CLAUDE.md:89,99,102" ]
+  cites: [ "package.json:101,107,108,110,113,115", "CLAUDE.md:82,89,97,98,99,102" ]
+  harness: "the harness notes teach skim, surface, and analyze as commands and name seq, map, and invent in comments as aliases"
   ^["limits"]{
    holds: "as a sign that names outlive their own replacement"
    fails: "as a defect: every route still runs, and help says which name to prefer"
@@ -146,6 +164,8 @@
  ^["consumers_2026_09_07"]{ at: "2026-09-07", event: "mounted consumers get fingerprint, resolve, lint, walk isolation, and query stats", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
  #>workbench_history_cli_resolve
  ^["resolve_2026_09_29"]{ at: "2026-09-29", event: "resolve reads a ref against the citing file first, then the consumer root", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+ #>workbench_history_cli_graph_nodes
+ ^["graph_nodes_2026_10_03"]{ at: "2026-10-03", event: "after the as_of commit, c79a096a makes graph and census treat files as nodes and resolve roots the way resolve does", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log_w3" }
 }
 
 ^["holds"]{

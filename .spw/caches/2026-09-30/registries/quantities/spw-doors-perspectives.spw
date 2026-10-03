@@ -7,11 +7,11 @@
 #:domain #!registry
 #:form #!registry
 #:level #!mixed
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -20,10 +20,23 @@
  ^["receipts"]{
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  why: "the critic of the spw plan found the ANSI keyboard directive served only by hedged notes; these cells give each door mark a sourced shift state on two layouts"
  scope: "Windows layouts only; Apple and ChromeOS layouts place some marks differently and are not covered here"
  grid: "key positions in at strings use the ISO/IEC 9995-1 row and column names, such as E03 for the 3 key and C12 for the key beside Enter on an ISO board"
+ grid_source: ~"../sources/spw-doors-perspectives.spw#src_doors_iso_9995_1"
  status_legend: "settled cells were read from the layout tables named in src; a verify cell would hold a reported value not yet checked"
 }
 

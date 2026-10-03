@@ -1,0 +1,218 @@
+# Derivation Checker
+#
+# Registry cells that state how their value follows from definitions, checked by exact arithmetic against the tolerance each cell declares; the cut gate checks only that a handle resolves.
+
+#>spw_lab_derivation_checker
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Derivation Checker"
+ ~#claim: "A cell that states its derivation can be checked by arithmetic: the NTSC rate, the knot, and the mired cells pass their tolerances, and drop-frame timecode still drifts a fixed amount each day."
+ ~#proof: "Each derivation was evaluated in exact rational arithmetic on 2026-10-03 against the value and tolerance its cell states; the drop rule is SMPTE ST 12-1 and the reciprocal scale is Priest 1933."
+ ~#door: "Divide thirty thousand by one thousand and one, then compare the quotient with the stored rate and its tolerance."
+ ~#audience: "video engineers, lighting crews, metrologists, and Spw authors who write registry cells"
+ continuity: "Derivation Checker | checked by arithmetic"
+ cold_open: "A number that says where it came from can be checked by arithmetic, and the check tells you how close the stored number sits."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new", "persona study contraption_catalog[12], references/studies/persona-synthesis.json", "sketch references/spw-branch/seeds/contraptions/derivation-checker.spw" ]
+ method: #authored
+ evidence: #[
+  "every derivation field in the contraptions quantities registry was evaluated with Python fractions on 2026-10-03",
+  "the gate handle checks were read at scripts/analyzers/spw-cut-gate.ts at commit 1aa1dc23, unchanged at 651b535b"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+ }
+ corrections: #[
+  "the sketch held its cells under a tc namespace inside the surface; cells live once in the contraptions quantities registry",
+  "the sketch odometer used a frame radix of 30 without saying the counted rate is 30000/1001; the rate is now named beside the radix",
+  "the persona study said leap seconds end by 2035; the CGPM resolved to raise the UT1 minus UTC limit in or before 2035, and the row says that",
+  "the drift row said drop-frame labels fall behind real time; dropping 108 labels an hour where 107.892 would be exact overcorrects, so frame 107892 carries 01:00:00;00 at 3599.9964 s and the labels run ahead"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/spw-contraptions.spw#q_contrap_rate" ]
+ see: [ ~"./dimension-bench.spw#spw_lab_dimension_bench", ~"./band-coverage.spw#spw_lab_band_coverage" ]
+ analog: [ ~"./number-garden.spw#spw_lab_number_garden" ]
+}
+
+^["concepts"]{
+ primary: [ #standards, #invariant ]
+ transfers: [ #correction, #reflexive_mirror ]
+ tensions: [ #overclaim ]
+}
+
+^["tool"]{
+ status: #proposed
+ verb: "a gate pass that would evaluate each derivation field and fail a cell whose value falls outside its own rel or abs; not yet written"
+ implemented: #[
+  "scripts/analyzers/spw-cut-gate.ts:220-225 collects every registry handle and fails a duplicate",
+  "scripts/analyzers/spw-cut-gate.ts:354-361 fails a cited handle that resolves to no cell"
+ ]
+ missing: "no tool reads a derivation field or compares a value with its tolerance"
+ scratch: "the rows below came from a scratch script with exact fractions, outside the repository"
+ source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_gate"
+}
+
+^["parameters"]{
+ #>spw_lab_derivation_checker_rule
+ ^["check_rule"]{
+  exact: "evaluate the derivation as a rational number, never as a float"
+  residual: "the stored value minus the exact value"
+  rel_test: "pass when the residual over the exact value stays within rel"
+  abs_test: "pass when the residual stays within abs"
+ }
+ classes: #[ expression, procedure ]
+ procedure: "a derivation that names steps, such as a sieve or an iteration, must be run, not evaluated"
+}
+
+^["world"]{
+ #>spw_lab_derivation_checker_ntsc
+ ^["ntsc_rate"]{
+  #:claim #!settled
+  statement: "NTSC-derived video runs at thirty thousand frames per thousand and one seconds, and drop-frame timecode skips two frame labels each minute except every tenth minute."
+  reads: %[contrap.rate.ntsc_fps, contrap.rate.df_labels_per_hour]
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_smpte_12_1_2014"
+ }
+ #>spw_lab_derivation_checker_mired
+ ^["reciprocal_scale"]{
+  #:claim #!settled
+  statement: "Priest proposed in 1933 to specify the colour of incandescent and daylight sources on a reciprocal temperature scale; a mired is one million divided by the colour temperature in kelvins."
+  reads: %[contrap.rate.mired_at_3200k]
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_priest_1933"
+ }
+ #>spw_lab_derivation_checker_gregorian
+ ^["gregorian_rule"]{
+  #:claim #!settled
+  statement: "The Gregorian rule keeps a leap day every fourth year but drops it in century years not divisible by four hundred, three fewer per four centuries."
+  reads: %[contrap.rate.gregorian_leaps_per_400y]
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_richards_1998"
+ }
+ #>spw_lab_derivation_checker_leap_second
+ ^["leap_seconds"]{
+  #:claim #!settled
+  statement: "The 2022 CGPM resolved to raise the maximum allowed difference between UT1 and UTC in or before 2035, so leap seconds follow announcement and policy rather than a fixed rule."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_cgpm_2022_res4"
+  as_of: "2026-10-03"
+  edition: "Resolution 4 of the 27th CGPM"
+ }
+}
+
+#>spw_lab_derivation_checker_ledger
+^["ledger"]{
+ #>spw_lab_derivation_checker_rows
+ ^["expression_rows"]{
+  #:claim #!settled
+  statement: "Every expression derivation in the contraptions registry passes its own tolerance; the knot cell passes by the narrowest margin, its residual near nine tenths of its rel bound."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_bench_runs"
+  ^["ntsc_fps"]{ derivation: "30000/1001", residual: "about one part in a billion high", bound: "rel 0.000001", verdict: #pass }
+  ^["knot_m_per_s"]{ derivation: "1852/3600", residual: "about 8.6 parts in ten million low", bound: "rel 0.000001", verdict: #pass }
+  ^["mired_at_3200k"]{ derivation: "1000000/3200", residual: "zero", bound: "abs 0.05", verdict: #pass }
+  ^["df_labels"]{ derivation: "2 x (60 - 6)", residual: "zero", bound: "abs 0", verdict: #pass }
+  ^["gregorian_leaps"]{ derivation: "100 - 3", residual: "zero", bound: "abs 0", verdict: #pass }
+  ^["games_2x2"]{ derivation: "(4! x 4!) / 4", residual: "zero", bound: "abs 0", verdict: #pass }
+  ^["eca_rules"]{ derivation: "2^8", residual: "zero", bound: "abs 0", verdict: #pass }
+  ^["df_drift"]{ derivation: "24 x 108 / 30000", residual: "zero", bound: "abs 0.00001", verdict: #pass }
+ }
+ #>spw_lab_derivation_checker_procedures
+ ^["procedure_rows"]{
+  primes_below_100: "a sieve over two to ninety-nine; the number garden runs it"
+  collatz_27_steps: "an iteration from twenty-seven; the number garden runs it"
+  shows: ~"./number-garden.spw#spw_lab_number_garden_runs"
+ }
+}
+
+#>spw_lab_derivation_checker_drift
+^["drift"]{
+ #:claim #!settled
+ statement: "Drop-frame labels track real time to within milliseconds an hour but not exactly: they run ahead about 86.4 ms each day, an amount the drift cell derives from the drop rule."
+ reads: %[contrap.rate.df_drift_s_per_day, contrap.rate.df_labels_per_hour]
+ source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_smpte_12_1_2014"
+ ^["odometer"]{
+  digits: << hours ; minutes ; seconds ; frames >>
+  radix: .{ hours: 24, minutes: 60, seconds: 60, frames: 30 }
+  counted_rate: "30000/1001 frames per second; the radix of 30 counts labels, not frames"
+  skip: "labels 00 and 01 at the start of each minute, except minutes divisible by ten"
+ }
+}
+
+^["battery"]{
+ #>spw_lab_derivation_checker_ntsc_probe
+ ^["evaluate_the_rate"]{
+  !probe{ "evaluate 30000/1001 as an exact fraction and compare it with the stored rate" =id[p_contrap_derivation_ntsc] =kind[calc] }
+  predict: ?{ "is the stored rate above or below the exact quotient" } ~<guess>
+  expect: "the exact quotient is 29.970029 and repeating, so the stored 29.97003 sits about one part in a billion above it"
+  shows: ~"./derivation-checker.spw#spw_lab_derivation_checker_rows"
+ }
+ #>spw_lab_derivation_checker_knot_probe
+ ^["tighten_the_knot"]{
+  !probe{ "halve the rel bound of the knot cell and rerun the check" =id[p_contrap_derivation_knot] =kind[calc] }
+  expect: "the knot cell fails, because six stored decimals carry about 8.6 parts in ten million of rounding; a seventh decimal would pass"
+  shows: ~"./derivation-checker.spw#spw_lab_derivation_checker_rows"
+ }
+ #>spw_lab_derivation_checker_drift_probe
+ ^["daily_drift"]{
+  !probe{ "count real frames in an hour at 30000/1001, subtract the labels drop-frame keeps, and scale to a day" =id[p_contrap_derivation_drift] =kind[calc] }
+  expect: "an hour of real time holds 108 over 1001 of a frame more than the labels one timecode hour keeps, so the timecode hour ends 3.6 milliseconds early and the labels gain 86.4 milliseconds a day"
+  shows: ~"./derivation-checker.spw#spw_lab_derivation_checker_drift"
+ }
+}
+
+#>spw_lab_derivation_checker_mirror
+^["language_mirror"]{
+ #>spw_lab_derivation_checker_reflexive
+ ^["reflexive_handles"]{
+  #:claim #!settled
+  statement: "The gate accepts seventeen reflexive handle names from a fixed list and never checks that a tool computes them; spw census prints path refs and degrees under its own column names."
+  cites: [ "scripts/analyzers/spw-cut-gate.ts:36-42", "packages/spw-cli/src/inventory.ts:333-338" ]
+  sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_gate", ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_inventory" ]
+ }
+ question: "Can a reflexive handle in a wonder be checked against the census the way a world cell is checked against its derivation?"
+ needed: "a map from each reflexive handle to the command and column that computes it, so a checker can run the command and compare"
+ standing: "a-cut: the reflexive list and the handle grammar are this cut contract; nothing in canon names them"
+ !probe{ "write the handle-to-column map for the seventeen reflexive handles and mark those no command prints" =id[p_contrap_derivation_reflexive] =kind[census] }
+}
+
+^["limits"]{
+ holds: "whether a stored number agrees with its stated derivation within its stated tolerance"
+ fails: "a derivation can be wrong while the arithmetic passes; leap seconds and platform policies follow announcements, not formulas; and a reflexive handle has no stored value to check"
+}
+
+^["try"]{
+ #>spw_lab_derivation_checker_try
+ ^["paper_odometer"]{
+  materials: [ "squared paper", "a pencil", "a calculator" ]
+  steps: << "write the labels from 00:00:59;28 to 00:01:00;04 as drop-frame counts them" ; "mark the two labels that never appear" ; "repeat at 00:09:59;28 and 00:10:00;04 and note that nothing is skipped" ; "multiply out the skips for one hour and compare with the registry cell" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./derivation-checker.spw#spw_lab_derivation_checker_drift"
+ }
+}
+
+#>spw_lab_derivation_checker_q
+?["Why do drop-frame timecode and the Gregorian calendar both correct with a rule that has an exception to its exception?"]{
+ #:depth #!mathematical ~#lens(production cadence)
+ #:claim #!speculative
+ ~#hypothesis: "Each layer of exception should mark a better rational approximation of the true ratio, so the periods of the layers should track terms of its continued fraction."
+ !probe{ "write the true ratio for each rule as a continued fraction and compare its early convergents with the periods of each exception layer" =id[p_contrap_derivation_q] =kind[calc] }
+ $%[contrap.rate.df_labels_per_hour, contrap.rate.gregorian_leaps_per_400y]
+ ~"./derivation-checker.spw#spw_lab_derivation_checker_gregorian" ~#neighbor(nearest)
+ breaks: "a calendar inserts days and timecode deletes labels, and the calendar ratio drifts with Earth while the video ratio is fixed by definition"
+}

@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/university-education/electrical-and-computer-engineering/undergrad-electrical-engineering.spw" ]
@@ -35,6 +35,11 @@
    care: #adversarial, outcome: #corrected
   }
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  gate_note: "r3 first recorded a pass; that run failed on links to the computer engineering and ECE advanced surfaces not yet written, and r5 records the run after they landed"
  corrections: #[
@@ -43,7 +48,8 @@
   "Maxwell equations and gauge choice move to the canonical electromagnetism node; the gauge the raw called Lorentz is the Lorenz gauge, after Ludvig Lorenz",
   "the 50 percent faster RF-prototyping wonder had no source and is restated without a magnitude",
   "signals and transforms move to control and signals so the material lives once",
-  "the battery try used a bare AA cell whose internal resistance sits far below every load, so it could never show a power peak, and its 2 ohm load overran a half-watt rating; the cell now drives loads through a known series resistor"
+  "the battery try used a bare AA cell whose internal resistance sits far below every load, so it could never show a power peak, and its 2 ohm load overran a half-watt rating; the cell now drives loads through a known series resistor",
+  "the Thevenin and Norton leaf cited only the voltage-source history; the Mayer and Norton current-source history is in the companion paper, which is now cited beside it"
  ]
 }
 
@@ -92,7 +98,10 @@
  ^["thevenin_norton"]{
   #:claim #!settled
   statement: "At its terminals any linear network acts as a source with one impedance; Helmholtz in 1853 and Thevenin in 1883 gave the voltage form, Mayer and Norton the current form in 1926."
-  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_johnson_2003"
+  sources: [
+   ~"../../registries/sources/materials-and-engineering.spw#src_mateng_johnson_2003",
+   ~"../../registries/sources/materials-and-engineering.spw#src_mateng_johnson_2003_current"
+  ]
  }
 }
 

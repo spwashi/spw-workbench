@@ -22,7 +22,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -33,8 +33,13 @@
   ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r5"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #pass }
+  ^["r6"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
  }
  rechecked: "2026-10-02: Fourdrinier development narrowed to the first decade of the 1800s; permanence reads split one handle per line"
+ corrections: #[
+  "2026-10-03: the permanence claim named ISO 9706:1994 as current; it was withdrawn on 29 May 2025 and replaced by ISO 9706:2025, and its limits are now labeled as the 1994 edition"
+ ]
 }
 
 ^["edges"]{
@@ -116,16 +121,25 @@
   #>inscription_paper_permanence
   ^["permanence_standard"]{
    #:claim #!settled
-   statement: "ISO 9706 permanent paper keeps a near-neutral to alkaline extract, carries an alkali reserve to neutralize future acid, and limits oxidizable lignin."
+   statement: "The 1994 edition of ISO 9706 asked permanent paper for a near-neutral to alkaline extract, an alkali reserve against future acid, and a cap on oxidizable lignin."
    reads: %[
     media.paper.iso9706_ph_min,
     media.paper.iso9706_ph_max,
     media.paper.iso9706_alkali_reserve_mol_per_kg,
     media.paper.iso9706_kappa_max
    ]
-   source: ~"../../registries/sources/record-and-carriers.spw#src_media_iso_9706_1994"
-   edition: "ISO 9706:1994; the American counterpart is ANSI/NISO Z39.48-1992"
-   as_of: "2026-10-01"
+   sources: [
+    ~"../../registries/sources/record-and-carriers.spw#src_media_iso_9706_1994",
+    ~"../../registries/sources/record-and-carriers.spw#src_media_iso_9706_2025",
+    ~"../../registries/sources/record-and-carriers.spw#src_media_ansi_niso_z39_48"
+   ]
+   edition: "ISO 9706:2025, published 29 May 2025, is current; the limits read here are from ISO 9706:1994, withdrawn that day"
+   counterpart: "the American counterpart is ANSI/NISO Z39.48-1992, reaffirmed in 2009"
+   as_of: "2026-10-03"
+   ^["limits"]{
+    holds: "the pH, alkali reserve, and kappa limits of the 1994 edition"
+    fails: "whether ISO 9706:2025 kept these limits was not confirmed; read the 2025 text before citing them as current"
+   }
   }
  }
 }

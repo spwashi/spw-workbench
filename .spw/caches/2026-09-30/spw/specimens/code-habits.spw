@@ -7,7 +7,7 @@
 #:domain #!spw
 #:form #!probe_battery
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!honk
 
 ^"emit"{
@@ -37,12 +37,20 @@
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #corrected
+  }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the persona sketches kept habits in single-quoted strings, which the cut bans outside double quotes; rows use double-quoted strings with backslash escapes",
   "the persona lab named spw fingerprint --expr as the probe, but --expr reports zero lexer errors for x: -3 while --stdin --json reports one, so rows use surface parsing",
   "with a final newline the apostrophe in 1'000 and 8'hFF opens an unterminated string, a lexer error, where a one-line probe without the newline reported none",
-  "the emit card claim lacked its continuity phrase, so the brief emit gate failed on 2026-10-03; the claim now names the quiet restructuring"
+  "the emit card claim lacked its continuity phrase, so the brief emit gate failed on 2026-10-03; the claim now names the quiet restructuring",
+  "the #if 0 row sat with the HDL rows under the Verilog standard; it is a C preprocessor habit, Verilog switches code off with grave-accent directives, so the row moved to the C rows",
+  "the MATLAB colon range and not-equal rows cited no MATLAB source; they now cite the MathWorks reference pages for colon and ne"
  ]
 }
 
@@ -59,10 +67,7 @@
  cites: [ "packages/spw-seed/src/canonical/fingerprint.ts:49-70", "scripts/analyzers/spw-cut-gate.ts:193-217" ]
 }
 
-^["fixture"]{
- status: #proposed
- runner: "no repository code replays these rows as regression fixtures at 1aa1dc23; the writer probe script was scratch"
-}
+^["fixture"]{ status: #proposed, runner: "no repository code replays these rows as regression fixtures at 1aa1dc23; the writer probe script was scratch" }
 
 ^["c_family"]{
  #>spw_spec_code_ternary
@@ -189,6 +194,15 @@
   write_instead: "p: \"s->x\""
   case_of: ~"../glossary/false-friends.spw#spw_ff_comparison"
  }
+ #>spw_spec_code_preprocessor
+ ^["preprocessor"]{
+  habit: "#if 0", followed_by: "x: 1"
+  verdict: #restructures, loudness: #silent
+  signature: "Binding=1 Expression=3 Identifier=1 Literal=1 Operation=1 ProseChunk=1 Seed=1 Sequence=1"
+  observed: "#if becomes a tag operation with 0 as a prose payload, and the next line still parses, so nothing is switched off"
+  write_instead: "disabled: \"x: 1\""
+  case_of: ~"../glossary/false-friends.spw#spw_ff_hash"
+ }
  refs: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_kr_1988", ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_cpp14", ~"../../registries/sources/spw-design-studies.spw#src_lab_klabnik_nichols_2023", ~"../../registries/sources/spw-design-studies.spw#src_lab_ecma262_2020" ]
 }
 
@@ -256,16 +270,7 @@
   write_instead: "t: \"a ~= b\""
   case_of: ~"../glossary/false-friends.spw#spw_ff_equals"
  }
- #>spw_spec_code_preprocessor
- ^["preprocessor"]{
-  habit: "#if 0", followed_by: "x: 1"
-  verdict: #restructures, loudness: #silent
-  signature: "Binding=1 Expression=3 Identifier=1 Literal=1 Operation=1 ProseChunk=1 Seed=1 Sequence=1"
-  observed: "#if becomes a tag operation with 0 as a prose payload, and the next line still parses, so nothing is switched off"
-  write_instead: "disabled: \"x: 1\""
-  case_of: ~"../glossary/false-friends.spw#spw_ff_hash"
- }
- refs: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_ieee1364_2005" ]
+ refs: [ ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_ieee1364_2005", ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_matlab_colon", ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_matlab_ne" ]
 }
 
 ^["try"]{

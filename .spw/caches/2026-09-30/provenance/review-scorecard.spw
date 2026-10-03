@@ -12,7 +12,7 @@
 
 ^"emit"{
  ~#title: "Review Scorecard"
- ~#claim: "Round one scored 152 raw files on five axes and round two scored or summarized the later files; both found core lists mostly right and taste and wonder layers mostly wrong."
+ ~#claim: "Round one scored 152 raw files on five axes and round two scored or summarized the later files; both found core lists mostly right, with errors concentrated in the taste and wonder layers."
  ~#proof: "Transcribed from the review scorecard kept with the cut plan; editor rows were verified against the extension and LSP sources."
  ~#door: "Find a raw file row, read its verdict, then open the errata ledger for its corrected lines."
  ~#audience: "reviewers deciding what to trust in the raw shelf"
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".agents/plans/caches-cut-2026-09-30/references/review/scorecard.md" ]
@@ -42,6 +42,12 @@
    event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial
    note: "only the forward ref to the planned known-defects surface remains"
   }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+   note: "claim reworded to errors concentrated in taste and wonder; compound verdicts kept; effect lines recounted by hand at 229aedcf; code-bug lines pinned to 1aa1dc23"
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  note: "round one scored a 152-file snapshot on five axes; round two gave five-axis rows to the 9 materials files and group summaries to the rest of a 13:28 snapshot"
 }
@@ -61,18 +67,20 @@
  axes: .{ d: "depth", i: "independent value", s: "script value", t: "tree fit", a: "accessibility" }
  range: "1 to 5 per axis; a range like 1-3 covers a group of files"
  verdicts: #[ keep, promote, merge, regen, drop, fix, fold, move, rename, routing ]
+ compound: "where the scorecard joins two verdicts, the row keeps both in order and names the joiner: plus or arrow for both, or for alternatives, slash as written"
+ qualifiers: "a qualifier in parentheses, such as move under physics or split, stays in the note"
  source: ~"../registries/sources/provenance-and-reference.spw#src_prov_scorecard"
 }
 
 ^["round_one"]{
  ^["editor_caches"]{
   basis: "verified against extensions/ and packages/spw-lsp"
-  ^[".spw/caches/jetbrains/instruments.spw"]{ d: 4, i: 3, s: 3, t: 3, a: 4, verdict: #promote, note: "dirty-buffer text and threading right; tool resolution step three invented" }
+  ^[".spw/caches/jetbrains/instruments.spw"]{ d: 4, i: 3, s: 3, t: 3, a: 4, verdict: #[ keep, promote ], join: "arrow", note: "dirty-buffer text and threading right; tool resolution step three invented" }
   ^[".spw/caches/jetbrains/compatibility.spw"]{ d: 3, i: 2, s: 4, t: 4, a: 3, verdict: #keep, note: "toolchain versions exact; Gradle task paths wrong for a standalone root project" }
   ^[".spw/caches/vscode/syntax-highlighting.spw"]{ d: 3, i: 2, s: 3, t: 3, a: 3, verdict: #keep, note: "scope map matches package.json; delta tokens false" }
   ^[".spw/caches/jetbrains/lsp-client.spw"]{ d: 3, i: 3, s: 2, t: 3, a: 3, verdict: #promote, note: "two-stage discovery is real; settings names invented" }
   ^[".spw/caches/jetbrains/cache-layer.spw"]{ d: 3, i: 2, s: 3, t: 3, a: 3, verdict: #regen, note: "claims an LSP plane; the IntelliJ path is CLI-only" }
-  ^[".spw/caches/vscode/cache-layer.spw"]{ d: 3, i: 2, s: 3, t: 2, a: 3, verdict: #merge, note: "plane names right; stat names, background timer, and renderer wrong" }
+  ^[".spw/caches/vscode/cache-layer.spw"]{ d: 3, i: 2, s: 3, t: 2, a: 3, verdict: #[ merge, regen ], join: "plus", note: "plane names right; stat names, background timer, and renderer wrong" }
   ^[".spw/caches/vscode/decorations.spw"]{ d: 3, i: 2, s: 2, t: 3, a: 3, verdict: #regen, note: "settings exact; phase map wrong; cites a missing src/surface/; parse degrades at line 100" }
   ^[".spw/caches/vscode/features.spw"]{ d: 2, i: 2, s: 3, t: 2, a: 3, verdict: #merge, note: "14 command ids right, 8 of 22 missing" }
   ^[".spw/caches/vscode/instruments.spw"]{ d: 3, i: 2, s: 2, t: 3, a: 3, verdict: #regen, note: "invents a CLI fallback, custom URIs, and read-only tabs" }
@@ -90,13 +98,13 @@
  }
  ^["university_stem"]{
   ^[".spw/caches/university-education/electrical-and-computer-engineering/undergrad-computer-engineering.spw"]{ d: 2, i: 3, s: 2, t: 4, a: 4, verdict: #keep, note: "most concrete practice; pipelining claim wrong" }
-  ^[".spw/caches/university-education/thermodynamics/non-equilibrium-and-information-thermodynamics.spw"]{ d: 3, i: 3, s: 2, t: 3, a: 2, verdict: #keep, note: "fluctuation theorems right; Landauer cost off by about fifteen orders" }
+  ^[".spw/caches/university-education/thermodynamics/non-equilibrium-and-information-thermodynamics.spw"]{ d: 3, i: 3, s: 2, t: 3, a: 2, verdict: #keep, note: "fluctuation theorems right; Landauer cost off by about fifteen orders; move under physics" }
   ^[".spw/caches/university-education/physics-and-mechanical-engineering/undergrad-physics.spw"]{ d: 2, i: 2, s: 2, t: 3, a: 4, verdict: #keep, note: "textbook anchors and a real advanced-lab list" }
   ^[".spw/caches/university-education/physics-and-mechanical-engineering/masters-mechanical-engineering.spw"]{ d: 2, i: 2, s: 2, t: 4, a: 2, verdict: #keep, note: "Lie-group overclaim" }
   ^[".spw/caches/university-education/materials-science/masters-materials-science.spw"]{ d: 3, i: 2, s: 2, t: 3, a: 2, verdict: #keep, note: "real scaling laws; high-entropy creep claim backwards" }
   ^[".spw/caches/university-education/governance-and-tenure.spw"]{ d: 2, i: 2, s: 3, t: 4, a: 3, verdict: #keep, note: "senate authority overclaimed" }
   ^[".spw/caches/university-education/research-and-funding.spw"]{ d: 2, i: 2, s: 3, t: 4, a: 3, verdict: #keep, note: "NSF budget figure high" }
-  ^[".spw/caches/university-education/curricular-architecture.spw"]{ d: 2, i: 2, s: 3, t: 2, a: 3, verdict: #fix, note: "claims a prerequisite graph no leaf fills" }
+  ^[".spw/caches/university-education/curricular-architecture.spw"]{ d: 2, i: 2, s: 3, t: 2, a: 3, verdict: #[ keep, fix ], join: "plus", note: "claims a prerequisite graph no leaf fills" }
   ^[".spw/caches/university-education/chemistry-and-chemical-engineering/undergrad-chemistry.spw"]{ d: 2, i: 2, s: 2, t: 3, a: 3, verdict: #keep, note: "faithful ACS outline" }
   ^[".spw/caches/university-education/chemistry-and-chemical-engineering/masters-chemistry.spw"]{ d: 2, i: 2, s: 2, t: 3, a: 2, verdict: #fix, note: "HMBC expansion and Rietveld placement wrong" }
   ^[".spw/caches/university-education/chemistry-and-chemical-engineering/undergrad-chemical-engineering.spw"]{ d: 2, i: 2, s: 2, t: 2, a: 3, verdict: #merge, note: "duplicates mechanical; fifth-power pumping is regime-specific" }
@@ -138,10 +146,10 @@
   ^[".spw/caches/university-education/film-and-theatre/undergrad-film-studies-and-production.spw"]{ d: 3, i: 2, s: 2, t: 2, a: 3, verdict: #fix, note: "Field and Snyder mixed" }
   ^[".spw/caches/university-education/design-and-industrial-engineering/masters-design-and-industrial-systems.spw"]{ d: 3, i: 2, s: 2, t: 1, a: 2, verdict: #rename, note: "no design content" }
   ^[".spw/caches/university-education/illustration-and-animation/masters-animation-and-visual-direction.spw"]{ d: 2, i: 1, s: 2, t: 2, a: 2, verdict: #merge, note: "a broadcast loudness target stated as theatrical" }
-  ^[".spw/caches/university-education/film-and-theatre/graduate-film-directing-and-cinema-mfa.spw"]{ d: 2, i: 1, s: 2, t: 1, a: 2, verdict: #merge, note: "Academy ratio called portrait; turnaround wrong" }
+  ^[".spw/caches/university-education/film-and-theatre/graduate-film-directing-and-cinema-mfa.spw"]{ d: 2, i: 1, s: 2, t: 1, a: 2, verdict: #[ merge, fix ], join: "slash", note: "Academy ratio called portrait; turnaround wrong" }
   ^[".spw/caches/secondary-education/advanced-curricula.spw"]{ d: 2, i: 2, s: 3, t: 4, a: 3, verdict: #keep, note: "dual-enrollment transfer called guaranteed" }
   ^[".spw/caches/secondary-education/stem-and-humanities-pathways.spw"]{ d: 2, i: 2, s: 3, t: 3, a: 3, verdict: #keep, note: "CEDA is collegiate" }
-  ^["arts and social taste files (6)"]{ d: "1-2", i: 2, s: 1, t: "2-3", a: 1, verdict: #fold, note: "real stances in one reverent voice" }
+  ^["arts and social taste files (6)"]{ d: "1-2", i: 2, s: 1, t: "2-3", a: 1, verdict: #[ fold, drop ], join: "or", note: "real stances in one reverent voice" }
   ^["arts and social index files (7)"]{ d: "1-2", i: "1-2", s: 2, t: "1-4", a: 1, verdict: #routing, note: "routing only" }
  }
  ^["podcasting_language_tiktok"]{
@@ -168,7 +176,7 @@
   ^[".spw/caches/film-chemistry-and-camera-optics/photochemical-emulsion-chemistry.spw"]{ d: 4, i: 3, s: 2, t: 3, a: 4, verdict: #keep, note: "accurate; omits the orange mask" }
   ^[".spw/caches/film-chemistry-and-camera-optics/photographic-processing-and-development.spw"]{ d: 4, i: 3, s: 3, t: 3, a: 3, verdict: #keep, note: "ECN-2 right; density standard misnumbered" }
   ^[".spw/caches/film-production-and-industry/intimacy-coordination-and-consent.spw"]{ d: 3, i: 3, s: 2, t: 3, a: 4, verdict: #keep, note: "coherent best practice" }
-  ^[".spw/caches/film-production-and-industry/set-operations-and-crew-hierarchy.spw"]{ d: 3, i: 2, s: 3, t: 3, a: 3, verdict: #fix, note: "turnaround hours wrong" }
+  ^[".spw/caches/film-production-and-industry/set-operations-and-crew-hierarchy.spw"]{ d: 3, i: 2, s: 3, t: 3, a: 3, verdict: #[ keep, fix ], join: "plus", note: "turnaround hours wrong" }
   ^[".spw/caches/film-production-and-industry/crew-morale-safety-and-culture.spw"]{ d: 3, i: 2, s: 2, t: 3, a: 3, verdict: #fix, note: "same turnaround; an invented ceremony" }
   ^[".spw/caches/film-production-and-industry/hollywood-careers-and-industry-navigation.spw"]{ d: 3, i: 2, s: 2, t: 3, a: 3, verdict: #fix, note: "managers cannot procure work in California" }
   ^[".spw/caches/film-production-and-industry/novel-adaptations-and-literary-translation.spw"]{ d: 3, i: 3, s: 1, t: 2, a: 3, verdict: #move, note: "public-domain year dated" }
@@ -176,12 +184,12 @@
   ^[".spw/caches/indie-author-ecosystem/genre-conventions-and-cultural-trends.spw"]{ d: 3, i: 3, s: 1, t: 3, a: 3, verdict: #fix, note: "LitRPG and cultivation origins uncredited" }
   ^[".spw/caches/indie-author-ecosystem/author-software-and-production-tools.spw"]{ d: 2, i: 2, s: 2, t: 3, a: 3, verdict: #keep, note: "MOBI deprecated" }
   ^[".spw/caches/indie-author-ecosystem/marketing-readers-and-community-traditions.spw"]{ d: 2, i: 2, s: 2, t: 3, a: 3, verdict: #fix, note: "a 30-day cliff is folklore; review copies need disclosure" }
-  ^[".spw/caches/community-roles/ (5 files)"]{ d: "1-2", i: 2, s: "1-2", t: 3, a: "2-3", verdict: #regen, note: "remediation, test-strip, and doula claims wrong; a stereotype" }
+  ^[".spw/caches/community-roles/ (5 files)"]{ d: "1-2", i: 2, s: "1-2", t: 3, a: "2-3", verdict: #[ regen, drop ], join: "or", note: "remediation, test-strip, and doula claims wrong; a stereotype" }
   ^[".spw/caches/physiological-development/common-deficiencies.spw"]{ d: 3, i: 1, s: 2, t: 3, a: 1, verdict: #drop, note: "three harms; see the harm register" }
   ^[".spw/caches/physiological-development/nutritional-support-strategies.spw"]{ d: 2, i: 1, s: 2, t: 3, a: 1, verdict: #drop, note: "pregnancy and infection harms; see the harm register" }
   ^[".spw/caches/physiological-development/taste.spw"]{ d: 1, i: 1, s: 1, t: 2, a: 1, verdict: #drop, note: "risk factors recast as adaptive" }
-  ^[".spw/caches/physiological-development/developmental-stages.spw"]{ d: 3, i: 2, s: 1, t: 3, a: 2, verdict: #drop, note: "invites manipulating the timing of puberty" }
-  ^[".spw/caches/physiological-development/circadian-and-metabolic-resilience.spw"]{ d: 3, i: 1, s: 2, t: 3, a: 2, verdict: #drop, note: "hydration claim false; ambiguous sun wording" }
+  ^[".spw/caches/physiological-development/developmental-stages.spw"]{ d: 3, i: 2, s: 1, t: 3, a: 2, verdict: #[ drop, regen ], join: "or", note: "invites manipulating the timing of puberty" }
+  ^[".spw/caches/physiological-development/circadian-and-metabolic-resilience.spw"]{ d: 3, i: 1, s: 2, t: 3, a: 2, verdict: #[ drop, regen ], join: "or", note: "hydration claim false; ambiguous sun wording" }
  }
 }
 
@@ -244,9 +252,13 @@
  #>provenance_scorecard_effects
  ^["invented_effects"]{
   #:claim #!settled
-  statement: "Wonder hypotheses in the first template carried dozens of invented effect sizes styled like findings."
-  reads: %[prov.review.r1_invented_effect_count]
-  source: ~"../registries/sources/provenance-and-reference.spw#src_prov_scorecard"
+  statement: "Round-one wonder hypotheses carried dozens of effect sizes styled like findings and citing nothing; a recount at the pinned commit finds about fifty such lines, close to the reviewer estimate."
+  reads: %[prov.review.r1_invented_effect_count, prov.review.r1_effect_line_recount]
+  sources: [ ~"../registries/sources/provenance-and-reference.spw#src_prov_scorecard", ~"../registries/sources/provenance-and-reference.spw#src_prov_raw_shelf" ]
+  ^["limits"]{
+   holds: "hypothesis lines in the 152 round-one files that state a percentage, multiplier, fold change, or order of magnitude as an outcome"
+   fails: "as an exact count of effect sizes: some lines carry two, effects in days or decibels are left out, and no figure was checked against the literature"
+  }
  }
  other: [
   "every round-one file parsed; one degraded at .spw/caches/vscode/decorations.spw:100",
@@ -259,12 +271,13 @@
 
 ^["code_bugs"]{
  basis: "surfaced while verifying the editor rows; independent of the shelf"
- vscode_cache_layers: "extensions/vscode-spw/src/lsp/custom-requests.ts:377"
- vscode_trace_setting: "extensions/vscode-spw/src/extension.ts:77"
- intellij_fold_comment: "extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwFoldingBuilder.kt:121"
- intellij_commenter: "extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwCommenter.kt:6"
- intellij_spellcheck: "extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwSpellcheckingStrategy.kt:9"
- intellij_gutter_nav: "extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwAnnotationLineMarkerProvider.kt:33"
+ pinned: "lines read at commit 1aa1dc23 and rechecked on 2026-10-03; the working tree has moved, so read one with git show 1aa1dc23:PATH"
+ vscode_cache_layers: "1aa1dc23:extensions/vscode-spw/src/lsp/custom-requests.ts:377"
+ vscode_trace_setting: "1aa1dc23:extensions/vscode-spw/src/extension.ts:77"
+ intellij_fold_comment: "1aa1dc23:extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwFoldingBuilder.kt:121"
+ intellij_commenter: "1aa1dc23:extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwCommenter.kt:6"
+ intellij_spellcheck: "1aa1dc23:extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwSpellcheckingStrategy.kt:9"
+ intellij_gutter_nav: "1aa1dc23:extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwAnnotationLineMarkerProvider.kt:33"
  home: ~"../spw/hosts/known-defects.spw#editor_hosts_defects"
 }
 

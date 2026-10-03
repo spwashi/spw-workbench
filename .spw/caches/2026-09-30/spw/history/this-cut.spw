@@ -14,7 +14,7 @@
 ^"emit"{
  ~#title: "This Cut"
  ~#claim: "This cut turned one day of generated text into sourced, addressable surfaces, and it counts its own receipts by care rung like any other record."
- ~#proof: "The raw manifest and review scorecard in provenance, the cut plan stream, the contract, and a grep census of receipts taken during wave 3."
+ ~#proof: "The raw manifest and review scorecard in provenance, the cut plan stream, the contract, and a grep census of receipts at the commit that shelved waves 1 through 3."
  ~#door: "Read the generation, then the decisions, then count the receipts yourself and compare."
  ~#audience: "newcomers to the cut and anyone deciding how far to trust a surface in it"
  continuity: "This Cut | its own receipts"
@@ -31,7 +31,31 @@
   ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected
+   note: "census recounted from the tree of 651b535b with git archive; wave rungs extended from the plan stream"
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r7"]{
+   event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected
+   note: "the contrasts edge now points at the published rewrite of 2026-03-26"
+  }
+  ^["r8"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r9"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+   note: "the review verdict was overstated against its sources; census and care counts confirmed at 651b535b"
+  }
+  ^["r10"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[
+  "the census first counted a working tree at 02:45 on 2026-10-03 while writers were still saving; it now counts the committed tree of 651b535b, so anyone can repeat it",
+  "the review claim said both rounds judged the taste and wonder layers mostly wrong; the sources say errors were concentrated there, which is not the same"
+ ]
  reflexive: "the census below counts the receipts of every surface in the cut, this one included"
 }
 
@@ -39,7 +63,7 @@
  needs: [ ~"../../provenance/manifest.spw#provenance_manifest" ]
  grounds: [ ~"../../registries/quantities/spw-hosts-and-history.spw#q_hosts_cut", ~"../../contract.spw#cut_contract" ]
  see: [ ~"../../provenance/review-scorecard.spw#provenance_scorecard", ~"../inspection-and-ir.spw#spw_inspection_and_ir", ~"../../provenance/harm-register.spw#provenance_harm_register" ]
- contrasts: [ ~"./episode-timeline.spw#workbench_history_episodes_rewrite" ]
+ contrasts: [ ~"./episode-timeline.spw#workbench_history_episodes_published_rewrite" ]
 }
 
 ^["concepts"]{
@@ -73,9 +97,12 @@
  #>workbench_history_this_cut_review
  ^["two_rounds"]{
   #:claim #!settled
-  statement: "Round one scored 152 raw files on five axes and found 11 that declared any source; both rounds judged core lists mostly right and the taste and wonder layers mostly wrong."
+  statement: "Round one scored 152 raw files on five axes and found 11 that declared any source; both rounds found core lists mostly right, with errors concentrated in the taste and wonder layers."
+  core_accuracy: "the shelf disclosure puts core lists at about 85 to 90 percent accurate; that range is the reviewers estimate, not a recount"
   reads: %[prov.review.r1_file_count, prov.review.r1_sourced_file_count]
   source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_review_scorecard"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_caches_index" ]
+  cites: [ ".spw/caches/index.spw:102", ".agents/plans/caches-cut-2026-09-30/references/review/scorecard.md:67,193" ]
   home: ~"../../provenance/review-scorecard.spw#provenance_scorecard"
  }
  #>workbench_history_this_cut_invented
@@ -130,6 +157,13 @@
  ^["wave_two_2026_10_02"]{ at: "2026-10-02", event: "wave two lands nine packages and 195 files, and a harm sweep covers the whole cut", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_cut_stream" }
  #>workbench_history_this_cut_wave_three
  ^["wave_three_2026_10_02"]{ at: "2026-10-02", event: "wave three starts six spw packages under plan version three, this history among them", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_cut_stream" }
+ #>workbench_history_this_cut_patches_land
+ ^["patches_land_2026_10_03"]{ at: "2026-10-03", event: "the lens and corpus graph patches, hardened beside the cut plan, land on main as 6690d686 and c79a096a", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log_w3" }
+ #>workbench_history_this_cut_shelved
+ ^["shelved_2026_10_03"]{ at: "2026-10-03", event: "commit 651b535b shelves waves 1 through 3 with 394 surfaces, 262 of them fact-checked, and wave 4 not yet run", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_resume_note_w3" }
+ #>workbench_history_this_cut_limit
+ ^["limit_2026_10_03"]{ at: "2026-10-03", event: "a weekly usage limit stops the wave 3 writers, and the same morning they resume to complete files on disk", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_cut_stream" }
+ cites: ".agents/plans/caches-cut-2026-09-30/wip.spw:80-84"
 }
 
 ^["corrections"]{
@@ -148,7 +182,7 @@
  #>workbench_history_this_cut_care
  ^["census"]{
   #:claim #!settled
-  statement: "A census on 2026-10-03, during wave 3, found 383 surfaces whose receipts name care glance 154 times, skim 635, read 219, audit 430, and adversarial 285."
+  statement: "At commit 651b535b the cut holds 394 surfaces whose receipts name care glance 154 times, skim 666, read 223, audit 447, and adversarial 287."
   reads: %[
    hosts.cut.census_file_count,
    hosts.cut.care_glance_count,
@@ -158,7 +192,8 @@
    hosts.cut.care_adversarial_count
   ]
   source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_cut_census"
-  method: "count lines matching care followed by each rung across every .spw file in the cut"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log_w3" ]
+  method: "extract the cut with git archive at 651b535b, then count each care key followed by its rung across every .spw file"
   ladder: ~"../inspection-and-ir.spw#spw_inspection_and_ir"
   ^["limits"]{
    holds: "as a snapshot of attention the writers and gate recorded"
@@ -172,7 +207,16 @@
   source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_cut_contract"
   provenance_label: "a-cut reading of the receipt convention"
  }
- open_count: "the close of wave 3 had not happened when this census ran; a recount then should supersede these cells, keeping their handles"
+ #>workbench_history_this_cut_fact_checked
+ ^["fact_checked_share"]{
+  #:claim #!settled
+  statement: "At the same commit 262 of the 394 surfaces carry a fact_checked receipt, and the resume note asks readers to treat the rest as unreviewed."
+  reads: %[hosts.cut.fact_checked_file_count, hosts.cut.census_file_count]
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_cut_census"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_resume_note_w3" ]
+  cites: ".spw/caches/resume/2026-09-30-direction.spw:58"
+ }
+ open_count: "wave 3 resumed after this commit, so a recount when it closes should supersede these cells, keeping their handles"
 }
 
 ^["try"]{

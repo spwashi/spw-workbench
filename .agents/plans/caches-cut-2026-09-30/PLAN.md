@@ -50,7 +50,7 @@ Taste: claim discipline, honest provenance, legible graph structure.
 | Machine empathy, tunable complexity, and IR inspection synthesis; wave 3 spw tree | running 2026-10-01 (run `wf_691aebc2-7bf`) | will land in `references/spw-branch/` |
 | Writers, fact-check, fix, weave, apparatus, critic | waves 1 and 2 paused 2026-10-01 13:05 at the owner's request (session limit); 137 files on disk, one package fully fact-checked; gate: 306 pending refs to unwritten files | resume runs `wf_adcc6c3b-5de`, `wf_61afdc2c-769`; script `references/workflows/cut-writers-wave.js` |
 | Tool fix: lens visibility (LSP index, hover, tokens, client) | implemented; review approve-with-nits plus should-fix findings; hardening in progress | worktree `wf_7b1587d2-205-1`; `references/patches/lens*.diff` |
-| Tool fix: anchor-line navigation | hardened; re-review approve-with-nits; wire and cost measured | worktree `wf_7b1587d2-205-2`; `references/patches/fragnav-hardened.diff`, `fragnav-hardening.md` |
+| Tool fix: anchor-line navigation | landed on main at `861fa214` after the cost fix (index-read anchor lines; listings never parse); wire and cost in the citation-navigation stream | the worktree `wf_7b1587d2-205-2` is superseded; `references/patches/` keeps the held versions |
 | Tool fix: graph and census fragments | implemented; review approve-with-nits (22 false orphans, root_shelves strand); hardening in progress | worktree `wf_7b1587d2-205-3`; `references/patches/graphfrag.diff` |
 
 Worktrees live under `.claude/worktrees/` (gitignored, local only). The diffs under `references/patches/` are the durable copies.
@@ -185,7 +185,7 @@ The synthesizer prompt now also plans a `spw/` branch written after the studies 
 - A `#tag` followed by a key on the same line nests that key.
 
 **Tools:**
-- The LSP jumps to line 1 for anchors (fixed by fragnav).
+- The LSP jumped to line 1 for anchors; fixed on main at `861fa214`. Hover path-peek and inlay hints still read `x.spw#anchor` as a file path.
 - graph/census keep fragments and mint `@alias` pseudo-hubs (fixed by graphfrag).
 - The LSP does not see `~#lens()` (fixed by lens).
 - `spw emit ir` writes an absolute `sourcePath`; make it relative before publishing packs.

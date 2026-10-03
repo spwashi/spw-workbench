@@ -7,7 +7,7 @@
 #:domain #!spw_perspectives
 #:form #!protocol
 #:level #!intro
-#:review #!unreviewed
+#:review #!adversarial_checked
 #:valence #!boon
 
 ^"emit"{
@@ -38,22 +38,38 @@
    event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #partial
    note: "forward refs to planned files of other packages that were not yet written: concepts/plates"
   }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r7"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r8"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
-  "the study said a tight bias edge exists and the spaced form yields none; the edge door found that spacing is not the cause, so this file attributes spacing effects only to positions a probe confirmed"
+  "the study said a tight bias edge exists and the spaced form yields none; the edge door found that spacing is not the cause, so this file attributes spacing effects only to positions a probe confirmed",
+  "a see edge and a plates link inside the settled clusters frame pointed at the plates panel, a wave 4 file not yet written, and failed the cut gate; both were withdrawn on 2026-10-03",
+  "the spacing row gave a tilde before a quote as a spacing-sensitive position; the path ref grammar skips whitespace after the tilde, so the example now is a letter right after a particle aim, and the tilde case sits in the limits as a counterexample"
  ]
+ links_pending: "the plates panel is planned for wave 4 as link-only frames that pin anchors from several classes, so it can link this protocol once it exists"
+ pending_targets: #[ "concepts/plates.spw#concepts_plates" ]
 }
 
 ^["edges"]{
  feeds: [ ~"../doors/equals.spw#spw_door_equals", ~"../specimens/design-tokens.spw#spw_spec_design" ]
- see: [ ~"../hosts/vscode-rendering.spw#editor_hosts_vscode_rendering_layers", ~"../theory/valence-and-charge.spw#spw_theory_valence_palette_problem", ~"../../concepts/plates.spw#concepts_plates", ~"../contraptions/kerning.spw#spw_lab_kerning" ]
+ see: [ ~"../hosts/vscode-rendering.spw#editor_hosts_vscode_rendering_layers", ~"../theory/valence-and-charge.spw#spw_theory_valence_palette_problem", ~"../contraptions/kerning.spw#spw_lab_kerning" ]
 }
 
 ^["standing"]{
  #>spw_perspectives_designers_standing
  ^["hypothesis"]{
   #:claim #!interpretive
-  statement: "This protocol was written by an agent outside the cluster; it stays unreviewed until a working designer runs the squint test and the token rows and says which held."
+  statement: "This protocol was written by an agent outside the cluster; it stays a hypothesis until a working designer runs the squint test and the token rows and says which held."
   member_probe: "a designer prints two surfaces, marks the hierarchy they see before reading any word, and compares it with the outline the tool reports"
  }
 }
@@ -111,9 +127,15 @@
  #>spw_perspectives_designers_spacing
  ^["spacing_positions"]{
   #:claim #!settled
-  statement: "Spacing changes the parse only at exact positions, such as a hash before a word or a tilde before a quote, and nowhere grades meaning by distance."
+  statement: "Spacing changes the parse only at exact positions, such as a hash before a word or a letter right after a particle's aim mark, and nowhere grades meaning by distance."
   source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_lexer"
-  examples: [ ~"../doors/hash.spw#spw_door_hash_drop", ~"../doors/tilde.spw#spw_door_tilde_link" ]
+  cites: [ "packages/spw-seed/src/lexer/matchers/comments.ts:52-96", "packages/spw-seed/src/lexer/matchers/particles.ts:20-33" ]
+  probe_run: "at HEAD 651b535b on 2026-10-03, a: #b gave a tag while a: # b dropped the rest of the line, and #:claim gave one particle while #: claim gave a binding keyed by a bare hash operation"
+  examples: [ ~"../doors/hash.spw#spw_door_hash_drop", ~"../doors/particle.spw#spw_door_particle_aims" ]
+  ^["limits"]{
+   holds: "the hash and particle positions above, each confirmed by a probe"
+   fails: "a tilde path ref skips a space before its quoted path, so a spaced and a tight link parse to the same tree even though spw inspect spacing labels the two gaps differently"
+  }
   breaks: "proximity is graded in perception, while a Spw gap is either significant at one position or not significant at all"
  }
 }
@@ -124,7 +146,6 @@
   #:claim #!settled
   statement: "In this cut a computed cluster is a prompt to compare, never a claim, so a plate that groups surfaces by visual affinity asks a question rather than answering one."
   source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_contract"
-  plates: ~"../../concepts/plates.spw#concepts_plates"
  }
  steps: << "print one surface in grey" ; "squint until the words vanish and mark the shapes that remain" ; "read the claim moods and valence words without color" ; "map each token you would reach for to a cell or a quoted string" ; "only then open the editor theme" >>
 }

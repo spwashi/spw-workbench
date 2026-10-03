@@ -1,0 +1,203 @@
+# Attention Arcs
+#
+# Four arc frames for wonder, lesson, live, and family attention, each with a clock, steps said aloud, a prediction written down before the check, counts a tool can keep, and an exit to the next arc.
+
+#>trail_attention_arcs
+#:layer #!pragmatics
+#:domain #!trail
+#:form #!trail
+#:level #!intro
+#:review #!adversarial_checked
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Attention Arcs"
+ ~#claim: "Four arcs carry one question through a wonder, a lesson, a live session, and a family table, and each writes its prediction down before the check."
+ ~#proof: "Predicting before a demonstration helped physics students in Crouch and colleagues, and the order follows predict, observe, explain from White and Gunstone; the stops cross spw, learning, mind, and making."
+ ~#door: "Pick the arc that matches the room you are in, and write the prediction step on paper first."
+ ~#audience: "teachers, hosts, and families who want one question to become a loop"
+ continuity: "Attention Arcs | prediction"
+ cold_open: "Pick the arc for your room, write the prediction down before you check, and hand the question on."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "arc shapes follow the render study section 3 sketches and the contract arcs frame",
+  "Crouch 2004, Brod 2018, Campbell 1979, and Strathern 1997 were matched against Crossref on 2026-10-03",
+  "every stop anchor was matched against the cut on disk on 2026-10-03"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[ "the render study sketched six arcs; day and season arcs live in the season hub, so this surface keeps wonder, lesson, live, and family" ]
+}
+
+^["edges"]{
+ grounds: [ ~"../spw/arcs-and-readings.spw#spw_arcs_schedule" ]
+ feeds: [ ~"./season-2026-q4.spw#trail_season_2026_q4" ]
+}
+
+^["concepts"]{
+ primary: [ #prediction_step, #walk ]
+ transfers: [ #feedback, #active_learning ]
+ tensions: [ #measure ]
+}
+
+#>trail_arcs_stops
+^["stops"]{
+ classes: #[ spw, learning, language_and_mind, making ]
+ walk: <<
+  ~"../spw/arcs-and-readings.spw#spw_arcs_readings" ;
+  ~"../spw/voice.spw#spw_voice" ;
+  ~"../spw/practice-modes.spw#spw_practice_modes" ;
+  ?{ "which step of an arc do people skip first" } ~<prediction> ;
+  ~"../learning/institutions/pedagogical-scaffolding.spw#institutions_pedagogy" ;
+  ~"../language-and-mind/cognition/memory-and-representation.spw#cognition_memory" ;
+  ~"../making/streaming/live-session-craft.spw#streaming_live_session" ;
+  ~"../learning/intergenerational-kit/interview-protocol.spw#generations_kit_interview"
+ >>
+ ^["notes"]{
+  spw_arcs_readings: "the grammar of arcs: beats on the flow schedule, and readings kept outside the cut"
+  spw_voice: "each step is a short spoken label, said in one breath"
+  spw_practice_modes: "hide one thing, predict it, then look: the arc at the scale of one line"
+  institutions_pedagogy: "retrieval, spacing, and worked examples: why the lesson arc opens by recalling"
+  cognition_memory: "a few chunks in focus: why the prediction is written down rather than held"
+  streaming_live_session: "the live arc runs inside a session of named states"
+  generations_kit_interview: "the family arc borrows consent and turn order from the interview protocol"
+ }
+}
+
+#>trail_arc_wonder
+^["arc"]{
+ name: "wonder"
+ clock: #turn
+ archetype: .{ of: ~".spw/surfaces/surface-archetypes.spw#spw_surface_archetypes", name: #exploratory_biome }
+ steps: << hunch ; question ; forecast ; probe ; observe ; reflect >>
+ forecast: ?{ "If ice sank, where would a lake freeze first?" } ~<prediction>
+ probe: ~"../physical/materials/water.spw#materials_water_try_density"
+ counts: "a tool can count forecasts written, probes run, and next questions named; it cannot count whether a question was good"
+ limit: "a written forecast is evidence of a guess, never a mark on the person who made it"
+ feeds: ~"./attention-arcs.spw#trail_arc_lesson"
+}
+
+#>trail_arc_lesson
+^["arc"]{
+ name: "lesson"
+ clock: #minute
+ archetype: .{ of: ~".spw/surfaces/surface-archetypes.spw#spw_surface_archetypes", name: #guided_curriculum }
+ steps: << retrieve ; forecast ; probe ; explain ; check ; door >>
+ retrieve: "say the last lesson in one breath before looking at notes"
+ forecast: ?{ "Where will the colored warm water settle?" } ~<prediction>
+ probe: ~"../physical/materials/water.spw#materials_water_try_density"
+ explain: "each learner says why it happened, aloud, in their own words"
+ counts: "forecasts written and hits marked, by each learner, on their own paper"
+ limit: "a hit count measures one guess, not the learner, and nothing is kept past the lesson"
+ feeds: ~"./attention-arcs.spw#trail_arc_live"
+}
+
+#>trail_arc_live
+^["arc"]{
+ name: "live"
+ clock: #minute
+ archetype: .{ of: ~".spw/surfaces/surface-archetypes.spw#spw_surface_archetypes", name: #ephemeral_portal }
+ steps: << open ; ask ; guesses ; probe ; say ; close >>
+ ask: "one question on screen and aloud"
+ guesses: ?{ "What will chat guess first?" } ~<prediction>
+ sample: "read one guess aloud at a time, chosen for difference from the last, without its handle"
+ counts: "questions asked, guesses read, and probes run on camera"
+ limit: "chatters are never ranked or scored; a chat line is evidence of a guess, and guesses are kept as text without names"
+ feeds: ~"./attention-arcs.spw#trail_arc_family"
+}
+
+#>trail_arc_family
+^["arc"]{
+ name: "family"
+ clock: #turn
+ archetype: .{ of: ~".spw/surfaces/surface-archetypes.spw#spw_surface_archetypes", name: #coordination_protocol }
+ steps: << story ; question ; try ; say_round ; reflect ; note >>
+ story: "When did you see ice where you did not expect it?"
+ question: ?{ "What will the youngest ask about the story?" } ~<prediction>
+ say_round: "each person says what happened in one breath, youngest first"
+ counts: "turns taken and one question kept on paper"
+ limit: "nobody is graded, and the note keeps a question and a date, never a name"
+ feeds: ~"./attention-arcs.spw#trail_arc_wonder"
+}
+
+^["readings"]{
+ #>trail_arcs_predict_demo
+ ^["predict_before_demo"]{
+  #:claim #!emerging
+  statement: "In one physics course, students who predicted a demonstration outcome before seeing it understood the concept better, while students who only watched did no better than those who never saw it."
+  source: ~"../registries/sources/trails.spw#src_trail_crouch_2004"
+  ^["limits"]{
+   holds: "an introductory physics course with classroom demonstrations"
+   fails: "settings with no checkable outcome, where a prediction has nothing to meet"
+  }
+ }
+ #>trail_arcs_surprise
+ ^["surprise"]{
+  #:claim #!emerging
+  statement: "Brod, Hasselhorn, and Bunge report that generating a prediction before seeing an answer can improve learning of that answer, and they tie the benefit to surprise at the outcome."
+  source: ~"../registries/sources/trails.spw#src_trail_brod_2018"
+ }
+ #>trail_arcs_poe
+ ^["predict_observe_explain"]{
+  #:claim #!settled
+  statement: "The forecast, probe, and explain order of these arcs follows the predict, observe, explain task that White and Gunstone describe for probing understanding."
+  source: ~"../registries/sources/trails.spw#src_trail_white_gunstone_1992"
+ }
+ #>trail_arcs_counts
+ ^["counts_not_quality"]{
+  #:claim #!interpretive
+  statement: "Each arc names what a tool can count and refuses to treat the count as quality, because a count made into a target stops measuring well, as Campbell and Strathern warned."
+  source: ~"../registries/sources/trails.spw#src_trail_campbell_1979"
+  sources: [ ~"../registries/sources/trails.spw#src_trail_strathern_1997" ]
+ }
+ #>trail_arcs_charge_off
+ ^["charge_off_arc"]{
+  #:claim #!interpretive
+  statement: "No arc step carries a valence word, because charge, the kind of difference a surface carries, stays off the arc position, how far along a reader is."
+  source: ~"../registries/sources/trails.spw#src_trail_owner_resume"
+  cites: [ ".spw/caches/resume/2026-09-30-direction.spw:67" ]
+  label: "owner hold"
+  see: [ ~"../spw/arcs-and-readings.spw#spw_arcs_charge_off" ]
+ }
+ metaphor: "the flow schedule is a memory aid beside an observable mapping; no tool runs these arcs as a learning loop"
+}
+
+^["try"]{
+ #>trail_arcs_try_written_forecast
+ ^["written_forecast"]{
+  materials: [ "two clear cups", "warm and cold tap water", "food coloring", "an ice cube", "paper and a pen" ]
+  steps: <<
+   "pick the arc that fits the room you are in" ;
+   "say the question aloud and write every forecast down before pouring" ;
+   "pour the colored warm water gently over the cold water and add the ice cube" ;
+   "compare each written forecast with what happened" ;
+   "write the next question and hand it to the next arc"
+  >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "use warm tap water, not boiling water"
+  shows: ~"./attention-arcs.spw#trail_arcs_predict_demo"
+ }
+}
+
+#>trail_arcs_steps_q
+?["Do six steps fit in one turn of attention?"]{
+ #:depth #!educational ~#lens(applied attention)
+ #:claim #!speculative
+ ~#hypothesis: "Arcs with more steps than a reader can hold in focus should lose the forecast step first, unless the forecast is written down before the probe."
+ !probe{ "run the wonder arc twice, once with a written forecast and once spoken only, and note which step drops" =id[p_trail_arcs_step_load] =kind[field] }
+ $%[life.memory.cowan_capacity_chunks, trail.rule.arc_clock_count]
+ ~"./attention-arcs.spw#trail_arcs_predict_demo" ~#neighbor(nearest)
+}

@@ -7,7 +7,7 @@
 #:domain #!lang_design
 #:form #!timeline
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
@@ -34,7 +34,15 @@
  ^["receipts"]{
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[
+  "the Lisp rung said the 1960 paper published programs written as lists; it wrote programs as M-expressions and gave a list encoding for eval, and list-written programs became the practice once Russell implemented eval"
+ ]
 }
 
 ^["edges"]{
@@ -67,10 +75,10 @@
  ^["lisp"]{
   #:era #!modern
   #:claim #!settled
-  statement: "McCarthy began implementing Lisp at the MIT Artificial Intelligence Project in the fall of 1958 and in 1960 published programs written as the same symbolic lists they process."
+  statement: "McCarthy began implementing Lisp at MIT in fall 1958; his 1960 paper encoded programs as the symbolic lists they process for eval, and list-written programs became practice once Russell implemented eval."
   year: 1958
   sources: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_mccarthy_1978", ~"../../registries/sources/spw-design-studies.spw#src_lab_mccarthy_1960" ]
-  ~#say(programs became lists)
+  ~#say(programs could be read as lists)
  }
  #>lang_design_lineage_apl
  ^["apl"]{

@@ -1,0 +1,134 @@
+# Novel to Screen
+#
+# A trail that follows a self-published book to the screen through three chains in order: the chain that makes the book, the chain of rights, and the chain of labor.
+
+#>trail_novel_to_screen
+#:layer #!pragmatics
+#:domain #!trail
+#:form #!trail
+#:level #!intro
+#:review #!spot_checked
+#:valence #!bonk
+#:era #!contemporary
+
+^"emit"{
+ ~#title: "Novel to Screen"
+ ~#claim: "Eight stops follow a book from manuscript graph and platform terms through The Martian case to the rights chain, the film states, the market receipts, and the labor ledger."
+ ~#proof: "Every stop is an anchor in the making or society class; dated terms and case facts live at their stops, and this trail reads them as three chains in order."
+ ~#door: "Start at the manuscript graph and mark where each chain hands off to the next."
+ ~#audience: "independent authors, students of adaptation, and crews curious where a story comes from"
+ continuity: "Novel to Screen | three chains"
+ cold_open: "A book reaches the screen through three chains in order: one makes the book, one moves the rights, and one makes the film."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "stops follow the novel-to-screen row of final-plan-v3 trails",
+  "every stop anchor was matched against the cut on disk on 2026-10-03"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ feeds: [ ~"./paired-cases.spw#trail_paired_cases" ]
+ see: [ ~"./market-reading.spw#trail_market_reading" ]
+}
+
+^["concepts"]{
+ primary: [ #rights_chain, #critical_path ]
+ transfers: [ #exclusivity, #serialization ]
+ tensions: [ #turnaround ]
+}
+
+#>trail_novel_stops
+^["stops"]{
+ classes: #[ making, society ]
+ walk: <<
+  ~"../making/authorship/manuscript-to-market-dag.spw#authorship_manuscript_dag" ;
+  ~"../making/authorship/platforms-and-business-models.spw#authorship_platforms" ;
+  ~"../making/authorship/kindle-unlimited-case.spw#authorship_kindle_unlimited" ;
+  ?{ "what changes in a book when its author is paid by pages read" } ~<prediction> ;
+  ~"../making/authorship/martian-serial-to-screen.spw#authorship_martian_case" ;
+  ~"../making/film/adaptation-and-rights.spw#film_adaptation" ;
+  ?{ "who must sign before anyone can shoot a scene from a novel" } ~<prediction> ;
+  ~"../making/film/production-state-machine.spw#film_production_states" ;
+  ~"../society/markets/media-market-receipts.spw#markets_media_receipts" ;
+  ~"../making/film/labor-agreements-ledger.spw#film_labor_ledger"
+ >>
+ ^["notes"]{
+  authorship_manuscript_dag: "chain one begins: edits, cover, metadata, and files converge, and the longest path sets the launch"
+  authorship_platforms: "each route trades reach for control on dated terms; the terms are receipts, not constants"
+  authorship_kindle_unlimited: "page-read pay and exclusivity shaped how long books and series run"
+  authorship_martian_case: "the hinge case: a free web serial, a cheap ebook, a print deal, and a film option"
+  film_adaptation: "chain two: option, purchase, and clean title, unless the work is in the public domain"
+  film_production_states: "chain three begins: development to release, each state with an exit test"
+  markets_media_receipts: "box office and windows are dated receipts, and unread cells stay empty"
+  film_labor_ledger: "the crew and cast who make the film work under multi-year agreements with their own dates"
+ }
+}
+
+#>trail_novel_chains
+^["chains"]{
+ book: #[ authorship_manuscript_dag, authorship_platforms, authorship_kindle_unlimited ]
+ hinge: #[ authorship_martian_case ]
+ rights: #[ film_adaptation ]
+ film: #[ film_production_states, markets_media_receipts, film_labor_ledger ]
+}
+
+^["readings"]{
+ #>trail_novel_three_chains
+ ^["three_chains"]{
+  #:claim #!interpretive
+  statement: "A book reaches the screen through three chains in order, production, rights, and labor, and each chain runs on its own dated terms, which is why every stop dates its numbers."
+  see: [ ~"../making/authorship/martian-serial-to-screen.spw#authorship_martian_rights" ]
+  ^["limits"]{
+   holds: "a self-published novel adapted by a studio under United States rules"
+   fails: "public-domain sources, which skip the rights chain, and works made outside guild agreements"
+  }
+ }
+ #>trail_novel_hinge
+ ^["hinge_case"]{
+  #:claim #!interpretive
+  statement: "The Martian sits at the hinge of the walk because one case shows all three chains, but one success cannot show how often a self-published book reaches a screen."
+  see: [ ~"../making/authorship/martian-serial-to-screen.spw#authorship_martian_audience_reading" ]
+ }
+}
+
+^["try"]{
+ #>trail_novel_try_handoffs
+ ^["handoff_strip"]{
+  materials: [ "a strip of paper about a meter long", "a pen", "sticky notes in three colors" ]
+  steps: <<
+   "write the manuscript steps on notes of the first color" ;
+   "write the rights steps on the second color and the film states on the third" ;
+   "lay all three chains end to end on the strip" ;
+   "guess which handoff takes longest and write the guess on the back" ;
+   "check the guess against the dates in The Martian stop"
+  >>
+  time: .{ n: 25, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./novel-to-screen.spw#trail_novel_three_chains"
+ }
+}
+
+#>trail_novel_serial_q
+?["Does a visible serial audience shorten the rights chain?"]{
+ #:depth #!social ~#lens(production cadence)
+ #:claim #!speculative
+ ~#hypothesis: "A novel that already shows a reading audience online should draw an option sooner after its first edition than a comparable novel without one."
+ !probe{ "date first edition and option for ten adapted self-published novels" =id[p_trail_novel_option_lag] =kind[lit] }
+ $%[film.martian.serial_start_year, film.martian.kindle_copies_3mo]
+ ~"./novel-to-screen.spw#trail_novel_hinge" ~#neighbor(nearest)
+}

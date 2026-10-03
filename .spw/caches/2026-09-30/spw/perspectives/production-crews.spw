@@ -7,7 +7,7 @@
 #:domain #!spw_perspectives
 #:form #!calendar
 #:level #!intro
-#:review #!unreviewed
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
@@ -35,9 +35,26 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r7"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r8"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r9"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r10"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r11"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
-  "the study gave rest-period hours for cast and crew; rest rules differ by agreement and are kept, sourced, in the set operations surface, so no hour count appears here"
+  "the standby and go keystone described runtime behavior with only the canon table as source; it now cites the interpreter lines and the runtime source, with the canon row kept beside them",
+  "the study gave rest-period hours for cast and crew; rest rules differ by agreement and are kept, sourced, in the set operations surface, so no hour count appears here",
+  "the first AD row said that role keeps the call sheet; the linked set operations surface gives the next call sheet to the second AD and the schedule to the first AD, so the rows now follow it",
+  "the continuity row said the gate checks the cold open; the default gate run does not, and only a run with --emit calls spw emit pack with --strict-continuity"
  ]
 }
 
@@ -51,7 +68,7 @@
  #>spw_perspectives_crews_standing
  ^["hypothesis"]{
   #:claim #!interpretive
-  statement: "This calendar was written by an agent outside the cluster; it stays unreviewed until a working crew member rewrites one real page of their own paperwork through it."
+  statement: "This calendar was written by an agent outside the cluster; it stays a hypothesis until a working crew member rewrites one real page of their own paperwork through it."
   member_probe: "a crew member picks their role row, converts one synthetic page of their paperwork, and marks what the shape lost"
  }
 }
@@ -63,7 +80,8 @@
   statement: "A crew member reads by role, so each row names the artifact a role keeps before it names any mark, and the mark arrives only where the artifact needs it."
   see: ~"../../making/film/set-operations-and-crew.spw#film_set_roles_production"
  }
- first_ad: .{ keeps: "the call sheet and the day schedule", shape: "a calendar frame with quoted times", see: ~"../../making/film/set-operations-and-crew.spw#film_set_call_sheet" }
+ first_ad: .{ keeps: "the shooting schedule and the day's running order", shape: "a calendar frame with quoted times", see: ~"../../making/film/set-operations-and-crew.spw#film_set_roles_production" }
+ second_ad: .{ keeps: "the next call sheet", shape: "a calendar frame with quoted call times", see: ~"../../making/film/set-operations-and-crew.spw#film_set_call_sheet" }
  stage_manager: .{ keeps: "the calling script and cue stack", shape: "a schedule of standby and go steps", see: ~"../contraptions/order-counter.spw#spw_lab_order_counter_cues" }
  script_supervisor: .{ keeps: "the continuity log and lined script", shape: "one anchored frame per take" }
  editor: .{ keeps: "the edit decision list", shape: "timecode strings with an integer frame count beside them" }
@@ -112,8 +130,8 @@
  ^["standby_and_go"]{
   #:claim #!settled
   statement: "At runtime the question mark returns its second argument, or true, when its first is truthy, and the bang returns its first, so standby and go written with them neither wait nor fire."
-  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_canon_operators"
-  cites: [ "docs/theory/spw/operators.spw:54-55" ]
+  source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_runtime"
+  cites: [ "packages/spw-runtime/src/interpreter/interpreter.ts:272-287", "docs/theory/spw/operators.spw:54-55" ]
   breaks: "a called standby waits for a reply from the operator, and a go fires on the spoken word"
  }
  #>spw_perspectives_crews_fountain
@@ -127,8 +145,11 @@
  #>spw_perspectives_crews_continuity
  ^["continuity_word"]{
   #:claim #!settled
-  statement: "In this cut, continuity names an emit card field whose phrases the spoken cold open must repeat, which the gate checks; it never means matching across takes."
+  statement: "In this cut, continuity names an emit card field whose phrases the spoken cold open must repeat; the cut gate checks it only when run with --emit, and it never means matching across takes."
+  check: "the --emit run calls spw emit pack with --strict-continuity; the default gate run does not check continuity"
   source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_contract"
+  gate_source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_gate"
+  cites: [ "scripts/analyzers/spw-cut-gate.ts:169", "scripts/analyzers/spw-cut-gate.ts:364-367" ]
   label: "a-cut rule from the contract voice frame"
   breaks: "a script supervisor tracks continuity between takes of a scene, while the card field tracks a phrase between two lines of one file"
  }

@@ -13,16 +13,16 @@
 
 ^"emit"{
  ~#title: "Host Feature Radar"
- ~#claim: "The server leaves several LSP features unused, and each candidate here names its plan card and whether the owner holds it, keeps it dormant, or has no card."
- ~#proof: "Rows cite the LSP 3.17 specification, the JetBrains LSP feature table, LSP4IJ, the VS Code semantic highlight guide, and plan cards at commit 1aa1dc23."
+ ~#claim: "The server leaves several LSP features unused, and each candidate here names the plan card that states it, if any, and whether the owner holds it, keeps it dormant, or has no card."
+ ~#proof: "Rows cite the LSP 3.17 specification, the JetBrains LSP feature table, LSP4IJ, the VS Code semantic highlight guide, the tokens study, and plan cards at commit 1aa1dc23."
  ~#door: "Read the hold rule first, then pick a row and open its card."
  ~#audience: "maintainers and the owner weighing what the hosts adopt next"
- continuity: "Host Feature Radar | names its plan card"
- cold_open: "Each feature the hosts could adopt next names its plan card and says whether the owner holds it or lets it rest."
+ continuity: "Host Feature Radar | the plan card that states it"
+ cold_open: "Each feature the hosts could adopt next names the plan card that states it, or says plainly that no card does yet."
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -31,8 +31,34 @@
   ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected
+   note: "JetBrains feature table and LSP4IJ README reread; standing rows rechecked against the resume note at 651b535b"
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+   note: "card links rechecked against the cards themselves; three needs credited to the tokens study, the refresh direction fixed, and the 2026.1.4 rename note added"
+  }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[
+  "pull diagnostics were given as listed from 2025.1; the JetBrains table marks 2025.1.2 and on by default from 2025.2",
+  "the native LSP API was said to be found only in commercial IDEs; JetBrains excludes IntelliJ IDEA open-source builds and Android Studio, and since 2025.1 lists unified PyCharm without a Pro subscription",
+  "the uncalled-methods row said three dormant or held cards name the methods; vscode-workspace-atlas has landed, and no card names particles",
+  "the config row said the server handles the refresh requests; those go from server to client, so the server would send them, and it sends neither",
+  "the execute-command, read-only-views, and token-colors rows gave their needs to plan cards that do not name them; the tokens study proposes all three, and intellij-lsp4ij excludes semantic tokens",
+  "the 263 gate row left the deprecation unexplained; JetBrains documents it as a renaming in 2026.1.4 with the old names kept and functional",
+  "the token delta row gave vscode-plugin-performance as its card without saying that the card names parse-backed tokens, not deltas or ranges; it is now marked an a-cut mapping"
+ ]
  standing_words: "lead, held, and dormant are the owner hold words of the resume note; no card means no plan names the item yet"
+ card_mapping: "a card binding names a plan that states the need itself; a-cut marks a card this cut judges nearest when no plan states the need"
 }
 
 ^["edges"]{
@@ -70,14 +96,16 @@
   source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_spec_317"
   sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_server", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_tokens_study" ]
   cites: "packages/spw-lsp/src/stdio-server.ts:227-230"
-  card: "vscode-plugin-performance"
+  card: "vscode-plugin-performance, a-cut mapping"
+  card_note: "its PLAN.md names parse-backed semantic tokens and incremental annotation deltas at .agents/plans/vscode-plugin-performance/PLAN.md:21,32-33, not token result ids or range requests"
   standing: "dormant"
   status: #proposed
  }
  #>editor_hosts_radar_config
  ^["config_and_refresh"]{
   #:claim #!settled
-  statement: "workspace/didChangeConfiguration and the semantic token and inlay hint refresh requests would let settings apply without a new initialize; the server handles none of them."
+  statement: "The server handles no workspace/didChangeConfiguration and never sends the semantic token or inlay hint refresh requests; together these would let settings apply without a new initialize."
+  direction: "the two refresh requests run from server to client, so the server sends them and the client repaints"
   source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_spec_317"
   sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_server" ]
   cites: "packages/spw-lsp/src/stdio-server.ts:418-475"
@@ -91,15 +119,16 @@
   statement: "An executeCommandProvider would give code lenses an action in every host, and JetBrains lists Execute Command from 2024.1; today every lens command is empty."
   source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jetbrains_lsp_docs"
   sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_display", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_tokens_study" ]
-  cites: "packages/spw-lsp/src/handlers/display.ts:1085-1194"
-  card: "lsp-custom-request-completions"
-  standing: "held"
+  cites: [ "packages/spw-lsp/src/handlers/display.ts:1085-1194", "tokens study, section 5 LSP surfaces and proposal 13" ]
+  card: "none; tokens study section 5 and proposal 13"
+  standing: "no card"
+  nearest_card: "lsp-custom-request-completions, a-cut mapping; that card covers the spw method matrix and formContext and does not name executeCommand"
   status: #proposed
  }
  #>editor_hosts_radar_pull_diagnostics
  ^["pull_diagnostics"]{
   #:claim #!settled
-  statement: "Pull diagnostics arrived in protocol 3.17 and JetBrains lists them from 2025.1; the server only pushes diagnostics after a debounce."
+  statement: "Pull diagnostics arrived in protocol 3.17, and JetBrains lists them from 2025.1.2, on by default from 2025.2; the server only pushes diagnostics after a debounce."
   source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jetbrains_lsp_docs"
   sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_spec_317", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_server" ]
   cites: "packages/spw-lsp/src/stdio-server.ts:172-179"
@@ -120,11 +149,12 @@
  #>editor_hosts_radar_uncalled
  ^["uncalled_methods"]{
   #:claim #!settled
-  statement: "The server already answers resonance, register snapshots, particles, and form context with no in-repo caller; three dormant or held cards name them as next wiring."
+  statement: "The server answers resonance, register snapshots, particles, and form context with no in-repo caller; three cards name some of these as next wiring, and none names particles."
   source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_plan_cards_editors"
-  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_server" ]
-  cites: "packages/spw-lsp/src/stdio-server.ts:380-385"
-  cards: [ "vscode-workspace-atlas, landed, next wires spw/resonance after splitting workspace-tree.ts", "vscode-register-explorer, dormant, asks whether the regex-backed snapshot is honest", "lsp-custom-request-completions, held, keeps formContext out" ]
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_server", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_plan_index" ]
+  cites: [ "packages/spw-lsp/src/stdio-server.ts:380-385", ".agents/plans/vscode-workspace-atlas/wip.spw:10,14", ".agents/plans/vscode-register-explorer/wip.spw:10,14", ".agents/plans/lsp-custom-request-completions/wip.spw:10,14" ]
+  cards: [ "vscode-workspace-atlas, landed, next wires spw/resonance after splitting workspace-tree.ts", "vscode-register-explorer, dormant, asks whether the regex-backed register snapshot is honest", "lsp-custom-request-completions, phase planning and held, keeps the formContext method out" ]
+  particles: "no card names spw/particles as next wiring"
   status: #implemented
  }
 }
@@ -133,11 +163,12 @@
  #>editor_hosts_radar_substrate
  ^["native_or_lsp4ij"]{
   #:claim #!settled
-  statement: "The plugin uses the JetBrains native LSP API, found only in commercial IDEs; LSP4IJ is a Red Hat client under EPL-2.0 for all IntelliJ flavors from 2024.2."
+  statement: "The plugin uses the JetBrains native LSP API, which is unavailable in IntelliJ IDEA open-source builds and Android Studio; LSP4IJ, a Red Hat client under EPL-2.0, runs in all IntelliJ flavors from 2024.2."
   source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jetbrains_lsp_docs"
   sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp4ij", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_plugin_xml" ]
   cites: "extensions/intellij-spw/src/main/resources/META-INF/plugin.xml:30,40"
-  as_of: "documentation read 2026-10-02"
+  available_in: "IntelliJ IDEA, WebStorm, PhpStorm, PyCharm, DataSpell, RubyMine, CLion, DataGrip, GoLand, Rider, and RustRover, and since 2025.1 unified PyCharm without a Pro subscription"
+  as_of: "documentation read 2026-10-02; availability note reread 2026-10-03"
  }
  #>editor_hosts_radar_263_gate
  ^["gate_263"]{
@@ -149,10 +180,15 @@
   card: "intellij-lsp4ij"
   standing: "held"
   provenance_label: "a-canon for the verifier note; owner hold for the gate"
-  verify: "the deprecation status of the native LSP API on 263 builds has not been checked against JetBrains release notes"
+  rename: "JetBrains documents the deprecation as a renaming in 2026.1.4: LspServerSupportProvider became LspIntegrationProvider and ProjectWideLspServerDescriptor became ProjectWideLspClientDescriptor; the old names stay in the API and fully functional"
+  plugin_uses: "the plugin extends the two old names at SpwLspServerSupportProvider.kt:18,133"
+  rename_source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jetbrains_lsp_docs"
+  verify: "whether the old names still exist on 263 builds has not been checked against JetBrains release notes"
  }
  ^["rows"]{
-  token_colors: .{ need: "an lspCustomization or a color settings page for server token types", card: "intellij-lsp4ij", standing: "held", status: #proposed }
+  token_colors: .{ need: "an lspCustomization or a color settings page for server token types", card: "none; tokens study section 5 and proposal 21", standing: "no card", status: #proposed }
+  token_colors_note: "intellij-lsp4ij leaves semantic tokens out of scope at .agents/plans/intellij-lsp4ij/PLAN.md:14, so it is not the card for this need"
+  token_colors_source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_tokens_study"
   gutter_targets: .{ need: "a navigation handler for anchor markers", card: "none", standing: "no card", status: #proposed }
   spellcheck: .{ need: "a tokenizer for strings and hash prose", card: "none", standing: "no card", status: #proposed }
  }
@@ -171,7 +207,9 @@
   status: #proposed
  }
  ^["rows"]{
-  readonly_views: .{ need: "a content provider so receipts open read-only, closing defect seven", card: "vscode-editor-contract", standing: "dormant", status: #proposed }
+  readonly_views: .{ need: "a content provider so receipts open read-only, closing defect seven", card: "none; tokens study section 5, a spw-view content provider", standing: "no card", status: #proposed }
+  readonly_views_note: "vscode-editor-contract, dormant, is the a-cut nearest card; it does not name read-only views, a content provider, or untitled tabs"
+  readonly_views_source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_tokens_study"
   lean_start: .{ need: "incremental annotation sync and fewer duplicate calls", card: "vscode-plugin-performance", standing: "dormant", status: #proposed }
   orientation: .{ need: "a few orientation questions answered through shared reading profiles", card: "vscode-cognitive-surface", standing: "dormant", status: #proposed }
   citations: .{ need: "a crop-scale fragment door for unfamiliar workspaces", card: "citation-navigation", standing: "held", status: #proposed }

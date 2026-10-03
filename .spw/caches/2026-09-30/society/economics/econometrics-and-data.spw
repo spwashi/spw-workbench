@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5"
  lineage: #[ ".spw/caches/university-education/economics/undergrad-econometrics-and-data-methods.spw" ]
@@ -32,13 +32,18 @@
   ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
    care: #adversarial, outcome: #corrected }
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the first-stage F above 10 rule is dated: it screens for weak instruments, and valid t-inference needs far more or an adjusted critical value",
   "fixed effects remove only time-invariant additive confounders; the raw said all confounders",
   "the credibility-revolution wonder no longer claims structural models allow any conclusion",
   "synthetic control is added as a row; the raw file omitted it",
-  "fact check: the OLS row let mean independence alone deliver Gauss-Markov; best linear unbiased also needs homoskedastic, uncorrelated errors"
+  "fact check: the OLS row let mean independence alone deliver Gauss-Markov; best linear unbiased also needs homoskedastic, uncorrelated errors",
+  "fact check 2026-10-03: the instrument row omitted independence; Imbens and Angrist also need the instrument as good as randomly assigned, and a confounded instrument is now a listed failure",
+  "fact check 2026-10-03: attenuation said the slope shrinks by the signal share; it is multiplied by that share, and only in the one-regressor case"
  ]
 }
 
@@ -71,8 +76,13 @@
  #>economics_econometrics_attenuation
  ^["attenuation"]{
   #:claim #!settled
-  statement: "Classical noise in a regressor shrinks its estimated slope toward zero by the share of the regressor variance that is signal."
+  statement: "With one regressor measured with classical noise, the estimated slope converges to the true slope times the share of the regressor variance that is signal."
   source: ~"../../registries/sources/economy-and-markets.spw#src_econ_wooldridge_2010"
+  factor: "the reliability ratio, the true variance over the true plus noise variance"
+  ^["limits"]{
+   holds: "one mismeasured regressor whose noise is independent of its true value and of the outcome error"
+   fails: "with other controls the factor uses only the signal they do not explain, so attenuation is at least as strong; nonclassical noise can bias either way"
+  }
  }
  #>economics_econometrics_robust_se
  ^["standard_errors"]{
@@ -102,10 +112,10 @@
  #>economics_econometrics_row_iv
  ^["iv_late"]{
   #:claim #!settled
-  statement: "A relevant instrument that moves the outcome only through treatment, with no defiers, identifies the average effect for compliers, the local average treatment effect."
+  statement: "A relevant instrument that is as good as randomly assigned, moves the outcome only through treatment, and has no defiers identifies the average effect for compliers, the local average treatment effect."
   source: ~"../../registries/sources/economy-and-markets.spw#src_econ_imbens_angrist_1994"
-  fails: "exclusion violations, defiers, and weak first stages"
-  check: "first-stage strength, overidentification where available, and weak-robust intervals"
+  fails: "an instrument correlated with unobservables through non-random assignment, exclusion violations, defiers, and weak first stages"
+  check: "covariate balance across instrument values, first-stage strength, overidentification where available, and weak-robust intervals"
   ~#(compliers are the units whose treatment the instrument actually moves)
  }
  #>economics_econometrics_weak_iv

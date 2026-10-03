@@ -7,7 +7,7 @@
 #:domain #!neuroscience
 #:form #!state_machine
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 
 ^"emit"{
@@ -33,6 +33,9 @@
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{ event: #fact_checked, at: "2026-10-03",
+   agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #corrected }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  receipt_note: "r3 was first written as a pass while every source link pointed at a registry not yet written; r4 wrote and checked that registry, and r5 is the passing run after it"
  corrections: #[
@@ -41,7 +44,8 @@
   "the raw fusion time under 200 microseconds and conduction speed over 100 m/s had no source here and were dropped (raw lines 23 and 29)",
   "saltatory conduction credited to Tasaki in 1939 as well as Huxley and Stampfli in 1949",
   "the raw CaMKII wonder stated a self-sustaining memory switch as settled; LTP maintenance is kept as a contest between CaMKII and PKMzeta accounts (raw line 43)",
-  "2026-10-03: the form axis now reads state_machine, matching the channel-gating machines; the IFM pocket claim was rechecked against the Yan 2017 abstract"
+  "2026-10-03: the form axis now reads state_machine, matching the channel-gating machines; the IFM pocket claim was rechecked against the Yan 2017 abstract",
+  "2026-10-03 fact-check: Bliss and Lomo 1973 is the first full report of long-term potentiation, not the first report, since Lomo saw it in 1966; the duration now follows their abstract, 30 minutes to 10 hours, in place of hours or longer"
  ]
 }
 
@@ -168,8 +172,8 @@
  #>neuroscience_cellular_ltp
  ^["long_term_potentiation"]{
   #:claim #!settled
-  statement: "Brief high-frequency stimulation of the perforant path strengthened hippocampal synapses for hours or longer in rabbits, the first report of long-term potentiation."
-  source: ~"../../registries/sources/life-and-mind.spw#src_life_bliss_lomo_1973"
+  statement: "Brief trains of stimuli to the perforant path potentiated dentate responses for 30 minutes to 10 hours in anaesthetized rabbits, the first full report of long-term potentiation, after Lomo's preliminary results of 1966."
+  sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_bliss_lomo_1973", ~"../../registries/sources/life-and-mind.spw#src_life_lomo_2003" ]
  }
  #>neuroscience_cellular_camkii
  ^["camkii_switch"]{

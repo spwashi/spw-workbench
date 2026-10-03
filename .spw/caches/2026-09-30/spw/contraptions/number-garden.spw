@@ -1,0 +1,208 @@
+# Number Garden
+#
+# Sieves, continued fractions, and Collatz runs written as Spw streams with holes: predict each hole before you compute it, because nothing in the parser does arithmetic, and this surface says so.
+
+#>spw_lab_number_garden
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!intro
+#:review #!adversarial_checked
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Number Garden"
+ ~#claim: "Sieves, continued fractions, and Collatz runs can be written as Spw streams with holes for a reader to predict, but the parser computes none of them: a plus sign stays a connector between two literals."
+ ~#proof: "At commit 1aa1dc23 the parser reads one plus two as two literals and a connector and interpretSeed computes no sum; the number theory follows Hardy and Wright, the sieve Nicomachus, the pi convergent Zu Chongzhi as Martzloff recounts, and the runs Lagarias."
+ ~#door: "Predict before you compute: fill the three holes in the prime row by hand, then check the count below one hundred against the registry."
+ ~#audience: "school students, teachers, puzzle lovers, and Spw authors meeting streams and holes"
+ continuity: "Number Garden | predict before you compute"
+ cold_open: "Write the next number as a hole, predict before you compute, and remember that Spw only holds the numbers while you do the arithmetic."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new", "final-plan-v2 tree, contraptions kit" ]
+ method: #authored
+ evidence: #[
+  "every row below was recomputed with Python integers and exact fractions on 2026-10-03",
+  "one plus two was parsed and interpreted at 651b535b on 2026-10-03 and rerun at f22c12bb the same day; the seed grammar and packages/spw-runtime are unchanged since 1aa1dc23"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+ }
+ corrections: #[
+  "the mirror said interpretSeed returned null for x: 1 + 2 and x: 355/113; a rerun returns the binding key x for both, and the connector record for a bare 1 + 2, so it computes no sum but does return a value",
+  "the mirror cited the 2026-10-02 parse runs at 1aa1dc23 for a run made at 651b535b on 2026-10-03; it now cites the bench runs and the interpreter line that returns the record",
+  "the tool frame named parser behaviour without a line; it now quotes the Stream and Wildcard builders as path and line"
+ ]
+}
+
+^["edges"]{
+ extends: [ ~"../../panels/llull-wheel.spw#panel_llull_wheel" ]
+ see: [ ~"./grid-gap-finder.spw#spw_lab_grid_gap", ~"./derivation-checker.spw#spw_lab_derivation_checker" ]
+}
+
+^["concepts"]{
+ primary: [ #hole, #walk ]
+ transfers: [ #invariant, #reflexive_mirror ]
+ tensions: [ #overclaim ]
+}
+
+^["tool"]{
+ status: #proposed
+ verb: "a verb that would fill each hole by a named rule and set the result beside the reader prediction; not yet a command"
+ implemented: #[
+  "packages/spw-seed/src/grammar/containers.ts:422 builds a Stream node for each schedule",
+  "packages/spw-seed/src/grammar/patterns.ts:145-149 builds a Wildcard node for each underscore"
+ ]
+ run_today: "compute by hand or in any calculator; the surface holds the rows and the holes"
+ source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_grammar"
+}
+
+^["parameters"]{
+ hole: "an underscore stands where a reader writes a prediction before computing"
+ rule: "every bed names the rule that fills its holes, so a prediction can be checked"
+ order: << predict ; compute ; compare >>
+}
+
+#>spw_lab_number_garden_beds
+^["beds"]{
+ #>spw_lab_number_garden_sieve
+ ^["sieve"]{
+  rule: "strike every multiple of two, three, and five after the number itself; what survives below thirty is prime"
+  primes_to_30: << 2 ; 3 ; 5 ; 7 ; _ ; _ ; 17 ; 19 ; _ ; 29 >>
+ }
+ #>spw_lab_number_garden_fraction
+ ^["continued_fraction"]{
+  rule: "each convergent takes the next term t and builds t times the last numerator plus the one before, over the same for denominators"
+  pi_terms: << 3 ; 7 ; 15 ; 1 ; 292 >>
+  convergents: << "3/1" ; "22/7" ; "333/106" ; _ >>
+ }
+ #>spw_lab_number_garden_collatz
+ ^["collatz"]{
+  rule: "halve an even number; send an odd number n to 3n + 1; stop at 1"
+  from_6: << 6 ; 3 ; 10 ; 5 ; 16 ; 8 ; 4 ; 2 ; 1 >>
+  from_7: << 7 ; 22 ; 11 ; 34 ; 17 ; _ ; 26 ; 13 ; 40 >>
+  from_40: << 40 ; 20 ; 10 ; 5 ; 16 ; 8 ; 4 ; 2 ; 1 >>
+ }
+}
+
+^["world"]{
+ #>spw_lab_number_garden_eratosthenes
+ ^["sieve_origin"]{
+  #:claim #!settled
+  statement: "Nicomachus of Gerasa describes the sieve and credits it to Eratosthenes; it leaves exactly the primes, and below one hundred it leaves the count the registry holds."
+  reads: %[contrap.num.primes_below_100]
+  sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_nicomachus_1926", ~"../../registries/sources/spw-contraptions.spw#src_contrap_hardy_wright_2008" ]
+ }
+ #>spw_lab_number_garden_zu
+ ^["milu"]{
+  #:claim #!settled
+  statement: "Zu Chongzhi in fifth-century China gave 355/113 as a close value of pi and 22/7 as a rough one, and both are convergents of the continued fraction of pi."
+  sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_martzloff_1997", ~"../../registries/sources/spw-contraptions.spw#src_contrap_hardy_wright_2008" ]
+ }
+ #>spw_lab_number_garden_best
+ ^["best_approximation"]{
+  #:claim #!settled
+  statement: "Each convergent of a continued fraction is closer to the number than any fraction with a smaller denominator, which is why a large next term makes the convergent before it unusually good."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_hardy_wright_2008"
+ }
+ #>spw_lab_number_garden_collatz_state
+ ^["collatz_status"]{
+  #:claim #!settled
+  statement: "Lagarias surveyed the Collatz problem in 1985 as open; Tao later proved almost all orbits attain almost bounded values, and computation has checked every start below a power of two the registry holds."
+  reads: %[contrap.num.collatz_verified_log2]
+  sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_lagarias_1985", ~"../../registries/sources/spw-contraptions.spw#src_contrap_tao_2022", ~"../../registries/sources/spw-contraptions.spw#src_contrap_barina_2025" ]
+  as_of: "2026-10-03"
+  ^["limits"]{
+   holds: "for the results these sources report"
+   fails: "a verified bound and an almost-all result are not a proof for every start; check for later work before calling the problem open"
+  }
+ }
+}
+
+^["battery"]{
+ #>spw_lab_number_garden_fill
+ ^["fill_the_sieve"]{
+  !probe{ "predict the three holes in the prime row, then sieve two to thirty by hand" =id[p_contrap_garden_sieve] =kind[calc] }
+  predict: ?{ "which three numbers belong in the holes" } ~<guess>
+  expect: "11, 13, and 23; sieving on to one hundred leaves 25 primes, the registry count"
+  shows: ~"./number-garden.spw#spw_lab_number_garden_eratosthenes"
+ }
+ #>spw_lab_number_garden_next
+ ^["next_convergent"]{
+  !probe{ "apply the convergent rule with the fourth term, 1, to 22/7 and 333/106" =id[p_contrap_garden_convergent] =kind[calc] }
+  predict: ?{ "what fraction fills the hole" } ~<guess>
+  expect: "355/113, within about 2.7 ten-millionths of pi, because the next term, 292, is large"
+  shows: ~"./number-garden.spw#spw_lab_number_garden_best"
+ }
+ #>spw_lab_number_garden_27
+ ^["run_from_27"]{
+  !probe{ "guess how many steps the run from 27 takes and how high it climbs, then run it" =id[p_contrap_garden_27] =kind[calc] }
+  predict: ?{ "more or fewer than thirty steps" } ~<guess>
+  expect: "111 steps with a peak of 9232, against 10 steps from 26 and 18 from 28"
+  reads: %[contrap.num.collatz_27_steps]
+  shows: ~"./number-garden.spw#spw_lab_number_garden_collatz"
+ }
+}
+
+#>spw_lab_number_garden_runs
+^["runs"]{
+ note: "procedure rows the derivation checker hands here, since a sieve and an iteration must be run, not evaluated"
+ primes_below_100: "sieve two to ninety-nine; count survivors"
+ collatz_27_steps: "iterate from 27 and count steps to 1"
+ reads: %[contrap.num.primes_below_100, contrap.num.collatz_27_steps]
+}
+
+#>spw_lab_number_garden_mirror
+^["language_mirror"]{
+ #>spw_lab_number_garden_no_arithmetic
+ ^["holds_not_computes"]{
+  #:claim #!settled
+  statement: "The parser reads one plus two as two literals and a connector, and interpretSeed computes no sum: a binding returns its key and a bare sum returns the connector record."
+  cites: [ "packages/spw-runtime/src/interpreter/interpreter.ts:353-359" ]
+  sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_bench_runs", ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_interpreter" ]
+  observed: "on 2026-10-03 at f22c12bb, x: 1 + 2 and x: 355/113 each parsed as two NUMBER literals and a connector, and interpretSeed returned the value x with one write to the Set register"
+  observed_bare: "a bare 1 + 2 returned the record of sigil +, args 1 and 2, and frames reg conn; no run returned 3"
+  reading: "Spw stores arithmetic without doing any"
+ }
+ question: "What should a hole in a stream promise: a value some tool will compute, or a place where a reader writes a guess?"
+ standing: "a-cut: the predict-then-compute order is this cut arc convention; a-canon: the parser and interpreter are repository code"
+ !probe{ "count streams with holes across the cut and sort them by whether a named rule could fill each hole" =id[p_contrap_garden_holes] =kind[census] }
+}
+
+^["limits"]{
+ holds: "the rows as stated and the rules that fill their holes"
+ fails: "a stream of numbers is a record, not a proof; a run that reaches 1 says nothing about the starts not run; and Spw evaluates none of these rows"
+}
+
+^["try"]{
+ #>spw_lab_number_garden_try
+ ^["hundred_square"]{
+  materials: [ "a printed ten-by-ten grid of the numbers 1 to 100", "four coloured pencils" ]
+  steps: << "write your guess for how many primes are below one hundred" ; "cross out 1, then multiples of two after 2 in one colour" ; "do the same for three, five, and seven in the other colours" ; "count what is left and compare with your guess" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./number-garden.spw#spw_lab_number_garden_eratosthenes"
+ }
+}
+
+#>spw_lab_number_garden_q
+?["Why does the run from 27 last so long when its neighbours finish quickly?"]{
+ #:depth #!mathematical ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Starts whose binary form ends in a long run of ones climb through several odd steps in a row, so a longer trailing run should go with a higher early peak."
+ !probe{ "for every start below ten thousand, record the trailing ones in binary and the peak reached in the first twenty steps, then compare" =id[p_contrap_garden_q] =kind[calc] }
+ $%[contrap.num.collatz_27_steps, contrap.num.collatz_verified_log2]
+ ~"./number-garden.spw#spw_lab_number_garden_27" ~#neighbor(nearest)
+ breaks: "an early climb need not mean a long run overall, and patterns in small starts may fail far beyond the verified bound"
+}

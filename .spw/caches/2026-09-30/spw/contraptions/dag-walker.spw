@@ -7,7 +7,7 @@
 #:domain #!spw
 #:form #!probe_battery
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!boon
 
 ^"emit"{
@@ -21,20 +21,29 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new", "persona study contraption_catalog[6], references/studies/persona-synthesis.json", "sketch references/spw-branch/seeds/contraptions/dag-walker.spw" ]
  method: #authored
- evidence: #[ "readBias returned four causes edges from the frame below at commit 1aa1dc23 on 2026-10-02", "a census on 2026-10-02 found 72 needs bias edges over 65 anchors in the cut outside this bench, acyclic, and 260 needs refs written as edge lists" ]
+ evidence: #[
+  "readBias returned four causes edges from the frame below at commit 1aa1dc23 on 2026-10-02",
+  "a census on 2026-10-02 found 72 needs bias edges over 65 anchors in the cut outside this bench, acyclic, and 260 needs refs written as edge lists",
+  "a rerun at f22c12bb on 2026-10-03 found 53 needs bias operations carrying 75 target links over 68 anchors outside this bench, acyclic, and 373 needs refs written as edge lists"
+ ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
  }
  corrections: #[
   "the sketch tagged roles with an undeclared role particle; roles are now plain bindings",
-  "the instrument row now carries the weak-instrument critique beside the design it questions"
+  "the instrument row now carries the weak-instrument critique beside the design it questions",
+  "the needs census figures dated 2026-10-02 no longer matched the cut; the rerun at f22c12bb is recorded beside them, and the edge-list lead has grown from three to one to about seven to one"
  ]
 }
 
@@ -136,6 +145,8 @@
  question: "Do the needs edges in this cut form a prerequisite poset, and does a walker see all of them?"
  instrument: "read needs edges written as bias operations and as edge lists, build one graph, and sort it"
  observed: "on 2026-10-02 the bias-form needs edges were acyclic, but edge-list needs refs outnumbered them by more than three to one and readBias reads only the bias form"
+ rerun: "at f22c12bb on 2026-10-03, 373 edge-list needs refs stood against 53 bias operations, about seven to one, and the bias form was still acyclic; rerun before citing any count"
+ source_run: ~"../../registries/sources/spw-contraptions.spw#src_contrap_bench_runs"
  standing: "a-canon: canon asks selector graphs to stay acyclic; a-cut: needs edges are this cut ladders, and nothing in canon requires concept graphs to stay acyclic"
  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_canon_math_modeling"
  !probe{ "teach the walker to read edge lists, then sort the whole needs graph" =id[p_contrap_dag_walker_lists] =kind[build] }

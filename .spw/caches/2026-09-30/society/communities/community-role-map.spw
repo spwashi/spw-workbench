@@ -22,7 +22,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -35,7 +35,19 @@
    care: #adversarial, outcome: #pass
   }
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass
+  }
+  ^["r8"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: [
+  "fact check 2026-10-03: the template rows left out the compensation, credential, and reciprocity columns the table declares; every row now carries them as question marks"
+ ]
 }
 
 ^["scope"]{
@@ -62,12 +74,30 @@
  #>communities_map_template
  ^["template"]{
   rows: #[
-   .{ function: "convener", role: "?", scale: "?", tenure: "?", met_at: "?", missing: "?" },
-   .{ function: "lead", role: "?", scale: "?", tenure: "?", met_at: "?", missing: "?" },
-   .{ function: "second", role: "?", scale: "?", tenure: "?", met_at: "?", missing: "?" },
-   .{ function: "keeper", role: "?", scale: "?", tenure: "?", met_at: "?", missing: "?" },
-   .{ function: "carrier", role: "?", scale: "?", tenure: "?", met_at: "?", missing: "?" },
-   .{ function: "guardian", role: "?", scale: "?", tenure: "?", met_at: "?", missing: "?" }
+   .{
+    function: "convener", role: "?", scale: "?", tenure: "?", compensation: "?",
+    credential: "?", reciprocity: "?", met_at: "?", missing: "?"
+   },
+   .{
+    function: "lead", role: "?", scale: "?", tenure: "?", compensation: "?",
+    credential: "?", reciprocity: "?", met_at: "?", missing: "?"
+   },
+   .{
+    function: "second", role: "?", scale: "?", tenure: "?", compensation: "?",
+    credential: "?", reciprocity: "?", met_at: "?", missing: "?"
+   },
+   .{
+    function: "keeper", role: "?", scale: "?", tenure: "?", compensation: "?",
+    credential: "?", reciprocity: "?", met_at: "?", missing: "?"
+   },
+   .{
+    function: "carrier", role: "?", scale: "?", tenure: "?", compensation: "?",
+    credential: "?", reciprocity: "?", met_at: "?", missing: "?"
+   },
+   .{
+    function: "guardian", role: "?", scale: "?", tenure: "?", compensation: "?",
+    credential: "?", reciprocity: "?", met_at: "?", missing: "?"
+   }
   ]
   cell_rule: "write a role, never a name, then where you met it: meeting, porch, garden, clinic, stream, or flyer"
   facet_rule: "take facet values from the closed sets in the roles lattice; write a question mark rather than guess"

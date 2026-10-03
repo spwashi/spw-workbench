@@ -22,7 +22,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5"
  lineage: #[ ".spw/caches/materials-matter-and-history/water-the-universal-matrix.spw" ]
@@ -35,12 +35,18 @@
    care: #adversarial, outcome: #corrected
   }
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "Watt patented the separate condenser in 1769; the sun-and-planet gearing the firm patented for rotary output in 1781 is usually credited to William Murdoch",
   "Wittfogel thesis marked contested; Grand Canal and Indus removed as supporting cases",
   "the raw said sanitation doubled life expectancy; that is dropped, and how much filtration and chlorination cut US urban mortality is marked contested between Cutler and Miller and Anderson, Charles, and Rees",
-  "the seawater osmotic pressure of 27 bar had no source; sourced correlations put standard seawater a little lower, so the number is dropped and the correlation is cited"
+  "the seawater osmotic pressure of 27 bar had no source; sourced correlations put standard seawater a little lower, so the number is dropped and the correlation is cited",
+  "the purification leaf said Anderson, Charles, and Rees find no substantial contribution, the wording of their 2018 working paper; the published 2022 article ties filtration to an 11 to 12 percent drop in infant mortality"
  ]
 }
 
@@ -148,9 +154,14 @@
  #>materials_water_purification_mortality
  ^["purification_and_mortality"]{
   #:claim #!contested
-  statement: "Cutler and Miller credited filtration and chlorination with nearly half of the 1900 to 1936 mortality decline in major US cities; Anderson, Charles, and Rees find no substantial contribution."
+  statement: "Cutler and Miller credited filtration and chlorination with nearly half of the 1900 to 1936 mortality decline in major US cities; Anderson, Charles, and Rees find a measurable role only for filtration, in infant mortality."
   source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_cutler_miller_2005"
   counter: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_anderson_charles_rees_2022"
+  counter_finding: "In 25 cities from 1900 to 1940, filtration is associated with an 11 to 12 percent reduction in infant mortality; chlorination, sewage treatment, and milk standards show no detectable contribution."
+  ^["limits"]{
+   holds: "both studies cover large US cities in the first decades of the twentieth century"
+   fails: "the 11 to 12 percent is a drop in the infant mortality rate, not a share of the decline, so it does not compare directly with nearly half"
+  }
   see: [ ~"../../registries/sources/materials-and-engineering.spw#src_mateng_cutler_miller_2022" ]
   ~#(Cutler and Miller answered in a 2022 comment, and the authors replied)
  }

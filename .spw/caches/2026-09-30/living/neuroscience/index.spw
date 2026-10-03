@@ -7,7 +7,7 @@
 #:domain #!neuroscience
 #:form #!index
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
@@ -33,6 +33,9 @@
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{ event: #fact_checked, at: "2026-10-03",
+   agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #corrected }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  receipt_note: "r3 was first written as a pass while every source link pointed at a registry not yet written; r4 wrote and checked that registry, and r5 is the passing run after it"
  corrections: #[
@@ -41,7 +44,8 @@
   "the raw claim that resting activity uses over 80 percent of brain energy had no source; the sourced share is the whole brain against the whole body, and intrinsic activity is described as the largest part (raw line 30)",
   "the raw claim that over 99 percent of neurons are silent each millisecond is replaced by Lennie's energy-budget estimate and its limits (raw index line 44)",
   "the 86 billion neuron count is kept and sourced to Azevedo and colleagues; the tenfold glia figure it is often quoted with is refuted by the same count",
-  "2026-10-03: the facet row gives cellular neurobiology the state_machine form its leaf declares; the Pinto, Lennie, and Attwell and Laughlin abstracts were reread against the stance claims"
+  "2026-10-03: the facet row gives cellular neurobiology the state_machine form its leaf declares; the Pinto, Lennie, and Attwell and Laughlin abstracts were reread against the stance claims",
+  "2026-10-03 fact-check: the 15 percent active fraction lived only in prose and the claim read the action-potential share instead; the fraction now has its own cell, and the statement says what each cell backs"
  ]
 }
 
@@ -112,8 +116,12 @@
  #>neuroscience_index_sparse
  ^["sparse_activity"]{
   #:claim #!settled
-  statement: "Energy budgets limit how many neurons can fire hard at once; Lennie estimated possibly fewer than 1 percent of human cortical neurons, and Attwell and Laughlin favored codes with at most 15 percent active."
-  reads: %[life.brain.active_neurons_pct_max, life.brain.ap_energy_share_pct]
+  statement: "Energy budgets cap how many neurons fire hard at once: action potentials take the largest energy share, Attwell and Laughlin predicted codes with at most 15 percent active, and Lennie estimated possibly under 1 percent."
+  reads: %[
+   life.brain.ap_energy_share_pct,
+   life.brain.distributed_code_active_pct_max,
+   life.brain.active_neurons_pct_max
+  ]
   sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_lennie_2003", ~"../../registries/sources/life-and-mind.spw#src_life_attwell_laughlin_2001" ]
   ^["limits"]{
    holds: "as an upper bound derived from energy cost per spike"

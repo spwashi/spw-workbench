@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/university-education/horticulture-and-botany/taste.spw" ]
@@ -36,13 +36,19 @@
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #corrected }
   ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  revision_2026_10_03: "r6 redated the r4 fact-check to 2026-10-02, the day its sources were read"
  corrections: #[
   "the raw loss figure for vegetable varieties is kept as contested with its counter-source (raw line 26)",
   "health claims for horticultural therapy and biophilia were unsourced and dropped (raw lines 33 and 37)",
   "the raw facade wonder carried invented cooling and yield percentages and was dropped",
-  "the raw masting wonder asserted continent-wide chemical signaling without evidence and was dropped"
+  "the raw masting wonder asserted continent-wide chemical signaling without evidence and was dropped",
+  "fact-check 2026-10-03: the Three Sisters claim set hoe culture against plow farming; Mt. Pleasant compares Iroquois maize with European wheat, three to five times per acre, and credits both unplowed soil and the yield potential of maize, so the claim now says so and is graded emerging as one reconstruction"
  ]
 }
 
@@ -85,15 +91,17 @@
  }
  #>plant_science_index_three_sisters
  ^["three_sisters"]{
-  #:claim #!settled
-  statement: "Haudenosaunee hoe culture of maize, beans, and squash yielded more grain per acre than contemporary European plow farming, by Mt. Pleasant's agronomic reconstruction."
+  #:claim #!emerging
+  statement: "Haudenosaunee (Iroquois) maize farmers of the seventeenth and eighteenth centuries produced three to five times more grain per acre than wheat farmers in Europe, by Mt. Pleasant's agronomic reconstruction."
+  causes: "Mt. Pleasant credits two factors: soil organic matter kept high because no plow turned the ground, and the higher yield potential of maize as a C4 crop"
   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_mt_pleasant_2011"
   origins: "polyculture of maize, beans, and squash is Indigenous knowledge of the Americas, carried in Haudenosaunee and many other nations"
   ~#(Kimmerer writes the Three Sisters as a teaching of reciprocity)
   reading: ~"../../registries/sources/plants-ecology-care.spw#src_eco_kimmerer_2013"
   ^["limits"]{
    holds: "seventeenth and eighteenth century northeastern North America, reconstructed from period accounts and agronomic data"
-   fails: "a reconstruction of yields, not a field trial run in the period"
+   fails: "a single reconstruction of yields, not a field trial run in the period"
+   confound: "the comparison sets maize against wheat, so the full gap mixes crop and tillage; she assigns a significant share, not all of it, to the absence of plowing"
   }
  }
  #>plant_science_index_variety_loss

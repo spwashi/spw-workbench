@@ -1,0 +1,137 @@
+# Light to Image
+#
+# A trail from refraction to a finished frame: lens trade-offs, film formats, emulsion, processing baths, the shooting day, the school sequence, and the drawn frame.
+
+#>trail_light_to_image
+#:layer #!pragmatics
+#:domain #!trail
+#:form #!trail
+#:level #!intro
+#:review #!spot_checked
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Light to Image"
+ ~#claim: "Eight stops follow light from a lens that trades its aberrations, through grain and baths, to a shooting day, a film school, and a drawn frame."
+ ~#proof: "Each stop is an anchor in the physical, record, or making class; the trail orders them so each stop names one loss the next stop must live with."
+ ~#door: "Start at the aberrations stop and keep a list of every trade you meet on the way to the frame."
+ ~#audience: "camera, lab, and animation students who want the whole path in one walk"
+ continuity: "Light to Image | trade"
+ cold_open: "Follow light from the lens to the finished frame, and write down each trade it makes on the way."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "stops follow the light-to-image row of final-plan-v3 trails",
+  "every stop anchor was matched against the cut on disk on 2026-10-03"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "fact-check 2026-10-03: the cine note said scope appears only after a crop; that holds for 4:3 digital modes, while film-era 2x anamorphic de-squeezed a narrower aperture straight to scope"
+ ]
+}
+
+^["edges"]{
+ feeds: [ ~"./novel-to-screen.spw#trail_novel_to_screen" ]
+ see: [ ~"./scroll-to-stream.spw#trail_scroll_to_stream" ]
+}
+
+^["concepts"]{
+ primary: [ #trade_off, #carrier ]
+ transfers: [ #state_machine ]
+ tensions: [ #generation_loss ]
+}
+
+#>trail_light_stops
+^["stops"]{
+ classes: #[ physical, record, making ]
+ walk: <<
+  ~"../physical/optics/aberrations-and-lens-design.spw#optics_aberrations" ;
+  ?{ "which lens fault can bending the glass never fix" } ~<prediction> ;
+  ~"../physical/optics/cine-lenses-and-formats.spw#optics_cine_formats" ;
+  ~"../record/carriers/moving-image/emulsion-chemistry.spw#media_carriers_emulsion" ;
+  ?{ "why is the base of a color negative orange" } ~<prediction> ;
+  ~"../record/carriers/moving-image/photographic-processing.spw#media_carriers_processing" ;
+  ~"../record/carriers/moving-image/film-stock-and-bases.spw#media_carriers_film_stock" ;
+  ~"../making/film/set-operations-and-crew.spw#film_set_operations" ;
+  ~"../making/film/film-school-sequence.spw#film_school" ;
+  ?{ "can a ball look heavy if only the spacing of its drawings changes" } ~<prediction> ;
+  ~"../making/visual/animation-principles.spw#visual_arts_animation"
+ >>
+ ^["notes"]{
+  optics_aberrations: "a lens is a truce among aberrations; field curvature follows the Petzval sum, which bending cannot change"
+  optics_cine_formats: "an anamorphic squeeze fits a wide world onto a squarer gate; on film the de-squeeze alone gives scope, while 4:3 digital modes de-squeeze to about 2.66 and are cropped to 2.39"
+  media_carriers_emulsion: "a few silver atoms make a grain developable; the orange mask corrects imperfect dyes"
+  media_carriers_processing: "each process is a fixed order of baths, and a control strip shows when the chemistry drifts"
+  media_carriers_film_stock: "the base under the image decides how the frame ages: nitrate, acetate, or polyester"
+  film_set_operations: "the shooting day loops block, light, rehearse, roll, and cut, and each worker carries a rest clock"
+  film_school: "the school sequence turns these trades into a prerequisite graph ending in a thesis film"
+  visual_arts_animation: "a drawn frame has no lens or emulsion, so timing and spacing carry what optics carried"
+ }
+}
+
+#>trail_light_legs
+^["legs"]{
+ glass: #[ optics_aberrations, optics_cine_formats ]
+ chemistry: #[ media_carriers_emulsion, media_carriers_processing, media_carriers_film_stock ]
+ crew: #[ film_set_operations, film_school ]
+ drawn: #[ visual_arts_animation ]
+}
+
+^["readings"]{
+ #>trail_light_trades
+ ^["chain_of_trades"]{
+  #:claim #!interpretive
+  statement: "A finished frame is a chain of chosen losses: the lens trades aberrations, the emulsion trades grain for speed, the bath trades time for density, and the set trades takes for daylight."
+  see: [ ~"../physical/optics/aberrations-and-lens-design.spw#optics_aberrations_petzval" ]
+  ^["limits"]{
+   holds: "photochemical capture through a lens, from the glass to the processed negative"
+   fails: "drawn animation and fully digital capture, where the trades move into timing, sensors, and code"
+  }
+ }
+ #>trail_light_last_stop
+ ^["drawn_last"]{
+  #:claim #!interpretive
+  statement: "The walk ends on drawn animation because it removes the lens and the emulsion, and what remains, timing and spacing, shows which trades were about motion all along."
+  see: [ ~"../making/visual/animation-principles.spw#visual_arts_anim_timing" ]
+ }
+}
+
+^["try"]{
+ #>trail_light_try_window
+ ^["window_and_ball"]{
+  materials: [ "a magnifying glass", "a sheet of white paper", "a window with daylight", "a pencil and a small pad" ]
+  steps: <<
+   "focus the window onto the paper with the magnifier" ;
+   "notice where the image is sharp and where its edges blur" ;
+   "draw a ball falling in six frames with even spacing" ;
+   "draw it again with the spacing tight at the top and wide at the bottom" ;
+   "flip both pads and say which ball feels heavier"
+  >>
+  time: .{ n: 25, unit: "minutes" }
+  safety: "never point a magnifier at the sun or leave it in sunlight, since it can burn skin and start a fire"
+  shows: ~"./light-to-image.spw#trail_light_trades"
+ }
+}
+
+#>trail_light_push_q
+?["Is a stop of light cheaper at the lens or in the bath?"]{
+ #:depth #!physical ~#lens(craft practice)
+ #:claim #!speculative
+ ~#hypothesis: "Gaining one stop by opening the lens should cost more at the edges of the frame, while gaining it by push processing should cost more in the shadows."
+ !probe{ "shoot one chart wide open and one pushed a stop, then compare edges and shadows" =id[p_trail_light_push] =kind[field] }
+ $%[phys.optics.cutoff_f16_lp_per_mm, phys.process.ecn2_dev_min]
+ ~"./light-to-image.spw#trail_light_trades" ~#neighbor(nearest)
+}

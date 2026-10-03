@@ -7,12 +7,12 @@
 #:domain #!spw
 #:form #!probe_battery
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!honk
 
 ^"emit"{
  ~#title: "Media and Classroom Specimens"
- ~#claim: "Times, chat lines, Markdown, and smart punctuation restructure, swallow, or hide lexer errors; quoted strings come back clean."
+ ~#claim: "Times, chat lines, Markdown, and smart punctuation restructure, split, drop, swallow, degrade to prose, or hide lexer errors; quoted strings come back clean."
  ~#proof: "Each row was run through the parser at commit 1aa1dc23 with synthetic handles; every write_instead form parses without a fault."
  ~#door: "Start with the call time row, then the chat line, then the smart quotes."
  ~#audience: "crews, creators, and teachers pasting schedules, chat, and class notes into Spw"
@@ -37,9 +37,16 @@
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #corrected
+  }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
-  "the persona notes counted the timecode 01:00:00:00 as three nested bindings; the tree holds three nested under tc, four in all"
+  "the persona notes counted the timecode 01:00:00:00 as three nested bindings; the tree holds three nested under tc, four in all",
+  "the card left out the worst outcomes; of twenty-two rows, three degrade the whole surface to prose and one drops a heading from the tree"
  ]
 }
 
@@ -56,10 +63,7 @@
  cites: [ "packages/spw-seed/src/canonical/fingerprint.ts:49-70", "scripts/analyzers/spw-cut-gate.ts:193-217" ]
 }
 
-^["fixture"]{
- status: #proposed
- runner: "no repository code replays these rows as regression fixtures at 1aa1dc23; the writer probe script was scratch"
-}
+^["fixture"]{ status: #proposed, runner: "no repository code replays these rows as regression fixtures at 1aa1dc23; the writer probe script was scratch" }
 
 ^["production"]{
  #>spw_spec_media_classroom_timecode
@@ -207,8 +211,7 @@
 ^["keyboard_and_locale"]{
  #>spw_spec_media_classroom_curly_quotes
  ^["curly_quotes"]{
-  habit: "q: “hello”"
-  codepoints: "U+201C and U+201D"
+  habit: "q: “hello”", codepoints: "U+201C and U+201D"
   verdict: #hidden_error, loudness: #gate, lexer_errors: 2
   signature: "Binding=1 Expression=2 Identifier=2 Seed=1 Sequence=1"
   observed: "both curly quotes are lexer errors, and hello becomes a bare identifier"
@@ -217,8 +220,7 @@
  }
  #>spw_spec_media_classroom_em_dash
  ^["em_dash"]{
-  habit: "t: a — b"
-  codepoints: "U+2014"
+  habit: "t: a — b", codepoints: "U+2014"
   verdict: #hidden_error, loudness: #gate, lexer_errors: 1
   signature: "Binding=1 Expression=3 Identifier=3 Seed=1 Sequence=1"
   observed: "the em dash is a lexer error, and b splits off"
@@ -227,8 +229,7 @@
  }
  #>spw_spec_media_classroom_accented_key
  ^["accented_key"]{
-  habit: "café: 1"
-  codepoints: "U+00E9"
+  habit: "café: 1", codepoints: "U+00E9"
   verdict: #hidden_error, loudness: #gate, lexer_errors: 1
   signature: "Binding=1 Expression=2 Identifier=1 Literal=1 Seed=1 Sequence=1"
   observed: "the accented letter is a lexer error, and the key is truncated to caf"
@@ -237,8 +238,7 @@
  }
  #>spw_spec_media_classroom_inverted_question
  ^["inverted_question"]{
-  habit: "q: ¿qué?"
-  codepoints: "U+00BF and U+00E9"
+  habit: "q: ¿qué?", codepoints: "U+00BF and U+00E9"
   verdict: #hidden_error, loudness: #gate, lexer_errors: 2
   signature: "Binding=1 Expression=3 Identifier=2 Operation=1 Seed=1 Sequence=1"
   observed: "both characters are lexer errors; q binds qu, and the ? becomes an operation"
@@ -256,8 +256,7 @@
  }
  #>spw_spec_media_classroom_euro
  ^["euro"]{
-  habit: "p: €5"
-  codepoints: "U+20AC"
+  habit: "p: €5", codepoints: "U+20AC"
   verdict: #hidden_error, loudness: #gate, lexer_errors: 1
   signature: "Binding=1 Expression=2 Identifier=1 Literal=1 Seed=1 Sequence=1"
   observed: "the euro sign is a lexer error, and p binds 5"
@@ -266,8 +265,7 @@
  }
  #>spw_spec_media_classroom_emoji
  ^["emoji"]{
-  habit: "mood: 🎉", followed_by: "next: 1"
-  codepoints: "U+1F389"
+  habit: "mood: 🎉", followed_by: "next: 1", codepoints: "U+1F389"
   verdict: #swallows, loudness: #gate, lexer_errors: 2
   signature: "Binding=2 Expression=3 Identifier=2 Literal=1 Seed=1 Sequence=1"
   observed: "the emoji is two lexer errors, one per UTF-16 half, which leaves mood empty, so it binds the next line"

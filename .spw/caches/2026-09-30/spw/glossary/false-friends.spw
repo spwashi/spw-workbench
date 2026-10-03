@@ -7,12 +7,12 @@
 #:domain #!spw
 #:form #!glossary
 #:level #!intro
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!honk
 
 ^"emit"{
  ~#title: "False Friends"
- ~#claim: "Ten habits from other fields change meaning in Spw; five of them parse with no word from any tool, and each has a quoted or faceted form that parses clean."
+ ~#claim: "Ten habits from other fields change meaning in Spw; five of them parse with no word from any tool, and each has a quoted, faceted, or rebound form that parses clean."
  ~#proof: "Every probe and every write_instead form was run through the parser at commit 1aa1dc23 and again on 2026-10-03; the specimen batteries hold the field-by-field evidence."
  ~#door: "For paste safety, find the habit your field ranks first, read its door line, then paste a line of your own and check it."
  ~#audience: "anyone pasting notes, code, or chat from another field into Spw"
@@ -34,11 +34,18 @@
   ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the persona study said a hex colour with a digit, such as #3a3a3a, turns the surface to prose; it is a hash operation carrying a prose payload, and the surface keeps its structure",
   "the persona study cited spw-cut-gate.ts:191-194 and :207-211; at 1aa1dc23 the prose check is at :195 and the swallow checks at :212-216",
-  "the persona study wrote habits in single-quoted strings, which the cut bans outside double quotes; habits here sit in double-quoted strings or are named by codepoint"
+  "the persona study wrote habits in single-quoted strings, which the cut bans outside double quotes; habits here sit in double-quoted strings or are named by codepoint",
+  "the card said each habit has a quoted or faceted rewrite; the equals and valence rows are rebound instead, one as a colon binding and one under a new key"
  ]
 }
 

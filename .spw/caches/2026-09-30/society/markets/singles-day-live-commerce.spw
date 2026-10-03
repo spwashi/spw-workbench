@@ -14,7 +14,7 @@
 ^"emit"{
  ~#title: "Singles Day and Live Commerce"
  ~#claim: "Singles Day grew from a 1990s student custom into an Alibaba sales festival in 2009, livestream sellers sold at festival scale, and 2021 brought antitrust, marketing, and tax actions."
- ~#proof: "Dates and totals come from encyclopedia pages on Singles Day, Daniel Zhang, Alibaba, Viya, and HSN, marked as encyclopedia; the 2021 marketing measures are named from the writer and flagged."
+ ~#proof: "Dates and totals come from encyclopedia pages marked as such, the Viya tax total from the Zhejiang tax service notice; the 2021 marketing measures are named from the writer and flagged."
  ~#door: "Read the origin, the scale, and the sellers, then the 2021 actions, and log one live selling stream with the kit."
  ~#audience: "readers new to live commerce and anyone comparing selling streams across platforms"
  continuity: "Singles Day and Live Commerce | festival scale"
@@ -22,7 +22,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5"
  lineage: #[ ".spw/caches/tiktok-live/live-commerce.spw" ]
@@ -33,6 +33,9 @@
   ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
    care: #adversarial, outcome: #corrected }
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the raw file framed live commerce as a TikTok feature; it is credited to Chinese platforms, with roots in US television shopping",
@@ -42,7 +45,9 @@
   "interface names such as a pinned product card are kept only as verify notes, since platforms rename them",
   "fact check: the origin was settled on one encyclopedia anecdote; it is now a hedged traditional account marked contested",
   "fact check: Alibaba under Daniel Zhang in 2009 was an anachronism; Zhang then ran Taobao operations and launched the sale for Taobao Mall, and became group CEO in 2015",
-  "fact check: the scale row said the 2020 festival ran over several days, which the cited page does not state; the window is now a check, not a claim"
+  "fact check: the scale row said the 2020 festival ran over several days, which the cited page does not state; the window is now a check, not a claim",
+  "fact check 2026-10-03: the Viya total of 1.34 billion yuan was called a fine; the tax notice gives it as back taxes, late fees, and fines combined",
+  "fact check 2026-10-03: the Alibaba fine carried an encyclopedia ratio of 12 percent of 2020 net profit with no cell and an unclear year; it now gives the decision basis, 4 percent of 2019 sales in China"
  ]
 }
 
@@ -109,9 +114,11 @@
  #>markets_singles_day_antitrust
  ^["alibaba_fine"]{
   #:claim #!settled
-  statement: "In April 2021 the State Administration for Market Regulation fined Alibaba about 2.8 billion US dollars for anticompetitive practices, about 12 percent of its 2020 net profit."
-  reads: %[econ.singles.alibaba_fine_2021_busd]
-  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_wiki_alibaba"
+  statement: "In April 2021 the State Administration for Market Regulation fined Alibaba 18.228 billion yuan, about 2.8 billion US dollars, set at 4 percent of its 2019 sales in China, for anticompetitive practices."
+  reads: %[econ.singles.alibaba_fine_2021_byuan, econ.singles.alibaba_fine_2021_busd]
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_wiki_zh_alibaba", ~"../../registries/sources/economy-and-markets.spw#src_econ_wiki_alibaba" ]
+  practice: "the decision targeted demands that merchants sell on one platform and not its rivals"
+  tier: "encyclopedia pages citing the SAMR release; the release itself did not load on 2026-10-03"
   context: "in November 2020 the Ant Group listing had been halted"
  }
  #>markets_singles_day_measures
@@ -119,14 +126,15 @@
   #:claim #!settled
   statement: "In April 2021 the Cyberspace Administration of China and six other departments issued trial measures for online live streaming marketing, effective in May 2021."
   source: ~"../../registries/sources/economy-and-markets.spw#src_econ_cac_2021_livestream"
-  flag: "named from the writer; the text was not fetched in this pass, so duties under the measures are not listed"
+  flag: "the 2026-10-03 fact check confirmed the issue month, the seven departments, and the 25 May effective date; the text was not fetched, so duties are not listed"
  }
  #>markets_singles_day_tax
  ^["viya_penalty"]{
   #:claim #!settled
-  statement: "In December 2021 authorities fined Viya 1.34 billion yuan for misreported income in 2019 and 2020, and her social media accounts were taken down."
+  statement: "In December 2021 the Hangzhou tax authority ordered Viya to pay 1.34 billion yuan in back taxes, late fees, and fines for income misreported in 2019 and 2020; her social media accounts were removed."
   reads: %[econ.singles.viya_fine_2021_byuan]
-  source: ~"../../registries/sources/economy-and-markets.spw#src_econ_wiki_viya"
+  sources: [ ~"../../registries/sources/economy-and-markets.spw#src_econ_zhejiang_tax_2021_viya", ~"../../registries/sources/economy-and-markets.spw#src_econ_wiki_viya" ]
+  total: "the notice gives one combined sum; the fine alone is not separated here"
  }
 }
 

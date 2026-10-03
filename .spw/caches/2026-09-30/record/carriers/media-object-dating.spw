@@ -32,7 +32,12 @@
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker",
    care: #adversarial, outcome: #corrected }
+  ^["r5"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
  }
+ corrections: #[
+  "2026-10-03: a shell with only write-protect notches was read as proof of Type I tape; early chrome and Type III ferrichrome shells can look the same, so the key now sends the reader to the label"
+ ]
  rechecked: "2026-10-02: the thirteen-digit ISBN floor moved from 2007 to 2005 and a barcode-only 978 number now dates only to the 1980s; the Blu-ray floor splits prerecorded 2006 from recordable 2003"
 }
 
@@ -127,7 +132,7 @@
   ^["shell"]{
    ask: "look along the back edge of the shell"
    tell: ?match[@notches]{
-    "only write-protect notches" => "Type I ferric tape; any year from 1963",
+    "only write-protect notches" => "usually Type I ferric, but early chrome and Type III ferrichrome shells may also lack type notches; read the label; any year from 1963",
     "a second pair beside them" => "Type II high-bias tape; chromium dioxide arrived in 1970",
     "a third set near the middle" => "Type IV metal tape; a later, premium shell",
     _ => "read the label for ferric, chrome, or metal"

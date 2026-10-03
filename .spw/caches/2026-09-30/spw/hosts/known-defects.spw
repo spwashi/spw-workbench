@@ -7,14 +7,14 @@
 #:domain #!editor_hosts
 #:form #!ledger
 #:level #!practitioner
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!honk
 #:era #!current
 
 ^"emit"{
  ~#title: "Known Defects"
  ~#claim: "Seven plugin defects and two server gaps are verified in code, each with a file and line, an effect, and the check that showed it."
- ~#proof: "Every row cites source at commit 1aa1dc23; two rows add a probe run on 2026-10-02 and two point to unapplied patches."
+ ~#proof: "Every row cites source at commit 1aa1dc23; one server gap closed on main at 6690d686 and stays here marked superseded."
  ~#door: "Scan the keys, open the one that touches your editor, then read the stale canon lines at the end."
  ~#audience: "plugin maintainers choosing what to fix next"
  continuity: "Known Defects | file and line"
@@ -22,7 +22,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -31,7 +31,28 @@
   ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected
+   note: "each key reread at 1aa1dc23 and diffed against main at 651b535b; the lens gap closed, the other eight rows still hold"
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+   note: "the anchor-line and lens rows and the repair-cost figures confirmed against the fragnav review and 6690d686"
+  }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[
+  "the anchor-line repair cost was given as measured from about 7 ms to about 600 ms on a three-ref file; that is the owner note rounding, and the hardening review measured 3 to 4 ms against 212 to 322 ms, and about 1.1 s on a fourteen-ref file",
+  "the lens index gap was written as open with an unapplied patch; it closed on main at 6690d686 on 2026-10-03 and is now marked superseded, not deleted",
+  "the anchor-line repair was written as a patch waiting in a worktree; the owner now holds it because the patch made documentLinks slower"
+ ]
  basis: "the seven plugin defects come from the review scorecard; each was reopened and its lines recounted at 1aa1dc23, and some line numbers moved"
  moved: "the dropped-layers lines were 372 to 381 in the scorecard and are 377 to 387 now"
 }
@@ -57,6 +78,7 @@
   check: "code read; the server sends layers at packages/spw-lsp/src/handlers/cache-reflection.ts:164-171"
   source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_custom_requests"
   sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_review_scorecard" ]
+  still_open: "unchanged on main at 651b535b, at custom-requests.ts:390-400"
   home: ~"./vscode-lsp-and-cache.spw#editor_hosts_vscode_lsp_cache_dropped_layers"
  }
  #>editor_hosts_defects_d2
@@ -133,20 +155,27 @@
   statement: "The resolver returns the path with its fragment attached, and definition uses that string as the target URI and the file to read, so anchored jumps land at line one."
   effect: "go-to-definition on a path with an anchor opens the file top, or a URI ending in an encoded hash"
   check: "code read at helpers.ts:212,220,254 and navigation.ts:104-107,136,144; the unit test mocks the resolver without the hash at fragment-navigation.test.ts:48"
-  repair: "a hardened patch with tests waits unapplied in a local worktree; its durable copy and review sit beside the cut plan"
+  repair: "held by the owner: the patch parses each anchored target again for every documentLinks request, one after another"
+  repair_cost: "the hardening review measured documentLinks on the three-ref canon-mount.spw at about 3 to 4 ms on main against 212 to 322 ms with the patch, and up to about 1.1 s on a fourteen-ref file"
+  owner_rounding: "the owner note and plan stream round this as about 7 ms to about 600 ms on a three-ref file"
+  still_open: "helpers.ts and navigation.ts are unchanged between 1aa1dc23 and 651b535b"
   source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_helpers"
-  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_navigation", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_fragnav_patch", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_resume_note" ]
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_navigation", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_fragnav_patch", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_resume_note_w3" ]
+  cites: [ ".spw/caches/resume/2026-09-30-direction.spw:59", ".agents/plans/caches-cut-2026-09-30/references/patches/fragnav-hardening.md:51,108,129-133" ]
+  provenance_label: "owner hold for the repair; the defect itself is code read; the cost figures come from the hardening review"
  }
  #>editor_hosts_defects_lens_index
  ^["g2_lens_index"]{
-  #:claim #!settled
+  #:claim #!superseded
   key: "packages/spw-lsp/src/server-index.ts:1164-1195"
-  statement: "The annotation index reads annotation and particle tokens only, and a lens reading lexes as an apposition token, so no lens reaches the index or the Concepts view."
-  effect: "lens phrases written in this cut are invisible to editor search and grouping"
+  statement: "At 1aa1dc23 the annotation index read annotation and particle tokens only, and a lens reading lexes as an apposition token, so no lens reached the index or the Concepts view."
+  effect: "lens phrases written in this cut were invisible to editor search and grouping"
   check: "code read, plus a tokenizer probe on 2026-10-02 that returned one APPOSITION token for a lens reading"
-  repair: "a patch that indexes named appositions waits unapplied in a local worktree"
+  closed: "commit 6690d686 on 2026-10-03 indexes appositions as their own kind, shows them in wonder hovers, and lets the Concepts tree accept the kind"
+  left_open: "the commit says resonance, references, rename, and document highlight still read lens readings by regex"
   source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_server_index"
-  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lens_patch", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_resume_note" ]
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lens_commit", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lens_patch", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_resume_note_w3" ]
+  cites: [ "packages/spw-lsp/src/server-index.ts:1216-1219 at 6690d686", ".spw/caches/resume/2026-09-30-direction.spw:59" ]
  }
  also: "silent lexer errors and initialize-only settings are server limits recorded in the language server surface"
  also_see: ~"./lsp-surface.spw#editor_hosts_lsp_diagnostics_gate"

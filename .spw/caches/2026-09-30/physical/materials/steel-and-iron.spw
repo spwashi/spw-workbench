@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/materials-matter-and-history/steel-and-ferrous-metallurgy.spw" ]
@@ -35,6 +35,11 @@
    care: #adversarial, outcome: #corrected
   }
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  gate_note: "r3 first recorded a pass; that run failed on a link to the mechanical core surface not yet written, and r5 records the run after it landed"
  corrections: #[
@@ -48,7 +53,9 @@
   "pure iron is austenite only from 912 to 1394 C and delta ferrite above that up to melting at 1538 C; the rung had said austenite above 912 C",
   "the first LD converter ran at Linz in 1952 and Donawitz followed in 1953",
   "the wootz rung drops its medieval era tag, since South Indian crucible steel began well before the medieval period and was traded long after",
-  "the cold open no longer claims every furnace changed who held power; it now says who could make steel and how cheaply, as the card claim does"
+  "the cold open no longer claims every furnace changed who held power; it now says who could make steel and how cheaply, as the card claim does",
+  "the bobby pin try did not warn that many pins carry a paint or epoxy coating and plastic tips that smoke and burn in a flame; it now does",
+  "the stainless leaf cited EN 10088-1:2014 as if current; the 2023 edition replaced it, so the leaf now scopes the definition to the 2014 edition, adds the 1.2 percent carbon limit, and holds the 2023 definition as a verify item"
  ]
 }
 
@@ -223,19 +230,23 @@
  #>materials_steel_stainless
  ^["stainless"]{
   #:claim #!settled
-  statement: "European standard EN 10088-1 defines stainless steel as at least 10.5 percent chromium, enough to form a thin self-repairing chromium oxide film."
+  statement: "The 2014 edition of European standard EN 10088-1 defines stainless steel as at least 10.5 percent chromium and at most 1.2 percent carbon; the chromium forms a thin self-repairing oxide film."
   reads: %[mateng.steel.stainless_cr_min_wt_pct]
-  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_en_10088_1"
+  sources: [
+   ~"../../registries/sources/materials-and-engineering.spw#src_mateng_en_10088_1",
+   ~"../../registries/sources/materials-and-engineering.spw#src_mateng_callister_rethwisch_2018"
+  ]
+  as_of: "2014 edition; EN 10088-1:2023 replaced it, and its definition clause has not been checked here, so the registry cell is a verify cell"
  }
 }
 
 ^["try"]{
  #>materials_steel_try_bobby_pin
  ^["bobby_pin"]{
-  materials: [ "three steel bobby pins", "pliers with insulated handles", "a gas stove or candle", "a cup of cold water", "safety glasses" ]
+  materials: [ "three uncoated steel bobby pins, or pins with the plastic tips pulled off", "pliers with insulated handles", "a gas stove or candle", "a cup of cold water", "safety glasses" ]
   steps: << "bend one untouched pin and feel it spring back" ; "heat a second pin to dull red and drop it in water" ; "bend it and watch it snap" ; "heat the third to red and let it cool in air" ; "bend it and feel it stay bent" >>
   time: .{ n: 20, unit: "minutes" }
-  safety: "hot metal and open flame; wear glasses, hold pins only with pliers, work with an adult, and keep water nearby"
+  safety: "hot metal and open flame; many bobby pins carry a paint or epoxy coating and plastic tips that smoke and burn, so use uncoated pins or remove the tips and work by an open window or under a vent; wear glasses, hold pins only with pliers, work with an adult, and keep water nearby"
   shows: ~"./steel-and-iron.spw#materials_steel_martensite"
  }
 }

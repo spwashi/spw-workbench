@@ -7,7 +7,7 @@
 #:domain #!lang_design
 #:form #!comparison
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/language-features/structural-and-homoiconic.spw" ]
@@ -29,12 +29,22 @@
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the raw file called Common Lisp and Clojure macros hygienic; both are unhygienic, and Clojure avoids most accidental capture through syntax-quote and auto-gensym",
   "the raw claims of four pointer updates per vector insert and two-millisecond re-evaluation had no source and are dropped",
   "structural editors keep brackets balanced; the raw claim that they make syntax errors impossible overstated that",
-  "persistent data structures and live REPL claims are not carried; this surface covers macros only"
+  "persistent data structures and live REPL claims are not carried; this surface covers macros only",
+  "the matrix rows now link the reference behind each row in a basis frame, including R7RS for Scheme",
+  "the fact check found that McCarthy wrote Lisp programs as M-expressions, not lists; the code-as-data claim now credits his list encoding for eval",
+  "the Spw desugar row carried implemented without a quoted locator; it now cites normalize.ts and stages.ts"
  ]
 }
 
@@ -52,6 +62,16 @@
  ^["legend"]{
   columns: #[ hygiene, phase, quoting ]
   as_of: "language references read 2026-10-02"
+  ^["basis"]{
+   common_lisp: ~"../../registries/sources/spw-design-studies.spw#src_lab_clhs_1996"
+   scheme: ~"../../registries/sources/spw-design-studies.spw#src_lab_r7rs_2013"
+   racket: ~"../../registries/sources/spw-design-studies.spw#src_lab_flatt_2016"
+   clojure: ~"../../registries/sources/spw-design-studies.spw#src_lab_clojure_reader"
+   elixir: ~"../../registries/sources/spw-design-studies.spw#src_lab_elixir_macros"
+   julia: ~"../../registries/sources/spw-design-studies.spw#src_lab_julia_meta"
+   rust: ~"../../registries/sources/spw-design-studies.spw#src_lab_rust_mbe"
+   spw: ~"../../registries/sources/spw-design-studies.spw#src_lab_code_normalize"
+  }
  }
  #>lang_design_macros_row_cl
  ^["common_lisp"]{
@@ -107,6 +127,7 @@
   phase: "runtime pipeline only; the LSP and CLI parse without it"
   quoting: "none; guillemets become backticks before parsing"
   status: #implemented
+  cites: [ "packages/spw-seed/src/normalize.ts:17-26", "packages/spw-runtime/src/pipeline/stages.ts:224-228" ]
  }
 }
 
@@ -158,8 +179,8 @@
  #>lang_design_macros_lisp_data
  ^["lisp_programs_as_data"]{
   #:claim #!settled
-  statement: "McCarthy wrote Lisp programs as symbolic expressions, the same list structure the language manipulates, which is the root of the code-as-data idea."
-  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_mccarthy_1960"
+  statement: "McCarthy gave Lisp programs an encoding as symbolic expressions, the same list structure the language manipulates, so eval could interpret them; that encoding is the root of code-as-data."
+  sources: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_mccarthy_1960", ~"../../registries/sources/spw-design-studies.spw#src_lab_mccarthy_1978" ]
  }
  #>lang_design_macros_spw_desugar
  ^["spw_desugar"]{
@@ -172,7 +193,11 @@
  ^["spw_no_printer"]{
   #:claim #!settled
   statement: "Spw parses to an AST and normalizes to ONF, but its ONF projection prints only sigil, register, and value, so code built as data cannot yet be printed back as source."
-  sources: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_code_onf_render", ~"../../registries/sources/spw-design-studies.spw#src_lab_study_tokens" ]
+  sources: [
+   ~"../../registries/sources/spw-design-studies.spw#src_lab_code_onf_render",
+   ~"../../registries/sources/spw-design-studies.spw#src_lab_code_onf",
+   ~"../../registries/sources/spw-design-studies.spw#src_lab_study_tokens"
+  ]
   cites: [ "packages/spw-runtime/src/pipeline/stages.ts:440-467", "packages/spw-seed/src/types/ast/onf.ts:78-112" ]
  }
  #>lang_design_macros_spw_reading

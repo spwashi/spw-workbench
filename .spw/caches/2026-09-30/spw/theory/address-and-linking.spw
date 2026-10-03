@@ -7,13 +7,13 @@
 #:domain #!spw_theory
 #:form #!comparison
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 
 ^"emit"{
  ~#title: "Address and Linking"
- ~#claim: "One anchored link is read six ways: the parser and resolve accept it, mount and expand follow it only inside a bias edge, graph splits it, and the LSP lands on line one."
- ~#proof: "Cells were verified at commit 1aa1dc23 by writer probes on a scratch corpus and by reading the LSP and seed code; older cells name the understand pass."
+ ~#claim: "One anchored link is read six ways: the parser and resolve accept it, mount and expand follow it only inside a bias edge, graph keeps only the file, and the LSP lands on line one."
+ ~#proof: "Cells were verified at commit 1aa1dc23 by writer probes and code reading; the graph column was probed again after c79a096a, and older cells name the understand pass."
  ~#door: "Read one row of the matrix, then the fragment identity question at the end."
  ~#audience: "the Spw owner, LSP and CLI authors, and anyone linking claims across this cut"
  continuity: "Address and Linking | read six ways"
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -29,13 +29,25 @@
  evidence: #[
   ".agents/plans/caches-cut-2026-09-30/references/understand/linking.md at 229aedcf",
   ".agents/plans/caches-cut-2026-09-30/references/studies/tokens-synthesis.md section 3, range notation",
-  "link and parser probes run by the writer at 1aa1dc23 on 2026-10-02"
+  "link and parser probes run by the writer at 1aa1dc23 on 2026-10-02",
+  "a graph probe on a scratch corpus with a subdirectory, a frame-name fragment, and a missing anchor, run at 651b535b on 2026-10-03"
  ]
  standing: "pressure surface for the owner; the matrix records behavior and edits nothing"
  ^["receipts"]{
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[
+  "commit c79a096a changed graph after the matrix was probed; the graph split finding is now superseded, and the graph column is kept as the 1aa1dc23 record",
+  "the range claim carried a design recommendation under a settled status; the parse fact stays settled and the recommendation moved to the questions frame"
+ ]
 }
 
 ^["edges"]{
@@ -55,6 +67,8 @@
   as_of: "commit 1aa1dc23, probes run 2026-10-02"
   tools: #[ parser, lsp, graph, resolve, mount, expand ]
   basis: "P marks a writer probe, C a code reading at 1aa1dc23, U the understand pass at 229aedcf"
+  understand: ~"../../registries/sources/spw-design-studies.spw#src_lab_study_linking"
+  graph_now: "from c79a096a each path-ref row reads as an edge to the file with the anchor kept on the link (P), and a declared root resolves through the root registry (C)"
  }
  #>spw_theory_address_row_plain
  ^["plain_path"]{
@@ -157,16 +171,28 @@
   source: ~"../../registries/sources/spw-design-studies.spw#src_lab_code_lsp_navigation"
   cites: [ "packages/spw-lsp/src/helpers.ts:203-212", "packages/spw-lsp/src/handlers/navigation.ts:63-82", "packages/spw-lsp/src/handlers/navigation.ts:104-108" ]
   ^["limits"]{
-   holds: "commit 1aa1dc23; a fragment-navigation patch exists in a local worktree and was unapplied when the resume note was written"
+   holds: "commits 1aa1dc23 through 651b535b, which leave helpers.ts and navigation.ts unchanged; a fragment patch sat unapplied in a local worktree when the resume note was written"
    fails: "after a fix that strips the fragment before reading, anchor rows move to the anchor line and frame rows stay at line one"
   }
  }
  #>spw_theory_address_graph_split
  ^["graph_split"]{
-  #:claim #!settled
-  statement: "Corpus scan keeps the fragment in the link target, so graph makes x.spw#name its own node and checks its existence as a file, which fails once the path has a directory."
+  #:claim #!superseded
+  statement: "At commit 1aa1dc23 corpus scan kept the fragment in the link target, so graph made x.spw#name its own node and checked it as a file, which failed once the path had a directory."
   sources: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_code_corpus_scan", ~"../../registries/sources/spw-design-studies.spw#src_lab_probe_links" ]
   cites: [ "packages/spw-cli/src/corpus-scan.ts:196-206" ]
+ }
+ #>spw_theory_address_graph_files_only
+ ^["graph_files_only"]{
+  #:claim #!settled
+  statement: "From commit c79a096a corpus scan splits the fragment onto the link and makes one node per file, so graph checks that the file exists and never checks the anchor."
+  sources: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_code_corpus_scan_c79", ~"../../registries/sources/spw-design-studies.spw#src_lab_probe_links_head" ]
+  cites: [ "packages/spw-cli/src/corpus-scan.ts:229-238", "packages/spw-cli/src/corpus-scan.ts:382-387", "packages/spw-cli/src/corpus-scan.ts:467-474" ]
+  supersedes: [ ~"./address-and-linking.spw#spw_theory_address_graph_split" ]
+  ^["limits"]{
+   holds: "commits c79a096a and 651b535b; the probe saw no broken target for a subdirectory, a frame name, a line range, or a missing anchor"
+   fails: "a later graph change that verifies anchors against the deixis table"
+  }
  }
  #>spw_theory_address_resolve_loose
  ^["resolve_loose"]{
@@ -185,7 +211,7 @@
  #>spw_theory_address_range_quotes
  ^["range_inside_quotes"]{
   #:claim #!settled
-  statement: "Canon marks line-range fragments proposed; written outside the quotes they become a stray particle on the next node, so a range belongs inside the path string."
+  statement: "Canon marks line-range fragments proposed and writes its examples after the closing quote, where the parser makes them a detached particle bound to the next node."
   sources: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_canon_range_transform", ~"../../registries/sources/spw-design-studies.spw#src_lab_probe_parser" ]
   cites: [ "docs/theory/spw/range-transform.spw:78-90" ]
  }
@@ -217,6 +243,7 @@
  anchors_only: "Should anchors be the only addresses, with resolve dropping frame names, or should frames get implicit anchors?"
  duplicates: "Should a duplicate or trailing anchor produce a diagnostic instead of first-wins silence?"
  inbound_count: "Should a tool count links into each anchor, as a measure of how much a claim is leaned on?"
+ range_form: "Should a line range live inside the path string, as the cut contract asks, when inside the quotes resolve, mount, and expand report a missing anchor and the LSP lands on line one?"
 }
 
 #>spw_theory_address_identity_q
@@ -235,7 +262,7 @@
 ?["How many of the six tools agree on a link once the line-one fix lands?"]{
  #:depth #!computational ~#lens(signal path)
  #:claim #!speculative
- ~#hypothesis: "The fragment fix moves the LSP into agreement on anchor rows, but graph and resolve still disagree on subdirectory and frame rows until their own fixes land."
+ ~#hypothesis: "With graph reading files since c79a096a, the LSP fragment fix would settle anchor rows, while frame-name and missing-anchor rows still split resolve, graph, and mount."
  !probe{ "rerun the nine-row matrix after each pending link patch and record which cells change" =id[p_lab_address_matrix_rerun] =kind[build] }
  $%[graph.out_degree]
  ~"./address-and-linking.spw#spw_theory_address_line_one" ~#neighbor(nearest)

@@ -21,15 +21,22 @@
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[
+  "src_lab_code_lsp_wonder was cited by the measures surface but missing here; it is added with its locator at 6690d686",
+  "fact check fixes: the HyperSpec entry paired 1996 with LispWorks, though Harlequin published it then; the shelf recount called its slash-comment lens counts canon, though they span every tracked .spw file"
+ ]
  checked: #[
-  "repository and canon locators were read by the writer at commit 1aa1dc23 on 2026-10-02",
-  "web checks 2026-10-02: Zig 0.14.0 release notes, Clojure reader reference, Rust Reference hygiene, Julia metaprogramming manual, Elixir macros guide, TypeScript 3.7 and 4.9 release notes, TypeScript design goals, Kotlin extensions, BQN history, Uiua design document and repository, Elixir v1.0 post, RFC 2104, and the Unix pipeline history with its cited manual and report",
-  "web checks 2026-10-03: Elixir Kernel pipe section, OCaml Stdlib, F# operator reference, BQN expression syntax, Uiua design document and GitHub metadata, PEP 318, CommonMark 0.31.2, POSIX Issue 7 shell chapter, the Forth HOPL-II paper, and McCarthy History of Lisp",
-  "books and papers without a web check come from writer knowledge of standard texts; those entries say so in checked"
+  "repository and canon locators were read by the writer at commit 1aa1dc23 on 2026-10-02; books and papers without a web check come from writer knowledge of standard texts, and those entries say so in checked",
+  "web checks 2026-10-02: Zig 0.14.0 release notes, Clojure reader reference, Rust Reference hygiene, Julia metaprogramming manual, Elixir macros guide, TypeScript 3.7 and 4.9 release notes, TypeScript design goals, Kotlin extensions, BQN history, Uiua design document and repository, Elixir v1.0 post, RFC 2104, and the Unix pipeline history with its cited manual and report; web checks 2026-10-03: Elixir Kernel pipe section, OCaml Stdlib, F# operator reference, BQN expression syntax, Uiua design document and GitHub metadata, PEP 318, CommonMark 0.31.2, POSIX Issue 7 shell chapter, the Forth HOPL-II paper, and McCarthy History of Lisp; the Zig 0.14.0 allocator notes were fetched again, and the graph and LSP wonder locators read at c79a096a and 6690d686",
+  "fact check 2026-10-03: the books, papers, standards, web pages, and locators it checked matched their entries except the HyperSpec publisher; the fix pass then fetched the HyperSpec help page, the Tal entry, and the C-413/23 P judgment"
  ]
  note: "raw generated caches are never a source here; they appear only as lineage strings on the surfaces that revise them"
- groups: #[ repository, canon, owner, studies, cut, languages, history, streams, evidence, standards ]
 }
 
 ^["repository"]{
@@ -67,6 +74,10 @@
  ^["code_cli_atlas"]{ title: "spw atlas particle buckets", authors: "spw-workbench", year: 2026, locator: "packages/spw-cli/src/atlas.ts:135-139 at 1aa1dc23", kind: #repository }
  #>src_lab_code_corpus_scan
  ^["code_corpus_scan"]{ title: "Corpus scan path-link targets for graph and census", authors: "spw-workbench", year: 2026, locator: "packages/spw-cli/src/corpus-scan.ts:193-206 at 1aa1dc23", kind: #repository }
+ #>src_lab_code_corpus_scan_c79
+ ^["code_corpus_scan_c79"]{ title: "Corpus scan after the graph fix: fragment split onto the link, one node per file", authors: "spw-workbench", year: 2026, locator: "packages/spw-cli/src/corpus-scan.ts:229-238,382-387,467-487 at c79a096a", kind: #repository }
+ #>src_lab_code_lsp_wonder
+ ^["code_lsp_wonder"]{ title: "LSP wonder hover: lens apposition, datum, then legacy comment; neighbor from the angle form", authors: "spw-workbench", year: 2026, locator: "packages/spw-lsp/src/handlers/wonder.ts:177-200,221 at 6690d686", kind: #repository }
  #>src_lab_code_normalize
  ^["code_normalize"]{ title: "desugar text rewrites and the runtime desugar stage", authors: "spw-workbench", year: 2026, locator: "packages/spw-seed/src/normalize.ts:17-26; packages/spw-runtime/src/pipeline/stages.ts:224-228 at 1aa1dc23", kind: #repository }
  #>src_lab_code_onf
@@ -91,12 +102,11 @@
  ^["probe_flow"]{ title: "Writer parser probes: !x, data~, steps: << a ; b ; c >>, and a => b => c", authors: "claude-opus-5.5 writer", year: 2026, locator: "parse from packages/spw-seed/src/index.ts at 1aa1dc23, run 2026-10-03", kind: #measurement }
  #>src_lab_probe_links
  ^["probe_links"]{ title: "Writer link probes: spw resolve, graph, census, mount resolve, and expand on a scratch corpus with a subdirectory", authors: "claude-opus-5.5 writer", year: 2026, locator: "packages/spw-cli/src/main.ts at 1aa1dc23, run 2026-10-02", kind: #measurement }
+ #>src_lab_probe_links_head
+ ^["probe_links_head"]{ title: "Writer graph probe after c79a096a: subdirectory, frame-name, line-range, and missing-anchor fragments", authors: "claude-opus-5.5 writer", year: 2026, locator: "spw graph --json on a six-link scratch corpus at 651b535b, run 2026-10-03; no broken target and no fragment node", kind: #measurement }
  #>src_lab_recount_shelf
- ^["recount_shelf"]{
-  title: "Writer recounts: $%[...] handles and ~#lens values on the raw shelf; // lens: values across tracked .spw files", authors: "claude-opus-5.5 writer", year: 2026, kind: #measurement
-  locator: "208 raw shelf files under .spw/caches outside 2026-09-30 and resume, and git ls-files *.spw, regex counts at 1aa1dc23 on 2026-10-02"
-  canon_lens_counts: "ecological zone 78, molecular binding 76, formal structure 73, material grain 66, curated collection 65, living system 60, then values used twice or once"
- }
+ ^["recount_shelf"]{ title: "Writer recounts: $%[...] handles and ~#lens values on the raw shelf; // lens: values across tracked .spw files", authors: "claude-opus-5.5 writer", year: 2026, kind: #measurement, locator: "208 raw shelf files under .spw/caches outside 2026-09-30 and resume, and git ls-files *.spw, regex counts at 1aa1dc23 on 2026-10-02"
+  lens_counts: "slash-comment lens values across every tracked .spw file, mostly under .agents/plans, .spw/biome, docs, and lib, not canon alone: ecological zone 78, molecular binding 76, formal structure 73, material grain 66, curated collection 65, living system 60, then values used twice or once" }
 }
 
 ^["canon"]{
@@ -161,7 +171,7 @@
 
 ^["languages"]{
  #>src_lab_clhs_1996
- ^["clhs_1996"]{ title: "Common Lisp HyperSpec, from ANSI X3.226-1994", authors: "Kent M. Pitman", year: 1996, publisher: "LispWorks", kind: #standard, checked: "writer knowledge" }
+ ^["clhs_1996"]{ title: "Common Lisp HyperSpec, from ANSI X3.226-1994", authors: "Kent M. Pitman", year: 1996, publisher: "Harlequin, 1996; the current copy is hosted by LispWorks Ltd, copyright 1996-2005", kind: #standard, checked: "LispWorks help page at https://www.lispworks.com/documentation/HyperSpec/Front/Help.htm and Wikipedia read 2026-10-03: developed by Pitman at Harlequin, now copyrighted by LispWorks Ltd" }
  #>src_lab_r7rs_2013
  ^["r7rs_2013"]{ title: "Revised7 Report on the Algorithmic Language Scheme", authors: "Alex Shinn; John Cowan; Arthur A. Gleckler, editors", year: 2013, venue: "scheme-reports.org", kind: #standard, checked: "writer knowledge" }
  #>src_lab_kohlbecker_1986
@@ -175,10 +185,7 @@
  #>src_lab_elixir_macros
  ^["elixir_macros"]{ title: "Elixir guide: Macros, macro hygiene", authors: "Elixir core team", year: 2026, url: "https://elixir.hexdocs.pm/macros.html", accessed: "2026-10-02", kind: #web }
  #>src_lab_elixir_kernel
- ^["elixir_kernel"]{
-  title: "Elixir Kernel documentation: the pipe operator", authors: "Elixir core team", year: 2026, kind: #web
-  url: "https://elixir.hexdocs.pm/Kernel.html", accessed: "2026-10-03", checked: "pipe section fetched and quoted on 2026-10-03"
- }
+ ^["elixir_kernel"]{ title: "Elixir Kernel documentation: the pipe operator", authors: "Elixir core team", year: 2026, kind: #web, url: "https://elixir.hexdocs.pm/Kernel.html", checked: "pipe section fetched and quoted on 2026-10-03" }
  #>src_lab_julia_meta
  ^["julia_meta"]{ title: "Julia manual: Metaprogramming, hygiene", authors: "Julia developers", year: 2026, url: "https://docs.julialang.org/en/v1/manual/metaprogramming/", accessed: "2026-10-02", kind: #web }
  #>src_lab_rust_mbe
@@ -192,10 +199,7 @@
  #>src_lab_zig_langref
  ^["zig_langref"]{ title: "Zig Language Reference 0.14.0: defer, errdefer, comptime", authors: "Zig Software Foundation", year: 2025, url: "https://ziglang.org/documentation/0.14.0/", accessed: "2026-10-02", kind: #web }
  #>src_lab_go_spec
- ^["go_spec"]{
-  title: "The Go Programming Language Specification: defer statements", authors: "The Go Authors", year: 2026, kind: #web
-  url: "https://go.dev/ref/spec", accessed: "2026-10-02", checked: "page fetched truncated; defer wording from writer knowledge of the spec"
- }
+ ^["go_spec"]{ title: "The Go Programming Language Specification: defer statements", authors: "The Go Authors", year: 2026, kind: #web, url: "https://go.dev/ref/spec", checked: "page fetched truncated on 2026-10-02; defer wording from writer knowledge of the spec" }
  #>src_lab_hanson_1990
  ^["hanson_1990"]{ title: "Fast Allocation and Deallocation of Memory Based on Object Lifetimes", authors: "David R. Hanson", year: 1990, venue: "Software: Practice and Experience 20(1)", kind: #article, checked: "writer knowledge" }
  #>src_lab_tofte_talpin_1997
@@ -248,7 +252,7 @@
  #>src_lab_mccarthy_1960
  ^["mccarthy_1960"]{ title: "Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I", authors: "John McCarthy", year: 1960, venue: "Communications of the ACM 3(4)", kind: #article, checked: "writer knowledge" }
  #>src_lab_mccarthy_1978
- ^["mccarthy_1978"]{ title: "History of LISP", authors: "John McCarthy", year: 1978, venue: "ACM SIGPLAN Notices 13(8), HOPL", kind: #proceedings, checked: "Stanford web copy read 2026-10-03: implementation began in the fall of 1958" }
+ ^["mccarthy_1978"]{ title: "History of LISP", authors: "John McCarthy", year: 1978, venue: "ACM SIGPLAN Notices 13(8), HOPL", kind: #proceedings, checked: "Stanford web copy read 2026-10-03: implementation began in the fall of 1958; programs were meant to be written as M-expressions, and list-form programs took over once S. R. Russell hand-coded eval as an interpreter" }
  #>src_lab_essinger_2004
  ^["essinger_2004"]{ title: "Jacquard's Web: How a Hand-Loom Led to the Birth of the Information Age", authors: "James Essinger", year: 2004, publisher: "Oxford University Press", kind: #book, checked: "writer knowledge" }
  #>src_lab_mcilroy_1987
@@ -260,10 +264,7 @@
  #>src_lab_milner_1978
  ^["milner_1978"]{ title: "A Theory of Type Polymorphism in Programming", authors: "Robin Milner", year: 1978, venue: "Journal of Computer and System Sciences 17(3)", kind: #article, checked: "writer knowledge" }
  #>src_lab_valim_2014
- ^["valim_2014"]{
-  title: "Elixir v1.0 released", authors: "Jose Valim", year: 2014, venue: "elixir-lang.org blog, 2014-09-18", kind: #web
-  url: "https://elixir-lang.org/blog/2014/09/18/elixir-v1-0-0-released/", accessed: "2026-10-02"
- }
+ ^["valim_2014"]{ title: "Elixir v1.0 released", authors: "Jose Valim", year: 2014, venue: "elixir-lang.org blog, 2014-09-18", kind: #web, url: "https://elixir-lang.org/blog/2014/09/18/elixir-v1-0-0-released/", checked: "read 2026-10-02" }
  #>src_lab_uiua_repo
  ^["uiua_repo"]{ title: "uiua-lang/uiua repository metadata, created 2023-02-27", authors: "Uiua project", year: 2023, url: "https://github.com/uiua-lang/uiua", accessed: "2026-10-03", kind: #web }
 }
@@ -275,6 +276,8 @@
  ^["feller_1968"]{ title: "An Introduction to Probability Theory and Its Applications, Vol. 1, 3rd ed.", authors: "William Feller", year: 1968, publisher: "Wiley", kind: #book, checked: "writer knowledge; the birthday approximation is standard" }
  #>src_lab_gdpr_2016
  ^["gdpr_2016"]{ title: "Regulation (EU) 2016/679, General Data Protection Regulation, Article 4(5) and Recital 26", authors: "European Parliament and Council of the European Union", year: 2016, venue: "Official Journal of the European Union L 119", kind: #law, checked: "writer knowledge" }
+ #>src_lab_cjeu_2025
+ ^["cjeu_2025"]{ title: "Judgment of the Court of Justice in Case C-413/23 P, EDPS v SRB", authors: "Court of Justice of the European Union", year: 2025, venue: "judgment of 4 September 2025, CELEX 62023CJ0413", url: "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:62023CJ0413", kind: #law, checked: "read on EUR-Lex 2026-10-03: pseudonymised data are not personal data for every recipient by default; the controller duty to inform is judged from the controller side" }
  #>src_lab_vitter_1985
  ^["vitter_1985"]{ title: "Random Sampling with a Reservoir", authors: "Jeffrey S. Vitter", year: 1985, venue: "ACM Transactions on Mathematical Software 11(1)", kind: #article, checked: "writer knowledge" }
  #>src_lab_charikar_2002
@@ -293,7 +296,9 @@
  #>src_lab_premis_2015
  ^["premis_2015"]{ title: "PREMIS Data Dictionary for Preservation Metadata, Version 3.0", authors: "PREMIS Editorial Committee", year: 2015, publisher: "Library of Congress", kind: #standard, checked: "writer knowledge" }
  #>src_lab_stevens_1946
- ^["stevens_1946"]{ title: "On the Theory of Scales of Measurement", authors: "S. S. Stevens", year: 1946, venue: "Science 103(2684)", kind: #article, checked: "writer knowledge" }
+ ^["stevens_1946"]{ title: "On the Theory of Scales of Measurement", authors: "S. S. Stevens", year: 1946, venue: "Science 103(2684)", kind: #article, checked: "writer knowledge; names four scale types: nominal, ordinal, interval, and ratio" }
+ #>src_lab_tal_2020
+ ^["tal_2020"]{ title: "Measurement in Science", authors: "Eran Tal", year: 2020, venue: "Stanford Encyclopedia of Philosophy, Fall 2020 edition, ed. Edward N. Zalta", url: "https://plato.stanford.edu/archives/fall2020/entries/measurement-science/", kind: #web, checked: "fetched 2026-10-03: ratio scales with a natural unit, as for counting and probabilities, were named absolute scales" }
  #>src_lab_ranganathan_1933
  ^["ranganathan_1933"]{ title: "Colon Classification", authors: "S. R. Ranganathan", year: 1933, publisher: "Madras Library Association", kind: #book, checked: "writer knowledge" }
  #>src_lab_bowker_star_1999
@@ -302,10 +307,7 @@
 
 ^["standards"]{
  #>src_lab_posix_2017
- ^["posix_2017"]{
-  title: "The Open Group Base Specifications Issue 7, 2018 edition, IEEE Std 1003.1-2017: Shell Command Language and Regular Expressions", authors: "IEEE and The Open Group", year: 2018, kind: #standard
-  url: "https://pubs.opengroup.org/onlinepubs/9699919799/", accessed: "2026-10-03", checked: "pipelines, tilde expansion, asynchronous lists, suffix removal, the dot utility, and the read-write redirection read on 2026-10-03; a 2024 edition exists"
- }
+ ^["posix_2017"]{ title: "The Open Group Base Specifications Issue 7, 2018 edition, IEEE Std 1003.1-2017: Shell Command Language and Regular Expressions", authors: "IEEE and The Open Group", year: 2018, kind: #standard, url: "https://pubs.opengroup.org/onlinepubs/9699919799/", checked: "pipelines, tilde expansion, asynchronous lists, suffix removal, the dot utility, and the read-write redirection read on 2026-10-03; a 2024 edition exists" }
  #>src_lab_rfc3986
  ^["rfc3986"]{ title: "RFC 3986: Uniform Resource Identifier (URI): Generic Syntax", authors: "Tim Berners-Lee; Roy T. Fielding; Larry Masinter", year: 2005, venue: "IETF, January 2005", kind: #standard, checked: "writer knowledge" }
  #>src_lab_rfc5147

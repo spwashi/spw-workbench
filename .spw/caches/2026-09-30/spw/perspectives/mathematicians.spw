@@ -7,7 +7,7 @@
 #:domain #!spw_perspectives
 #:form #!ledger
 #:level #!intro
-#:review #!unreviewed
+#:review #!adversarial_checked
 #:valence #!bonk
 
 ^"emit"{
@@ -37,9 +37,24 @@
    event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #partial
    note: "forward refs to planned files of other packages that were not yet written: contraptions/closure-atlas"
   }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r8"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r9"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r10"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
-  "the study said all ten LaTeX special characters are Spw syntax; the backslash is a lexer error rather than syntax, and an underscore inside a name is part of the name"
+  "the study said all ten LaTeX special characters are Spw syntax; the backslash is a lexer error rather than syntax, and an underscore inside a name is part of the name",
+  "the lemma wonder said needs edges form a partial order while acyclic; a partial order is reflexive, so the hypothesis now names the reachability order an acyclic edge set induces",
+  "the history row said mathematical signs were introduced by named authors at datable moments; Cajori also documents signs such as plus and minus that emerged gradually, so the row now says many, not all"
  ]
 }
 
@@ -52,7 +67,7 @@
  #>spw_perspectives_mathematicians_standing
  ^["hypothesis"]{
   #:claim #!interpretive
-  statement: "This ledger was written by an agent outside the cluster; it stays unreviewed until a working mathematician checks each row against how the field reads its own notation."
+  statement: "This ledger was written by an agent outside the cluster; it stays a hypothesis until a working mathematician checks each row against how the field reads its own notation."
   member_probe: "a mathematician marks each row as holds, holds with a stated condition, or fails, and names the condition the row forgot"
  }
 }
@@ -157,7 +172,7 @@
  #>spw_perspectives_mathematicians_history
  ^["notation_drifts"]{
   #:claim #!settled
-  statement: "Mathematical signs were introduced by named authors at datable moments and spread unevenly, so a sign can mean different things in neighbouring traditions."
+  statement: "Many mathematical signs can be traced to named authors at datable moments, others emerged gradually, and signs spread unevenly, so a sign can mean different things in neighbouring traditions."
   source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cajori_1928"
  }
  reading: "Spw sigils are a newer tradition of the same kind, with one owner who can still rename them"
@@ -184,7 +199,7 @@
 ?["Do needs edges between lemmas form a partial order?"]{
  #:depth #!mathematical ~#lens(formal structure)
  #:claim #!speculative
- ~#hypothesis: "Needs edges among lemmas form a partial order only while authors avoid cycles, since nothing checks acyclicity, so the order is a promise rather than a property."
+ ~#hypothesis: "Reachability along needs edges orders lemmas partially only while authors avoid cycles, and nothing checks acyclicity, so the order is a promise rather than a property."
  !probe{ "draw needs edges among five lemmas you know, then search the drawing for a cycle by hand" =id[p_doors_math_lemma_order] =kind[thought] }
  breaks: "a proof dependency is checked by a referee or a proof assistant, while a needs edge is checked by nobody"
  ~"./mathematicians.spw#spw_perspectives_mathematicians_proofs" ~#neighbor(nearest)

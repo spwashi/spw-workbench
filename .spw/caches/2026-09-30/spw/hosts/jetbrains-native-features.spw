@@ -22,7 +22,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/jetbrains/features.spw" ]
@@ -35,14 +35,24 @@
    event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #skim, outcome: #pass
    note: "commenter, spellcheck, gutter handler, and the fold hash branch reread in the Kotlin source"
   }
+  ^["r5"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #skim, outcome: #corrected }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r7"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+   note: "parser calls per feature recounted; folding and gutter each use a subset of the four patterns"
+  }
+  ^["r8"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: [
   "the raw features cache said the commenter toggles double-slash comments; SpwCommenter returns a hash and a space, and a slash-star block",
   "the raw features cache said spellcheck skips sigils and inspects comments and strings; the strategy returns an empty tokenizer for every element, so it is off",
   "the raw features cache said the structure view indexes AST landmarks into a hierarchy; it is a flat list from four line parsers with no children",
   "the raw features cache said gutter markers navigate; they pass a null navigation handler",
-  "the raw features cache said the plugin delegates all reasoning to LSP and CLI; folding, structure, and gutter are Kotlin line reads"
+  "the raw features cache said the plugin delegates all reasoning to LSP and CLI; folding, structure, and gutter are Kotlin line reads",
+  "the line-reader claim said folding, structure, and gutter each use all four patterns; only the structure view does, folding reads frames and headings, and the gutter reads anchors, frames, and claims"
  ]
+ revision_note: "the fold probe now names 2025.2.2, the first release the JetBrains table marks for LSP folding"
  kept: "the five action ids, texts, and CLI forms in the raw features cache match plugin.xml and SpwCliInvocation.kt exactly"
 }
 
@@ -88,7 +98,8 @@
  #>editor_hosts_jetbrains_native_line_reader
  ^["second_reader"]{
   #:claim #!settled
-  statement: "Folding, the structure view, and gutter markers each scan the file with four Kotlin line patterns for headings, frames, anchors, and claims; none asks the server."
+  statement: "Folding, the structure view, and gutter markers scan lines with a shared set of four Kotlin patterns for headings, frames, anchors, and claims; none asks the server."
+  per_feature: "folding reads frames and headings; the structure view reads all four; the gutter reads anchors, frames, and claims"
   source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_structure"
   sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_folding", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_gutter" ]
   cites: [ "SpwLineParsers.kt:22-100", "SpwFoldingBuilder.kt:24,49", "SpwStructureViewFactory.kt:54,69,85,101", "SpwAnnotationLineMarkerProvider.kt:23,41,59" ]
@@ -200,7 +211,7 @@
  #:depth #!computational ~#lens(formal structure)
  #:claim #!speculative
  ~#hypothesis: "On builds that show LSP folding, server ranges should match the Kotlin folds on frames and beat them on facet braces after a tilde-hash key."
- !probe{ "on a 2025.2 or later IDE, disable the fold builder, fold every frame in ten cut files, and count mismatches against the Kotlin folds" =id[p_hosts_jb_fold_source] =kind[build] }
+ !probe{ "on a 2025.2.2 or later IDE, disable the fold builder, fold every frame in ten cut files, and count mismatches against the Kotlin folds" =id[p_hosts_jb_fold_source] =kind[build] }
  $%[hosts.jb.live_template_count, hosts.jb.action_count]
  ~"./jetbrains-native-features.spw#editor_hosts_jetbrains_native_folding" ~#neighbor(nearest)
 }

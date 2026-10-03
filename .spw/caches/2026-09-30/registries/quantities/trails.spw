@@ -1,0 +1,80 @@
+# Quantities: Trails
+#
+# World metric cells for the trails apparatus. Trails mostly read cells other branches own; the few cells here name the form a trail takes and the rule it keeps.
+
+#>registry_qty_trails
+#:layer #!reference
+#:domain #!registry
+#:form #!registry
+#:level #!mixed
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ reuse: "trails read season, life, phys, media, prov, creator, and lab cells by handle instead of copying them here"
+ status_legend: "settled cells were read from the linked source; a rule cell restates a rule of this cut and changes only when the contract does"
+}
+
+^["family"]{
+ operator: "%"
+ plane: world
+ scope: corpus
+ scheme: tol
+ algorithm: world.registry_lookup
+ form: scalar
+ ^["trail_memex"]{
+  id: trail_memex
+  identifier: trail.memex
+  keys: #[ essay_year ]
+ }
+ ^["trail_rule"]{
+  id: trail_rule
+  identifier: trail.rule
+  keys: #[ min_class_crossings, arc_clock_count ]
+ }
+}
+
+#>q_trail_memex
+^"memex"{
+ %trail.memex.essay_year{
+  value: 1945
+  unit: "year"
+  at: "Bush describes the memex and its trails in The Atlantic Monthly, July 1945"
+  abs: 0
+  src: ~"../sources/trails.spw#src_trail_bush_1945"
+  status: #settled
+ }
+}
+
+#>q_trail_rule
+^"rule"{
+ %trail.rule.min_class_crossings{
+  value: 2
+  unit: "class"
+  at: "fewest subject classes a trail in this cut must cross, from the contract graph frame"
+  abs: 0
+  src: ~"../sources/trails.spw#src_trail_cut_contract"
+  status: #settled
+ }
+ %trail.rule.arc_clock_count{
+  value: 5
+  unit: "clock"
+  at: "arc clocks in the vocabulary clock set: turn, minute, hour, day, week"
+  abs: 0
+  src: ~"../sources/trails.spw#src_trail_cut_vocabulary"
+  status: #settled
+ }
+}

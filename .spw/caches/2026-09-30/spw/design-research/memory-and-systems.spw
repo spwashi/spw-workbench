@@ -7,7 +7,7 @@
 #:domain #!lang_design
 #:form #!comparison
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/language-features/systems-and-memory.spw" ]
@@ -29,12 +29,18 @@
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "Zig 0.14.0 renamed GeneralPurposeAllocator to DebugAllocator; the raw file used the old name",
   "the raw file said a Zig function without an allocator parameter is guaranteed not to allocate; that is a convention, and code can still reach a global allocator",
   "the raw invariant that explicit memory parameters guarantee zero heap allocation is refuted for the same reason",
-  "claims of output equal to hand-tuned C and of stack traces preserved by error values had no source and are dropped"
+  "claims of output equal to hand-tuned C and of stack traces preserved by error values had no source and are dropped",
+  "the fact check found the Spw retention reading marked implemented with no quoted locator; it now cites the runtime tier defaults"
  ]
 }
 
@@ -148,6 +154,7 @@
   statement: "Spw canon names retention planes whose clock sets how long a product lives, which reads like an arena: the plane, not the product, decides the lifetime."
   grounds: [ ~"docs/theory/spw/cache-field.spw#cache_field" ]
   status: #implemented
+  cites: [ "packages/spw-runtime/src/state/memory-cache.ts:44-46" ]
   ~#(the planes are code at 1aa1dc23; the arena reading belongs to this surface)
  }
 }

@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/materials-matter-and-history/phases-of-matter-and-chemical-bonding.spw" ]
@@ -32,6 +32,11 @@
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #pass }
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "fountain pen ink is a dilute water-based solution close to Newtonian; the raw used it as the example of shear thinning",
@@ -39,7 +44,9 @@
   "phase diagrams for water and carbon dioxide are added with sourced triple and critical points",
   "thixotropy is separated from yield stress; the raw treated a Bingham yield stress as part of thixotropy",
   "the 10 to 40 kJ per mol hydrogen-bond range and the 30 mV zeta rule are dropped as unsourced bands",
-  "the electron-sea wonder is restated: metals bend because dislocations glide, which nondirectional bonding allows"
+  "the electron-sea wonder is restated: metals bend because dislocations glide, which nondirectional bonding allows",
+  "the ionic leaf said ionic solids conduct only when molten or dissolved; solid electrolytes such as alpha silver iodide, stabilized zirconia, and beta-alumina conduct ions as solids",
+  "the water diagram gave the critical point as 647.096 K and 22.064 MPa, decimals that exceed what is measured; it now reads near 647.1 K and 22.06 MPa and cites the IAPWS release"
  ]
 }
 
@@ -68,8 +75,15 @@
  #>materials_bonding_ionic
  ^["ionic"]{
   #:claim #!settled
-  statement: "An ionic bond is the electrostatic attraction between ions made by electron transfer, as in sodium chloride; ionic solids are hard and brittle and conduct only when molten or dissolved."
-  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_atkins_2018"
+  statement: "An ionic bond is the electrostatic attraction between ions made by electron transfer, as in sodium chloride; most ionic solids are hard and brittle, conduct poorly as solids, and conduct well when molten or dissolved."
+  sources: [
+   ~"../../registries/sources/materials-and-engineering.spw#src_mateng_atkins_2018",
+   ~"../../registries/sources/materials-and-engineering.spw#src_mateng_west_2014"
+  ]
+  ^["limits"]{
+   holds: "common salts such as sodium chloride near room temperature"
+   fails: "solid electrolytes such as alpha silver iodide above about 147 C, yttria-stabilized zirconia, and beta-alumina conduct ions in the solid state"
+  }
  }
  #>materials_bonding_covalent
  ^["covalent"]{
@@ -146,13 +160,16 @@
  #>materials_bonding_water_diagram
  ^["water"]{
   #:claim #!settled
-  statement: "Water has its triple point at 273.16 K and 611.657 Pa and its critical point at 647.096 K and 22.064 MPa; its ice Ih melting line slopes backward because ice is less dense."
+  statement: "Water has its triple point at 273.16 K and 611.657 Pa and its critical point near 647.1 K and 22.06 MPa; its ice Ih melting line slopes backward because ice is less dense."
   reads: %[
    mateng.water.triple_point_k,
    mateng.water.triple_point_pa,
    mateng.water.critical_t_k
   ]
-  source: ~"../../registries/sources/materials-and-engineering.spw#src_mateng_wagner_pruss_2002"
+  sources: [
+   ~"../../registries/sources/materials-and-engineering.spw#src_mateng_wagner_pruss_2002",
+   ~"../../registries/sources/materials-and-engineering.spw#src_mateng_iapws_r2_83"
+  ]
   ^["limits"]{
    holds: "ordinary water substance in equilibrium"
    fails: "the backward slope is small, so pressure melting does not by itself explain why skates glide"

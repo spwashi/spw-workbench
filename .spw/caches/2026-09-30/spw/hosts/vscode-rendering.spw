@@ -22,7 +22,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/vscode/syntax-highlighting.spw", ".spw/caches/vscode/decorations.spw" ]
@@ -31,6 +31,17 @@
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+   note: "the seed cell of the apostrophe row was rerun on the construct the row names"
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: [
   "the raw syntax cache said semantic tokens arrive full and delta; the server sends full only",
@@ -38,7 +49,9 @@
   "the raw decorations cache cited extensions/vscode-spw/src/surface/, which does not exist; the pass lives in src/surface-decorations.ts",
   "the raw decorations cache mapped tilde to the wonder phase and listed hash as a phase color; the code paints tilde with phasePotential and leaves hash to the annotation layer",
   "the raw decorations cache said decorations cover the visible range plus a hundred lines; the pass reads the whole document text",
-  "the raw decorations cache gave valences moral meanings such as verified truth; this surface records the manifest wording and the canon disagreement"
+  "the raw decorations cache gave valences moral meanings such as verified truth; this surface records the manifest wording and the canon disagreement",
+  "the contrast limits said bold weights change the threshold; under WCAG 2.2 only large-scale text, at least 18 pt or 14 pt bold, drops to 3 to 1, so bold text under 14 pt still needs 4.5 to 1",
+  "the apostrophe row gave the seed an unterminated-string error for a title comment; the seed lexes that comment cleanly, and the error belongs to a stray apostrophe outside a comment"
  ]
  kept: "the token scope map in the raw syntax cache matches semanticTokenScopes in the manifest and is kept with its line numbers"
 }
@@ -93,12 +106,13 @@
   #:claim #!settled
   statement: "A lone apostrophe opens a masked string in the decoration pass that runs across lines to the next apostrophe, so decorations vanish below it."
   construct: "a title comment that contains an apostrophe"
-  seed: "a stray apostrophe raises an unterminated-string error while success stays true"
+  seed: "a title comment with an apostrophe lexes as one comment, cleanly; a stray apostrophe outside a comment raises an unterminated-string error while success stays true"
+  seed_check: "parse of a hash title with an apostrophe gave one COMMENT token and no errors; parse of a value line holding a contraction gave a STRING token and a recoverable error, success true, on 2026-10-03"
   textmate: "VS Code opens a single-quoted string only when no word character precedes it; syntaxes/spw.tmLanguage.json:174-177"
   decorations: "any apostrophe outside a mask starts a string that crosses newlines; surface-decorations.ts:94-101"
   intellij_textmate: "the IntelliJ copy opens a string at every apostrophe; textmate/spw.tmLanguage.json:171-173"
   source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_decorations"
-  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_grammar", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_grammar", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_render_study" ]
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_vscode_grammar", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jb_grammar", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_render_study", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_seed_comments" ]
   in_this_cut: "the contract keeps apostrophes inside double-quoted strings for this reason; the fix belongs in the tools"
  }
  #>editor_hosts_vscode_rendering_valence
@@ -200,7 +214,8 @@
   method: "relative luminance of BF8803 and 1B8F6A against FFFFFF by the WCAG formula, computed on 2026-10-02"
   ^["limits"]{
    holds: "for text drawn in these colors on a white editor background"
-   fails: "for dark themes, high-contrast themes, and bold weights, which change the threshold or the background"
+   fails: "for dark and high-contrast themes, which change the background, and for large-scale text, at least 18 pt or 14 pt bold, which WCAG holds to 3 to 1"
+   bold: "bold text under 14 pt, about 18.7 px, is not large-scale, so it still needs 4.5 to 1, and the light bone color fails it"
   }
  }
 }

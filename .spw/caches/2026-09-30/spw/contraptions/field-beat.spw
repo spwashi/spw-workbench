@@ -1,0 +1,203 @@
+# Field Beat
+#
+# Discrete beats of decay then inject, stepped over a teaching run sheet and a volunteer season with the seed field model; every rate here is a stated teaching parameter, never a measured constant.
+
+#>spw_lab_field_beat
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Field Beat"
+ ~#claim: "A beat of decay then inject turns a run sheet into a field you can step, and because no measured attention constant exists, every decay rate in it is a teaching parameter."
+ ~#proof: "halfLifeToRate and fieldBeat at commit 1aa1dc23 step the field; Wilson and Korn, and later Bradbury, find the ten-minute attention claim thinly supported."
+ ~#door: "Step the teaching run sheet one beat at a time, then move the first hook earlier and step it again."
+ ~#audience: "producers, volunteer coordinators, teachers, and Spw authors who model cadence"
+ continuity: "Field Beat | teaching parameter"
+ cold_open: "Each beat lets attention fade a little and a hook adds some back, and the fade rate is a teaching parameter, not a measurement."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new", "persona study contraption_catalog[13], references/studies/persona-synthesis.json", "sketch references/spw-branch/seeds/contraptions/field-beat.spw" ]
+ method: #authored
+ evidence: #[
+  "the run sheet below was stepped with halfLifeToRate and fieldBeat imported from packages/spw-seed at 651b535b on 2026-10-03; field.ts is unchanged since 1aa1dc23",
+  "packages/spw-cli/src/beat.ts was read on 2026-10-03"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+ }
+ corrections: #[
+  "the persona catalog included a pharmacokinetic loading-dose example; it is removed, because dosing belongs to clinicians and no surface in this cut gives doses",
+  "the sketch gave a twelve-minute attention half-life as if measured; it is now a named teaching parameter beside the evidence that no such constant is established",
+  "the sketch had no diffuse step and said why; this surface keeps that rule, since segments are moments in time, not neighbouring places"
+ ]
+}
+
+^["edges"]{
+ analog: [ ~"../../making/broadcast/episode-run-sheet.spw#broadcast_run_sheet" ]
+ see: [ ~"../../society/communities/commons-roles.spw#communities_commons_volunteer_q", ~"./order-counter.spw#spw_lab_order_counter" ]
+}
+
+^["concepts"]{
+ primary: [ #run_sheet, #season_cadence ]
+ transfers: [ #equilibrium, #reflexive_mirror ]
+ tensions: [ #overclaim ]
+}
+
+^["tool"]{
+ status: #proposed
+ verb: "a verb that would map a schedule and its facets onto fieldBeat sites and inject events; not yet a command"
+ implemented: #[
+  "packages/spw-seed/src/math/field.ts:56 decayField",
+  "packages/spw-seed/src/math/field.ts:64 halfLifeToRate",
+  "packages/spw-seed/src/math/field.ts:75 diffuseField",
+  "packages/spw-seed/src/math/field.ts:250 fieldBeat, decay then optional diffuse then optional inject",
+  "packages/spw-seed/src/math/field.ts:274 massConserved"
+ ]
+ scratch: "the stepped results below came from a scratch adapter that imports these functions; no command reads a surface into them"
+ source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_field"
+}
+
+#>spw_lab_field_beat_parameters
+^["parameters"]{
+ status: "teaching parameters chosen for this bench; none is a measured property of any audience"
+ beat: .{ n: 1, unit: "minute" }
+ half_life: .{ n: 12, unit: "beats" }
+ start: 1.0
+ hook_inject: 0.3
+ floor: 0.5
+ order: << decay ; inject >>
+ ~#(no diffuse step: segments follow one another in time and are not neighbouring places)
+}
+
+^["world"]{
+ #>spw_lab_field_beat_attention
+ ^["attention_span"]{
+  #:claim #!contested
+  statement: "The often repeated claim that lecture attention lapses after ten to fifteen minutes is contested: Wilson and Korn, and later Bradbury, trace it to thin and indirect evidence."
+  sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_wilson_korn_2007", ~"../../registries/sources/spw-contraptions.spw#src_contrap_bradbury_2016" ]
+  ^["limits"]{
+   holds: "for the classroom lecture studies these reviews examined"
+   fails: "for streams, broadcasts, and volunteer work, which these reviews did not study"
+  }
+ }
+ #>spw_lab_field_beat_model
+ ^["seed_beat"]{
+  #:claim #!settled
+  statement: "fieldBeat multiplies every site by one decay factor, optionally diffuses along graph edges, then adds injections, and its own comment calls it a production clock without domain nouns."
+  cites: [ "packages/spw-seed/src/math/field.ts:246-272" ]
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_field"
+ }
+ #>spw_lab_field_beat_half_life
+ ^["half_life_rule"]{
+  #:claim #!settled
+  statement: "halfLifeToRate returns the natural log of two over the half-life, so a site left alone falls to half its value after that many beats."
+  cites: [ "packages/spw-seed/src/math/field.ts:63-67" ]
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_field"
+ }
+}
+
+#>spw_lab_field_beat_run_sheet
+^["run_sheet"]{
+ note: "a made-up teaching run sheet, not any real show"
+ order: << cold_open ; intro ; deep_dive || poll_overlay ; audience_qa ; outro >>
+ ^["segments"]{
+  cold_open: .{ from: 0, to: 2, hook: false }
+  intro: .{ from: 2, to: 10, hook: false }
+  deep_dive: .{ from: 10, to: 30, hook: true }
+  audience_qa: .{ from: 30, to: 40, hook: true }
+  outro: .{ from: 40, to: 43, hook: false }
+ }
+ unit: "minutes from the start; a hook injects once, at the first minute of its segment"
+}
+
+#>spw_lab_field_beat_season
+^["volunteer_season"]{
+ note: "a made-up community season with three roles and synthetic counts"
+ sites: #[ greeter, setup, interpreter ]
+ pool: .{ greeter: 6, setup: 4, interpreter: 1 }
+ inject: "a thank-you or a social adds goodwill to one role at a time"
+ ^["what_the_field_cannot_hold"]{
+  #:claim #!interpretive
+  statement: "Goodwill can be stepped as a field, but a pool of one interpreter is a count, not a level, and no injection of goodwill adds a second person."
+ }
+}
+
+^["battery"]{
+ #>spw_lab_field_beat_step
+ ^["step_the_sheet"]{
+  !probe{ "step the run sheet for 43 beats with the teaching parameters and list the beats where attention sits below the floor" =id[p_contrap_field_beat_step] =kind[sim] }
+  predict: ?{ "at which beat does attention first fall below the floor" } ~<guess>
+  expect: "beat 20, midway through the deep dive; 21 of 43 beats sit below the floor"
+  shows: ~"./field-beat.spw#spw_lab_field_beat_run_sheet"
+ }
+ #>spw_lab_field_beat_move
+ ^["move_the_hook"]{
+  !probe{ "move the deep-dive hook to beat 6 inside the intro and step again" =id[p_contrap_field_beat_move] =kind[sim] }
+  predict: ?{ "does an earlier hook help or hurt" } ~<guess>
+  expect: "it hurts under these parameters: the first dip comes at beat 19 and 23 beats sit below the floor, because the gain fades before the long segment ends"
+  shows: ~"./field-beat.spw#spw_lab_field_beat_parameters"
+ }
+ #>spw_lab_field_beat_cycle
+ ^["steady_cycle"]{
+  !probe{ "inject 0.3 every ten beats forever and find the peak and trough of the repeating cycle" =id[p_contrap_field_beat_cycle] =kind[calc] }
+  expect: "the cycle settles where the injection equals the decay over ten beats: a peak near 0.68 and a trough near 0.38, below the floor, so this cadence cannot hold it"
+  shows: ~"./field-beat.spw#spw_lab_field_beat_half_life"
+ }
+}
+
+#>spw_lab_field_beat_mirror
+^["language_mirror"]{
+ #>spw_lab_field_beat_clock
+ ^["clock_without_story"]{
+  #:claim #!settled
+  statement: "spw beat prints a numbered tick, by default every half second, and reads no surface, so the CLI beat carries only its tick count, while fieldBeat carries state and no command feeds it."
+  cites: [ "packages/spw-cli/src/beat.ts:1-9", "packages/spw-cli/src/commands.ts:420-425" ]
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_beat"
+ }
+ question: "What would a beat that reads a surface step, and what would it be allowed to write?"
+ rule: "the cut contract keeps beat, pulse, and epoch as system clock names that no arc may reuse"
+ standing: "a-canon: spw beat is repository code; a-cut: the clock-name rule is this cut contract"
+ contract: ~"../../contract.spw#cut_contract"
+ !probe{ "sketch a read-only beat that steps a schedule frame and prints levels, writing nothing to the tree" =id[p_contrap_field_beat_reader] =kind[build] }
+}
+
+^["limits"]{
+ holds: "how a level moves under a stated decay and stated injections, one discrete beat at a time"
+ fails: "audiences, volunteers, and goodwill are not conserved mass; time here is discrete; no parameter is measured; and nothing here scores, logs, or ranks a person"
+}
+
+^["try"]{
+ #>spw_lab_field_beat_try
+ ^["paper_beat"]{
+  materials: [ "a strip of paper ruled into 43 boxes", "a calculator", "a pencil" ]
+  steps: << "write 1.0 before the first box" ; "multiply by 0.944 for each box, which is a twelve-beat half-life" ; "add 0.3 in boxes 10 and 30" ; "shade every box below 0.5" ; "move one hook and shade again" >>
+  time: .{ n: 25, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./field-beat.spw#spw_lab_field_beat_step"
+ }
+}
+
+#>spw_lab_field_beat_q
+?["Does spacing hooks evenly hold a level better than clustering them, for the same number of hooks?"]{
+ #:depth #!mathematical ~#lens(production cadence)
+ #:claim #!speculative
+ ~#hypothesis: "Under pure decay with equal injections, evenly spaced hooks should keep more beats above a floor than clustered hooks, since each gain fades on the same schedule."
+ !probe{ "place three hooks in every possible set of beats on the teaching sheet and count beats above the floor for each placement" =id[p_contrap_field_beat_q] =kind[sim] }
+ $%[probe.wonder_count]
+ ~"./field-beat.spw#spw_lab_field_beat_move" ~#neighbor(nearest)
+ breaks: "a real segment changes what a hook is worth, and a live audience is not a single level that decays at one rate"
+}

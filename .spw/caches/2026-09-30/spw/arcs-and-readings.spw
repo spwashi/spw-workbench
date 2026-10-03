@@ -7,7 +7,7 @@
 #:domain #!spw
 #:form #!protocol
 #:level #!advanced
-#:review #!spot_checked
+#:review #!adversarial_checked
 #:valence #!boon
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -35,6 +35,11 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the canon hold role sits at flow-protocol-sigils.spw:40, not :38; the tilde is named potential, not hold",

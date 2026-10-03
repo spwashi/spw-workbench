@@ -7,7 +7,7 @@
 #:domain #!spw
 #:form #!timeline
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 #:era #!current
 
@@ -35,12 +35,20 @@
   ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the study gave v0.1 Spw.x as index only; v0.1 is itself split, index in its changelog and linkage in its phase notes",
   "the study named the v0.1 phases surface, structure, domain, orientation, presentation; the phase table names projection where the dotted dialect name says domain",
-  "the v0.3 README lists six strata as carried from v0.2, not only dialects, and none of the six directories is present in lib/spw-v0.3.0",
-  "the study counted particles as lowering to an existing node; a Particle node kind was added the same day in commit 25ca2e29"
+  "the v0.3 README lists seven strata as carried from v0.2, not only dialects; six of them, core, runtime, dialects, domains, applications, and infra, are absent from lib/spw-v0.3.0, and only architecture is present",
+  "the study counted particles as lowering to an existing node; a Particle node kind was added the same day in commit 25ca2e29",
+  "an earlier revision of this surface said six strata were listed and none present; README.md:23-29 lists seven, and architecture is present",
+  "the v0.2 rung said phase lexing and orientation were not implemented; block and prose lexing and query orientation shipped, and only linear lexing and three orientations did not",
+  "the letter rung cited dialect types lines 16-18; the plan-stream id sits on line 19"
  ]
 }
 
@@ -91,15 +99,16 @@
  #>spw_lineage_v02
  ^["v0_2"]{
   #:claim #!settled
-  statement: "v0.2 carried the phase model and marked phase lexing, domain binding, orientation, and the dialect annotation as not implemented."
+  statement: "v0.2 carried the phase model and marked linear lexing, domain binding, the template, reduction, and linkage orientations, and the dialect annotation as not implemented, while block and prose lexing and query orientation shipped."
   source: ~"../registries/sources/spw-branch.spw#src_spw_lib_archives"
-  cites: [ "lib/spw-v0.2.0-alpha/dialects/PHASES.md:125-131", "commit 9fe3b73c", "commit f6f62161" ]
+  cites: [ "lib/spw-v0.2.0-alpha/dialects/PHASES.md:121-131", "commit 9fe3b73c", "commit f6f62161" ]
+  also: "taste profiles are marked specified, not code"
   at: "2026-02-26 to 2026-02-27"
  }
  #>spw_lineage_v03
  ^["v0_3"]{
   #:claim #!settled
-  statement: "v0.3 code holds one dialect id from a fixed list of eight plus flags, and its README says a dialects directory was carried forward that lib/spw-v0.3.0 does not contain."
+  statement: "v0.3 code holds one dialect id from a fixed list of eight plus flags, and its README says seven strata, dialects among them, were carried forward, of which lib/spw-v0.3.0 holds only architecture."
   source: ~"../registries/sources/spw-branch.spw#src_spw_seed_dialect"
   sources: [ ~"../registries/sources/spw-branch.spw#src_spw_lib_archives" ]
   cites: [ "packages/spw-seed/src/dialect/types.ts:12-20", "lib/spw-v0.3.0/README.md:23-29", "commit 4763a29f" ]
@@ -152,7 +161,7 @@
   statement: "The letter x meant index in the v0.1 changelog, linkage in the v0.1 phase notes, and executable in code; p meant prompting in v0.1 and plan streams in code."
   source: ~"../registries/sources/spw-branch.spw#src_spw_lib_archives"
   sources: [ ~"../registries/sources/spw-branch.spw#src_spw_seed_dialect" ]
-  cites: [ "lib/spw-v0.1.0-alpha/CHANGELOG.md:25-26", "lib/spw-v0.1.0-alpha/dialects/PHASES.md:176", "lib/spw-v0.2.0-alpha/dialects/GEOMETRY.md:16", "packages/spw-seed/src/dialect/types.ts:16-18" ]
+  cites: [ "lib/spw-v0.1.0-alpha/CHANGELOG.md:25-26", "lib/spw-v0.1.0-alpha/dialects/PHASES.md:176", "lib/spw-v0.2.0-alpha/dialects/GEOMETRY.md:16", "packages/spw-seed/src/dialect/types.ts:16,19" ]
  }
  ladder: << "x as index" ; "x as linkage" ; "x as index again in v0.2" ; "x as executable" >>
  consequence: "a single letter carries its history silently, which is one reason the play packs are named as words"

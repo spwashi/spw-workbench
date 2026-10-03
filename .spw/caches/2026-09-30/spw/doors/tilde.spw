@@ -7,7 +7,7 @@
 #:domain #!spw
 #:form #!field_guide
 #:level #!intro
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 
 ^"emit"{
@@ -15,13 +15,13 @@
  ~#claim: "A tilde before a quoted path is a link, and a bare tilde is potential, a deferred wrapper; the formula tilde and approximately belong in strings."
  ~#proof: "The grammar builds a path ref from a tilde and a string, and a probe at commit 1aa1dc23 splits y ~ x1 + x2 into siblings with x1 as a modifier."
  ~#door: "Guess what a bare model formula becomes, then check it with spw inspect source."
- ~#audience: "mathematicians and R or Stata users who read the tilde as a relation"
+ ~#audience: "mathematicians and R users who read the tilde as a relation, and Stata users who read it as NOT"
  continuity: "Door: Tilde | quoted path"
  cold_open: "A tilde before a quoted path is a link; put formulas and approximations in strings."
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -34,7 +34,29 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r5"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r7"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r8"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r10"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r11"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r12"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ added: "the habits frame now credits the route of formula notation from Wilkinson and Rogers through S into R"
+ corrections: #[
+  "the audience and the wonder named Stata users beside R users for the formula reading; Stata writes models without a tilde and reads the tilde in expressions as logical NOT, the reading this door asks readers to unlearn",
+  "the path ref row cited the gate at lines 337 to 345; the fragment-anchor check sits on line 346",
+  "the path ref limit said the tilde must touch the string; the grammar skips whitespace after the tilde, so a spaced tilde before a quoted path is still a link",
+  "the formula row said x2 is left loose; the parse joins x2 to the tilde operation with a plus connector in a sibling expression"
+ ]
 }
 
 ^["edges"]{
@@ -47,10 +69,11 @@
   #:claim #!settled
   statement: "A tilde followed by a double-quoted path is a path ref; the cut gate resolves it against the citing file, then the repository root, and checks the fragment names an anchor."
   source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
-  cites: [ "packages/spw-seed/src/grammar/references.ts:264-480", "scripts/analyzers/spw-cut-gate.ts:337-345" ]
+  cites: [ "packages/spw-seed/src/grammar/references.ts:264-480", "packages/spw-seed/src/grammar/references.ts:283-284", "packages/spw-seed/src/grammar/references.ts:405-406", "scripts/analyzers/spw-cut-gate.ts:337-346" ]
+  probe_run: "a spaced tilde before a quoted path parsed to the same path ref as the tight form at HEAD 651b535b on 2026-10-03, inside a binding and inside a list; spw inspect spacing labels that gap open, but the tree does not change"
   ~#spoken(tilde quote)
   ^["limits"]{
-   holds: "a tilde touching a double-quoted string"
+   holds: "a tilde followed by a double-quoted string, with or without a space between them"
    fails: "a tilde before a capsule tag and then a string is an operation plus a capsule, not a link"
   }
  }
@@ -65,9 +88,10 @@
  #>spw_door_tilde_split
  ^["formula_split"]{
   #:claim #!settled
-  statement: "Typed bare, y ~ x1 + x2 binds y alone, makes x1 the modifier of a tilde operation, and leaves x2 loose; count: ~20 binds a bare tilde and leaves 20 loose."
+  statement: "Typed bare, y ~ x1 + x2 binds y alone, makes x1 the modifier of a tilde operation, and joins x2 to that operation with a plus connector in a sibling expression."
+  approximate: "count: ~20 binds a bare tilde and leaves 20 loose"
   source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
-  probe_run: "both lines parsed at 1aa1dc23 with no error and no warning, so nothing flags the split"
+  probe_run: "both lines parsed at 1aa1dc23 with no error and no warning, so nothing flags the split; re-run at HEAD 651b535b on 2026-10-03 with the same tree"
  }
 }
 
@@ -80,6 +104,8 @@
  ]
  unlearn: "a bare tilde is neither NOT nor approximately; it defers what follows it"
  origin_source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_wilkinson_rogers_1973"
+ r_lineage: "Chambers and Hastie carried the Wilkinson and Rogers notation into the S modelling functions that R inherited"
+ r_source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_chambers_hastie_1992"
 }
 
 ^["keyboard"]{
@@ -96,7 +122,7 @@
 ?["What does a model formula typed as a bare value become?"]{
  #:depth #!mathematical ~#lens(formal structure)
  #:claim #!speculative
- ~#hypothesis: "An R or Stata habit predicts one relation between y and its predictors, so the silent split surprises it more than a loud error would."
+ ~#hypothesis: "An R formula habit predicts one relation between y and its predictors, so the silent split surprises it more than a loud error would."
  !probe{ "guess first, then run spw inspect source --text on model: y ~ x1 + x2 with --through structure" =id[p_doors_tilde_formula] =kind[thought] }
  breaks: "an R formula is an object a model function reads later, while a Spw tilde defers whatever single argument follows it"
  ~"./tilde.spw#spw_door_tilde_split" ~#neighbor(nearest)

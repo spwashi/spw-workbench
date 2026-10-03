@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/university-education/linguistics/sociolinguistics-and-language-documentation.spw" ]
@@ -34,13 +34,24 @@
    care: #adversarial, outcome: #corrected
   }
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r8"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  gate_note: "r3 was first recorded as a pass while the planned panels gap-table was unwritten; that forward ref now resolves"
  corrections: [
   "split out of the raw sociolinguistics file, where comparative method and sound laws sat in one facet",
   "Grimm Law is credited to Rask 1818 as well as Grimm 1822",
   "Greenberg word-order correlations are stated as statistical tendencies, not laws",
-  "fact check: the comparative method was dated from the 1870s; correspondences and reconstruction began in the 1810s, and the 1870s brought exceptionless laws"
+  "fact check: the comparative method was dated from the 1870s; correspondences and reconstruction began in the 1810s, and the 1870s brought exceptionless laws",
+  "fact check 2026-10-03: Bopp 1816 was credited with sound correspondences; his book compared verb inflection, and regular sound correspondences begin with Rask and Grimm",
+  "fact check 2026-10-03: Greenberg was credited with a two-way VO and OV tendency; he stated VSO as always prepositional and SOV as usually postpositional, and the VO and OV recasting came later, with Dryer 1992 cited for it"
  ]
 }
 
@@ -72,8 +83,12 @@
   #:claim #!settled
   at: "from the 1810s; made rigorous by the Neogrammarians in the 1870s"
   statement: "The comparative method reconstructs a proto-language by aligning cognates, finding regular correspondences, and positing the fewest changes that yield every daughter form."
-  credit: "Bopp in 1816, Rask in 1818, and Grimm in 1822 set up correspondences; Schleicher reconstructed Proto-Indo-European forms in the 1860s; the Neogrammarians made sound laws exceptionless"
-  sources: [ ~"../../registries/sources/language-and-communities.spw#src_lang_campbell_2013", ~"../../registries/sources/language-and-communities.spw#src_lang_fortson_2010" ]
+  credit: "Bopp in 1816 compared verb inflection across Sanskrit, Greek, Latin, Persian, and Germanic; Rask in 1818 and Grimm in 1822 set up regular sound correspondences; Schleicher reconstructed Proto-Indo-European forms in the 1860s; the Neogrammarians made sound laws exceptionless"
+  sources: [
+   ~"../../registries/sources/language-and-communities.spw#src_lang_campbell_2013",
+   ~"../../registries/sources/language-and-communities.spw#src_lang_fortson_2010",
+   ~"../../registries/sources/language-and-communities.spw#src_lang_bopp_1816"
+  ]
  }
  #>linguistics_historical_grimm
  ^["rask_grimm_1818_1822"]{
@@ -133,8 +148,16 @@
  #>linguistics_historical_greenberg
  ^["word_order_correlations"]{
   #:claim #!settled
-  statement: "Greenberg found that verb-object languages tend to have prepositions and object-verb languages tend to have postpositions, as statistical tendencies across a sample."
+  statement: "Greenberg stated that VSO languages are always prepositional and that SOV languages are postpositional with greater than chance frequency."
   source: ~"../../registries/sources/language-and-communities.spw#src_lang_greenberg_1963"
+  universals: "these are his Universals 3 and 4: the first absolute, the second a tendency"
+ }
+ #>linguistics_historical_greenberg_recast
+ ^["vo_ov_recast"]{
+  #:claim #!settled
+  statement: "Later typologists recast the pattern as a correlation between verb-object order and prepositions, and Dryer's far larger 1992 sample shows it as a strong tendency rather than a law."
+  source: ~"../../registries/sources/language-and-communities.spw#src_lang_dryer_1992"
+  refines: ~"./historical-linguistics.spw#linguistics_historical_greenberg"
  }
 }
 

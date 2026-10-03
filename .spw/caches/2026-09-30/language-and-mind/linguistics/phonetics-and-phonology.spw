@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/university-education/linguistics/phonetics-and-phonology.spw" ]
@@ -34,12 +34,21 @@
    care: #adversarial, outcome: #pass
   }
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #pass
+  }
  }
  corrections: [
   "the raw file tied F2 directly to backness; F2 is highest for front vowels and falls as the tongue backs",
   "the raw file placed Coronal, Labial, and Dorsal place nodes inside SPE; SPE matrices are flat, and class nodes come from feature geometry",
   "the raw file gave Optimality Theory a universal input; the constraint set is universal, inputs are language-particular lexical forms",
-  "the raw wonder asserted attractor basins fixed in a critical period; it is replaced by a probe on adult second-language boundary shift"
+  "the raw wonder asserted attractor basins fixed in a critical period; it is replaced by a probe on adult second-language boundary shift",
+  "fact check 2026-10-03: the formant-ratio probe named F2 over F1 for who'd without reading its F1; the probe now computes the heed ratio its question asks about, from the two cells it reads"
  ]
 }
 
@@ -186,7 +195,7 @@
  #:depth #!physical ~#lens(signal path)
  #:claim #!speculative
  ~#hypothesis: "Listeners rely on ratios among formants and on the voice pitch more than on absolute formant values when they match vowels across speakers."
- !probe{ "compute F2 over F1 for heed and who'd from the registry, then repeat for a child recording" =id[p_lang_phonology_formant_ratio] =kind[calc] }
- $%[lang.vowel.i_f1_hz, lang.vowel.i_f2_hz, lang.vowel.u_f2_hz]
+ !probe{ "compute F2 over F1 for heed from the registry, then for heed in a child recording, and compare how far the ratio and the raw formants each move" =id[p_lang_phonology_formant_ratio] =kind[calc] }
+ $%[lang.vowel.i_f1_hz, lang.vowel.i_f2_hz]
  ~"./phonetics-and-phonology.spw#linguistics_phonology_vowel_formants" ~#neighbor(nearest)
 }

@@ -7,7 +7,7 @@
 #:domain #!cell_biology
 #:form #!index
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
@@ -33,6 +33,9 @@
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{ event: #fact_checked, at: "2026-10-03",
+   agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #corrected }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  receipt_note: "r3 was first written as a pass while every source link pointed at a registry not yet written; r4 wrote and checked that registry, and r5 is the passing run after it"
  corrections: #[
@@ -44,7 +47,8 @@
   "the raw ribosome wonder asserted that selection could never replace the RNA core; it is kept as a speculative question (raw line 32)",
   "the raw condensate wonder stated phase separation as the settled mechanism; it is now contested with its caveats (raw line 40)",
   "2026-10-03: the facet rows now give transport and the cell cycle the state_machine form their leaves declare",
-  "2026-10-03: the RNA world claim named Woese and Fox as its counter, a paper that does not argue against it; Bernhardt 2012, a review of the objections, replaces it"
+  "2026-10-03: the RNA world claim named Woese and Fox as its counter, a paper that does not argue against it; Bernhardt 2012, a review of the objections, replaces it",
+  "2026-10-03 fact-check: the thread said every living cell translates, which is false for single cells such as mature mammalian red blood cells, which lose their ribosomes; it now speaks of cellular organisms"
  ]
 }
 
@@ -96,7 +100,7 @@
  #>cell_biology_index_thread
  ^["four_billion_year_thread"]{
   #:claim #!interpretive
-  statement: "Every living cell translates with a ribosome whose catalytic core is RNA, so the act of making protein links all cellular life to a shared ancestor."
+  statement: "Every cellular organism makes protein on a ribosome whose catalytic core is RNA, so the act of making protein links all cellular life to a shared ancestor."
   sources: [ ~"../../registries/sources/life-and-mind.spw#src_life_nissen_2000", ~"../../registries/sources/life-and-mind.spw#src_life_woese_fox_1977" ]
   ^["limits"]{
    holds: "as a reading of conserved ribosomal RNA and the RNA catalytic center"

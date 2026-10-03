@@ -7,7 +7,7 @@
 #:domain #!spw_perspectives
 #:form #!protocol
 #:level #!intro
-#:review #!unreviewed
+#:review #!adversarial_checked
 #:valence #!bane
 
 ^"emit"{
@@ -34,10 +34,23 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r7"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r8"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the study door listed a medication dilution ratio, a saline concentration, and an early-warning score vignette; all three are removed, and the rows use generic bands and identifiers only",
-  "the study proposed hand-scoring an early-warning vignette as a try kit; a scoring exercise reads as clinical practice, so the kit here audits notation instead"
+  "the study proposed hand-scoring an early-warning vignette as a try kit; a scoring exercise reads as clinical practice, so the kit here audits notation instead",
+  "the Do Not Use row stated in the present tense that the list is kept, with no dated check of its current standing; it now states the 2004 introduction and leaves current standing to verify",
+  "the population row called the rel or abs slot of a cell a tolerance; the contract does not say whether it is a tolerance or an uncertainty"
  ]
 }
 
@@ -63,7 +76,7 @@
  #>spw_perspectives_life_clinical_standing
  ^["hypothesis"]{
   #:claim #!interpretive
-  statement: "This protocol was written by an agent outside the cluster; it stays unreviewed until a lab scientist or clinician checks that each row reads true to how their notation is used."
+  statement: "This protocol was written by an agent outside the cluster; it stays a hypothesis until a lab scientist or clinician checks that each row reads true to how their notation is used."
   member_probe: "a member checks each row against their own lab or ward notation, never patient records, and marks which rows matched"
  }
 }
@@ -79,9 +92,10 @@
  #>spw_perspectives_life_clinical_do_not_use
  ^["do_not_use"]{
   #:claim #!settled
-  statement: "The Joint Commission keeps an official Do Not Use list of abbreviations and number forms, including a trailing zero and a missing leading zero, because each has been misread in orders."
+  statement: "The Joint Commission introduced an official Do Not Use list of abbreviations and number forms in 2004, including a trailing zero and a missing leading zero, because each can be misread in orders."
   source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_tjc_do_not_use"
-  as_of: "list in force since 2004; read the current fact sheet before quoting its wording"
+  as_of: "2004 introduction; whether a current standard still requires the list was not confirmed on 2026-10-03"
+  verify: "the fact sheet refused fetches on 2026-10-03; re-read it and the standard that requires the list before stating its current standing or wording"
  }
  #>spw_perspectives_life_clinical_leading_dot
  ^["leading_decimal"]{
@@ -109,7 +123,7 @@
   #:claim #!settled
   statement: "A reference interval is established for a defined reference population with a stated method, so it describes that population and method rather than a constant of nature."
   source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_clsi_ep28_2010"
-  breaks: "a registry cell holds one value with a tolerance, while a reference band needs a population and a method beside it"
+  breaks: "a registry cell holds one value with a rel or abs spread, while a reference band needs a population and a method beside it"
  }
  #>spw_perspectives_life_clinical_variants
  ^["variant_names"]{

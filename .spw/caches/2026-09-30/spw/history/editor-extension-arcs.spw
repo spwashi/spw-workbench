@@ -31,7 +31,31 @@
   ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #skim, outcome: #pass
+   note: "per-extension commit counts recounted at 1aa1dc23; one VS Code rung added for 6690d686"
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r7"]{
+   event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected
+   note: "a limits line named a February rewrite that the episode timeline no longer asserts"
+  }
+  ^["r8"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r9"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+   note: "the case question claimed a writing week the history cannot show; extension counts and rungs confirmed"
+  }
+  ^["r10"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[
+  "the shared-entry limits named the history after the February rewrite; no February rewrite of main is on record, so the limit now names the history at 1aa1dc23",
+  "the case question said the plugins were written fast in one week; they enter this history restored in one commit, so only their restoration and the week of extensions after it are on record"
+ ]
  method_note: "git log per extension directory at 1aa1dc23 with author dates; subjects are paraphrased and no episode body is quoted"
 }
 
@@ -48,7 +72,8 @@
 }
 
 ^["case"]{
- question: "How did three editor plugins written fast in one week come to share one language server?"
+ question: "How did three editor plugins, restored together on 2026-02-26 and extended within a week, come to share one language server?"
+ first_week: "git log at 1aa1dc23 shows each of the three plugins with further commits after the restore by 2026-02-28"
  setting: "a single-owner workbench with a VS Code extension, an IntelliJ plugin, a Neovim plugin, and a planned Obsidian plugin"
 
  #>workbench_history_extensions_scale
@@ -70,7 +95,7 @@
   source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log"
   cites: "git log --reverse -- extensions at 1aa1dc23, first commit 5dc14d60"
   ^["limits"]{
-   holds: "for the history as it stands after the February rewrite"
+   holds: "for the history as it stands at 1aa1dc23"
    fails: "for the IntelliJ integration plan, whose stream begins on 2026-02-23, before the plugin entered this history"
   }
  }
@@ -93,6 +118,8 @@
   ^["bundle_2026_07_21"]{ at: "2026-07-21", event: "the extension bundles a URI-native thin client, the start of the bundled-server-only launch", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
   #>workbench_history_extensions_vscode_planes
   ^["planes_2026_08_24"]{ at: "2026-08-24", event: "instruments read alike across hosts and the cache card names four planes; no VS Code commit follows before 1aa1dc23", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+  #>workbench_history_extensions_vscode_readings
+  ^["readings_2026_10_03"]{ at: "2026-10-03", event: "after the as_of commit, 6690d686 lets the Concepts tree accept lens readings as their own kind and skip kinds it does not know", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lens_commit" }
  }
  cards: .{
   vscode_lsp_roadmap: "landed"

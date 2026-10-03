@@ -11,7 +11,7 @@
 #:valence #!bone
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -25,12 +25,26 @@
    care: #adversarial, outcome: #corrected
   }
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  checked: "most journal entries were matched against Crossref metadata and most book editions against Open Library on 2026-10-01; the rest come from the writer and keep the registry at spot_checked"
  fact_check: "on 2026-10-02 a fact-checker matched about 170 entries against bibliographic records and found one error, the CRC editor; the 97th edition of 2016 was edited by William M. Haynes, and Rumble edits from the 98th"
  added: "the 2026-10-02 additions were matched against Crossref, the NBER record, Open Library, or the Handbook of Mineralogy entry before entry"
- economics: "Goetzmann 2004, Sigler 2002, Wellington 1887, Grant 1930, and Weingartner 1963 were added for the engineering economics leaf after matching NBER and Open Library records on 2026-10-02; the fact-checker has not seen them"
- corrections: #[ "the CRC Handbook 97th edition of 2016 names William M. Haynes as editor, not John R. Rumble" ]
+ economics: "Goetzmann 2004, Sigler 2002, Wellington 1887, Grant 1930, and Weingartner 1963 were added for the engineering economics leaf after matching NBER and Open Library records on 2026-10-02; the 2026-10-03 fact-check compared them with known bibliographic records, not live fetches, and found no errors"
+ second_fact_check: "on 2026-10-03 a second fact-check found a withdrawn standard edition and two missing companion papers; the additions below were matched against Crossref, OpenAlex, the EVS catalog, or the IAPWS release scan that day; the Oktaviana abstract was read from OpenAlex"
+ corrections: #[
+  "the CRC Handbook 97th edition of 2016 names William M. Haynes as editor, not John R. Rumble",
+  "EN 10088-1:2014 was withdrawn when EN 10088-1:2023 was published; the entry now names the current edition and says which edition the definition was read in",
+  "the current-source companion to Johnson 2003, Proceedings of the IEEE 91(5):817-821, is added beside the voltage-source paper",
+  "the correlated-insulator companion to Cao 2018, Nature 556:80-84, is added beside the superconductivity paper",
+  "Oktaviana and coworkers 2026 is added; its Muna hand stencil, at least 67.8 thousand years old, is far older than the 2014 Maros stencil",
+  "the Anderson, Charles, and Rees entry now records that the published abstract finds filtration tied to lower infant mortality, unlike the 2018 working paper",
+  "IAPWS R2-83(1992) is added for the uncertainty of the water critical point"
+ ]
  groups: #[ matter_and_structure, material_histories, engineering ]
 }
 
@@ -99,7 +113,13 @@
 }
 
 #>src_mateng_anderson_charles_rees_2022
-^["anderson_charles_rees_2022"]{ title: "Reexamining the Contribution of Public Health Efforts to the Decline in Urban Mortality", authors: "D. Mark Anderson; Kerwin Kofi Charles; Daniel I. Rees", year: 2022, venue: "American Economic Journal: Applied Economics 14(2):126-157; NBER Working Paper 25027, 2018", kind: #article }
+^["anderson_charles_rees_2022"]{
+ title: "Reexamining the Contribution of Public Health Efforts to the Decline in Urban Mortality"
+ authors: "D. Mark Anderson; Kerwin Kofi Charles; Daniel I. Rees"
+ year: 2022, venue: "American Economic Journal: Applied Economics 14(2):126-157, doi 10.1257/app.20190034; NBER Working Paper 25027, 2018"
+ finding: "the published abstract ties water filtration to an 11 to 12 percent reduction in infant mortality and finds that none of the other interventions appear to have contributed; the 2018 working paper abstract said none contributed substantially"
+ kind: #article
+}
 
 #>src_mateng_cutler_miller_2022
 ^["cutler_miller_2022"]{ title: "Reexamining the Contribution of Public Health Efforts to the Decline in Urban Mortality: Comment", authors: "David M. Cutler; Grant Miller", year: 2022, venue: "American Economic Journal: Applied Economics 14(2):158-165; reply by Anderson, Charles, and Rees at 166-169", kind: #article }
@@ -113,6 +133,8 @@
 ^["matter_and_structure"]{
  #>src_mateng_wagner_pruss_2002
  ^["wagner_pruss_2002"]{ title: "The IAPWS Formulation 1995 for the Thermodynamic Properties of Ordinary Water Substance for General and Scientific Use", authors: "W. Wagner; A. Pruss", year: 2002, venue: "Journal of Physical and Chemical Reference Data 31(2):387-535", kind: #article }
+ #>src_mateng_iapws_r2_83
+ ^["iapws_r2_83"]{ title: "Revised Release on the Values of Temperature, Pressure and Density of Ordinary and Heavy Water Substances at their Respective Critical Points", authors: "International Association for the Properties of Water and Steam", year: 1992, venue: "IAPWS R2-83(1992), St. Petersburg", kind: #standard }
  #>src_mateng_span_wagner_1996
  ^["span_wagner_1996"]{ title: "A New Equation of State for Carbon Dioxide Covering the Fluid Region from the Triple-Point Temperature to 1100 K at Pressures up to 800 MPa", authors: "Roland Span; Wolfgang Wagner", year: 1996, venue: "Journal of Physical and Chemical Reference Data 25(6):1509-1596", kind: #article }
  #>src_mateng_callister_rethwisch_2018
@@ -168,7 +190,9 @@
  #>src_mateng_doi_edwards_1986
  ^["doi_edwards_1986"]{ title: "The Theory of Polymer Dynamics", authors: "M. Doi; S. F. Edwards", year: 1986, publisher: "Clarendon Press, Oxford", kind: #book }
  #>src_mateng_cao_2018
- ^["cao_2018"]{ title: "Unconventional Superconductivity in Magic-Angle Graphene Superlattices", authors: "Yuan Cao; Valla Fatemi; Shiang Fang; et al.; Pablo Jarillo-Herrero", year: 2018, venue: "Nature 556:43-50", kind: #article }
+ ^["cao_2018"]{ title: "Unconventional Superconductivity in Magic-Angle Graphene Superlattices", authors: "Yuan Cao; Valla Fatemi; Shiang Fang; et al.; Pablo Jarillo-Herrero", year: 2018, venue: "Nature 556:43-50, doi 10.1038/nature26160", kind: #article }
+ #>src_mateng_cao_2018_insulator
+ ^["cao_2018_insulator"]{ title: "Correlated Insulator Behaviour at Half-Filling in Magic-Angle Graphene Superlattices", authors: "Yuan Cao; Valla Fatemi; Ahmet Demir; Shiang Fang; et al.; Pablo Jarillo-Herrero", year: 2018, venue: "Nature 556:80-84, doi 10.1038/nature26154", kind: #article }
  #>src_mateng_bistritzer_macdonald_2011
  ^["bistritzer_macdonald_2011"]{ title: "Moire Bands in Twisted Double-Layer Graphene", authors: "Rafi Bistritzer; Allan H. MacDonald", year: 2011, venue: "Proceedings of the National Academy of Sciences 108(30):12233-12237", kind: #article }
  #>src_mateng_erni_2009
@@ -193,6 +217,8 @@
  ^["atkins_2018"]{ title: "Atkins' Physical Chemistry", authors: "Peter Atkins; Julio de Paula; James Keeler", edition: "11th", year: 2018, publisher: "Oxford University Press", kind: #textbook }
  #>src_mateng_arunan_2011
  ^["arunan_2011"]{ title: "Definition of the Hydrogen Bond (IUPAC Recommendations 2011)", authors: "Elangannan Arunan; Gautam R. Desiraju; Roger A. Klein; et al.", year: 2011, venue: "Pure and Applied Chemistry 83(8):1637-1641", kind: #standard }
+ #>src_mateng_west_2014
+ ^["west_2014"]{ title: "Solid State Chemistry and its Applications", authors: "Anthony R. West", edition: "2nd", year: 2014, publisher: "Wiley", kind: #textbook }
  #>src_mateng_israelachvili_2011
  ^["israelachvili_2011"]{ title: "Intermolecular and Surface Forces", authors: "Jacob N. Israelachvili", edition: "3rd", year: 2011, publisher: "Academic Press", kind: #book }
  #>src_mateng_verwey_overbeek_1948
@@ -241,7 +267,13 @@
  #>src_mateng_tylecote_1992
  ^["tylecote_1992"]{ title: "A History of Metallurgy", authors: "R. F. Tylecote", edition: "2nd", year: 1992, publisher: "Institute of Materials, London", kind: #book }
  #>src_mateng_en_10088_1
- ^["en_10088_1"]{ title: "EN 10088-1:2014 Stainless steels, Part 1: List of stainless steels", authors: "European Committee for Standardization (CEN)", year: 2014, as_of: "2026-10-01", kind: #standard }
+ ^["en_10088_1"]{
+  title: "EN 10088-1:2023 Stainless steels, Part 1: List of stainless steels"
+  authors: "European Committee for Standardization (CEN)"
+  year: 2023, as_of: "2026-10-03", kind: #standard
+  replaces: "EN 10088-1:2014, withdrawn when the 2023 edition was published at the end of 2023; BS EN 10088-1:2023 was released in January 2024"
+  read: "the at least 10.5 percent chromium and at most 1.2 percent carbon definition is the one stated in the 2014 edition; the 2023 scope lists corrosion, heat, and creep resistant steels as before, and its definition clause has not been checked here"
+ }
  #>src_mateng_iea_2020_steel
  ^["iea_2020_steel"]{ title: "Iron and Steel Technology Roadmap: Towards More Sustainable Steelmaking", authors: "International Energy Agency", year: 2020, publisher: "IEA, Paris", kind: #report }
  #>src_mateng_henshilwood_2011
@@ -250,6 +282,13 @@
  ^["quiles_2016"]{ title: "A High-Precision Chronological Model for the Decorated Upper Paleolithic Cave of Chauvet-Pont d'Arc, Ardeche, France", authors: "Anita Quiles; et al.", year: 2016, venue: "Proceedings of the National Academy of Sciences 113(17):4670-4675", kind: #article }
  #>src_mateng_aubert_2014
  ^["aubert_2014"]{ title: "Pleistocene Cave Art from Sulawesi, Indonesia", authors: "M. Aubert; A. Brumm; M. Ramli; T. Sutikna; et al.", year: 2014, venue: "Nature 514:223-227", kind: #article }
+ #>src_mateng_oktaviana_2026
+ ^["oktaviana_2026"]{
+  title: "Rock Art from at Least 67,800 Years Ago in Sulawesi"
+  authors: "Adhi Agus Oktaviana; Renaud Joannes-Boyau; Budianto Hakim; Basran Burhan; et al.; Adam Brumm; Maxime Aubert"
+  year: 2026, venue: "Nature 650:652-656, doi 10.1038/s41586-025-09968-y", as_of: "2026-01-21", kind: #article
+  finding: "the abstract dates calcite over a Liang Metanduno hand stencil to 71.6 +/- 3.8 ka, a minimum of 67.8 ka for the stencil, above the Spanish minimum attributed to Neanderthals"
+ }
  #>src_mateng_berke_2007
  ^["berke_2007"]{ title: "The Invention of Blue and Purple Pigments in Ancient Times", authors: "Heinz Berke", year: 2007, venue: "Chemical Society Reviews 36(1):15-30", kind: #article }
  #>src_mateng_plesters_1993
@@ -318,7 +357,9 @@
 
 ^["engineering"]{
  #>src_mateng_johnson_2003
- ^["johnson_2003"]{ title: "Origins of the Equivalent Circuit Concept: The Voltage-Source Equivalent", authors: "Don H. Johnson", year: 2003, venue: "Proceedings of the IEEE 91(4):636-640", kind: #article }
+ ^["johnson_2003"]{ title: "Origins of the Equivalent Circuit Concept: The Voltage-Source Equivalent", authors: "Don H. Johnson", year: 2003, venue: "Proceedings of the IEEE 91(4):636-640, doi 10.1109/JPROC.2003.811716", kind: #article }
+ #>src_mateng_johnson_2003_current
+ ^["johnson_2003_current"]{ title: "Scanning Our Past: Origins of the Equivalent Circuit Concept: The Current-Source Equivalent", authors: "Don H. Johnson", year: 2003, venue: "Proceedings of the IEEE 91(5):817-821, doi 10.1109/JPROC.2003.811795", kind: #article }
  #>src_mateng_sedra_smith_2014
  ^["sedra_smith_2014"]{ title: "Microelectronic Circuits", authors: "Adel S. Sedra; Kenneth C. Smith", edition: "7th", year: 2014, publisher: "Oxford University Press", kind: #textbook }
  #>src_mateng_pozar_2012

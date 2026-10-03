@@ -1,0 +1,183 @@
+# Paired Cases
+#
+# A trail that sets each well-known case beside an internal case from this repository, asks the same questions of both, and writes down where the pair breaks.
+
+#>trail_paired_cases
+#:layer #!pragmatics
+#:domain #!trail
+#:form #!trail
+#:level #!intro
+#:review #!adversarial_checked
+#:valence #!bonk
+#:era #!contemporary
+
+^"emit"{
+ ~#title: "Paired Cases"
+ ~#claim: "Six pairs set a well-known case beside a case from this repository, ask both the same questions, and record where each pair breaks."
+ ~#proof: "The method follows structured, focused comparison as George and Bennett describe it; every case is an anchor in the society, making, record, or spw class."
+ ~#door: "Pick one pair, ask both cases the shared question, and write the break line before reading ours."
+ ~#audience: "readers who learn by comparison and maintainers who want outside cases for their own history"
+ continuity: "Paired Cases | same questions"
+ cold_open: "Ask a famous case and one of our own the same questions, then write down where the pair breaks."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "stops and pairings follow the paired-cases row of final-plan-v3 trails",
+  "every stop anchor was matched against the cut on disk on 2026-10-03",
+  "internal cases are read from the spw history dossiers, which cite the repository record"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "fact-check 2026-10-03: the festival pair gave all three 2021 actions to one largest seller; the antitrust fine fell on Alibaba, the marketing measures on the whole live-stream industry, and the tax order on the livestreamer Viya",
+  "fact-check 2026-10-03: the labor pair said guild agreements keep superseded terms in a ledger; the IATSE anchor is a union, agreements replace one another, and it is the labor ledger that keeps both",
+  "fact-check 2026-10-03: the controller pair now says the stream began in anarchy before the vote between modes was added"
+ ]
+}
+
+^["edges"]{
+ feeds: [ ~"./corrections.spw#trail_corrections" ]
+ see: [ ~"./editor-truth.spw#trail_editor_truth" ]
+}
+
+^["concepts"]{
+ primary: [ #paired_case, #accountability ]
+ transfers: [ #crowd_noise, #plan_card ]
+ tensions: [ #false_analogy ]
+}
+
+#>trail_paired_stops
+^["stops"]{
+ classes: #[ society, making, record, spw ]
+ walk: <<
+  ~"../society/platforms/twitch-plays-pokemon.spw#live_platforms_twitch_plays" ;
+  ~"../making/streaming/chat-torrent-pipeline.spw#streaming_chat_torrent" ;
+  ~"../spw/history/commit-gate.spw#workbench_history_commit_gate" ;
+  ?{ "who decides, when many inputs reach one controller" } ~<prediction> ;
+  ~"../record/carriers/format-wars.spw#media_carriers_format_wars" ;
+  ~"../spw/history/editor-extension-arcs.spw#workbench_history_extensions" ;
+  ~"../making/authorship/kindle-unlimited-case.spw#authorship_kindle_unlimited" ;
+  ~"../spw/history/plan-ecology.spw#workbench_history_plans" ;
+  ?{ "does a rule about how work is counted change the work" } ~<prediction> ;
+  ~"../making/broadcast/serial-2014-case.spw#broadcast_serial_case" ;
+  ~"../spw/history/curriculum-plans.spw#workbench_history_curriculum_plans" ;
+  ~"../society/markets/singles-day-live-commerce.spw#markets_singles_day" ;
+  ~"../making/film/labor-agreements-ledger.spw#film_labor_ledger" ;
+  ~"../spw/history/episode-timeline.spw#workbench_history_episodes" ;
+  ?{ "what does a record keep when its history is rewritten" } ~<prediction> ;
+  ~"../spw/history/this-cut.spw#workbench_history_this_cut"
+ >>
+}
+
+^["method"]{
+ #>trail_paired_focused
+ ^["focused_comparison"]{
+  #:claim #!settled
+  statement: "George and Bennett describe structured, focused comparison: ask each case the same questions, chosen for one research aim, so the answers can be compared."
+  source: ~"../registries/sources/trails.spw#src_trail_george_bennett_2005"
+ }
+ questions: #[
+  "who decides",
+  "what is counted",
+  "what is kept",
+  "what breaks the pairing"
+ ]
+ people: "internal cases name the repository record and the owner in their own words; no private individual appears on either side"
+}
+
+^["pairs"]{
+ #>trail_pair_controller_gate
+ ^["controller_and_gate"]{
+  #:claim #!interpretive
+  statement: "Twitch Plays Pokemon began in anarchy and later let a crowd vote between anarchy and democracy for one controller; the commit gate lets many agent proposals wait on one human authorization."
+  outside: ~"../society/platforms/twitch-plays-pokemon.spw#live_platforms_twitch_plays_modes"
+  inside: ~"../spw/history/commit-gate.spw#workbench_history_commit_gate_roles"
+  shared: "many inputs reach one controller, and a rule decides which input acts"
+  breaks: "the crowd aggregated thousands of equal voices, while the gate is one owner, so its delay comes from attention, not from counting votes"
+ }
+ #>trail_pair_war_arcs
+ ^["war_and_arcs"]{
+  #:claim #!interpretive
+  statement: "Format wars were settled by alliances and complements; the editor plugins each thinned toward one shared server, which plays the part of the complement."
+  outside: ~"../record/carriers/format-wars.spw#media_carriers_war_vhs_alliances"
+  inside: ~"../spw/history/editor-extension-arcs.spw#workbench_history_extensions_vscode_thin"
+  shared: "what wins when several carriers or hosts compete for the same reader"
+  breaks: "the plugins do not compete for buyers, since one owner keeps all three, so there is no market to tip"
+ }
+ #>trail_pair_exclusive_cards
+ ^["exclusivity_and_cards"]{
+  #:claim #!interpretive
+  statement: "Paying authors by pages read rewards long books and series; requiring every plan to open with a card of lane glyph and phase shapes how plans here are written."
+  outside: ~"../making/authorship/kindle-unlimited-case.spw#authorship_kindle_unlimited_shape"
+  inside: ~"../spw/history/plan-ecology.spw#workbench_history_plans_cards"
+  shared: "a rule about how work is counted changes the shape of the work"
+  breaks: "page pay moves money between strangers, while plan cards move only one owner attention, so the incentives differ in kind"
+ }
+ #>trail_pair_serial_ladders
+ ^["serial_and_ladders"]{
+  #:claim #!interpretive
+  statement: "Serial released one investigation in weekly chapters, so listeners waited between parts; the curriculum ladders here were authored whole, and no lab exists yet."
+  outside: ~"../making/broadcast/serial-2014-case.spw#broadcast_serial_case_release"
+  inside: ~"../spw/history/curriculum-plans.spw#workbench_history_curriculum_plans_unscaffolded"
+  shared: "what a sequence promises before its later parts exist"
+  breaks: "a serial has listeners waiting each week, while an unscaffolded ladder has no learner waiting yet"
+ }
+ #>trail_pair_festival_cut
+ ^["festival_and_cut"]{
+  #:claim #!interpretive
+  statement: "Singles Day grew to festival scale before 2021 brought three actions with different targets; this cut grew from one day of generated text before meeting its gate and fact-checkers."
+  actions: "an antitrust fine on Alibaba, trial measures for all live-stream marketing, and a tax order against the livestreamer Viya"
+  outside: ~"../society/markets/singles-day-live-commerce.spw#markets_singles_day_regulation"
+  inside: ~"../spw/history/this-cut.spw#workbench_history_this_cut_generated"
+  shared: "a burst produced at scale, then checked by a slower process"
+  breaks: "regulators answer to law and public harm, while the gate answers to a contract this repository wrote for itself"
+ }
+ #>trail_pair_labor_episodes
+ ^["labor_and_episodes"]{
+  #:claim #!interpretive
+  statement: "Union and guild agreements replace one another on dates, and the labor ledger keeps superseded terms beside those in force; this repository republished a rewritten history, kept a backup branch, and repaired dangling plan references."
+  outside: ~"../making/film/labor-agreements-ledger.spw#film_labor_iatse_2021"
+  inside: ~"../spw/history/episode-timeline.spw#workbench_history_episodes_published_rewrite"
+  shared: "what a record keeps when the terms of work change"
+  breaks: "an agreement binds many workers and is enforceable under labor law, while a rewrite is one owner choosing how a history reads, with a backup branch as its only ledger"
+ }
+}
+
+^["try"]{
+ #>trail_paired_try_own
+ ^["pair_your_own"]{
+  materials: [ "one well-known case you have read about", "one case from your own work", "a sheet folded in half" ]
+  steps: <<
+   "write the outside case on the left half and your own on the right" ;
+   "ask both the four shared questions and write the answers side by side" ;
+   "guess where the pair breaks before you finish the answers" ;
+   "write the break line and check whether the guess held"
+  >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "name only public figures and yourself; leave coworkers and family out of the written pair"
+  shows: ~"./paired-cases.spw#trail_paired_focused"
+ }
+}
+
+#>trail_paired_gate_delay_q
+?["Does one human gate slow an agent pipeline more than a crowd vote slowed a game?"]{
+ #:depth #!social ~#lens(social fabric)
+ #:claim #!speculative
+ ~#hypothesis: "Wait time at a single human gate should grow with the number of waiting proposals, while a crowd vote stays fast because it averages many attentive voters."
+ !probe{ "compare commit gate wait times by queue length with Twitch Plays input lag reports" =id[p_trail_paired_gate_delay] =kind[census] }
+ $%[creator.tpp.peak_participants, hosts.history.commit_count]
+ breaks: "a vote can pick a bad move quickly, while a gate can refuse one, so speed is not the only thing each design buys"
+ ~"./paired-cases.spw#trail_pair_controller_gate" ~#neighbor(nearest)
+}

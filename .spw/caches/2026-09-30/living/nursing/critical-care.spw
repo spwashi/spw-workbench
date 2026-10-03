@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/university-education/nursing/critical-care-and-evidence-based-informatics.spw" ]
@@ -36,6 +36,11 @@
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #corrected }
   ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  revision_2026_10_03: "r6 redated the r4 fact-check to 2026-10-02, the day its sources were read"
  corrections: #[
@@ -44,9 +49,10 @@
   "vasopressor rates, ventilator volumes, pressure limits, and blood gas ranges were protocol numbers and were removed (raw lines 20, 27, and 28)",
   "the raw titration wonder carried invented metrics and was dropped (raw line 42)",
   "the raw file is quarantined; this surface was written from the named studies and guidelines",
-  "fact-check: the light-sedation entry cited only the 2018 PADIS guideline; it now names the 2025 focused update, which did not revisit light sedation"
+  "fact-check: the light-sedation entry cited only the 2018 PADIS guideline; it now names the 2025 focused update, which did not revisit light sedation",
+  "fact-check 2026-10-03: the ATS 2024 entry dropped the moderate-to-severe population from the higher PEEP suggestion and the strong recommendation against prolonged recruitment maneuvers, and dropped that higher PEEP is suggested without recruitment maneuvers"
  ]
- checked: "SHEA 2022 oral care categories and the ATS 2024 ARDS recommendations were read in their Europe PMC records on 2026-10-02"
+ checked: "SHEA 2022 oral care categories and the ATS 2024 ARDS recommendations were read in their Europe PMC records on 2026-10-02; the ATS populations were reread on 2026-10-03"
 }
 
 ^["edges"]{
@@ -105,9 +111,10 @@
  #>nursing_critical_care_ats_2024
  ^["ats_2024"]{
   #:claim #!settled
-  statement: "The 2024 ATS update suggests corticosteroids, venovenous ECMO for selected severe ARDS, early neuromuscular blockade in severe ARDS, and higher PEEP, and recommends against prolonged recruitment maneuvers."
+  statement: "The 2024 ATS update suggests corticosteroids in ARDS, venovenous ECMO for selected severe ARDS, neuromuscular blockade in early severe ARDS, and higher PEEP without recruitment maneuvers in moderate-to-severe ARDS."
+  against: "it recommends against prolonged recruitment maneuvers in moderate-to-severe ARDS"
   source: ~"../../registries/sources/plants-ecology-care.spw#src_eco_qadir_2024"
-  strength: "all conditional except the strong recommendation against prolonged recruitment maneuvers"
+  strength: "four conditional suggestions and one strong recommendation, the one against prolonged recruitment maneuvers"
   status: "current as of 2026-10-02"
  }
 }

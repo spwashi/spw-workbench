@@ -22,18 +22,35 @@
   "keyboard rows read on 2026-10-02 from the Microsoft Learn layout pages and the kbdlayout.info tables of KBDUS.DLL and KBDUK.DLL",
   "the ISO/IEC 9995 page refused the fetch on 2026-10-02; its row rests on the writer and a Wikipedia summary of the parts and the key grid",
   "research rows come from the writer; on 2026-10-03 Crossref matched Le Novere 2009, den Dunnen 2016, Guyatt 2008, Harel 1987, Wilkinson and Rogers 1973, and Stevens 1946, and the rest stay unmatched",
-  "the Fountain row was read from fountain.io on 2026-10-03; Likert 1932 is a monograph Crossref does not index, and its row rests on the writer"
+  "the Fountain row was read from fountain.io on 2026-10-03; Likert 1932 is a monograph Crossref does not index, and its row rests on the writer",
+  "for the fact-check fixes of 2026-10-03 the Fountain syntax page and the MPI-EVA glossing rules page were re-read; the Joint Commission fact sheet returned HTTP 403",
+  "for the second fact-check pass of 2026-10-03 the WG14 N2626 paper was fetched from open-std.org and names the apostrophe separator from C++; iso.org returned HTTP 403 for ISO/IEC 9899:2024, so its title and its 2024-10-31 publication rest on the writer and a Wikipedia summary that cites N2626 for the C23 separator"
  ]
  ^["receipts"]{
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r8"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r9"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r10"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r11"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
-  "the Cajori entry gave one year for two volumes; volume one appeared in 1928 and volume two in 1929"
+  "the Cajori entry gave one year for two volumes; volume one appeared in 1928 and volume two in 1929",
+  "the Fountain entry labelled the syntax page version 1.0; the page documents version 1.1 of 2014-03-14, and its changelog gives 1.0 the date 2012-02-07",
+  "the Leipzig entry said the rules were first issued in 2008; the page calls the February 2008 text a revision, last changed on 31 May 2015",
+  "the Joint Commission entry implied the list is in force today; only its 2004 introduction is recorded, and its current standing is left to verify"
  ]
- added: "Stevens 1946, Likert 1932, JCGM 100 of 2008, the Fountain syntax, the canon apposition surface, and the cut vocabulary were added on 2026-10-03 for the perspectives written that day"
+ added: "Stevens 1946, Likert 1932, JCGM 100 of 2008, the Fountain syntax, the canon apposition surface, and the cut vocabulary were added on 2026-10-03 for the perspectives written that day; ISO/IEC 9899:2024 and WG14 N2626 were added the same day for the C23 digit separator"
  groups: #[ repository, canon, owner_and_studies, keyboards, programming, physics_and_math, engineering_and_life, design_and_language, society_and_record, media_and_learning ]
 }
 
@@ -49,7 +66,13 @@
  #>src_doors_cut_gate
  ^["cut_gate"]{ title: "Cut gate for the dated reference cut", authors: "spw-workbench", year: 2026, locator: "scripts/analyzers/spw-cut-gate.ts at 1aa1dc23", kind: #repository }
  #>src_doors_cli
- ^["cli"]{ title: "spw CLI command registry: inspect, outline, resolve, emit", authors: "spw-workbench", year: 2026, locator: "packages/spw-cli/src/commands.ts at 1aa1dc23", kind: #repository }
+ ^["cli"]{
+  title: "spw CLI command registry and command modules: inspect, outline, resolve, emit, authority, expand"
+  authors: "spw-workbench"
+  year: 2026
+  locator: "packages/spw-cli/src/commands.ts, authority.ts, and expand.ts at 1aa1dc23"
+  kind: #repository
+ }
 }
 
 ^["canon"]{
@@ -112,6 +135,10 @@
  ^["iso_c_2018"]{ title: "ISO/IEC 9899:2018, Information technology, Programming languages, C", authors: "ISO/IEC JTC 1/SC 22", year: 2018, kind: #standard }
  #>src_doors_ecma_262_2022
  ^["ecma_262_2022"]{ title: "ECMAScript 2022 Language Specification, ECMA-262 13th edition", authors: "Ecma International TC39", year: 2022, kind: #standard }
+ #>src_doors_iso_c_2024
+ ^["iso_c_2024"]{ title: "ISO/IEC 9899:2024, Information technology, Programming languages, C", authors: "ISO/IEC JTC 1/SC 22", year: 2024, edition: "the revision known as C23, published 2024-10-31", kind: #standard }
+ #>src_doors_wg14_n2626
+ ^["wg14_n2626"]{ title: "Digit separators", authors: "Aaron Ballman", year: 2020, venue: "ISO/IEC JTC 1/SC 22/WG14 document N2626", locator: "open-std.org/jtc1/sc22/wg14/www/docs/n2626.pdf", kind: #report }
  #>src_doors_gcc_manual
  ^["gcc_manual"]{ title: "Using the GNU Compiler Collection, section Options to Request or Suppress Warnings", authors: "Richard M. Stallman and the GCC Developer Community", year: 2024, edition: "GCC 14 series; the warning flags named here predate it", publisher: "Free Software Foundation", kind: #book }
 }
@@ -155,7 +182,13 @@
  #>src_doors_clsi_ep28_2010
  ^["clsi_ep28_2010"]{ title: "Defining, Establishing, and Verifying Reference Intervals in the Clinical Laboratory; Approved Guideline, 3rd ed., EP28-A3c", authors: "Clinical and Laboratory Standards Institute", year: 2010, kind: #guideline }
  #>src_doors_tjc_do_not_use
- ^["tjc_do_not_use"]{ title: "Official Do Not Use List of abbreviations", authors: "The Joint Commission", year: 2004, edition: "list in force since 2004; read the current fact sheet before relying on its wording", kind: #guideline }
+ ^["tjc_do_not_use"]{
+  title: "Official Do Not Use List of abbreviations"
+  authors: "The Joint Commission"
+  year: 2004
+  edition: "introduced in 2004; the fact sheet refused fetches on 2026-10-03, so its current wording and the standard that requires it are unverified"
+  kind: #guideline
+ }
 }
 
 ^["design_and_language"]{
@@ -166,7 +199,15 @@
  #>src_doors_css_selectors_4
  ^["css_selectors_4"]{ title: "Selectors Level 4", authors: "Elika J. Etemad; Tab Atkins Jr.", year: 2022, edition: "W3C Working Draft; check the current draft before citing a selector", publisher: "World Wide Web Consortium", kind: #standard }
  #>src_doors_leipzig_2015
- ^["leipzig_2015"]{ title: "The Leipzig Glossing Rules: Conventions for interlinear morpheme-by-morpheme glosses", authors: "Bernard Comrie; Martin Haspelmath; Balthasar Bickel", year: 2015, edition: "revised version of 2015, first issued 2008", publisher: "Max Planck Institute for Evolutionary Anthropology", kind: #standard }
+ ^["leipzig_2015"]{
+  title: "The Leipzig Glossing Rules: Conventions for interlinear morpheme-by-morpheme glosses"
+  authors: "Bernard Comrie; Martin Haspelmath; Balthasar Bickel"
+  year: 2015
+  edition: "version last changed 31 May 2015; a revision of the February 2008 text, which itself revised earlier versions; page read on 2026-10-03"
+  publisher: "Max Planck Institute for Evolutionary Anthropology"
+  url: "https://www.eva.mpg.de/lingua/resources/glossing-rules.php"
+  kind: #standard
+ }
  #>src_doors_levinson_1983
  ^["levinson_1983"]{ title: "Pragmatics", authors: "Stephen C. Levinson", year: 1983, publisher: "Cambridge University Press", kind: #book }
  #>src_doors_blake_2001
@@ -214,7 +255,8 @@
   title: "Fountain: a plain text markup language for screenwriting, syntax"
   authors: "John August; Stu Maschwitz; with Nima Yousefi, Martin Vilcans, and other contributors"
   year: 2012
-  edition: "version 1.0 of 2012-02-07; syntax page read on 2026-10-03"
+  edition: "Fountain 1.1 of 2014-03-14, the version the syntax page read on 2026-10-03 documents; its changelog dates version 1.0, which merged the SPMD and Fountain specs, to 2012-02-07"
+  note: "year 2012 is the date of version 1.0; the at sign that forces a character arrived in 1.1; page footer 2023 Quote-Unquote Apps"
   publisher: "Quote-Unquote Apps"
   url: "https://fountain.io/syntax"
   kind: #web

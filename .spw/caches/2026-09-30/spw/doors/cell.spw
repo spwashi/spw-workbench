@@ -1,18 +1,18 @@
 # Door: Cell
 #
-# One region, legible alone: a registry cell holds one world number once, with its unit, conditions, tolerance, source, and status, and claims cite it by handle.
+# One region, legible alone: a registry cell holds one world number once, with its unit, conditions, spread, source, and status, and claims cite it by handle.
 
 #>spw_door_cell
 #:layer #!pragmatics
 #:domain #!spw
 #:form #!field_guide
 #:level #!intro
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
  ~#title: "Door: Cell"
- ~#claim: "A registry cell holds one number once, with unit, conditions, tolerance, source, and status, and every claim that needs the number cites the cell by handle."
+ ~#claim: "A registry cell holds one number once, with unit, conditions, a relative or absolute spread, source, and status, and every claim that needs the number cites the cell by handle."
  ~#proof: "The cut contract defines the cell and its handle grammar, and the gate fails any handle that resolves to no cell or is defined twice."
  ~#door: "Open the water cells, pick the density maximum, and follow its handle back to the claim that reads it."
  ~#audience: "engineers, physics students, and designers who keep data sheets or token libraries"
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -33,7 +33,22 @@
  ^["receipts"]{
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[
+  "the shape row called the rel or abs slot a tolerance; the contract does not say whether it is a tolerance or an uncertainty, and the engineers perspective names the same gap"
+ ]
 }
 
 ^["edges"]{
@@ -44,7 +59,8 @@
  #>spw_door_cell_shape
  ^["cell_shape"]{
   #:claim #!settled
-  statement: "A cell is a percent sign, a lowercase handle of namespace and quantity with its unit, and a body holding value, unit, conditions, a relative or absolute tolerance, a source link, and a status."
+  statement: "A cell is a percent sign, a lowercase handle of namespace and quantity with its unit, and a body holding value, unit, conditions, a relative or absolute spread, a source link, and a status."
+  spread: "the contract writes only rel or abs and does not say whether the slot is a tolerance or an uncertainty"
   source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_cut_contract"
   label: "a-cut rule from the contract quantities frame, not repository canon"
   example: ~"../../registries/quantities/materials-and-engineering.spw#q_mateng_water"

@@ -1,6 +1,6 @@
 # Provenance
 #
-# The raw shelf stays in place as provenance; this branch pins it, records every correction, and shows how to trace a cut anchor back to a raw path and line.
+# The raw shelf stays in place as provenance; this branch pins it, lists line-level corrections and harms, and shows how to trace a cut anchor back to a raw path and line.
 
 #>provenance_index
 #:layer #!reference
@@ -12,7 +12,7 @@
 
 ^"emit"{
  ~#title: "Provenance"
- ~#claim: "The generated shelf stays in place beside the cut, pinned by checksum, with every correction and harm recorded against its raw path and line."
+ ~#claim: "The generated shelf stays in place beside the cut, pinned by checksum; line-level corrections and harms point at raw path and line, and successor surfaces list the rest."
  ~#proof: "Checksums come from git at commit 229aedcf; corrections come from the two review rounds and the sources each ledger row names."
  ~#door: "Open the manifest, pick one row, and follow it to its corrected surface and its errata row."
  ~#audience: "reviewers, archivists, and readers who met a raw claim elsewhere"
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -36,6 +36,12 @@
    note: "the 17:06 stream entry is an observation, not a decision; wording fixed"
   }
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+   note: "claim narrowed: the ledgers hold line-level rows, and review-only or elsewhere rows live in successor provenance"
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  checked: "every manifest checksum and line count was recomputed at 229aedcf and at 1aa1dc23 on 2026-10-02 and matched"
 }
@@ -136,7 +142,7 @@
  }
  ^["raw_to_anchor"]{
   purpose: "walk from a raw claim met elsewhere to the surface that replaced it"
-  steps: << "find the raw path as a manifest row" ; "read its action" ; "follow its target anchors" ; "search the errata ledgers for the raw path and line" >>
+  steps: << "find the raw path as a manifest row" ; "read its action" ; "follow its target anchors" ; "search the errata ledgers for the raw path and line" ; "if no row names it, read the corrections list in the successor provenance" >>
  }
 }
 

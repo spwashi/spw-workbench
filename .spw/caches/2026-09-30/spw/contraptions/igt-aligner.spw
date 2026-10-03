@@ -1,0 +1,214 @@
+# Interlinear Gloss Aligner
+#
+# Check that a form line and its gloss line carry the same Leipzig boundary marks, then place each example by morphemes per word and by labels per morpheme; the word definition is stated, never assumed.
+
+#>spw_lab_igt_aligner
+#:layer #!semantics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!advanced
+#:review #!adversarial_checked
+#:valence #!boon
+
+^"emit"{
+ ~#title: "Interlinear Gloss Aligner"
+ ~#claim: "Leipzig boundary marks make a form line and its gloss checkable for alignment, and counting morphemes per word and labels per morpheme places each example on a synthesis and exponence plane."
+ ~#proof: "The Leipzig Glossing Rules, revised in February 2008, fix hyphens, equals signs, angle brackets, and tildes; Greenberg defined the synthesis index in 1960; the Turkish example follows Goksel and Kerslake."
+ ~#door: "Count the hyphens in the Turkish form and in its gloss line, then count the labels each suffix carries."
+ ~#audience: "linguistics students, documentary linguists, language teachers, and Spw authors who stack particles"
+ continuity: "Interlinear Gloss Aligner | gloss line"
+ cold_open: "A gloss line must carry the same boundaries as the form above it, and counting them sorts examples by how words are built."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new", "persona study contraption_catalog[18], references/studies/persona-synthesis.json", "sketch references/spw-branch/seeds/contraptions/igt-aligner.spw" ]
+ method: #authored
+ evidence: #[
+  "the Leipzig Glossing Rules PDF was fetched and its rules 2, 4, 5, 8, 9, and 10 read on 2026-10-03",
+  "particleMix was read at packages/spw-seed/src/canonical/particles.ts at commit 1aa1dc23, unchanged at 651b535b"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+ }
+ corrections: #[
+  "the sketch glossed the Tagalog infix as AV; the Leipzig rules gloss it ACTFOC, for actor focus",
+  "the persona study placed clitics under rule 8; the equals sign for clitics is part of rule 2, and rule 8 covers bipartite elements such as circumfixes",
+  "the sketch wrote the Tagalog form bare in code, where it parses as a capsule; every object-language form now sits in a string",
+  "the persona study called the second axis fusion; it counts labels per morpheme and is named exponence"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_leipzig_2008" ]
+ see: [ ~"./kerning.spw#spw_lab_kerning", ~"./operator-authority.spw#spw_lab_operator_authority" ]
+}
+
+^["concepts"]{
+ primary: [ #notation, #ordering ]
+ transfers: [ #reflexive_mirror ]
+ tensions: [ #overclaim ]
+}
+
+^["tool"]{
+ status: #proposed
+ verb: "an alignment lint that would flag a form and gloss pair whose counts of hyphens, equals signs, angle pairs, or tildes differ; not yet written"
+ scratch: "the counts below were made by hand and by a scratch script on 2026-10-03"
+ source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_bench_runs"
+}
+
+#>spw_lab_igt_aligner_marks
+^["parameters"]{
+ marks: .{ hyphen: "affix boundary, rule 2", equals: "clitic boundary, rule 2", angle_pair: "infix, rule 9", tilde: "reduplication, rule 10" }
+ aligned: "form and gloss carry the same count of each mark"
+ synthesis: "morphemes per word, after Greenberg; a word is a space-separated unit and a clitic is not a word unless stated"
+ exponence: "category labels per grammatical morpheme; labels split at periods and semicolons, and a person-number label such as 1SG counts once, as rule 5 writes it"
+}
+
+^["world"]{
+ #>spw_lab_igt_aligner_leipzig
+ ^["leipzig_rules"]{
+  #:claim #!settled
+  statement: "The Leipzig rules separate segmentable morphemes by hyphens with exactly as many hyphens in the gloss as in the example, and mark clitics with equals signs, infixes with angle brackets, and reduplication with a tilde."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_leipzig_2008"
+  edition: "revised version of February 2008, document last changed 31 May 2015"
+  ~#(credit Comrie, Haspelmath, and Bickel, building on Lehmann 1982)
+  see: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_lehmann_1982" ]
+ }
+ #>spw_lab_igt_aligner_greenberg
+ ^["synthesis_index"]{
+  #:claim #!settled
+  statement: "Greenberg proposed counting morphemes per word in a text sample as an index of synthesis, one of several ratios for comparing how languages build words."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_greenberg_1960"
+ }
+ #>spw_lab_igt_aligner_clitics
+ ^["clitic_or_affix"]{
+  #:claim #!settled
+  statement: "Zwicky and Pullum gave criteria for telling clitics from inflectional affixes, such as how freely each attaches to hosts, and argued that English n't is an affix."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_zwicky_pullum_1983"
+ }
+ #>spw_lab_igt_aligner_template
+ ^["clitic_template"]{
+  #:claim #!settled
+  statement: "Perlmutter described Spanish clitic pronouns as obeying a fixed surface order, se before second person before first before third, whatever the syntax would otherwise allow."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_perlmutter_1971"
+ }
+}
+
+#>spw_lab_igt_aligner_examples
+^["examples"]{
+ #>spw_lab_igt_aligner_turkish
+ ^["turkish"]{
+  form: "ev-ler-im-de"
+  gloss: "house-PL-1SG.POSS-LOC"
+  translation: "in my houses"
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_goksel_kerslake_2005"
+  ~#gloss(house, plural, my, in)
+ }
+ #>spw_lab_igt_aligner_latin
+ ^["latin"]{
+  form: "insul-arum"
+  gloss: "island-GEN.PL"
+  translation: "of the islands"
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_leipzig_2008"
+ }
+ #>spw_lab_igt_aligner_tagalog
+ ^["tagalog"]{
+  form: "b<um>i~bili"
+  gloss: "<ACTFOC>IPFV~buy"
+  translation: "is buying"
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_leipzig_2008"
+  ~#gloss(actor focus, imperfective, buy)
+ }
+ #>spw_lab_igt_aligner_greenlandic
+ ^["west_greenlandic"]{
+  form: "palasi=lu niuirtur=lu"
+  gloss: "priest=and shopkeeper=and"
+  translation: "both the priest and the shopkeeper"
+  credit: "Fortescue 1984, as quoted in the Leipzig rules"
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_leipzig_2008"
+ }
+ #>spw_lab_igt_aligner_broken
+ ^["broken_row"]{
+  form: "ev-ler-im-de"
+  gloss: "house-PL-1SG.POSS.LOC"
+  note: "a synthetic error: the last hyphen of the gloss became a period"
+ }
+}
+
+^["battery"]{
+ #>spw_lab_igt_aligner_align
+ ^["align"]{
+  !probe{ "count hyphens, equals signs, angle pairs, and tildes in each form and its gloss" =id[p_contrap_igt_align] =kind[calc] }
+  predict: ?{ "which row fails, and on which mark" } ~<guess>
+  expect: "the four sourced rows align; the broken row has three hyphens in the form and two in the gloss"
+  shows: ~"./igt-aligner.spw#spw_lab_igt_aligner_leipzig"
+ }
+ #>spw_lab_igt_aligner_place
+ ^["place_on_the_plane"]{
+  !probe{ "compute morphemes per word and labels per grammatical morpheme for the Turkish, Latin, and Greenlandic rows" =id[p_contrap_igt_place] =kind[calc] }
+  expect: "Turkish sits at four morphemes per word and four labels over three suffixes; Latin at two and two, one suffix carrying case and number at once; Greenlandic at two and one"
+  shows: ~"./igt-aligner.spw#spw_lab_igt_aligner_greenberg"
+ }
+ #>spw_lab_igt_aligner_word
+ ^["redefine_the_word"]{
+  !probe{ "count the Greenlandic clitics as separate words and recompute synthesis" =id[p_contrap_igt_word] =kind[calc] }
+  expect: "synthesis falls from two to one, so the index moves with the word definition and must state it"
+  shows: ~"./igt-aligner.spw#spw_lab_igt_aligner_clitics"
+ }
+}
+
+#>spw_lab_igt_aligner_mirror
+^["language_mirror"]{
+ #>spw_lab_igt_aligner_cluster
+ ^["particle_cluster"]{
+  #:claim #!interpretive
+  statement: "A cut particle line reads like a clitic cluster: case, then mood, then an optional lens, in a fixed order the gate checks by pattern rather than by grammar."
+  cites: [ "scripts/analyzers/spw-cut-voice.ts:46-47" ]
+ }
+ #>spw_lab_igt_aligner_aspect
+ ^["gloss_as_aspect"]{
+  #:claim #!settled
+  statement: "particleMix counts every tilde-hash mark as aspect and reads aspect as volatility, so a gloss reading, which is meant to stay put, counts as content that expires."
+  cites: [ "packages/spw-seed/src/canonical/particles.ts:107-129" ]
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_particles"
+ }
+ question: "Which tilde-hash marks in a surface are stable readings and which are deferred state?"
+ standing: "a-canon: particleMix is repository code; a-cut: the gloss reading and the particle line order are this cut conventions"
+ !probe{ "split the aspect count of this surface into readings from the reading set and all other tilde-hash marks" =id[p_contrap_igt_aspect] =kind[census] }
+}
+
+^["limits"]{
+ holds: "whether two lines carry matching boundary marks, and the two ratios under a stated word definition"
+ fails: "the indices measure one glosser segmentation and one word definition, not the language; Greenberg synthesis starts at one and is no proportion; and a clitic cluster in speech has prosody that a particle line does not"
+}
+
+^["try"]{
+ #>spw_lab_igt_aligner_try
+ ^["gloss_a_phrase"]{
+  materials: [ "a short phrase in a language you know well", "the Leipzig rules", "paper" ]
+  steps: << "write the phrase with hyphens at every morpheme boundary you can defend" ; "write a gloss line with exactly as many hyphens" ; "count morphemes per word and labels per morpheme" ; "ask a second speaker to segment it and compare" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "no hazard worth naming; if the phrase comes from a community language, ask before sharing it"
+  shows: ~"./igt-aligner.spw#spw_lab_igt_aligner_place"
+ }
+}
+
+#>spw_lab_igt_aligner_q
+?["Do glossed examples sort languages on the synthesis and exponence plane the way typologists already classify them?"]{
+ #:depth #!mathematical ~#lens(formal structure)
+ #:claim #!speculative
+ ~#hypothesis: "Examples from languages usually called agglutinating should sit high on synthesis and low on exponence, and fusional ones higher on exponence, though single examples will scatter."
+ !probe{ "place glossed examples from published grammars on the plane and compare their positions with each grammar own type label" =id[p_contrap_igt_q] =kind[calc] }
+ $%[op.distribution]
+ ~"./igt-aligner.spw#spw_lab_igt_aligner_greenberg" ~#neighbor(nearest)
+ breaks: "a grammar chooses its examples to show a point, so a plane built from them maps the choices of authors, not running text"
+}

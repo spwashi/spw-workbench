@@ -1,0 +1,299 @@
+# Probe Registry
+#
+# Every probe id in this cut mapped to a checker, a status, and its last run, so a reader can tell which wonders a tool can run today and which wait on people, a build, or a library.
+
+#>registry_probes
+#:layer #!reference
+#:domain #!registry
+#:form #!registry
+#:level #!practitioner
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "probe ids and kinds read from every surface of the cut in the working tree over 651b535b on 2026-10-03, while wave 3 was still landing",
+  "checker commands run by the writer on 2026-10-03: spw lattice, spw inspect spacing, spw inspect source, and one scratch script"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ standing: "a row records a tool, a method, or a run; no row records a person, an answer, or a score"
+ recount: "ids and kinds drift while packages land; recount before citing the probe cells in a later revision"
+ written_last: "this registry is written after every other surface of the spw-branch package, so its own rows are complete"
+ corrections: #[
+  "the census claim read probe cells counted over a moving working tree; the cells are now pinned to commit 651b535b, where census is still the most common kind"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../contract.spw#cut_contract", ~"./quantities/spw-branch.spw#q_spw_probes" ]
+ see: [ ~"../spw/inspection-and-ir.spw#spw_ir_tool_trust" ]
+}
+
+#>registry_probe_legend
+^["legend"]{
+ implemented: "a command that exists at a quoted path:line runs the measurement the probe asks for; reading the result stays with a person"
+ scratch: "the probe ran once through a script or copy that is not in the repository, and its row says what it found"
+ proposed: "a method is named, but no tool in the repository runs it"
+ default: "a probe id with no row of its own takes the status and checker of its kind"
+ last_run: "ran names the date and tree; outcome pass means the run finished and its finding is written here; partial means it covered part of the probe"
+ people: "field and interview probes run with consenting people; no tool stores who answered or what they said"
+ ids: "the cut gate fails a probe id that repeats across files, so an id here names exactly one wonder"
+ ids_cites: [ "scripts/analyzers/spw-cut-gate.ts:227-230" ]
+ written_as: "rows quote each id as a string, so this registry never claims an id for itself"
+}
+
+^["census"]{
+ #>registry_probe_census
+ ^["who_runs_them"]{
+  #:claim #!settled
+  statement: "About a quarter of the probe ids in this cut ask for consenting people, through field or interview probes, and census is the most common single kind."
+  reads: %[spw.cut.probe_ids, spw.probes.people_facing, spw.probes.census_kind]
+  source: ~"./sources/spw-branch.spw#src_spw_cut_gate"
+  counted: "ids and kinds read with the gate id pattern from commit 651b535b on 2026-10-03; the working tree that day held more ids with the same shape, about a quarter people-facing and census most common"
+ }
+ #>registry_probe_few_run
+ ^["few_run_today"]{
+  #:claim #!interpretive
+  statement: "Few probes run whole through a command that exists; most name a method a person carries out, and the rows below list every one this registry found that a tool can run."
+  source: ~"./sources/spw-branch.spw#src_spw_cli_commands"
+  ^["limits"]{
+   holds: "for the ids present on 2026-10-03"
+   fails: "a probe added later, or a command landed later, needs a new row before it counts"
+  }
+ }
+}
+
+^["kinds"]{
+ note: "the default each kind gives an id with no row of its own"
+
+ #>registry_probe_kind_thought
+ ^["thought"]{ status: #proposed, checker: "a reader with the surface open; no tool is needed" }
+ #>registry_probe_kind_lookup
+ ^["lookup"]{ status: #proposed, checker: "the cited work; spw resolve checks the link to a source, never the fact in it" }
+ #>registry_probe_kind_calc
+ ^["calc"]{ status: #proposed, checker: "a calculation by hand or in a notebook the reader keeps" }
+ #>registry_probe_kind_sim
+ ^["sim"]{ status: #proposed, checker: "a simulation outside the repository that names its model before its result" }
+ #>registry_probe_kind_census
+ ^["census"]{ status: #proposed, checker: "a count over the cut or canon; a row below names each one a command already runs" }
+ #>registry_probe_kind_lit
+ ^["lit"]{ status: #proposed, checker: "a literature search a reader runs and cites in the sources registry" }
+ #>registry_probe_kind_interview
+ ^["interview"]{ status: #proposed, checker: "consenting people asked by a person; answers stay with the people who gave them" }
+ #>registry_probe_kind_field
+ ^["field"]{ status: #proposed, checker: "consenting people doing a task; any tally stays on the reader side" }
+ #>registry_probe_kind_build
+ ^["build"]{ status: #proposed, checker: "a code change on a branch outside this cut; a landed build moves its row to implemented" }
+}
+
+^["runs_today"]{
+ note: "probes outside the spw namespace that a command in the repository runs today"
+
+ #>registry_probe_doors_reveal
+ ^["door_reveals"]{
+  probes: #[ p_doors_hash_midline, p_doors_percent_score, p_doors_angle_fallback, p_doors_at_chat_line, p_doors_caret_line_end, p_doors_equals_pair, p_doors_particle_first_line, p_doors_tilde_formula ]
+  status: #implemented
+  checker: "spw inspect source --text with --through structure or --through tokens, after the reader writes a guess"
+  cites: [ "packages/spw-cli/src/commands.ts:277" ]
+  home: ~"../spw/doors/tilde.spw#spw_door_tilde_q"
+  ^["last_run"]{
+   ran: "2026-10-03, working tree over 651b535b", outcome: #partial
+   finding: "the tilde formula reveal parsed with no error and no prose fallback, the tilde lexing as an operator; the other seven were not run here"
+  }
+ }
+ #>registry_probe_contrap_kerning_spacing
+ ^["kerning_spacing"]{
+  probe: "p_contrap_kerning_spacing", status: #implemented
+  checker: "spw inspect spacing .spw/caches/2026-09-30/spw/contraptions/kerning.spw"
+  cites: [ "packages/spw-cli/src/commands.ts:277", "packages/spw-seed/src/lexer/gaps.ts:11-17" ]
+  home: ~"../spw/contraptions/kerning.spw#spw_lab_kerning_spacing"
+  ^["last_run"]{
+   ran: "2026-10-03, working tree over 651b535b", outcome: #partial
+   finding: "the file parsed and every gap came back classed tight, open, cadence, or episode; finding the one gap that differs inside each pair stays by eye"
+  }
+ }
+ #>registry_probe_contrap_kerning_predict
+ ^["kerning_predict"]{
+  probe: "p_contrap_kerning_predict", status: #implemented
+  checker: "spw fingerprint on both halves of each pair, after the reader writes a guess"
+  cites: [ "packages/spw-cli/src/commands.ts:284" ]
+  home: ~"../spw/contraptions/kerning.spw#spw_lab_kerning_predict"
+  last_run: "none recorded here; the contraption states the result it expects"
+ }
+ #>registry_probe_formal_bridge_hub_rank
+ ^["bridge_hub_rank"]{
+  probe: "p_formal_bridge_hub_rank", status: #implemented
+  checker: "spw graph .spw/caches/2026-09-30, then rank the engineering core leaves by incoming edges from outside formal by hand"
+  cites: [ "packages/spw-cli/src/commands.ts:178" ]
+  home: ~"../formal/mathematics/engineering-math-bridge.spw#mathematics_bridge_hub_q"
+  last_run: "not run; the probe waits until every package lands"
+  note: "since c79a096a spw graph keeps files as nodes and resolves links as spw resolve does, so in-degree counts files, not anchors"
+ }
+}
+
+^["partial_routes"]{
+ note: "contraptions that mark their verb proposed but name a route a reader can follow today; the route runs, the probe as written does not"
+
+ #>registry_probe_contrap_routes
+ ^["contraption_routes"]{
+  status: #proposed
+  ^["false_friend_lab"]{
+   probes: #[ p_contrap_false_friend_rank, p_contrap_false_friend_move, p_contrap_false_friend_canon ]
+   route: "pipe one habit line into spw fingerprint with --stdin and --json, then read the error count and the signature"
+   home: ~"../spw/contraptions/false-friend-lab.spw#spw_lab_false_friend"
+  }
+  ^["state_walker"]{
+   probes: #[ p_contrap_state_walker_reroute, p_contrap_state_walker_tie, p_contrap_state_walker_cycles ]
+   route: "spw select with --selector bias lists the edges; the walk runs by hand or through the seed graph functions"
+   home: ~"../spw/contraptions/state-walker.spw#spw_lab_state_walker"
+  }
+  ^["fixity_walker"]{
+   probes: #[ p_contrap_fixity_row, p_contrap_fixity_drill ]
+   route: "git show at 229aedcf piped into shasum, compared by eye with the manifest row"
+   home: ~"../spw/contraptions/fixity-walker.spw#spw_lab_fixity_walker"
+  }
+ }
+}
+
+^["spw"]{
+ note: "every probe in the spw namespace, written by the spw-branch package; kind defaults apply unless a row says more"
+
+ #>registry_probe_spw_class_return
+ ^["class_return"]{ probe: "p_spw_class_return", kind: #field, status: #proposed, home: ~"../spw/index.spw#spw_class_door_q" }
+ #>registry_probe_spw_fam_keystroke
+ ^["fam_keystroke"]{ probe: "p_spw_fam_keystroke", kind: #field, status: #proposed, home: ~"../spw/familiarity-matrix.spw#spw_fam_keystroke_q" }
+ #>registry_probe_spw_tokens_binding
+ ^["tokens_binding"]{ probe: "p_spw_tokens_binding", kind: #field, status: #proposed
+  check: "the reveal runs today with spw select and --selector particles; the guesses stay on paper", home: ~"../spw/tokens-and-roles.spw#spw_tokens_binding_q" }
+ #>registry_probe_spw_practice_fade
+ ^["practice_fade"]{ probe: "p_spw_practice_fade", kind: #interview, status: #proposed, home: ~"../spw/practice-modes.spw#spw_practice_fade_q" }
+ #>registry_probe_spw_transforms_collision
+ ^["transforms_collision"]{ probe: "p_spw_transforms_collision", kind: #build, status: #proposed, home: ~"../spw/transforms.spw#spw_transforms_collision_q" }
+ #>registry_probe_spw_recipes_loss
+ ^["recipes_loss"]{ probe: "p_spw_recipes_loss", kind: #interview, status: #proposed
+  check: "the card each reader answers from comes from spw emit pack with --host brief, which runs today", home: ~"../spw/recipes.spw#spw_recipes_loss_q" }
+ #>registry_probe_spw_arcs_reentry
+ ^["arcs_reentry"]{ probe: "p_spw_arcs_reentry", kind: #field, status: #proposed, home: ~"../spw/arcs-and-readings.spw#spw_arcs_reentry_q" }
+ #>registry_probe_spw_voice_pause
+ ^["voice_pause"]{ probe: "p_spw_voice_pause", kind: #field, status: #proposed, home: ~"../spw/voice.spw#spw_voice_pause_q" }
+ #>registry_probe_spw_rcli_recovery
+ ^["rcli_recovery"]{ probe: "p_spw_rcli_recovery", kind: #field, status: #proposed, home: ~"../spw/rendering-and-cli.spw#spw_rcli_recovery_q" }
+ #>registry_probe_spw_play_loss
+ ^["play_loss"]{ probe: "p_spw_play_loss", kind: #interview, status: #proposed, home: ~"../spw/dialects-and-play.spw#spw_play_lowering_q" }
+ #>registry_probe_spw_lineage_next
+ ^["lineage_next"]{ probe: "p_spw_lineage_next", kind: #lookup, status: #proposed
+  check: "git log on packages/spw-seed/src/types/ast after the next dialect change lands", home: ~"../spw/lineage.spw#spw_lineage_next_q" }
+ #>registry_probe_spw_ir_honesty
+ ^["ir_honesty"]{
+  probe: "p_spw_ir_honesty", kind: #census, status: #scratch
+  checker: "a scratch script maps each review value to the highest care among receipts whose outcome is pass or corrected"
+  mapping: "spot_checked needs skim, sourced needs audit, and adversarial_checked needs adversarial; unreviewed needs nothing"
+  home: ~"../spw/inspection-and-ir.spw#spw_ir_honesty_q"
+  ^["last_run"]{
+   ran: "2026-10-03, working tree over 651b535b", outcome: #pass
+   finding: "only contract.spw and vocabulary.spw fall short, and neither has a receipts frame; the two files flagged on 2026-10-02 now pass"
+   promote: ~"../spw/open-questions.spw#spw_oq_promote_review"
+  }
+ }
+ #>registry_probe_spw_empathy_declare
+ ^["empathy_declare"]{ probe: "p_spw_empathy_declare", kind: #field, status: #proposed, home: ~"../spw/machine-empathy.spw#spw_empathy_declare_q" }
+ #>registry_probe_spw_plugin_echo
+ ^["plugin_echo"]{ probe: "p_spw_plugin_echo", kind: #interview, status: #proposed, home: ~"../spw/plugin-theory.spw#spw_plugin_echo_q" }
+ #>registry_probe_spw_idiom_follow
+ ^["idiom_follow"]{ probe: "p_spw_idiom_follow", kind: #field, status: #proposed, home: ~"../spw/graph-idioms.spw#spw_idiom_follow_q" }
+
+ ^["open_questions"]{
+  #>registry_probe_spw_oq_soft_errors
+  ^["soft_errors"]{ probe: "p_spw_oq_soft_errors", kind: #build, status: #proposed
+   check: "after the branch, the cut gate and the syntax validator count the files that change from pass to fail", home: ~"../spw/open-questions.spw#spw_oq_soft_errors_q" }
+  #>registry_probe_spw_oq_local_failure
+  ^["local_failure"]{ probe: "p_spw_oq_local_failure", kind: #build, status: #proposed, home: ~"../spw/open-questions.spw#spw_oq_local_failure_q" }
+  #>registry_probe_spw_oq_habit_profiles
+  ^["habit_profiles"]{ probe: "p_spw_oq_habit_profiles", kind: #interview, status: #proposed, home: ~"../spw/open-questions.spw#spw_oq_habit_profiles_q" }
+  #>registry_probe_spw_oq_lens_visible
+  ^["lens_visible"]{
+   probe: "p_spw_oq_lens_visible", kind: #census, status: #implemented
+   checker: "spw lattice .spw/caches/2026-09-30 counts the lens readings in the cut; what each editor feature finds is checked by hand"
+   cites: [ "packages/spw-cli/src/commands.ts:217", "packages/spw-lsp/src/handlers/semantic-tokens.ts:206-216" ]
+   home: ~"../spw/open-questions.spw#spw_oq_lens_visible_q"
+   ^["last_run"]{
+    ran: "2026-10-03, working tree over 651b535b", outcome: #partial
+    finding: "lens was the most frequent named reading in the cut, just ahead of neighbor and hypothesis; the editor half was not run"
+   }
+  }
+  #>registry_probe_spw_oq_measure_profiles
+  ^["measure_profiles"]{ probe: "p_spw_oq_measure_profiles", kind: #census, status: #proposed, home: ~"../spw/open-questions.spw#spw_oq_measure_profiles_q" }
+  #>registry_probe_spw_oq_signed_literals
+  ^["signed_literals"]{
+   probe: "p_spw_oq_signed_literals", kind: #build, status: #implemented
+   checker: "spw inspect source --text on each literal, with --through structure and then --through tokens"
+   cites: [ "packages/spw-cli/src/commands.ts:277" ]
+   home: ~"../spw/open-questions.spw#spw_oq_signed_literals_q"
+   ^["last_run"]{
+    ran: "2026-10-03, working tree over 651b535b", outcome: #pass
+    finding: "a negative number and a plus-minus each left one lexer error with parse success true; an exponent split quietly into a number and a name; a clock time parsed with no error"
+   }
+  }
+  #>registry_probe_spw_oq_compounds
+  ^["compounds"]{ probe: "p_spw_oq_compounds", kind: #census, status: #proposed, home: ~"../spw/open-questions.spw#spw_oq_compounds_q" }
+  #>registry_probe_spw_oq_coupling
+  ^["coupling"]{ probe: "p_spw_oq_coupling", kind: #calc, status: #proposed, home: ~"../spw/open-questions.spw#spw_oq_coupling_q" }
+  #>registry_probe_spw_oq_bias_types
+  ^["bias_types"]{
+   probe: "p_spw_oq_bias_types", kind: #census, status: #implemented
+   checker: "spw select with --selector bias on each file lists the edges readBias finds; marking which ones mutate would apply is by hand"
+   cites: [ "packages/spw-cli/src/commands.ts:330" ]
+   home: ~"../spw/open-questions.spw#spw_oq_bias_types_q"
+   last_run: "none recorded here"
+  }
+  #>registry_probe_spw_oq_spaced_bias
+  ^["spaced_bias"]{ probe: "p_spw_oq_spaced_bias", kind: #build, status: #proposed, home: ~"../spw/open-questions.spw#spw_oq_spaced_bias_q" }
+  #>registry_probe_spw_oq_evidentiality
+  ^["evidentiality"]{ probe: "p_spw_oq_evidentiality", kind: #interview, status: #proposed, home: ~"../spw/open-questions.spw#spw_oq_evidentiality_q" }
+  #>registry_probe_spw_oq_prediction_home
+  ^["prediction_home"]{ probe: "p_spw_oq_prediction_home", kind: #field, status: #proposed, home: ~"../spw/open-questions.spw#spw_oq_prediction_home_q" }
+  #>registry_probe_spw_oq_dialect_axes
+  ^["dialect_axes"]{ probe: "p_spw_oq_dialect_axes", kind: #thought, status: #proposed, home: ~"../spw/open-questions.spw#spw_oq_dialect_axes_q" }
+  #>registry_probe_spw_oq_pronounce
+  ^["pronounce"]{ probe: "p_spw_oq_pronounce", kind: #interview, status: #proposed, home: ~"../spw/open-questions.spw#spw_oq_pronounce_q" }
+ }
+}
+
+^["namespaces"]{
+ note: "where each probe namespace lives, so a reader can find an id from its prefix; every id without a row takes its kind default"
+ contrap: "spw/contraptions"
+ creator: "making/authorship, making/streaming, making/broadcast, and society/platforms"
+ doors: "spw/doors and spw/perspectives"
+ eco: "living/development-and-ecology, living/nursing, and living/plants"
+ econ: "society/markets, society/management, and the society glossary"
+ film: "making/film, making/visual, making/theatre, and the making glossary"
+ formal: "formal"
+ gloss: "spw/glossary and spw/specimens"
+ hosts: "spw/hosts and spw/history"
+ lab: "spw/theory, spw/design-research, and making/streaming"
+ lang: "language-and-mind/linguistics and society/communities"
+ learn: "learning"
+ life: "living and language-and-mind/cognition"
+ mateng: "physical, for materials and engineering"
+ media: "record"
+ phys: "physical and record/carriers/moving-image"
+ prov: "provenance, record/information, and panels"
+ season: "season"
+ spw: "spw, the reading surfaces of the reflexive class, all listed above"
+ list: "spw select FILE with --selector probes lists the wonder blocks of one surface"
+ list_cites: [ "packages/spw-cli/src/commands.ts:330" ]
+}

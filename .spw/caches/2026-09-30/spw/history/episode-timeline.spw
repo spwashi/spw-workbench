@@ -1,6 +1,6 @@
 # Episode Timeline
 #
-# The commit history of this repository from 2026-01-08 to the opening of this cut, read by sigil arc and by month, with the history rewrite that reshaped its early dates.
+# The commit history of this repository from 2026-01-08 to the opening of this cut, read by sigil arc and by month, with the imported docs history and the published rewrite of March.
 
 #>workbench_history_episodes
 #:layer #!reference
@@ -22,7 +22,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -35,7 +35,32 @@
    event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass
    note: "commit, episode, month, sigil, rewrite, and quiet-spring counts recounted from git log; a spacing variant of the dot sigil is now named"
   }
+  ^["r5"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #skim, outcome: #pass
+   note: "commit, episode, and month counts recounted again at 1aa1dc23; one rung added for the commits after it"
+  }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r7"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r8"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r9"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+   note: "the particles rung repeated a commit subject that the code at that commit contradicts; the quiet gap was rounded down"
+  }
+  ^["r10"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[
+  "the 2026-02-15 rung called its shared committer date the mark of a published rewrite of main; all 34 stamped commits are docs history that reached main by the subtree import of 2026-02-26",
+  "the published rewrite of main and its hash refresh belong to 2026-03-26, per the archived rewrite-hash-references plan; they now have their own rung",
+  "the rung said committer dates before 2026-02-15 were reshaped; eight earlier waypoint commits keep committer dates equal to their author dates",
+  "the root rung called a1e509c6 the root commit; the history has three roots, and a1e509c6 is the earliest, in the imported docs history",
+  "the dot sigil count was 173; a recount under the stated rule gives 174",
+  "the 2026-07-23 rung said go-to-definition first lands on the anchor, repeating the subject of 45c13e6b; at that commit the resolver kept the fragment on the path, so anchored jumps still opened at line one",
+  "the quiet spring was given as about fourteen weeks; 2026-04-09 to 2026-07-20 is 102 days, about fifteen weeks"
+ ]
  method_note: "author dates and subjects from git log at 1aa1dc23; sigils parsed from the subject prefix after any waypoint or number label"
  privacy: "subjects are paraphrased, bodies are not quoted, and the one outside contributor is not named"
 }
@@ -62,7 +87,7 @@
  #>workbench_history_episodes_sigils
  ^["sigil_subjects"]{
   #:claim #!settled
-  statement: "Commit subjects open with an operator sigil and a scope; the integrate sigil leads with 178 commits and the documentation sigil follows with 173."
+  statement: "Commit subjects open with an operator sigil and a scope; the integrate sigil leads with 178 commits and the documentation sigil follows with 174."
   variant: "seven early subjects put a space between the dot and its bracket; counting them too would put documentation ahead"
   reads: %[hosts.history.sigil_amp_count, hosts.history.sigil_dot_count]
   source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log"
@@ -96,34 +121,62 @@
 
 ^["rungs"]{
  #>workbench_history_episodes_root
- ^["root_2026_01_08"]{ at: "2026-01-08", event: "root commit a1e509c6 lays a documentation layer and domain READMEs", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+ ^["root_2026_01_08"]{ at: "2026-01-08", event: "a1e509c6, the earliest of three root commits, lays a documentation layer and domain READMEs in the docs history that main imports on 2026-02-26", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
  #>workbench_history_episodes_rewrite
- ^["rewrite_2026_02_15"]{
+ ^["docs_stamp_2026_02_15"]{
   #:claim #!settled
   at: "2026-02-15"
-  statement: "28 commits authored between 2026-01-08 and 2026-02-14 carry the committer date 2026-02-15, the mark of a published history rewrite."
+  statement: "28 commits authored from 2026-01-08 to 2026-02-14 carry the committer date 2026-02-15, or 34 with six authored that day; all belong to the docs history."
   reads: %[hosts.history.rewrite_stamped_commit_count]
   source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log"
-  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_rewrite_plan" ]
-  consequence: "author dates survive; committer dates and hashes before that day were reshaped, and plan references to old hashes were refreshed"
+  cites: [ "git log 1aa1dc23 with author and committer dates", "git merge-base --is-ancestor of each stamped commit against 3c1b3283", "commit 0e45d0a4, parents 354d3a15 and 3c1b3283" ]
+  arrival: "every stamped commit is an ancestor of 3c1b3283 and reached main through the docs subtree import 0e45d0a4 on 2026-02-26, so the stamp is older than its arrival on main"
+  exceptions: "eight waypoint commits authored before 2026-02-15 keep committer dates equal to their author dates"
+  ^["limits"]{
+   holds: "as a count of dates in the history at 1aa1dc23"
+   fails: "as a cause; a shared committer date often follows a rebase or rewrite, and no record read for this page says what happened in the docs history that day"
+  }
+  not_the_rewrite: ~"./episode-timeline.spw#workbench_history_episodes_published_rewrite"
  }
  #>workbench_history_episodes_v02
- ^["v02_2026_02_26"]{ at: "2026-02-26", event: "waypoint zero seeds the canon repository, the kernel, and the v0.2 spec path; the editor extensions return the same day", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+ ^["v02_2026_02_26"]{ at: "2026-02-26", event: "waypoint zero, 9fe3b73c, starts the first-parent line of main and seeds the canon repository, the kernel, and the v0.2 spec path; subtree imports bring in the docs and writerside histories, and the editor extensions return", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
  #>workbench_history_episodes_packages
  ^["packages_2026_03_20"]{ at: "2026-03-20", event: "v0.3.0 package scaffolds land and the CLI and LSP entrypoints move behind package boundaries", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+ #>workbench_history_episodes_published_rewrite
+ ^["rewrite_2026_03_26"]{
+  #:claim #!settled
+  at: "2026-03-26"
+  statement: "Main was rewritten and the rewrite published; that evening a plan translated stale hashes against a backup branch and refreshed 41 plan files whose main references dangled."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_rewrite_plan"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_rewrite_stream", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" ]
+  cites: [ ".agents/plans/_archive/rewrite-hash-references/wip.spw:13-17", "commit 8437947a on 2026-03-26" ]
+  backup: "the stream names the backup branch backup/history-rewrite-pre-20260326"
+  ^["limits"]{
+   holds: "for plan references framed as main lineage, which the plan refreshed"
+   fails: "as an account of what the rewrite changed in commits; the plan records only its hash refresh, and it left older references for semantic review"
+  }
+ }
  #>workbench_history_episodes_gate
  ^["gate_2026_04_04"]{ at: "2026-04-04", event: "the commit review runner, summary renderer, and message validator are extracted into one engine", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
  #>workbench_history_episodes_quiet
  ^["quiet_spring"]{
   #:claim #!settled
   at: "2026-04-09 to 2026-07-20"
-  statement: "No commit is authored between 2026-04-09 and 2026-07-20, about fourteen weeks; one April commit was committed on 2026-07-20."
+  statement: "No commit is authored between 2026-04-09 and 2026-07-20, about fifteen weeks, or 102 days; one April commit was committed on 2026-07-20."
   source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log"
  }
  #>workbench_history_episodes_sense
  ^["sense_loop_2026_07_22"]{ at: "2026-07-22", event: "brace and operator inspection, the sense loop CLI, and editor probes land together", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
  #>workbench_history_episodes_particles
- ^["particles_2026_07_23"]{ at: "2026-07-23", event: "the lexer gains the particle token family, and go-to-definition first lands on the anchor", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+ ^["particles_2026_07_23"]{
+  at: "2026-07-23"
+  event: "the lexer gains the particle token family, and a commit adds fragment-aware go-to-definition; the resolver already kept the fragment on the path, so anchored jumps still opened at line one"
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_lsp_helpers", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_fragnav_patch" ]
+  cites: [ "commit 45c13e6b", "packages/spw-lsp/src/helpers.ts:212,220,254 at 45c13e6b", "packages/spw-lsp/src/handlers/navigation.ts:63-65,107 at 45c13e6b" ]
+  subject_note: "the commit subject says definition lands on the anchor; its tests mocked the resolver without the hash, and the fragnav review found readFile always failed on a path ending in an anchor"
+  defect: ~"../hosts/known-defects.spw#editor_hosts_defects_anchor_line"
+ }
  #>workbench_history_episodes_apposition
  ^["apposition_2026_07_26"]{ at: "2026-07-26", event: "gloss is renamed apposition and lowers to an existing annotation node", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
  #>workbench_history_episodes_consumer
@@ -134,6 +187,9 @@
  ^["shelf_2026_09_30"]{ at: "2026-09-30", event: "the generated caches are shelved as residue, disclosed, and the health files quarantined", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
  #>workbench_history_episodes_cut
  ^["cut_2026_10_01"]{ at: "2026-10-01", event: "commit 1aa1dc23 opens this dated cut mid-wave and shelves its plan for a resume", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log" }
+ #>workbench_history_episodes_after
+ ^["after_as_of_2026_10_03"]{ at: "2026-10-03", event: "three commits follow the as_of commit: the lens index, corpus graph fragments, and the shelf of cut waves 1 through 3", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log_w3" }
+ after_note: "counts on this page stay pinned to 1aa1dc23; the three later commits are 6690d686, c79a096a, and 651b535b"
 }
 
 ^["cadence"]{
@@ -174,7 +230,7 @@
  #:claim #!speculative
  ~#hypothesis: "A rewrite that keeps author dates and refreshes references should lose less evidence than one that squashes, because each change still names its own day."
  breaks: "an archive fixes bytes with a stored hash, while a git rewrite changes every hash after it and keeps only what its author chose to carry"
- !probe{ "compare a backup of the pre-rewrite branch, if one survives, with main and list which subjects, dates, and files changed" =id[p_hosts_history_rewrite_loss] =kind[lookup] }
- $%[hosts.history.rewrite_stamped_commit_count, hosts.history.commit_count]
- ~"./episode-timeline.spw#workbench_history_episodes_rewrite" ~#neighbor(nearest)
+ !probe{ "compare backup/history-rewrite-pre-20260326, if a checkout still holds it, with main and list which subjects, dates, and files changed" =id[p_hosts_history_rewrite_loss] =kind[lookup] }
+ $%[hosts.history.commit_count]
+ ~"./episode-timeline.spw#workbench_history_episodes_published_rewrite" ~#neighbor(nearest)
 }

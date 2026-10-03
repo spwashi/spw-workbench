@@ -25,13 +25,20 @@
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r6"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the DMA fine ceiling now cites the regulation instead of an encyclopedia page",
   "Edison 2024 shares carry a note that the survey wave is not printed on the source page",
   "the 2020 Singles Day cell no longer asserts a window the cited table does not state",
   "fact check: the 2020 Singles Day cell still said the festival ran several days; that unsourced window is removed",
-  "fact check: IAB 2024 was 258 with a note that the page truncates; the report gives 258.6, and the page headline rounds to 259"
+  "fact check: IAB 2024 was 258 with a note that the page truncates; the report gives 258.6, and the page headline rounds to 259",
+  "fact check 2026-10-03: the Ritz-Carlton cell was settled per guest per incident with no page; its unit now names Michelli 2008 without a scope, and its status is verify",
+  "fact check 2026-10-03: the Viya cell is the combined back taxes, late fees, and fines from the Zhejiang tax notice, 1.341 billion yuan; the handle keeps its old name",
+  "fact check 2026-10-03: the Alibaba fine gains a yuan cell with its decision basis, 4 percent of 2019 sales in China",
+  "fact check 2026-10-03: a digital sell-through window cell joins the physical home video cell, so the 2019 windows are not read as one 90-day exclusivity"
  ]
  rule: "a market cell names its publisher, period, and as_of; a value nobody has read from its source stays unset with status verify"
  recheck: "on 2026-10-03 the Edison 2024 shares, the four Gauge May 2025 shares, IAB 2025 growth, the Pew sample size, and the Alibaba fine were re-read at their sources and matched; verify cells stay unset"
@@ -76,12 +83,12 @@
  ^["media"]{
   id: econ_media, operator: "%", identifier: econ.media, plane: world, scope: corpus
   scheme: tol, algorithm: world.registry_lookup, form: scalar
-  keys: #[ us_print_units_latest_m, us_publishing_revenue_latest_busd, us_box_office_latest_busd, window_2019_home_video_days, window_wb_regal_2022_days ]
+  keys: #[ us_print_units_latest_m, us_publishing_revenue_latest_busd, us_box_office_latest_busd, window_2019_home_video_days, window_2019_digital_days, window_wb_regal_2022_days ]
  }
  ^["singles"]{
   id: econ_singles, operator: "%", identifier: econ.singles, plane: world, scope: corpus
   scheme: tol, algorithm: world.registry_lookup, form: scalar
-  keys: #[ alibaba_gmv_2019_byuan, alibaba_gmv_2020_byuan, alibaba_fine_2021_busd, viya_fine_2021_byuan, viya_2021_sales_byuan ]
+  keys: #[ alibaba_gmv_2019_byuan, alibaba_gmv_2020_byuan, alibaba_fine_2021_byuan, alibaba_fine_2021_busd, viya_fine_2021_byuan, viya_2021_sales_byuan ]
  }
 }
 
@@ -173,8 +180,9 @@
   src: ~"../sources/economy-and-markets.spw#src_econ_dma_2022"
  }
  %econ.hotel.ritz_empowerment_usd{
-  value: 2000, unit: "USD per guest per incident", abs: 0, status: #settled
+  value: 2000, unit: "USD per guest, as described by Michelli 2008", abs: 0, status: #verify
   at: "Ritz-Carlton employee authority to resolve a guest problem without approval, as described in 2008"
+  scope: "secondary accounts differ between per day and per incident; copy the exact wording and page from Michelli 2008 before settling"
   as_of: "2008"
   src: ~"../sources/economy-and-markets.spw#src_econ_michelli_2008"
  }
@@ -294,7 +302,12 @@
  }
  %econ.media.window_2019_home_video_days{
   value: 90, unit: "days", abs: 0, status: #superseded
-  at: "exclusive theatrical window before physical home video required by major US chains, 2019"
+  at: "exclusive theatrical window before physical home video and rental required by major US chains, 2019"
+  src: ~"../sources/economy-and-markets.spw#src_econ_wiki_release_window"
+ }
+ %econ.media.window_2019_digital_days{
+  value: 75, unit: "days", abs: 1, status: #superseded
+  at: "theatrical window before digital sell-through required by major US chains, 2019; the source gives 74 to 76 days"
   src: ~"../sources/economy-and-markets.spw#src_econ_wiki_release_window"
  }
  %econ.media.window_wb_regal_2022_days{
@@ -316,15 +329,20 @@
   at: "Alibaba reported Singles Day GMV, 2020, encyclopedia table value; the sale window it covers is not stated there"
   src: ~"../sources/economy-and-markets.spw#src_econ_wiki_singles_day"
  }
+ %econ.singles.alibaba_fine_2021_byuan{
+  value: 18.228, unit: "billion CNY", abs: 0.0005, status: #settled
+  at: "SAMR antitrust fine on Alibaba, 2021-04-10, set at 4 percent of its 2019 sales in China of 455.712 billion CNY"
+  src: ~"../sources/economy-and-markets.spw#src_econ_wiki_zh_alibaba"
+ }
  %econ.singles.alibaba_fine_2021_busd{
   value: 2.8, unit: "billion USD", rel: 0.02, status: #settled
-  at: "SAMR antitrust fine on Alibaba, April 2021"
+  at: "SAMR antitrust fine on Alibaba, April 2021, as converted to USD in the encyclopedia"
   src: ~"../sources/economy-and-markets.spw#src_econ_wiki_alibaba"
  }
  %econ.singles.viya_fine_2021_byuan{
-  value: 1.34, unit: "billion CNY", rel: 0.01, status: #settled
-  at: "tax penalty and back taxes assessed on the livestreamer Viya, December 2021"
-  src: ~"../sources/economy-and-markets.spw#src_econ_wiki_viya"
+  value: 1.341, unit: "billion CNY", abs: 0.0005, status: #settled
+  at: "back taxes, late-payment surcharges, and fines combined, ordered on Viya by the Hangzhou tax inspection bureau for 2019 and 2020 income, announced 2021-12-20; the handle says fine but the value is the combined total"
+  src: ~"../sources/economy-and-markets.spw#src_econ_zhejiang_tax_2021_viya"
  }
  %econ.singles.viya_2021_sales_byuan{
   value: 8.5, unit: "billion CNY", rel: 0.05, status: #verify

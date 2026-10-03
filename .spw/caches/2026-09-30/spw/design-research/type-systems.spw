@@ -7,7 +7,7 @@
 #:domain #!lang_design
 #:form #!comparison
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/language-features/type-systems-and-ergonomics.spw", ".spw/caches/language-features/array-and-concatenative.spw" ]
@@ -29,13 +29,19 @@
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the raw file said satisfies validates that palette values are hex strings; it checks only that the value is assignable to the type, and any string passes Record of string",
   "the raw claim that TypeScript is the most popular type system had no source and is dropped",
   "optional chaining short-circuits on null and undefined only; the raw claim that it ends null-pointer exceptions overstated it",
   "Swift extensions add members to a type and are not resolved like Kotlin extensions, so Swift is dropped from that row",
-  "the Julia multiple dispatch row moves here from the raw array file; whether it solves the expression problem is marked interpretive"
+  "the Julia multiple dispatch row moves here from the raw array file; whether it solves the expression problem is marked interpretive",
+  "the fact check found the Kotlin row dated extensions to the 1.0 era; they predate 1.0, and the gate reading now cites the gate lines behind its implemented status"
  ]
 }
 
@@ -70,7 +76,7 @@
  ^["kotlin_extensions"]{
   checks: "that the receiver type has the extension in scope, at compile time"
   leaves_alone: "the extended class, which gains no member"
-  introduced: "Kotlin 1.0 era; C# has static extension methods of the same kind"
+  introduced: "present in Kotlin before 1.0, released in 2016; C# 3.0, 2007, has static extension methods of the same kind"
  }
  #>lang_design_types_row_chaining
  ^["optional_chaining"]{
@@ -142,6 +148,7 @@
   statement: "Spw has no static types; the cut gate plays the part of satisfies for whole surfaces, checking values against closed sets without changing them."
   grounds: [ ~"../../contract.spw#cut_contract" ]
   status: #implemented
+  cites: [ "scripts/analyzers/spw-cut-gate.ts:286-313" ]
  }
 }
 

@@ -22,7 +22,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/community-roles/care-and-health-stewards.spw" ]
@@ -35,6 +35,15 @@
    care: #adversarial, outcome: #corrected
   }
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r8"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: [
   "the raw wonder said a doula cuts emergency caesarean rates by 50 percent; the Cochrane review reports a risk ratio of 0.75 on low-quality evidence",
@@ -44,7 +53,8 @@
   "raw vigil, home funeral, and crisis-team lines without sources are dropped; death cafe is kept with its founders credited",
   "fact check: the Guatemala trial was marked settled as a clinical effect; it is kept as history with its exclusion imbalance, and effects come only from the Cochrane review",
   "fact check: Raphael read as a later adopter of doula; she introduced the word by 1969, and Klaus and Kennell later applied it to labor support",
-  "fact check: the test strip claim omitted cross-reactivity, the main limit Sisco and colleagues report"
+  "fact check: the test strip claim omitted cross-reactivity, the main limit Sisco and colleagues report",
+  "fact check 2026-10-03: the hearing voices credit called both authors psychiatrists; Romme is a psychiatrist and Escher a researcher trained in journalism, and voice hearer Patsy Hage is credited as a co-founder"
  ]
 }
 
@@ -100,7 +110,8 @@
   #>communities_care_doula_origin
   ^["origin"]{
    #:claim #!settled
-   statement: "Anthropologist Dana Raphael introduced doula, from Greek doule, servant-woman, by 1969 for a woman who supports a new mother, chiefly so breastfeeding succeeds, and popularized it in The Tender Gift in 1973."
+   statement: "Anthropologist Dana Raphael introduced doula by 1969 for a woman who supports a new mother, chiefly so breastfeeding succeeds, and popularized it in The Tender Gift in 1973."
+   etymology: "from Modern Greek doula, female slave or woman servant, and ancient Greek doulē, the feminine of doulos, slave"
    sources: [
     ~"../../registries/sources/language-and-communities.spw#src_lang_wiki_doula",
     ~"../../registries/sources/language-and-communities.spw#src_lang_raphael_1973",
@@ -134,16 +145,26 @@
    ~#say(continuous support makes a caesarean somewhat less likely)
    ^["limits"]{
     holds: "labor support in the trials the review pooled, from many countries and hospital settings"
-    fails: "prenatal and postpartum doula visits are outside the review, and it found no apparent effect on special care nursery admission"
+    fails: "the review assessed continuous intrapartum support; models extending support into pregnancy and postpartum appear only as a subgroup with no conclusion drawn, prenatal or postpartum visits alone are not assessed, and it found no apparent effect on special care nursery admission"
    }
   }
   #>communities_care_doula_who
   ^["who_provides"]{
-   #:claim #!settled
-   statement: "In subgroup analyses, support lowered caesarean birth most when the provider served in a doula role and where epidurals were not routine; the review found no evidence of harm."
+   #:claim #!emerging
+   statement: "In subgroup analyses, support lowered caesarean birth most when the provider served in a doula role, where epidurals were not routine, where women could not bring companions of their choosing, and in middle-income settings."
    reads: %[lang.labor_support.trials_count, lang.labor_support.women_count]
    source: ~"../../registries/sources/language-and-communities.spw#src_lang_bohren_2017"
-   version: "review version 2017; check the Cochrane Library for a later update before quoting"
+   version: "review version 2017; a fact check on 2026-10-03 found no later version; check the Cochrane Library before quoting"
+   ^["limits"]{
+    holds: "as a direction for research on who gives support and where"
+    fails: "as a settled effect; the authors call these subgroup analyses exploratory and hypothesis-generating, to be interpreted with caution"
+   }
+   #>communities_care_doula_harms
+   ^["harms"]{
+    #:claim #!settled
+    statement: "Across the pooled trials the review found no evidence of harms of continuous labor support."
+    source: ~"../../registries/sources/language-and-communities.spw#src_lang_bohren_2017"
+   }
   }
  }
  ^["peer_support"]{
@@ -159,7 +180,12 @@
    #:claim #!settled
    statement: "Romme and Escher reported in 1989 on people who hear voices and had learned to live with them, work that helped seed peer-led hearing voices groups."
    source: ~"../../registries/sources/language-and-communities.spw#src_lang_romme_escher_1989"
-   credit: "the groups are led by voice hearers; psychiatrists documented and supported them"
+   credit: "the groups are led by voice hearers; psychiatrist Marius Romme and Sandra Escher, a researcher trained in journalism, documented and supported them"
+   cofounder: "the movement credits voice hearer Patsy Hage, with Romme and Escher, as a founder in the Netherlands in the late 1980s"
+   credit_sources: [
+    ~"../../registries/sources/language-and-communities.spw#src_lang_wiki_hearing_voices",
+    ~"../../registries/sources/language-and-communities.spw#src_lang_wiki_sandra_escher"
+   ]
   }
  }
  ^["harm_reduction"]{

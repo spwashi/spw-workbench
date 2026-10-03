@@ -7,7 +7,7 @@
 #:domain #!lang_design
 #:form #!comparison
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
@@ -33,13 +33,19 @@
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the raw file said a pipe always passes the result as the first argument; that holds for Elixir, while OCaml and F# apply the function to the value, so a curried call receives it last",
   "the raw file said Uiua evaluates left to right; its design document says functions execute right to left",
   "the raw file called Uiua a stack language; its design document says the stack terminology was removed and values are read as function arguments",
   "claims that a whole Forth system fits in 4 kilobytes, that five characters compute the Game of Life or eigenvalues, and that array code maps directly to SIMD registers had no source and are dropped",
-  "pattern matching in function heads and OTP supervision are not carried; this surface covers flow direction only, and Julia dispatch moved to the type systems surface"
+  "pattern matching in function heads and OTP supervision are not carried; this surface covers flow direction only, and Julia dispatch moved to the type systems surface",
+  "the fact check found the operator-label status marked implemented on a probe alone; both bindings now cite the label production in the seed grammar"
  ]
 }
 
@@ -119,6 +125,7 @@
   reads: "left to right as a sequence of steps"
   grouping: "braces and brackets bound bodies; semicolons inside << >> and the => arrow separate steps"
   status: #implemented
+  cites: [ "packages/spw-seed/src/grammar/expressions.ts:238-256" ]
  }
 }
 
@@ -182,6 +189,7 @@
   statement: "The Spw parser reads !x as one operation whose label is x, so a mark names the word beside it rather than taking an operand as C negation does."
   source: ~"../../registries/sources/spw-design-studies.spw#src_lab_probe_flow"
   status: #implemented
+  cites: [ "packages/spw-seed/src/grammar/expressions.ts:238-256", "packages/spw-seed/src/types/ast/nodes.ts:158" ]
  }
  #>lang_design_pipelines_spw_postfix
  ^["postfix_detaches"]{

@@ -7,7 +7,7 @@
 #:domain #!spw
 #:form #!probe_battery
 #:level #!graduate
-#:review #!spot_checked
+#:review #!adversarial_checked
 #:valence #!honk
 
 ^"emit"{
@@ -34,11 +34,20 @@
   ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "questions already developed in a theory, glossary, or contraption surface are linked there instead of restated, so each has one home",
   "the spaced bias question is narrowed: at 1aa1dc23 a spaced form with the anchor first yields an edge, and only the canon form with the anchor after the frame yields none",
-  "nothing here edits canon or a wave 1 or 2 file; promote rows are proposals for the owner"
+  "nothing here edits canon or a wave 1 or 2 file; promote rows are proposals for the owner",
+  "the lens question asked why the LSP indexed no apposition; 6690d686 indexes lens readings for hover, inlay, and symbols, so it now asks about references, rename, and highlight",
+  "the collapse law lives at docs/library/spw/wonder-calculus.spw, not under docs/theory",
+  "the review honesty row was retargeted after a rerun on 2026-10-03 cleared the two files it first named",
+  "the prediction-home question listed an educator among those who raised it; the plan credits the render study alone"
  ]
 }
 
@@ -93,10 +102,11 @@
 
 ^["lens_and_readings"]{
  #>spw_oq_lens_visible_q
- ?["Is a lens apposition meant to be visible to tools, given that the LSP indexes no apposition and its hover reads only a comment form?"]{
+ ?["Now that the LSP indexes lens readings for hover, inlay, and symbols, should references, rename, and highlight read them from the parse rather than by regex?"]{
   #:depth #!computational ~#lens(information flow)
   !probe{ "count lens appositions in the cut and the ones any editor search or view can find" =id[p_spw_oq_lens_visible] =kind[census] }
   ~"./hosts/known-defects.spw#editor_hosts_defects_lens_index" ~#neighbor(nearest)
+  last_run: ~"../registries/probes.spw#registry_probe_spw_oq_lens_visible"
   raised_by: #[ c_family, physics, design, clinical, library, creator, crew, linguist, educator, social ]
  }
  home: [ ~"./hosts/known-defects.spw#editor_hosts_defects_lens_index", ~"./voice.spw#spw_voice" ]
@@ -198,7 +208,7 @@
   #:depth #!educational ~#lens(applied attention)
   !probe{ "write one arc three ways and ask which form readers fill in before they check" =id[p_spw_oq_prediction_home] =kind[field] }
   ~"./arcs-and-readings.spw#spw_arcs_schedule" ~#neighbor(nearest)
-  raised_by: #[ render_study, educator ]
+  raised_by: #[ render_study ]
  }
  home: [ ~"./inspection-and-ir.spw#spw_ir_honesty_q", ~"./machine-empathy.spw#spw_empathy_declare_q", ~"./arcs-and-readings.spw#spw_arcs_reentry_q" ]
  also: [
@@ -251,8 +261,9 @@
  #>spw_oq_promote_review
  ^["review_honesty"]{
   source_anchor: ~"./inspection-and-ir.spw#spw_ir_honesty_q"
-  target: "living/nursing/guideline-currency-ledger.spw and provenance/review-scorecard.spw"
-  evidence: "a heuristic flags review set higher than the best passing receipt care; check against the contract inspection honesty rule"
+  target: "contract.spw and vocabulary.spw at the cut root"
+  evidence: "a scratch rerun on 2026-10-03 finds only these two short of their review value, since neither has a receipts frame; the guideline ledger and review scorecard flagged on 2026-10-02 now pass"
+  run: ~"../registries/probes.spw#registry_probe_spw_ir_honesty"
  }
  #>spw_oq_promote_hash_prose
  ^["hash_prose"]{
@@ -270,7 +281,7 @@
  #>spw_oq_promote_law
  ^["collapse_law"]{
   source_anchor: ~"./contraptions/law-lab.spw#spw_lab_law_lab"
-  target: "docs/theory/spw/wonder-calculus.spw:29-31"
+  target: "docs/library/spw/wonder-calculus.spw:29-31"
   evidence: "collapse after defer returns a deferred wrapper, so the stated law fails on value, writes, and trace"
  }
  #>spw_oq_promote_homonyms

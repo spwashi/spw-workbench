@@ -7,7 +7,7 @@
 #:domain #!cognition
 #:form #!ledger
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!honk
 #:era #!contemporary
 
@@ -34,10 +34,14 @@
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #fact_checked, at: "2026-10-03",
+   agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "2026-10-03: the felt-power row cited Ranehill and colleagues as its counter, though that study found a felt-power effect; the counter is now the p-curve of Simmons and Simonsohn",
-  "2026-10-03: the Rohrer, Lodder, Hagger, Vohs, Mertens, and Scheel abstracts were reread against each row and cell; the numbers stand"
+  "2026-10-03: the Rohrer, Lodder, Hagger, Vohs, Mertens, and Scheel abstracts were reread against each row and cell",
+  "2026-10-03 fact-check: the Rohrer, Lodder, Hagger, Vohs, and Scheel numbers stand; the Mertens reread missed the 2022 PNAS correction, because the indexed abstract still shows the original text, so the nudge cell now holds the corrected d = 0.43 [0.38, 0.48]"
  ]
  written_for: "the review asked for money priming, ego depletion, the marshmallow test, nudges, and power posing, each with status and replication sources and without scorn"
 }
@@ -139,6 +143,7 @@
    reads: %[life.replication.nudge_meta_d]
    source: ~"../../registries/sources/life-and-mind.spw#src_life_mertens_2022"
    counter: ~"../../registries/sources/provenance-and-reference.spw#src_prov_maier_2022"
+   corrected: "a 2022 published correction removed four effect sizes from a since-retracted study and fixed coding errors, lowering the pooled estimate slightly; the cell holds the corrected value"
   }
   #>cognition_replication_ledger_nudge_scale
   ^["at_scale"]{

@@ -1,0 +1,197 @@
+# Band Coverage
+#
+# Does a table of bands claim every reading exactly once at its stated resolution? Converting units opens gaps and overlaps, shown on the Beaufort scale, on CSS breakpoints, and on the cut text-length rules.
+
+#>spw_lab_band_coverage
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!honk
+
+^"emit"{
+ ~#title: "Band Coverage"
+ ~#claim: "A band table claims each reading once only at the resolution it was written for: the Beaufort knot column tiles whole knots, while its rounded metres-per-second column lists five readings twice."
+ ~#proof: "Met Office Beaufort table read on 2026-10-03; converting each knot limit with the exact knot and rounding reproduces every metres-per-second limit; Media Queries Level 4 warns of the same gap between breakpoints."
+ ~#door: "Convert the force 1 and force 2 knot limits to metres per second, round them, and find the reading both forces claim."
+ ~#audience: "sailors and forecasters, front-end developers, designers, and Spw authors who write thresholds"
+ continuity: "Band Coverage | band table"
+ cold_open: "Convert a band table to new units and some readings fall between bands while others land in two at once."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new", "persona study contraption_catalog[16], references/studies/persona-synthesis.json", "sketch references/spw-branch/seeds/contraptions/band-coverage.spw" ]
+ method: #authored
+ evidence: #[
+  "the Met Office Beaufort page was fetched on 2026-10-03 and its knot and metres-per-second limits read for all thirteen forces",
+  "each knot limit was converted with 1852/3600 in exact fractions and rounded to the nearest whole number on 2026-10-03",
+  "the cut size and word-count rules were read in scripts/analyzers at commit 1aa1dc23, unchanged at 651b535b"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+ }
+ corrections: #[
+  "the persona catalog and the sketch used a clinical early-warning score with a routing table; both are removed, because scoring and routing patients belongs to clinical guidelines, and the instrument is re-exampled on wind and screen widths",
+  "the sketch read a band gap as a scoring defect; here a gap is a property of a table at a resolution, with no claim about the thing measured"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/quantities/spw-contraptions.spw#q_contrap_band" ]
+ see: [ ~"./derivation-checker.spw#spw_lab_derivation_checker", ~"./rubric-lens.spw#spw_lab_rubric_lens" ]
+}
+
+^["concepts"]{
+ primary: [ #measure, #visible_gap ]
+ transfers: [ #standards, #reflexive_mirror ]
+ tensions: [ #overclaim ]
+}
+
+^["tool"]{
+ status: #proposed
+ verb: "a band checker that would read a resolution and span facets and list every reading that no band or two bands claim; not yet written"
+ parsed: "a span written lo..hi parses as one range expression, so a checker can read band limits from the tree"
+ scratch: "the conversion below came from a scratch script with exact fractions, outside the repository"
+ source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_bench_runs"
+}
+
+#>spw_lab_band_coverage_terms
+^["parameters"]{
+ resolution: "the smallest step a reading can take, such as one knot, one metre per second, or a fraction of a CSS pixel"
+ tiles: "every reading at that resolution falls in exactly one band"
+ gap: "a reading at that resolution that no band claims"
+ overlap: "a reading that two bands claim"
+ counted: "a count, such as words or lines, has resolution one by nature and cannot fall between whole numbers"
+}
+
+^["world"]{
+ #>spw_lab_band_coverage_beaufort
+ ^["beaufort_table"]{
+  #:claim #!settled
+  statement: "The Met Office Beaufort table gives thirteen forces with limits in knots and in metres per second, and its whole-number knot limits leave no whole-knot reading unclaimed."
+  reads: %[contrap.band.beaufort_force_count]
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_metoffice_beaufort"
+  as_of: "2026-10-03"
+ }
+ #>spw_lab_band_coverage_rounded
+ ^["rounded_conversion"]{
+  #:claim #!settled
+  statement: "Converting each knot limit to metres per second and rounding it to a whole number reproduces every limit in the published metres-per-second column, which is why adjacent forces share endpoints there."
+  reads: %[contrap.band.beaufort_mps_shared_n, contrap.dim.knot_m_per_s]
+  sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_metoffice_beaufort", ~"../../registries/sources/spw-contraptions.spw#src_contrap_bench_runs" ]
+ }
+ #>spw_lab_band_coverage_css
+ ^["breakpoints"]{
+  #:claim #!settled
+  statement: "Media Queries Level 4 notes that a viewport with a fractional width can fall between a max-width query and the next min-width query, and its range syntax closes that gap."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_w3c_mq4"
+  as_of: "2026-10-03"
+  edition: "Candidate Recommendation Draft, 19 February 2026"
+ }
+ #>spw_lab_band_coverage_scales
+ ^["scales"]{
+  #:claim #!settled
+  statement: "Stevens sorted measurement scales into nominal, ordinal, interval, and ratio, each defined by which transformations leave its statements true."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_stevens_1946"
+  ~#(a force number is an ordinal label laid over wind speed, a ratio-scale reading)
+ }
+}
+
+#>spw_lab_band_coverage_table
+^["beaufort_limits"]{
+ note: "limits as the Met Office page printed them on 2026-10-03; knots first, then metres per second"
+ f0: .{ knots: "under 1", mps: "under 1" }
+ f1: .{ knots: "1-3", mps: "1-2" }
+ f2: .{ knots: "4-6", mps: "2-3" }
+ f3: .{ knots: "7-10", mps: "4-5" }
+ f4: .{ knots: "11-16", mps: "6-8" }
+ f5: .{ knots: "17-21", mps: "9-11" }
+ f6: .{ knots: "22-27", mps: "11-14" }
+ f7: .{ knots: "28-33", mps: "14-17" }
+ f8: .{ knots: "34-40", mps: "17-21" }
+ f9: .{ knots: "41-47", mps: "21-24" }
+ f10: .{ knots: "48-55", mps: "25-28" }
+ f11: .{ knots: "56-63", mps: "29-32" }
+ f12: .{ knots: "64 and over", mps: "33 and over" }
+}
+
+#>spw_lab_band_coverage_screens
+^["screen_bands"]{
+ split_pair: #[ "max-width: 599px", "min-width: 600px" ]
+ range_pair: #[ "width < 600px", "width >= 600px" ]
+ reading: "a window 599.5 pixels wide matches neither query in the split pair and exactly one in the range pair"
+}
+
+^["battery"]{
+ #>spw_lab_band_coverage_shared
+ ^["find_the_shared"]{
+  !probe{ "list every whole metres-per-second reading from 0 to 33 and count the forces that claim each one" =id[p_contrap_band_shared] =kind[calc] }
+  predict: ?{ "how many readings do two forces claim" } ~<guess>
+  expect: "five: 2, 11, 14, 17, and 21 each close one band and open the next; no whole reading is unclaimed"
+  shows: ~"./band-coverage.spw#spw_lab_band_coverage_rounded"
+ }
+ #>spw_lab_band_coverage_finer
+ ^["finer_knots"]{
+  !probe{ "read the knot column at a resolution of one tenth of a knot" =id[p_contrap_band_finer] =kind[calc] }
+  expect: "readings such as 3.5 knots now fall between force 1 and force 2, so the table needs a stated rounding rule to tile"
+  shows: ~"./band-coverage.spw#spw_lab_band_coverage_beaufort"
+ }
+}
+
+#>spw_lab_band_coverage_mirror
+^["language_mirror"]{
+ #>spw_lab_band_coverage_lines
+ ^["two_ladders"]{
+  #:claim #!settled
+  statement: "The cut contract asks surfaces to aim under 300 lines while the gate warns only past 320 and fails past 600, so 301 to 320 lines is a band the two rules read differently."
+  cites: [ "scripts/analyzers/spw-cut-gate.ts:258-259" ]
+  sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_gate", ~"../../registries/sources/spw-contraptions.spw#src_contrap_cut_contract" ]
+ }
+ #>spw_lab_band_coverage_words
+ ^["words_by_whitespace"]{
+  #:claim #!settled
+  statement: "The gate counts words as runs between spaces, so a hyphenated compound is one word on the page though a reader says two or three aloud."
+  cites: [ "scripts/analyzers/spw-cut-voice.ts:16,50,66" ]
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_voice"
+ }
+ question: "Where do the cut length rules leave a reading that two ladders describe differently?"
+ standing: "a-cut: the line and word limits are this cut contract and gate; nothing in canon sets them"
+ !probe{ "list every surface between 300 and 320 lines and every claim whose spoken word count exceeds its whitespace count" =id[p_contrap_band_ladders] =kind[census] }
+}
+
+^["limits"]{
+ holds: "whether a table claims every reading exactly once at a stated resolution"
+ fails: "a gap is a defect of a table, not of the wind or the screen; tiling says nothing about whether band edges are well placed; and a published table may round on purpose for readers at sea"
+}
+
+^["try"]{
+ #>spw_lab_band_coverage_try
+ ^["two_columns"]{
+  materials: [ "a calculator", "a sheet ruled into two columns", "optionally a browser with responsive design mode" ]
+  steps: << "multiply 3 and 4 knots by 0.514444" ; "round each product to a whole number" ; "write which forces now claim 2 metres per second" ; "optionally set a test page to 599.5 pixels wide and see which split-pair query applies" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./band-coverage.spw#spw_lab_band_coverage_rounded"
+ }
+}
+
+#>spw_lab_band_coverage_q
+?["Do tables converted by rounding each limit keep more shared endpoints than tables rebuilt from a stated rounding rule?"]{
+ #:depth #!computational ~#lens(scale and dimension)
+ #:claim #!speculative
+ ~#hypothesis: "Tables whose second column was rounded limit by limit should show shared endpoints more often than tables recomputed from a rule, since independent rounding ignores the neighbour band."
+ !probe{ "collect published two-unit band tables, such as wind, hail, and swell scales, and count shared endpoints by how each column was made" =id[p_contrap_band_q] =kind[lit] }
+ $%[contrap.band.beaufort_mps_shared_n, contrap.dim.knot_m_per_s]
+ ~"./band-coverage.spw#spw_lab_band_coverage_rounded" ~#neighbor(nearest)
+ breaks: "a shared endpoint can be a deliberate convention that readers resolve by context, so a count of them is not a count of errors"
+}

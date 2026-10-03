@@ -1,0 +1,67 @@
+# Quantities: Concepts
+#
+# Two splitting orders and one policy threshold the concept hubs read; every other number a hub cites lives in another package registry and is read there.
+
+#>registry_qty_concepts
+#:layer #!reference
+#:domain #!registry
+#:form #!registry
+#:level #!mixed
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ status_legend: "settled cells state a theorem or a model result read from the linked source; abs 0 marks an exact value, not a measured one"
+ reuse: "hubs read eco, mateng, phys, contrap, life, econ, gloss, prov, and spw cells where those packages hold them; this file adds only numbers no other registry carries"
+}
+
+^["families"]{
+ ^["splitting"]{
+  id: concepts_splitting, operator: "%", identifier: concepts.splitting
+  keys: #[ lie_trotter_order, strang_order ]
+  plane: world, scope: corpus, scheme: tol, algorithm: world.registry_lookup, form: scalar
+ }
+ ^["feedback"]{
+  id: concepts_feedback, operator: "%", identifier: concepts.feedback
+  keys: #[ taylor_principle_min ]
+  plane: world, scope: corpus, scheme: tol, algorithm: world.registry_lookup, form: scalar
+ }
+}
+
+#>q_concepts_splitting
+^"splitting"{
+ %concepts.splitting.lie_trotter_order{
+  value: 1, unit: "order", abs: 0, status: #settled
+  at: "global error order of sequential splitting, a full step of one flow then a full step of the other, when the two flows do not commute"
+  src: ~"../sources/spw-contraptions.spw#src_contrap_hairer_lubich_wanner_2006"
+ }
+ %concepts.splitting.strang_order{
+  value: 2, unit: "order", abs: 0, status: #settled
+  at: "global error order of symmetric splitting, a half step of one flow, a full step of the other, then the second half step"
+  src: ~"../sources/spw-contraptions.spw#src_contrap_strang_1968"
+ }
+}
+
+#>q_concepts_feedback
+^"feedback"{
+ %concepts.feedback.taylor_principle_min{
+  value: 1, unit: "1", abs: 0, status: #settled
+  at: "inflation response a rule must exceed for a unique stable equilibrium in the basic New Keynesian model when the rule reacts to inflation alone; an output-gap response loosens it slightly"
+  src: ~"../sources/economy-and-markets.spw#src_econ_bullard_mitra_2002"
+ }
+}

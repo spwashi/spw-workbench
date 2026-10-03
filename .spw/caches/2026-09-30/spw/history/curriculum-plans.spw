@@ -7,7 +7,7 @@
 #:domain #!workbench_history
 #:form #!dossier
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!boon
 #:era #!current
 
@@ -31,8 +31,24 @@
   ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+   note: "planned step counts, expansion times, SOURCE.txt, card next steps, and the external curriculum sources confirmed"
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
- web_checks: "the two HOPL papers were matched against Crossref, SVG 1.1 and ECMA-48 against their publisher pages, and the GQL date against its public record on 2026-10-03"
+ web_checks: "the two HOPL papers were matched against Crossref, SVG 1.1, SVG 2, and ECMA-48 against their publisher pages, and the GQL date against its public record on 2026-10-03"
+ corrections: #[
+  "the credits said the ladders build on W3C SVG 1.1; the SVG plan names SVG 2, a Candidate Recommendation, and SVG 1.1 is the stable Recommendation this cut adds",
+  "the credits presented ECMA-48 and the WHATWG Living Standard as the ladders own sources; the plans say ANSI escape codes and HTML5, and those two citations are this cut mapping",
+  "the lab kit sent learners to the accessibility tree to find implied html, head, and body; those appear in the DOM tree of the Elements panel, and the accessibility tree stays the same"
+ ]
 }
 
 ^["edges"]{
@@ -128,17 +144,22 @@
  #>workbench_history_curriculum_plans_credits
  ^["named_origins"]{
   #:claim #!settled
-  statement: "The ladders build on public standards and named languages: the WHATWG HTML standard, W3C SVG 1.1, ECMA-48 terminal control, Prolog, Haskell, and the ISO GQL standard."
-  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_whatwg_html"
-  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_svg11_2011", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_ecma48_1991", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_iso_gql_2024" ]
+  statement: "The ladders name public standards and languages: HTML5, SVG 2 with Filter Effects and SMIL, ANSI escape codes, Prolog, Haskell, and GQL; each row below credits a citable origin."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_plan_cards_curriculum"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_svg2_cr_2018", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_iso_gql_2024" ]
+  cites: [ ".agents/plans/curriculum-html-css-mastery/PLAN.md:19", ".agents/plans/curriculum-html-svg-mastery/PLAN.md:13,76", ".agents/plans/curriculum-logic-terminal-mastery/PLAN.md:5,13,19" ]
+  cut_mapping: "this cut cites HTML5 as the WHATWG HTML Living Standard and ANSI escape codes as ECMA-48, fifth edition; the plans name neither document"
+  graphql_note: "the logic plan goal line says GraphQL and Cypher, while its phase and scope name GQL and ISO property graphs; GraphQL is a separate query language, so the cut follows the phase"
+  provenance_label: "plan text for the named items; a-cut mapping for the HTML and terminal citations"
  }
  ^["rows"]{
   prolog: .{ credit: "Alain Colmerauer and Philippe Roussel in Marseille, 1972, by their own account", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_colmerauer_roussel_1996" }
   haskell: .{ credit: "an open committee from 1987, as told by Hudak, Hughes, Peyton Jones, and Wadler", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_hudak_2007" }
   gql: .{ credit: "ISO/IEC 39075, published in April 2024", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_iso_gql_2024" }
-  svg: .{ credit: "W3C, SVG 1.1 Second Edition of August 2011", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_svg11_2011" }
-  terminal: .{ credit: "Ecma International, ECMA-48 fifth edition of 1991", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_ecma48_1991" }
-  html: .{ credit: "the WHATWG HTML Living Standard", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_whatwg_html" }
+  svg: .{ credit: "W3C, SVG 2, a Candidate Recommendation of 4 October 2018, named by the plan", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_svg2_cr_2018" }
+  svg_stable: .{ credit: "W3C, SVG 1.1 Second Edition, the Recommendation of 16 August 2011, which this cut adds as the stable reference", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_svg11_2011" }
+  terminal: .{ credit: "Ecma International, ECMA-48 fifth edition of 1991, this cut mapping of the plan phrase ANSI escape codes", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_ecma48_1991" }
+  html: .{ credit: "the WHATWG HTML Living Standard, this cut mapping of the plan word HTML5", source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_whatwg_html" }
  }
 }
 
@@ -157,7 +178,7 @@
  #>workbench_history_curriculum_plans_try_lab
  ^["lab_one_by_hand"]{
   materials: [ "a plain text editor", "a web browser with developer tools" ]
-  steps: << "write a file holding html and body elements around one paragraph" ; "open it in the browser and find the accessibility tree in developer tools" ; "delete the html, head, and body tags and reload" ; "compare the two trees and name what the parser added back" ; "write one sentence on how a Spw frame differs from an implied element" >>
+  steps: << "write a file holding html and body elements around one paragraph" ; "open it in the browser and inspect the DOM tree in the Elements panel of developer tools" ; "delete the html and body tags and reload" ; "compare the two DOM trees and name the elements the parser added back" ; "optionally open the accessibility tree and note that it is unchanged" ; "write one sentence on how a Spw frame differs from an implied element" >>
   time: .{ n: 20, unit: "minutes" }
   safety: "none worth naming; the file stays on your own machine"
   shows: ~"./curriculum-plans.spw#workbench_history_curriculum_plans_pairing"

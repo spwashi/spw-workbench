@@ -7,7 +7,7 @@
 #:domain #!spw_theory
 #:form #!ledger
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/language-features/spw-resonance.spw" ]
@@ -30,10 +30,19 @@
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the raw generation read valence as emotional and operational charge with one word meaning danger; canon calls the pentad charge-neutral material quality, so that reading is recorded as refuted",
-  "the raw generation wrote = as constraint; canon reads = with a body as a neutral bias edge, which this ledger uses for the direction reading"
+  "the raw generation wrote = as constraint; canon reads = with a body as a neutral bias edge, which this ledger uses for the direction reading",
+  "the palette claim quoted the catalog phrase telemetry alert; the package.json descriptions say telemetry and high-priority signal, and the claim now follows them",
+  "the false friend claim was marked settled and spoke of readers; it rests on one study of simulated personas, so it is now emerging, and the binding-key hazard is its own claim"
  ]
 }
 
@@ -103,9 +112,9 @@
  #>spw_theory_valence_palette
  ^["editor_palette"]{
   #:claim #!settled
-  statement: "The VS Code extension contributes valence colors described as implemented state, hazard and error in red, partial state, conflict, and telemetry alert."
+  statement: "The VS Code extension contributes valence colors described as growth and implemented state, hazard and error state in red, scaffold and partial state, conflict, and telemetry signal."
   observable: "the five spw.valence color contributions"
-  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_code_vscode_palette"
+  sources: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_code_vscode_palette", ~"../../registries/sources/spw-design-studies.spw#src_lab_study_render" ]
   cites: [ "extensions/vscode-spw/package.json:249-253" ]
   reads: %[lab.palette.bone_light_contrast_ratio, lab.palette.wcag_aa_text_min_ratio]
   ^["limits"]{
@@ -127,14 +136,22 @@
  }
  #>spw_theory_valence_false_friend
  ^["reader_misreading"]{
-  #:claim #!settled
-  statement: "Readers from all twelve persona clusters read the five words as merit, status, sign, or alarm, and as binding keys the words degrade a whole surface to prose."
-  observable: "false friend rank 8 in the persona study; the valence_keys hazard in the contract"
-  sources: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_study_persona", ~"../../registries/sources/spw-design-studies.spw#src_lab_cut_contract" ]
+  #:claim #!emerging
+  statement: "In the persona study, simulated readers from all twelve persona clusters read the five words as merit, status, sign, or alarm."
+  observable: "false friend rank 8 in the persona study"
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_study_persona"
   ^["limits"]{
-   holds: "simulated readers in a persona study"
+   holds: "simulated readers in one persona study"
    fails: "no live reader has been observed; the misreading rates are not measured"
   }
+ }
+ #>spw_theory_valence_key_hazard
+ ^["valence_key_hazard"]{
+  #:claim #!settled
+  statement: "Written as binding keys, the five valence words degrade a whole surface to prose, so the cut contract lists them as a hazard."
+  observable: "the valence_keys hazard in the contract"
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_cut_contract"
+  label: "a-cut"
  }
  #>spw_theory_valence_raw_reading
  ^["raw_emotional_charge"]{

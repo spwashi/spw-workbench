@@ -7,7 +7,7 @@
 #:domain #!spw
 #:form #!probe_battery
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!boon
 
 ^"emit"{
@@ -31,10 +31,15 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
  }
  corrections: #[
   "the sketch grid looked like a published standard; it is a made-up teaching grid and says so",
-  "the sketch treated every hole as a prediction; edge holes are invitations, and a hole in a closed catalog marks missing coverage"
+  "the sketch treated every hole as a prediction; edge holes are invitations, and a hole in a closed catalog marks missing coverage",
+  "the tool frame listed the Wildcard builder as implemented without a line; it now quotes patterns.ts at 1aa1dc23 and cites the 2026-10-03 bench runs for the grid parse"
  ]
 }
 
@@ -53,9 +58,9 @@
 ^["tool"]{
  status: #proposed
  verb: "a hole selector and a two-axis neighbour census, perhaps spw select --selector hole; not yet a selector"
- implemented: #[ "parse in packages/spw-seed emits a Wildcard node for each underscore, so a census can read holes from the tree" ]
+ implemented: #[ "packages/spw-seed/src/grammar/patterns.ts:145-149 builds a Wildcard node for each underscore, so a census can read holes from the tree" ]
  observed: "spw select reports wildcard as an unknown selector at 1aa1dc23"
- sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_parse_runs", ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_cli" ]
+ sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_grammar", ~"../../registries/sources/spw-contraptions.spw#src_contrap_bench_runs", ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_cli" ]
 }
 
 ^["parameters"]{

@@ -1,0 +1,193 @@
+# Fixity Walker
+#
+# Recompute SHA-256 digests for the raw shelf, write each check as a dated event, and count the links from a claim to a primary observation; receipts are read as fixity events that lack a digest.
+
+#>spw_lab_fixity_walker
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!practitioner
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Fixity Walker"
+ ~#claim: "Recomputing digests turns provenance into a check: every raw manifest row still matches its recorded SHA-256, while no inspection receipt in the cut records a digest of what it inspected."
+ ~#proof: "SHA-256 as FIPS 180-4 specifies it, recomputed for every manifest row on 2026-10-03; fixity as an object property and the fixity check as an event follow PREMIS 3.0."
+ ~#door: "Recompute one manifest row yourself, then ask what a receipt would need to carry to say the same of its surface."
+ ~#audience: "archivists, digital preservation staff, engineers, and Spw authors who write receipts"
+ continuity: "Fixity Walker | into a check"
+ cold_open: "A recomputed fingerprint turns a provenance note into a check, and the cut can run that check on its own shelf today."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new", "persona study contraption_catalog[14], references/studies/persona-synthesis.json", "sketch references/spw-branch/seeds/contraptions/fixity-walker.spw" ]
+ method: #authored
+ evidence: #[
+  "a scratch script read every sha256 row of provenance/manifest.spw and recomputed it from git show at 651b535b and from the working tree on 2026-10-03",
+  "a second scratch pass counted receipt frames across the cut on 2026-10-03 and searched them for a digest field"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+ }
+ corrections: #[
+  "the sketch recorded a failed check on a staged water file; that staging no longer exists, so the event here is a check actually run on the manifest",
+  "the persona study read spw cite as a digest; it points at form bytecode, not at the bytes of a file",
+  "the drill step said git show 229aedcf followed by the path, which prints a patch rather than the file; it now uses the commit:PATH form the tool frame gives, under which all 208 rows match"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../provenance/manifest.spw#provenance_manifest_pin" ]
+ see: [ ~"./coupling-map.spw#spw_lab_coupling_map", ~"../inspection-and-ir.spw#spw_inspection_and_ir" ]
+}
+
+^["concepts"]{
+ primary: [ #fixity, #provenance ]
+ transfers: [ #dated_receipt, #reflexive_mirror ]
+ tensions: [ #silent_failure ]
+}
+
+^["tool"]{
+ status: #proposed
+ verb: "a fixity pass that would recompute manifest digests, append one fixity-check event per run, and walk claims to primary sources; not yet a command"
+ not_this: #[
+  "spw cite points at form bytecode for a card receipt, not at a digest of file bytes",
+  "spw delta compares two cuts and can bank a patch receipt; it records change, not fixity"
+ ]
+ cites: [ "packages/spw-cli/src/cite.ts:1-12", "packages/spw-cli/src/commands.ts:225-229,299-303" ]
+ run_today: "git show 229aedcf:PATH piped into shasum -a 256, compared by eye with the manifest row for PATH"
+ sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_cite", ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_cli" ]
+}
+
+#>spw_lab_fixity_walker_shape
+^["parameters"]{
+ object: "the thing whose bytes are fixed; fixity sits on it as algorithm, digest, and originator"
+ event: "a fixity check is a separate event with a date, an agent, an outcome, and a link to its object"
+ hop: "one link from a claim to the registry source it binds; a source of kind primary ends the walk"
+ algorithm: "SHA-256"
+}
+
+^["world"]{
+ #>spw_lab_fixity_walker_sha
+ ^["sha_256"]{
+  #:claim #!settled
+  statement: "FIPS 180-4 specifies SHA-256, a hash with a 256-bit digest for which finding two different messages with the same digest is computationally infeasible."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_fips_180_4"
+ }
+ #>spw_lab_fixity_walker_premis
+ ^["premis"]{
+  #:claim #!settled
+  statement: "PREMIS 3.0 records fixity as a property of an object, with digest algorithm, digest value, and originator, and records each fixity check as a separate event with its own outcome."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_premis_2015"
+ }
+ #>spw_lab_fixity_walker_ndsa
+ ^["levels"]{
+  #:claim #!settled
+  statement: "The NDSA Levels of Digital Preservation, version 2.0, name integrity, including fixity checking, as one of five functional areas a program can grow through."
+  source: ~"../../registries/sources/provenance-and-reference.spw#src_prov_ndsa_2019"
+ }
+}
+
+#>spw_lab_fixity_walker_shelf
+^["shelf_check"]{
+ #:claim #!settled
+ statement: "On 2026-10-03 every raw manifest row recomputed to the SHA-256 recorded for it, both at commit 651b535b and in the working tree."
+ reads: %[prov.raw.file_count]
+ source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_bench_runs"
+}
+
+^["events"]{
+ #>spw_lab_fixity_walker_event
+ ^["check_2026_10_03"]{
+  event_type: "fixity check"
+  at: "2026-10-03"
+  agent: "claude-opus-5.5 writer, scratch script"
+  object: ~"../../provenance/manifest.spw#provenance_manifest_pin"
+  result: "pass: 208 of 208 digests match"
+ }
+ chain: << recorded ; recomputed ; compared >>
+}
+
+#>spw_lab_fixity_walker_hops
+^["hops"]{
+ #:claim #!settled
+ statement: "Every claim on the water surface reaches its registry source in one hop, and one of the ten works it cites carries kind primary, the 1855 cholera report."
+ source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_bench_runs"
+ see: [ ~"../../physical/materials/water.spw#materials_water_sanitation" ]
+ problem: "the kind field mixes genre, such as book or article, with role, such as primary, so a walker cannot yet tell a primary handbook table from a secondary history"
+}
+
+^["battery"]{
+ #>spw_lab_fixity_walker_row
+ ^["recompute_a_row"]{
+  !probe{ "pick one manifest row, recompute its digest from commit 229aedcf, and compare it with the row" =id[p_contrap_fixity_row] =kind[calc] }
+  predict: ?{ "will the digest match" } ~<guess>
+  expect: "it matches, as every row did on 2026-10-03; a mismatch would mean the raw file changed and needs a new event"
+  shows: ~"./fixity-walker.spw#spw_lab_fixity_walker_shelf"
+ }
+ #>spw_lab_fixity_walker_drill
+ ^["drift_drill"]{
+  !probe{ "copy one surface to scratch, record its digest, change one character, and recompute" =id[p_contrap_fixity_drill] =kind[calc] }
+  expect: "the two digests share no visible pattern, and a receipt written before the edit still reads pass"
+  shows: ~"./fixity-walker.spw#spw_lab_fixity_walker_receipts"
+ }
+ #>spw_lab_fixity_walker_walk
+ ^["walk_to_primary"]{
+  !probe{ "walk each claim of one surface to its source and record the kind found at the end" =id[p_contrap_fixity_walk] =kind[census] }
+  expect: "one hop each on the water surface; the walk stops at the kind tag, which cannot yet say whether a source is primary for that claim"
+  shows: ~"./fixity-walker.spw#spw_lab_fixity_walker_hops"
+ }
+}
+
+#>spw_lab_fixity_walker_mirror
+^["language_mirror"]{
+ #>spw_lab_fixity_walker_receipts
+ ^["receipts_without_digests"]{
+  #:claim #!settled
+  statement: "Cut receipts already have the PREMIS event shape of type, date, agent, and outcome, but none counted on 2026-10-03 names a digest of the bytes it inspected."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_bench_runs"
+  observed: "about eighteen hundred receipt frames across nearly four hundred surfaces, with no sha256 or digest field in any"
+ }
+ question: "What would let a reader tell that a surface changed after its last passing receipt?"
+ proposal: "a digest field on each receipt, recomputed by the gate, so a stale receipt shows as a failed fixity event instead of a quiet pass"
+ standing: "a-cut: receipts are this cut contract; owner hold: whether receipts carry digests is the owner call"
+ contract: ~"../../contract.spw#cut_contract"
+ !probe{ "add a digest to the receipts of one surface, edit it, and count how many receipts the recompute flags" =id[p_contrap_fixity_mirror] =kind[build] }
+}
+
+^["limits"]{
+ holds: "whether bytes changed since a digest was recorded, and how many links lie between a claim and a source"
+ fails: "a matching digest says the bytes are unchanged, not that they are true; any whitespace edit changes a digest; and primary means a witness document to a historian but a first report of a measurement to a scientist"
+}
+
+^["try"]{
+ #>spw_lab_fixity_walker_try
+ ^["fingerprint_a_file"]{
+  materials: [ "a terminal at the repository root", "the raw shelf manifest", "a scratch folder outside the cut" ]
+  steps: << "choose a manifest row and copy its path" ; "run git show 229aedcf:PATH with a colon and no space, piped into shasum -a 256" ; "compare the digest with the row" ; "copy the file to scratch, change one letter, and hash it again" >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "edit only the scratch copy; never edit a raw file to test drift"
+  shows: ~"./fixity-walker.spw#spw_lab_fixity_walker_shelf"
+ }
+}
+
+#>spw_lab_fixity_walker_q
+?["Which claims in the cut sit furthest from a primary observation?"]{
+ #:depth #!historical ~#lens(curated collection)
+ #:claim #!speculative
+ ~#hypothesis: "Claims on synthesis surfaces should sit more hops from a primary source than claims on field guides, because syntheses lean on handbooks and reviews that cite other reviews."
+ !probe{ "split kind into role, level, and genre for one registry, then walk every claim that binds it and compare hop counts by surface form" =id[p_contrap_fixity_q] =kind[census] }
+ $%[graph.path_refs, prov.raw.file_count]
+ ~"./fixity-walker.spw#spw_lab_fixity_walker_hops" ~#neighbor(nearest)
+ breaks: "hop count measures citation distance, not error; a handbook table can sit closer to measurement than a primary narrative does"
+}

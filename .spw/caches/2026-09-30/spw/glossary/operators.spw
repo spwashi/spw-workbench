@@ -7,7 +7,7 @@
 #:domain #!spw
 #:form #!glossary
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -36,11 +36,16 @@
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #skim, outcome: #pass }
   ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #pass }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the persona amendment taught # as resonance, & as confluence, and ^ as integration; canon names them vibration, subject, and ascension, so each row leads with the canon name and lists the rest as aliases",
   "the persona limits said the spaced bias form yields no edge; at 1aa1dc23 readBias reads = [depth]{ deep } and =[depth]{ deep } as the same edge",
-  "a raw language-features cache read = as a constraint and skipped # and .; the rows cover all thirteen marks and read = as configuration and bias"
+  "a raw language-features cache read = as a constraint and skipped # and .; the rows cover all thirteen marks and read = as configuration and bias",
+  "the question row cited geometry-inspect.ts:57 for the probe alias, which is the bang row; the probe alias sits at :58"
  ]
 }
 
@@ -56,21 +61,12 @@
  statement: "Across five naming tables, seven marks keep one name and six vary; # varies most, named resonance, vibration, and annotation."
  reads: %[gloss.naming.tables_n, gloss.naming.hash_label_bits]
  source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_naming_tables"
- cites: [
-  "docs/theory/spw/operators.spw:28-42",
-  "packages/spw-runtime/src/state/type-affinities.ts:18-32",
-  ".spw/registries/register-bank.spw:11-24",
-  "packages/spw-seed/src/canonical/geometry-inspect.ts:55-68",
-  "packages/spw-seed/src/canonical/form-ladders.ts:304-547"
- ]
+ cites: [ "docs/theory/spw/operators.spw:28-42", "packages/spw-runtime/src/state/type-affinities.ts:18-32", ".spw/registries/register-bank.spw:11-24", "packages/spw-seed/src/canonical/geometry-inspect.ts:55-68", "packages/spw-seed/src/canonical/form-ladders.ts:304-547" ]
  collision: "subject names & in operators.spw:35 and names . in type-affinities.ts:27 and register-bank.spw:21"
  status_discipline: "canon tags each behavior as token, onf, runtime, proposed, or interpretive at operators.spw:18-24"
 }
 
-^["keyboard_note"]{
- basis: "interpretive"
- scope: "positions are for the US ANSI layout as printed on its keycaps; other layouts move marks behind AltGr, Option, or dead keys, so check the keyboard viewer of your system"
-}
+^["keyboard_note"]{ basis: "interpretive", scope: "positions are for the US ANSI layout as printed on its keycaps; other layouts move marks behind AltGr, Option, or dead keys, so check the keyboard viewer of your system" }
 
 ^["marks"]{
  #>spw_gloss_op_tilde
@@ -80,7 +76,6 @@
   source: ~"../../registries/sources/spw-design-studies.spw#src_lab_canon_operators"
   cites: [ "docs/theory/spw/operators.spw:29", "docs/theory/spw/operators.spw:57" ]
   names: "potential in every table; geometry-inspect.ts:59 adds path"
-  canon_status: #runtime
   keyboard: "Shift with the key left of 1" ~#spoken(tilde)
   ^["analogs"]{
    physics: .{ analog: "a potential field", observable: "a deferred wrapper", breaks: "no field, gradient, or force, and nothing sums amplitudes" }
@@ -95,7 +90,6 @@
   cites: [ "docs/theory/spw/operators.spw:30,47", "packages/spw-seed/src/lexer/matchers/comments.ts:58-68" ]
   names: "Resonance in three tables, annotation / resonance in geometry-inspect.ts:63; vibration, the canon name, is the outlier"
   reads: %[gloss.naming.hash_label_bits]
-  canon_status: #runtime
   keyboard: "Shift with 3; UK PC layouts give # its own key beside Enter" ~#spoken(hash)
   ^["analogs"]{
    design: .{ analog: "a CSS id or hex colour", observable: "a tag operation", breaks: "a tag is not unique, and the parser never sees a colour" }
@@ -110,7 +104,6 @@
   cites: [ "docs/theory/spw/operators.spw:31,53,120" ]
   names: "Ground in form-ladders.ts:427 and geometry-inspect.ts:64; Subject in type-affinities.ts:27 and register-bank.spw:21"
   reads: %[gloss.naming.dot_label_bits]
-  canon_status: #runtime
   keyboard: "the period key, unshifted" ~#spoken(dot)
   ^["analogs"]{
    design: .{ analog: "a CSS class rule", observable: "a labeled facet with a body", breaks: "no selection, cascade, or specificity" }
@@ -126,7 +119,6 @@
   cites: [ "docs/theory/spw/operators.spw:35,49", "docs/theory/spw/operator-atlas.spw:41" ]
   names: "Confluence in four tables; subject, the canon name, is the outlier"
   reads: %[gloss.naming.amp_label_bits]
-  canon_status: #runtime
   keyboard: "Shift with 7" ~#spoken(and)
   ^["analogs"]{
    c: .{ analog: "logical and", observable: "two & operations, the second taking the next word as a modifier", breaks: "no boolean is computed" }
@@ -141,7 +133,6 @@
   cites: [ "docs/theory/spw/operators.spw:37,56", "packages/spw-runtime/src/state/type-affinities.ts:20" ]
   names: "Integration in three tables, integrate / frame in geometry-inspect.ts:56; ascension, the canon name, is the outlier"
   reads: %[gloss.naming.caret_label_bits]
-  canon_status: #runtime
   keyboard: "Shift with 6; a dead key on many European layouts" ~#spoken(caret)
   ^["analogs"]{
    math: .{ analog: "an exponent", observable: "x^2 splits into x, a bare ^, and 2", breaks: "no arithmetic is done" }
@@ -156,7 +147,6 @@
   cites: [ "docs/theory/spw/operators.spw:38,52", "packages/spw-seed/src/canonical/geometry-inspect.ts:66" ]
   names: "Substrate in four tables; select / address in geometry-inspect.ts:66 is the outlier"
   reads: %[gloss.naming.dollar_label_bits]
-  canon_status: #runtime
   keyboard: "Shift with 4" ~#spoken(dollar)
   ^["analogs"]{
    c: .{ analog: "a shell variable", observable: "a $ operation named HOME", breaks: "no environment is read" }
@@ -171,7 +161,6 @@
   cites: [ "docs/theory/spw/operators.spw:40,50", "packages/spw-seed/src/canonical/read-bias.ts:102-117" ]
   names: "Configuration in form-ladders.ts:527, config / bias in geometry-inspect.ts:61; Set in type-affinities.ts:24 and register-bank.spw:19"
   reads: %[gloss.naming.equals_label_bits]
-  canon_status: #runtime
   keyboard: "the key left of Backspace, unshifted" ~#spoken(equals)
   ^["analogs"]{
    c: .{ analog: "assignment", observable: "k = v leaves three flat siblings", breaks: "Spw binds with a colon" }
@@ -186,7 +175,6 @@
   source: ~"../../registries/sources/spw-design-studies.spw#src_lab_canon_operators"
   cites: [ "docs/theory/spw/operators.spw:36,48" ]
   names: "perspective in every table; geometry-inspect.ts:62 adds root"
-  canon_status: #runtime
   keyboard: "Shift with 2; UK PC layouts move it to Shift with the quote key" ~#spoken(at)
   ^["analogs"]{
    creators: .{ analog: "a mention", observable: "a Reference node", breaks: "nobody is notified, and the handle enters the tree" }
@@ -199,8 +187,7 @@
   statement: "Canon reads ? as wonder; the runtime returns the second argument, or true, when the first is truthy, and a wonder block opens with ?[ ]."
   source: ~"../../registries/sources/spw-design-studies.spw#src_lab_canon_operators"
   cites: [ "docs/theory/spw/operators.spw:32,54" ]
-  names: "wonder in every table; geometry-inspect.ts:57 adds probe"
-  canon_status: #runtime
+  names: "wonder in every table; geometry-inspect.ts:58 adds probe"
   keyboard: "Shift with the slash key" ~#spoken(question)
   ^["analogs"]{
    stagecraft: .{ analog: "a standby call", observable: "a ? operation in order", breaks: "nothing waits for a reply" }
@@ -214,7 +201,6 @@
   source: ~"../../registries/sources/spw-design-studies.spw#src_lab_canon_operators"
   cites: [ "docs/theory/spw/operators.spw:33,55" ]
   names: "action in every table; geometry-inspect.ts:57 adds inject"
-  canon_status: #runtime
   keyboard: "Shift with 1" ~#spoken(bang)
   ^["analogs"]{
    stagecraft: .{ analog: "a GO", observable: "the first argument returned", breaks: "nothing fires" }
@@ -228,7 +214,6 @@
   source: ~"../../registries/sources/spw-design-studies.spw#src_lab_canon_operators"
   cites: [ "docs/theory/spw/operators.spw:34,58" ]
   names: "value in every table; geometry-inspect.ts:60 adds collapse"
-  canon_status: #runtime
   keyboard: "Shift with 8" ~#spoken(star)
   ^["analogs"]{
    physics: .{ analog: "wavefunction collapse", observable: "a write and a return", breaks: "no basis, probabilities, or Born rule" }
@@ -242,7 +227,6 @@
   source: ~"../../registries/sources/spw-design-studies.spw#src_lab_canon_operators"
   cites: [ "docs/theory/spw/operators.spw:39,51", ".spw/registries/register-bank.spw:31" ]
   names: "measure in every table"
-  canon_status: #runtime
   keyboard: "Shift with 5" ~#spoken(percent)
   ^["analogs"]{
    math: .{ analog: "a measure", observable: "a scalar in zero to one", breaks: "no sigma-additivity, so it sits closer to a membership grade" }
@@ -257,7 +241,6 @@
   source: ~"../../registries/sources/spw-design-studies.spw#src_lab_canon_operators"
   cites: [ "docs/theory/spw/operators.spw:41,59", "packages/spw-runtime/src/state/type-affinities.ts:31" ]
   names: "coupling in the three tables that list it; register-bank.spw and geometry-inspect.ts omit <>"
-  canon_status: #runtime
   keyboard: "Shift with comma, then Shift with period" ~#spoken(couple)
   ^["analogs"]{
    chem_eng: .{ analog: "an equilibrium double arrow", observable: "<=> degrades the surface", breaks: "an equilibrium holds between whole sides" }
@@ -265,6 +248,7 @@
   }
   credit: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_kessler_1963"
  }
+ canon_status: #runtime, status_cite: "docs/theory/spw/operators.spw:47-59"
 }
 
 ^["compounds"]{
@@ -287,7 +271,7 @@
   #:claim #!settled
   statement: "=> lexes as an arrow that separates steps; in k: v => w only v binds to k, and w stands as its own step."
   source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes"
-  cites: [ "packages/spw-seed/src/types/token.ts" ]
+  cites: [ "packages/spw-seed/src/types/token.ts:44" ]
  }
 }
 

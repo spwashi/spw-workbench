@@ -16,7 +16,7 @@
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
  method: #authored
- evidence: #[ "raw counts computed with git show at commit 229aedcf and sha256 per path", "migration counts tallied from the plan v2 migration rows", "gap cells counted from the plan v2 tree on 2026-10-02 with the form mapping stated in the gap table" ]
+ evidence: #[ "raw counts computed with git show at commit 229aedcf and sha256 per path", "migration counts tallied from the plan v2 migration rows", "gap cells counted from the plan v2 tree on 2026-10-02 with the form mapping stated in the gap table", "effect lines recounted 2026-10-03 by grepping wonder hypothesis lines in the 152 round-one paths at 229aedcf and reading each match; three lines stating an effect in days, decibels, or seconds are left out, and abs 3 covers borderline premise and device-performance lines" ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
@@ -34,6 +34,11 @@
    note: "Encyclopedie volume cells now cite the ARTFL project for the folio; Darnton covers the later quarto and octavo editions"
   }
   ^["r8"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r9"]{
+   event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected
+   note: "effect-line recount added so the settled scorecard claim no longer rests on a verify cell alone; rerun by hand on 2026-10-03, which moved it from 49 to 52"
+  }
+  ^["r10"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  status_legend: "settled cells were counted or read from the linked source; verify cells hold a reported value that must be checked against the source table before use"
 }
@@ -189,10 +194,18 @@
  %prov.review.r1_invented_effect_count{
   value: 49
   unit: "claim"
-  at: "invented effect sizes in round-one wonder hypotheses; the scorecard writes about 49, a reviewer estimate, not a recount"
+  at: "invented effect sizes in round-one wonder hypotheses; the scorecard writes about 49, a reviewer estimate; the line recount below is the checked figure"
   abs: 5
   src: ~"../sources/provenance-and-reference.spw#src_prov_scorecard"
   status: #verify
+ }
+ %prov.review.r1_effect_line_recount{
+  value: 52
+  unit: "line"
+  at: "round-one wonder hypothesis lines at 229aedcf stating a percentage, multiplier, fold change, or order of magnitude as an outcome; of 168 lines, 62 carry such a figure and 10 of those are a constant, bound, theorem, hypothetical, premise, lens spec, or pattern artifact"
+  abs: 3
+  src: ~"../sources/provenance-and-reference.spw#src_prov_raw_shelf"
+  status: #settled
  }
  %prov.review.r2_file_count{
   value: 52

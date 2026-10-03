@@ -7,7 +7,7 @@
 #:domain #!spw
 #:form #!field_guide
 #:level #!advanced
-#:review #!spot_checked
+#:review #!adversarial_checked
 #:valence #!bonk
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -29,16 +29,27 @@
  evidence: #[
   ".agents/plans/caches-cut-2026-09-30/references/studies/tokens-synthesis.md sections 1, 2, and 6",
   ".agents/plans/caches-cut-2026-09-30/references/studies/render-synthesis.md sections 1.1 and 5.3",
-  "lexer probes re-run by the writer at 1aa1dc23 on 2026-10-02"
+  "lexer probes re-run by the writer at 1aa1dc23 on 2026-10-02",
+  "hash-prose counts rerun over the canon .spw files at 229aedcf and 651b535b on 2026-10-03, with the study census script reading each blob from git"
  ]
  ^["receipts"]{
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the study draft used domain meta and anchor spw_tokens_roles; this surface uses domain spw and the planned anchor spw_tokens_and_roles",
-  "role stream, RoleSpan, and the wire legend are proposals with status proposed; no canonical/roles.ts exists at 1aa1dc23"
+  "role stream, RoleSpan, and the wire legend are proposals with status proposed; no canonical/roles.ts exists at 1aa1dc23",
+  "since 6690d686 the LSP paints an apposition body as one string; the apposition row now says so and keeps the earlier state as superseded",
+  "the LSP legend moved to semantic-tokens.ts:101-104 at 651b535b with the same types and modifiers",
+  "the inline hash row was settled while its two counts were unchecked study cells; the counts were rerun with the seed lexer and LSP scanner on 2026-10-03 and matched"
  ]
 }
 
@@ -93,14 +104,21 @@
   source: ~"../registries/sources/spw-branch.spw#src_spw_study_tokens"
   reads: %[spw.corpus.hash_prose_canon, spw.corpus.hash_prose_painted_canon]
   cites: [ "packages/spw-seed/src/lexer/matchers/comments.ts:50-58" ]
-  as_of: "229aedcf, per the tokens study"
+  as_of: "229aedcf, per the tokens study; rerun on 2026-10-03 with the same counts at 229aedcf and 651b535b"
  }
  #>spw_tokens_div_apposition
  ^["apposition_body"]{
   #:claim #!settled
-  statement: "An apposition body is one raw token to the matching paren, yet the TextMate and LSP layers paint digits and percent signs inside it."
-  source: ~"../registries/sources/spw-branch.spw#src_spw_study_tokens"
-  cites: [ "docs/theory/spw/apposition.spw:44" ]
+  statement: "An apposition body is one raw token to the matching paren; since 6690d686 the LSP paints it as one string, while TextMate has no apposition rule and still paints digits inside."
+  source: ~"../registries/sources/spw-branch.spw#src_spw_lsp"
+  sources: [ ~"../registries/sources/spw-branch.spw#src_spw_vscode" ]
+  cites: [ "docs/theory/spw/apposition.spw:44", "packages/spw-lsp/src/handlers/semantic-tokens.ts:206-216", "extensions/vscode-spw/syntaxes/spw.tmLanguage.json:221-222" ]
+  as_of: "651b535b, 2026-10-03"
+  ^["before_6690d686"]{
+   #:claim #!superseded
+   statement: "At 229aedcf, per the tokens study, the TextMate and LSP layers both painted digits and percent signs inside an apposition body."
+   source: ~"../registries/sources/spw-branch.spw#src_spw_study_tokens"
+  }
  }
  #>spw_tokens_div_valence
  ^["bare_valence"]{
@@ -138,7 +156,7 @@
   statement: "The LSP legend declares a small fixed set of standard types and modifiers, built by a line-regex scanner that imports only types from the seed."
   source: ~"../registries/sources/spw-branch.spw#src_spw_lsp"
   reads: %[spw.lsp.legend_types, spw.lsp.legend_modifiers]
-  cites: [ "packages/spw-lsp/src/handlers/semantic-tokens.ts:75-78" ]
+  cites: [ "packages/spw-lsp/src/handlers/semantic-tokens.ts:101-104" ]
  }
  #>spw_tokens_rolespan
  ^["role_span"]{

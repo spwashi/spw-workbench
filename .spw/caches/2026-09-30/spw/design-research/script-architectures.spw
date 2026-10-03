@@ -7,7 +7,7 @@
 #:domain #!lang_design
 #:form #!registry
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
@@ -33,7 +33,18 @@
  ^["receipts"]{
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[
+  "the field guide row said the gate fails a non-speculative claim without a source; it also exempts interpretive claims, and each implemented row now quotes the gate lines behind it"
+ ]
+ note: "the r4 pass gave proposed tools a status binding and found the graph cycle claim unchanged by c79a096a"
 }
 
 ^["edges"]{
@@ -63,8 +74,9 @@
   form: "field_guide"
   stresses: "keystone frames with a claim status, a source, reads of registry cells, and limits"
   exemplars: [ ~"../../physical/materials/water.spw#materials_water" ]
-  checks: "sourced surfaces fail a non-speculative claim without a source; every handle must resolve"
+  checks: "sourced surfaces fail a claim other than speculative or interpretive with no source link in its frame; every handle must resolve"
   checks_status: #implemented
+  cites: [ "scripts/analyzers/spw-cut-gate.ts:315-323", "scripts/analyzers/spw-cut-gate.ts:354-361" ]
   gap: "no tool compares the number in a statement with the cell it reads"
  }
  #>lang_design_arch_timeline
@@ -74,6 +86,7 @@
   exemplars: [ ~"../../physical/materials/fibers-and-textiles.spw#materials_fibers", ~"./feature-lineage.spw#lang_design_lineage" ]
   checks: "era values are checked in the header stack only"
   checks_status: #implemented
+  cites: [ "scripts/analyzers/spw-cut-gate.ts:284", "scripts/analyzers/spw-cut-gate.ts:289" ]
   gap: "no tool checks that rungs run in date order or that each rung date has a source"
  }
  #>lang_design_arch_dag
@@ -83,7 +96,9 @@
   exemplars: [ ~"../../formal/computing/curriculum-dag.spw#computing_curriculum_dag", ~"../contraptions/dag-walker.spw#spw_lab_dag_walker_arrows" ]
   checks: "spw graph runs cycle detection over every link between files"
   checks_status: #implemented
+  cites: [ "packages/spw-seed/src/math/corpus.ts:176-181" ]
   gap: "a needs cycle and two mutual see links look alike to that check; a typed walker is proposed"
+  walker_status: #proposed
  }
  #>lang_design_arch_matrix
  ^["comparison_matrix"]{
@@ -100,6 +115,7 @@
   exemplars: [ ~"../../making/streaming/chat-torrent-pipeline.spw#streaming_chat_torrent_transitions", ~"../theory/epistemic-status.spw#spw_theory_status_transitions", ~"../../making/film/production-state-machine.spw#film_production_states" ]
   living: ~"../../living/development-and-ecology/forms-for-scripts.spw#development_ecology_script_forms_meta_map"
   checks: "none; the gate reads no ?match arms"
+  checks_status: #proposed
   gap: "a next that names no state passes; the state walker contraption proposes a check"
  }
  #>lang_design_arch_cadence
@@ -110,7 +126,9 @@
   living: ~"../../living/development-and-ecology/forms-for-scripts.spw#development_ecology_script_forms_cycle_map"
   checks: "a schedule is required only for steps inside an arc frame"
   checks_status: #implemented
+  cites: [ "scripts/analyzers/spw-cut-voice.ts:102" ]
   gap: "no tool runs a schedule or counts the orders it allows; the order counter is proposed"
+  counter_status: #proposed
  }
  #>lang_design_arch_ledger
  ^["claim_ledger"]{
@@ -120,6 +138,7 @@
   living: ~"../../living/development-and-ecology/forms-for-scripts.spw#development_ecology_script_forms_succ_map"
   checks: "claim values come from the vocabulary, and sourced surfaces need source links"
   checks_status: #implemented
+  cites: [ "scripts/analyzers/spw-cut-gate.ts:305", "scripts/analyzers/spw-cut-gate.ts:315-323" ]
   gap: "no tool checks that a refuted or contested claim keeps a counter in view"
  }
  #>lang_design_arch_glossary
@@ -129,6 +148,7 @@
   exemplars: [ ~"../../making/making-glossary.spw#making_glossary", ~"../glossary/operators.spw#spw_gloss_operators" ]
   checks: "anchors are unique across the cut"
   checks_status: #implemented
+  cites: [ "scripts/analyzers/spw-cut-gate.ts:203" ]
   gap: "no tool finds orphan terms or cycles among broader and narrower links"
  }
  #>lang_design_arch_dossier
@@ -147,6 +167,7 @@
   living: ~"../../living/development-and-ecology/forms-for-scripts.spw#development_ecology_script_forms_homeo_map"
   checks: "probe ids are unique, and kinds, depths, and lenses come from the vocabulary"
   checks_status: #implemented
+  cites: [ "scripts/analyzers/spw-cut-gate.ts:228", "scripts/analyzers/spw-cut-gate.ts:304-306", "scripts/analyzers/spw-cut-gate.ts:333-335" ]
   gap: "no tool records a probe result against its id"
  }
  #>lang_design_arch_registry
@@ -157,6 +178,7 @@
   living: ~"../../living/development-and-ecology/forms-for-scripts.spw#development_ecology_script_forms_sym_map"
   checks: "a handle is defined once and every read resolves to a cell"
   checks_status: #implemented
+  cites: [ "scripts/analyzers/spw-cut-gate.ts:222-224", "scripts/analyzers/spw-cut-gate.ts:360" ]
   gap: "no tool checks a cell against a stated derivation or tolerance"
  }
  #>lang_design_arch_calendar
@@ -182,6 +204,7 @@
   exemplars: [ ~"../../season/season-arc.spw#season_arc" ]
   checks: "required keys, a clock from the vocabulary that reuses no system clock, and scheduled steps"
   checks_status: #implemented
+  cites: [ "scripts/analyzers/spw-cut-voice.ts:93-104" ]
   gap: "a missing feeds exit is only warned"
  }
  #>lang_design_arch_trail

@@ -13,7 +13,7 @@
 
 ^"emit"{
  ~#title: "Workbench History"
- ~#claim: "The repository's own record, from its first commit on 2026-01-08 to this cut, is evidence a reader can check like any other case."
+ ~#claim: "The repository's own record, from its earliest commit, authored on 2026-01-08, to this cut, is evidence a reader can check like any other case."
  ~#proof: "Leaves cite git history at commit 1aa1dc23, plan cards, hooks, and the cut's own provenance by path."
  ~#door: "Start with the episode timeline, then pick the arc closest to your work."
  ~#audience: "newcomers to the workbench and readers comparing internal cases with outside ones"
@@ -22,7 +22,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -31,7 +31,13 @@
   ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[ "the scale claim spoke of one root commit; the 514 commits descend from three roots joined by subtree imports, and main's own first-parent line starts at wp-0 on 2026-02-26" ]
  privacy: "people appear as roles, the owner and an outside contributor; no episode body is quoted and no local path appears"
 }
 
@@ -76,9 +82,12 @@
  #>workbench_history_index_scale
  ^["scale"]{
   #:claim #!settled
-  statement: "At commit 1aa1dc23 the history holds 514 commits from a root commit authored on 2026-01-08."
+  statement: "At commit 1aa1dc23 the history holds 514 commits from three root commits joined by subtree imports on 2026-02-26; the earliest, a1e509c6, was authored on 2026-01-08."
   reads: %[hosts.history.commit_count, hosts.history.first_commit_date]
   source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_git_log"
+  roots: "a1e509c6 in the imported docs history, 0b85fb08 in the writerside history, and 9fe3b73c, the wp-0 waypoint"
+  first_parent: "the first-parent line of main starts at wp-0, 9fe3b73c, on 2026-02-26; the January commits arrive through the docs import 0e45d0a4"
+  cites: [ "git rev-list --max-parents=0 1aa1dc23", "git rev-list --first-parent 1aa1dc23" ]
  }
  #>workbench_history_index_equal_footing
  ^["equal_footing"]{

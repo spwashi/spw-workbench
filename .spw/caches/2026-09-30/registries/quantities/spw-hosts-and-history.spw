@@ -1,13 +1,13 @@
 # Quantities: Spw Hosts and History
 #
-# Counted cells for the editor hosts and the workbench history surfaces. Each cell was recounted from the repository at commit 1aa1dc23 or from a named document, and a verify cell is a question, not a fact.
+# Counted cells for the editor hosts and the workbench history surfaces. Each cell was recounted from the repository at a named commit or from a named document.
 
 #>q_hosts_registry
 #:layer #!reference
 #:domain #!registry
 #:form #!registry
 #:level #!mixed
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"provenance"{
@@ -21,11 +21,27 @@
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r7"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r8"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r9"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+   note: "cells recounted by the checker matched their at strings; the gate warns that the file passes 300 lines"
+  }
+  ^["r10"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
- commit: "1aa1dc23, the tip of main on 2026-10-02"
- method_note: "counts come from reading the cited file or from git log on that commit; the cut census cells are a snapshot taken while wave 3 was still writing"
- recount: "the cut census cells held a 2026-10-02 snapshot (268 files; care 135, 390, 115, 277, 219) and were recounted at 02:45 on 2026-10-03; a recount at the close of wave 3 should supersede them"
- status_legend: "settled cells were counted from the linked source; verify cells hold a value that must be rechecked before use"
+ method_note: "counts come from the cited file or git log at 1aa1dc23, the tip of main on 2026-10-02; the cut cells count the tree of 651b535b, the commit that shelved waves 1 through 3"
+ recount: "the cut cells held snapshots of 2026-10-02 (268 files; care 135, 390, 115, 277, 219) and of 02:45 on 2026-10-03 (383; 154, 635, 219, 430, 285); 651b535b supersedes both under the same handles, and a recount when the resumed wave 3 closes should supersede it"
+ corrections: #[
+  "native_lsp_rename_min_ide read 2026.1 as a verify cell; the JetBrains table marks rename 2026.1.1, reread on 2026-10-03, so the cell is settled at that value",
+  "sigil_dot_count read 173; a recount under its own rule gives 174, corrected in place as a miscount",
+  "rewrite_stamped_commit_count and first_commit_date described a published rewrite and a single root; both at strings now name the docs import, and the handles keep their names"
+ ]
 }
 
 ^["families"]{
@@ -49,7 +65,7 @@
  cli: #[ canonical_command_count, compat_route_count, command_group_count, package_commit_count ]
  history: #[ commit_count, episode_commit_count, rewrite_stamped_commit_count, first_commit_date, sigil_amp_count, sigil_dot_count, commits_2026_01, commits_2026_02, commits_2026_03, commits_2026_04, commits_2026_07, commits_2026_08, commits_2026_09, vscode_commit_count, intellij_commit_count, neovim_commit_count, extension_commit_count ]
  plans: #[ card_count, archived_count, plan_map_coverage, lane_execution_count, lane_projection_count, lane_curriculum_count, curriculum_css_step_count, curriculum_svg_step_count, curriculum_logic_step_count ]
- cut: #[ census_file_count, care_glance_count, care_skim_count, care_read_count, care_audit_count, care_adversarial_count ]
+ cut: #[ census_file_count, care_glance_count, care_skim_count, care_read_count, care_audit_count, care_adversarial_count, fact_checked_file_count ]
 }
 
 #>q_hosts_vscode
@@ -119,8 +135,8 @@
   at: "first JetBrains release whose native LSP client paints semanticTokens/full", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_jetbrains_lsp_docs", status: #settled
  }
  %hosts.jb.native_lsp_rename_min_ide{
-  value: "2026.1", unit: "IDE version"
-  at: "first JetBrains release listing LSP rename refactoring in its feature table", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_jetbrains_lsp_docs", status: #verify
+  value: "2026.1.1", unit: "IDE version"
+  at: "rename refactoring in the 2026.1 section of the JetBrains feature table, read 2026-10-03", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_jetbrains_lsp_docs", status: #settled
  }
  %hosts.jb.action_count{
   value: 5, unit: "actions", abs: 0
@@ -188,18 +204,18 @@
  }
  %hosts.history.rewrite_stamped_commit_count{
   value: 28, unit: "commits", abs: 0
-  at: "commits authored 2026-01-08 to 2026-02-14 whose committer date is 2026-02-15", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
+  at: "commits authored 2026-01-08 to 2026-02-14 whose committer date is 2026-02-15, 34 with those authored that day; all reached main by the docs subtree import of 2026-02-26 and are not the published rewrite of 2026-03-26", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
  }
  %hosts.history.first_commit_date{
   value: "2026-01-08", unit: "author date"
-  at: "root commit a1e509c6", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
+  at: "earliest author date, a1e509c6, one of three root commits; main's first-parent line starts at 9fe3b73c on 2026-02-26", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
  }
  %hosts.history.sigil_amp_count{
   value: 178, unit: "commits", abs: 0
   at: "subjects whose prefix, after any waypoint or number label, is the integrate sigil then a bracket, git log at 1aa1dc23", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
  }
  %hosts.history.sigil_dot_count{
-  value: 173, unit: "commits", abs: 0
+  value: 174, unit: "commits", abs: 0
   at: "subjects whose prefix, after any waypoint or number label, is the documentation sigil then a bracket; seven more put a space between", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_git_log", status: #settled
  }
  %hosts.history.commits_2026_01{
@@ -291,27 +307,31 @@
 #>q_hosts_cut
 ^"cut"{
  %hosts.cut.census_file_count{
-  value: 383, unit: ".spw files", abs: 0
-  at: "census of .spw/caches/2026-09-30 at 02:45 on 2026-10-03, during wave 3", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_cut_census", status: #settled
+  value: 394, unit: ".spw files", abs: 0
+  at: "the cut tree at commit 651b535b, which shelved waves 1 through 3", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_cut_census", status: #settled
  }
  %hosts.cut.care_glance_count{
   value: 154, unit: "receipts", abs: 0
   at: "care glance, same census", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_cut_census", status: #settled
  }
  %hosts.cut.care_skim_count{
-  value: 635, unit: "receipts", abs: 0
+  value: 666, unit: "receipts", abs: 0
   at: "care skim, same census", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_cut_census", status: #settled
  }
  %hosts.cut.care_read_count{
-  value: 219, unit: "receipts", abs: 0
+  value: 223, unit: "receipts", abs: 0
   at: "care read, same census", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_cut_census", status: #settled
  }
  %hosts.cut.care_audit_count{
-  value: 430, unit: "receipts", abs: 0
+  value: 447, unit: "receipts", abs: 0
   at: "care audit, same census", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_cut_census", status: #settled
  }
  %hosts.cut.care_adversarial_count{
-  value: 285, unit: "receipts", abs: 0
+  value: 287, unit: "receipts", abs: 0
   at: "care adversarial, same census", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_cut_census", status: #settled
+ }
+ %hosts.cut.fact_checked_file_count{
+  value: 262, unit: ".spw files", abs: 0
+  at: "files with at least one fact_checked receipt, same census", src: ~"../sources/spw-hosts-and-history.spw#src_hosts_cut_census", status: #settled
  }
 }

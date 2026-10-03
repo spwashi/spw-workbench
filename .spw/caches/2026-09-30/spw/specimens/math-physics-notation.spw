@@ -7,12 +7,12 @@
 #:domain #!spw
 #:form #!probe_battery
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!honk
 
 ^"emit"{
  ~#title: "Math and Physics Notation Specimens"
- ~#claim: "Most math notation either splits silently or turns the whole surface into prose; a backtick phrase keeps a formula intact."
+ ~#claim: "Half the math rows split or restructure with no warning, a third fail only the cut gate, and two turn the surface into prose; a backtick phrase keeps a formula intact."
  ~#proof: "Each row was run through the parser at commit 1aa1dc23; the backtick row is the only formula that parses as one literal."
  ~#door: "Start with the caret row, then the backtick row that fixes it."
  ~#audience: "physics and mathematics students writing notes in Spw"
@@ -37,7 +37,17 @@
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #corrected
+  }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[
+  "the degree row wrote unit C, which is the SI symbol for the coulomb; the degree Celsius symbol is the degree sign and C, kept inside the quoted unit",
+  "the card said most math notation splits silently or turns to prose; of eighteen rows, nine split or restructure silently, six fail only the gate, two degrade, and one is clean"
+ ]
 }
 
 ^["edges"]{
@@ -53,10 +63,7 @@
  cites: [ "packages/spw-seed/src/canonical/fingerprint.ts:49-70", "scripts/analyzers/spw-cut-gate.ts:193-217" ]
 }
 
-^["fixture"]{
- status: #proposed
- runner: "no repository code replays these rows as regression fixtures at 1aa1dc23; the writer probe script was scratch"
-}
+^["fixture"]{ status: #proposed, runner: "no repository code replays these rows as regression fixtures at 1aa1dc23; the writer probe script was scratch" }
 
 ^["tex"]{
  #>spw_spec_math_physics_caret_line_end
@@ -135,8 +142,7 @@
  }
  #>spw_spec_math_physics_plus_minus_sign
  ^["plus_minus_sign"]{
-  habit: "g: 9.81 ± 0.01"
-  codepoints: "U+00B1"
+  habit: "g: 9.81 ± 0.01", codepoints: "U+00B1"
   verdict: #hidden_error, loudness: #gate, lexer_errors: 1
   signature: "Binding=1 Expression=3 Identifier=1 Literal=2 Seed=1 Sequence=1"
   observed: "the plus-minus sign is a lexer error, and 0.01 splits off as a sibling literal"
@@ -199,8 +205,7 @@
  }
  #>spw_spec_math_physics_greek_value
  ^["greek_value"]{
-  habit: "lambda: λ", followed_by: "next: 1"
-  codepoints: "U+03BB"
+  habit: "lambda: λ", followed_by: "next: 1", codepoints: "U+03BB"
   verdict: #swallows, loudness: #gate, lexer_errors: 1
   signature: "Binding=2 Expression=3 Identifier=2 Literal=1 Seed=1 Sequence=1"
   observed: "the Greek letter is a lexer error, which leaves lambda empty, so it binds the next line"
@@ -209,18 +214,16 @@
  }
  #>spw_spec_math_physics_degree_sign
  ^["degree_sign"]{
-  habit: "T: 20 °C"
-  codepoints: "U+00B0"
+  habit: "T: 20 °C", codepoints: "U+00B0"
   verdict: #hidden_error, loudness: #gate, lexer_errors: 1
   signature: "Binding=1 Expression=3 Identifier=2 Literal=1 Seed=1 Sequence=1"
   observed: "the degree sign is a lexer error, and C splits off as an identifier"
-  write_instead: "T: .{ n: 20, unit: \"C\" }"
+  write_instead: "T: .{ n: 20, unit: \"°C\" }"
   case_of: ~"../glossary/false-friends.spw#spw_ff_typography"
  }
  #>spw_spec_math_physics_times_sign
  ^["times_sign"]{
-  habit: "a: 3 × 4"
-  codepoints: "U+00D7"
+  habit: "a: 3 × 4", codepoints: "U+00D7"
   verdict: #hidden_error, loudness: #gate, lexer_errors: 1
   signature: "Binding=1 Expression=3 Identifier=1 Literal=2 Seed=1 Sequence=1"
   observed: "the multiplication sign is a lexer error, and 4 splits off"

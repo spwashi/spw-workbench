@@ -7,7 +7,7 @@
 #:domain #!spw
 #:form #!field_guide
 #:level #!intro
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -34,9 +34,22 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
-  "the study said k = v leaves three flat siblings; at 1aa1dc23 it leaves two, the name k and an equals operation that carries v as a modifier"
+  "the study said k = v leaves three flat siblings; at 1aa1dc23 it leaves two, the name k and an equals operation that carries v as a modifier",
+  "the no-binding keystone cited only the lines that build a binding node; it now cites from the colon check at line 894, which is where a binding is decided"
  ]
 }
 
@@ -50,7 +63,7 @@
   #:claim #!settled
   statement: "Inside a facet, k = v forms no binding: k stands alone and v becomes the modifier of a bare equals operation, while k: v forms one binding."
   source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
-  cites: [ "packages/spw-seed/src/grammar/expressions.ts:922-928" ]
+  cites: [ "packages/spw-seed/src/grammar/expressions.ts:894-928" ]
   probe_run: "size: .{ k = v } gives the name k and an equals operation with modifier v; Size=Large gives the name Size and an equals operation labeled Large"
   ~#spoken(equals)
   ^["limits"]{

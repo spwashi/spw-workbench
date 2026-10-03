@@ -7,13 +7,13 @@
 #:domain #!spw
 #:form #!field_guide
 #:level #!intro
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!honk
 
 ^"emit"{
  ~#title: "Door: Angle"
  ~#claim: "One comparison outside a string turns the whole surface to prose; quote thresholds or write them as quoted match arms, and keep angle brackets for capsules."
- ~#proof: "The seed grammar falls back to prose when structured parsing stops at a comparison token; the parse still reports success, and the cut gate fails the surface."
+ ~#proof: "The seed grammar falls back to prose when structured parsing stops at a comparison token or a stray angle mark; the parse still reports success, and the cut gate fails the surface."
  ~#door: "Guess how much of a three-line file survives one greater-or-equal sign, then check it with spw inspect source."
  ~#audience: "clinicians, C programmers, and CSS writers who type comparisons and generics"
  continuity: "Door: Angle | whole surface to prose"
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -38,10 +38,25 @@
    note: "forward refs to planned files of other packages that were not yet written"
   }
   ^["r4"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r5"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r7"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r8"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r10"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r11"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ added: "a CSS selector row, probed on 2026-10-03, so the CSS habit the plan names has a habit line of its own"
  corrections: #[
   "the study framed thresholds with a clinical early-warning score; this door uses a generic band, so no clinical routing appears",
-  "the 2026-10-02 gate receipt said pass while forward refs to planned files failed; it now records partial, and the 2026-10-03 gate passed once those files existed"
+  "the 2026-10-02 gate receipt said pass while forward refs to planned files failed; it now records partial, and the 2026-10-03 gate passed once those files existed",
+  "the prose row named comparison tokens as the only trigger; a lone spaced < or > lexes as a capsule mark, not a comparison, and stops the parse the same way"
  ]
 }
 
@@ -53,13 +68,13 @@
  #>spw_door_angle_prose
  ^["prose_fallback"]{
   #:claim #!settled
-  statement: "When structured parsing stops at a comparison token, the whole surface degrades to one prose node with a warning, and the parse still reports success."
+  statement: "When structured parsing stops at a comparison token or a stray angle mark, the whole surface degrades to one prose node with a warning, and the parse still reports success."
   source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
   cites: [ "packages/spw-seed/src/grammar/seed.ts:75-88", "packages/spw-seed/src/types/token.ts:69", "scripts/analyzers/spw-cut-gate.ts:195" ]
   probe_run: "a three-line file whose middle line is band: x >= 5 became one prose chunk at 1aa1dc23; with the comparison quoted, all three bindings survived"
   ~#spoken(angle, greater or equal)
   ^["limits"]{
-   holds: "double equals, not equals, and the four angle comparisons outside strings"
+   holds: "==, !=, <=, and >= as comparison tokens, and a lone < or > as a stray capsule mark; all of them outside strings"
    fails: "inside a string or a backtick phrase a comparison is text, and the warning names the enclosing top-level frame rather than the offending line"
   }
  }
@@ -89,6 +104,9 @@
   "durations, written as a facet with n and unit or ended with a comma"
  ]
  unlearn: "a single greater-than sign is enough to turn a whole file into prose"
+ css: "a CSS child combinator such as nav > a also turns the surface to prose, though its lone greater-than lexes as a capsule close rather than a comparison"
+ css_probe: "a three-line file with sel: nav > a in the middle fell back to prose at 651b535b, whose seed code matches 1aa1dc23; quoted, all three bindings survived"
+ css_source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_css_selectors_4"
 }
 
 ^["keyboard"]{

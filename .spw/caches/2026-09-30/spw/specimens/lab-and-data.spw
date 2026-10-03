@@ -7,17 +7,17 @@
 #:domain #!spw
 #:form #!probe_battery
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!honk
 
 ^"emit"{
  ~#title: "Lab and Data Notation Specimens"
- ~#claim: "Reaction and pathway arrows parse as connectors, while equilibria, thresholds, and spaced coefficients degrade or split."
+ ~#claim: "Reaction and activation arrows parse as connectors, while the inhibition arrow hides a lexer error, and equilibria, thresholds, and spaced coefficients degrade or split."
  ~#proof: "Each row was run through the parser at commit 1aa1dc23; quoted thresholds and ?match arms come back clean."
  ~#door: "Start with the coefficient row, then the threshold rows and the ?match arm."
  ~#audience: "chemists, engineers, statisticians, and life scientists keeping notes in Spw"
  continuity: "Lab and Data Notation Specimens | threshold"
- cold_open: "Arrows survive the move into Spw, but a threshold or an equilibrium sign can turn your whole file into prose."
+ cold_open: "Forward arrows survive the move into Spw, but a threshold or an equilibrium sign can turn your whole file into prose."
 }
 
 ^"provenance"{
@@ -37,7 +37,16 @@
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #corrected
+  }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[
+  "the card said reaction and pathway arrows parse as connectors; only the activation arrow does, and the inhibition arrow hides a lexer error that leaves a bare bar"
+ ]
 }
 
 ^["edges"]{
@@ -53,10 +62,7 @@
  cites: [ "packages/spw-seed/src/canonical/fingerprint.ts:49-70", "scripts/analyzers/spw-cut-gate.ts:193-217" ]
 }
 
-^["fixture"]{
- status: #proposed
- runner: "no repository code replays these rows as regression fixtures at 1aa1dc23; the writer probe script was scratch"
-}
+^["fixture"]{ status: #proposed, runner: "no repository code replays these rows as regression fixtures at 1aa1dc23; the writer probe script was scratch" }
 
 ^["chemistry_and_engineering"]{
  #>spw_spec_lab_data_reaction
@@ -95,8 +101,7 @@
  }
  #>spw_spec_lab_data_subscript_digit
  ^["subscript_digit"]{
-  habit: "f: H₂O"
-  codepoints: "U+2082"
+  habit: "f: H₂O", codepoints: "U+2082"
   verdict: #hidden_error, loudness: #gate, lexer_errors: 1
   signature: "Binding=1 Expression=3 Identifier=3 Seed=1 Sequence=1"
   observed: "the subscript two is a lexer error, and O splits off as an identifier"

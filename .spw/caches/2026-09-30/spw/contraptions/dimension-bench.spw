@@ -7,7 +7,7 @@
 #:domain #!spw
 #:form #!probe_battery
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!boon
 
 ^"emit"{
@@ -31,10 +31,15 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
  }
  corrections: #[
   "the sketch held inline percent cells for density and viscosity; exponents are definitions and stay as facets here, while world numbers stay in registries",
-  "the planned dimensions registry is folded into the contraptions registry under q_lab_dim"
+  "the planned dimensions registry is folded into the contraptions registry under q_lab_dim",
+  "the permanganate kernel was listed reactants then products while the probe named its columns in another order; the expect line now names the order 1, 5, 8, 1, 5, 4 follows"
  ]
 }
 
@@ -106,7 +111,7 @@
  ^["permanganate"]{
   !probe{ "kernel of Mn, O, Fe, and charge by permanganate, iron two, manganese two, iron three; then add hydrogen ion and water columns" =id[p_contrap_dimension_bench_permanganate] =kind[calc] }
   predict: ?{ "will the bare scheme balance" } ~<guess>
-  expect: "the bare scheme has nullity zero and cannot balance; with hydrogen ion and water the kernel is 1, 5, 8, 1, 5, 4"
+  expect: "the bare scheme has nullity zero and cannot balance; with hydrogen ion and water the kernel is 1, 5, 8, 1, 5, 4 in the order permanganate, iron two, hydrogen ion, manganese two, iron three, water"
   shows: ~"./dimension-bench.spw#spw_lab_dimension_bench_balance"
  }
  #>spw_lab_dimension_bench_pipe

@@ -7,7 +7,7 @@
 #:domain #!economics
 #:form #!curriculum
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-01"
+ as_of: "2026-10-03"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5"
  lineage: #[ ".spw/caches/university-education/economics/undergrad-micro-and-macroeconomics.spw" ]
@@ -33,14 +33,19 @@
    care: #adversarial, outcome: #corrected }
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #partial }
   ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r7"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r8"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  gate_note: "on 2026-10-02 the gate failed only on the ref to the reasoning and decision file, then unwritten; on 2026-10-03 that ref resolves and the gate passes"
+ review_note: "raised from sourced to adversarial_checked on 2026-10-03: a second skeptic pass checked every keystone source, its one finding, the price discrimination limit, is corrected, and the gate passes"
  corrections: #[
   "Mundell-Fleming policy potency is scoped to a small open economy with perfect capital mobility",
   "the raw growth wonder cast Solow as forced; exogenous technology is restated as a modeling choice later endogenized",
   "the price discrimination bridge to revenue management is added; the raw file had none",
   "invented metric handles are dropped",
-  "fact check: r3 recorded a gate pass while the ref to a planned cognition file did not resolve; r3 is now partial"
+  "fact check: r3 recorded a gate pass while the ref to a planned cognition file did not resolve; r3 is now partial",
+  "fact check 2026-10-03: the price discrimination limit applied the output-must-rise welfare test to all three degrees; it holds for third degree, and perfect first degree is efficient"
  ]
 }
 
@@ -101,7 +106,7 @@
   bridge: ~"../management/revenue-management.spw#management_revenue"
   ^["limits"]{
    holds: "resale is blocked and buyer types can be sorted by fences or observables"
-   fails: "the welfare sign is ambiguous; output must rise for discrimination to raise total surplus"
+   fails: "for third-degree discrimination the welfare sign is ambiguous, and output must rise for total surplus to rise; perfect first-degree discrimination is efficient but transfers all surplus to the seller"
   }
  }
  #>economics_core_network

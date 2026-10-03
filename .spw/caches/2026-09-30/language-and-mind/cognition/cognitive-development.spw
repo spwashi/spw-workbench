@@ -7,7 +7,7 @@
 #:domain #!cognition
 #:form #!timeline
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 #:era #!modern
 
@@ -22,7 +22,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/university-education/cognitive-psychology/cognitive-development-and-language.spw" ]
@@ -31,6 +31,9 @@
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-03",
+   agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the raw wonder said children pass false-belief tasks at almost exactly 48 months across cultures; timing varies by task, country, and community, and the claim is recorded as refuted (raw line 39)",
@@ -38,7 +41,8 @@
   "scaffolding is credited to Wood, Bruner, and Ross in 1976, not to Bruner alone (raw line 21)",
   "the marshmallow test is no longer taught as a stable predictor; the 2018 replication is cited (raw line 29)",
   "the raw said fluid intelligence peaks in the early twenties; different abilities peak at different ages (raw line 32)",
-  "the raw rTPJ maturation hypothesis stated a biological cause as fact; it is dropped, and the wonder below asks about experience instead (raw line 41)"
+  "the raw rTPJ maturation hypothesis stated a biological cause as fact; it is dropped, and the wonder below asks about experience instead (raw line 41)",
+  "2026-10-03 fact-check: the infant entry linked Kulke 2018 as a counter as if it retested Onishi and Baillargeon; it tested anticipatory looking, not violation of expectation, and the entry now says so"
  ]
 }
 
@@ -109,9 +113,10 @@
  #>cognition_development_infant
  ^["infant_looking"]{
   #:claim #!contested
-  statement: "Onishi and Baillargeon reported that fifteen-month-olds looked longer when an actor searched where her belief should not lead her; implicit measures are contested, as a preregistered replication of four related anticipatory-looking tasks largely failed."
+  statement: "Onishi and Baillargeon reported that fifteen-month-olds looked longer when an actor searched where her belief should not lead her; implicit measures are contested: a preregistered replication of four anticipatory-looking tasks, a different paradigm, largely failed."
   source: ~"../../registries/sources/life-and-mind.spw#src_life_onishi_baillargeon_2005"
   counter: ~"../../registries/sources/life-and-mind.spw#src_life_kulke_2018"
+  counter_scope: "Kulke and colleagues tested anticipatory-looking tasks, not the violation-of-expectation looking-time paradigm Onishi and Baillargeon used, so this counter bears on implicit measures as a class and does not test this result directly"
   era: 2005
  }
  #>cognition_development_china

@@ -11,7 +11,7 @@
 #:valence #!bone
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -20,19 +20,23 @@
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "claude-opus-5.5", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-01", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-01", agent: "spw-cut-gate", care: #skim, outcome: #pass }
-  ^["r4"]{
-   event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
-   care: #adversarial, outcome: #corrected
-  }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-02", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected }
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the water triple point carried abs 0 as if exact; since the 2019 SI redefinition it is measured, near 0.1 mK standard uncertainty, and the cell now cites the SI Brochure",
   "the Dzudzuana fiber age cell is marked contested, since the identification of the fibers as flax is disputed",
-  "cells are written four lines each so the registry stays near the size advisory; values and handles are unchanged"
+  "cells are written four lines each so the registry stays near the size advisory; values and handles are unchanged",
+  "the water critical point carried abs 0.001 on temperature and pressure; IAPWS R2-83(1992) gives 0.1 K and about 0.03 MPa, and the decimals are fixed parameters of IAPWS-95, not measurement precision",
+  "the Sulawesi stencil cell called its 39.9 ka stencil the oldest dated hand stencil; it is scoped to the 2014 report, and a Muna Island stencil of at least 67.8 ka has its own cell",
+  "the stainless chromium cell named the withdrawn 2014 edition of EN 10088-1; it now names the 2023 edition and is a verify cell until the 2023 scope is read"
  ]
- added: "gamma_delta_t_c and fe_melt_t_c complete the pure-iron ladder; n_hydrocerussite_omega gives the lead white index the pentimento wonder reads"
- status_legend: "settled cells were read from the linked source; verify cells hold a reported value that must be checked against the current edition before use"
+ added: "gamma_delta_t_c and fe_melt_t_c complete the pure-iron ladder; n_hydrocerussite_omega gives the lead white index the pentimento wonder reads; muna_stencil_min_ka holds the 2026 Muna date; tbg_magic_angle_deg now cites the correlated-insulator paper beside the superconductivity paper"
+ status_legend: "settled cells were read from the linked source; emerging cells rest on one recent report; verify cells hold a reported value that must be checked against the current edition before use"
 }
 
 ^["families"]{
@@ -60,7 +64,7 @@
  silicon: #[ bandgap_ev ]
  polymer: #[ pmma_tg_c, pmma_n_d, flory_nu_3d, eta_mw_exponent ]
  pigment: #[ n_rutile, n_hydrocerussite_omega, n_linseed_oil ]
- chron: #[ blombos_ochre_ka, sulawesi_stencil_min_ka, chauvet_early_start_ka, chauvet_early_end_ka, dzudzuana_flax_ka ]
+ chron: #[ blombos_ochre_ka, sulawesi_stencil_min_ka, muna_stencil_min_ka, chauvet_early_start_ka, chauvet_early_end_ka, dzudzuana_flax_ka ]
  nano: #[ tbg_magic_angle_deg, stem_probe_pm ]
  transport: #[ pipe_laminar_re_max, pump_power_d_exp_laminar, pump_power_d_exp_blasius, pump_power_d_exp_rough ]
  quality: #[ six_sigma_dpmo ]
@@ -112,12 +116,12 @@
   at: "triple point pressure, IAPWS-95", src: ~"../sources/materials-and-engineering.spw#src_mateng_wagner_pruss_2002", status: #settled
  }
  %mateng.water.critical_t_k{
-  value: 647.096, unit: "K", abs: 0.001
-  at: "critical temperature, IAPWS-95", src: ~"../sources/materials-and-engineering.spw#src_mateng_wagner_pruss_2002", status: #settled
+  value: 647.096, unit: "K", abs: 0.1
+  at: "critical temperature of ordinary water; IAPWS-95 fixes 647.096 K as a parameter, while the measured value is known to about 0.1 K, ITS-90", src: [ ~"../sources/materials-and-engineering.spw#src_mateng_iapws_r2_83", ~"../sources/materials-and-engineering.spw#src_mateng_wagner_pruss_2002" ], status: #settled
  }
  %mateng.water.critical_p_mpa{
-  value: 22.064, unit: "MPa", abs: 0.001
-  at: "critical pressure, IAPWS-95", src: ~"../sources/materials-and-engineering.spw#src_mateng_wagner_pruss_2002", status: #settled
+  value: 22.064, unit: "MPa", abs: 0.03
+  at: "critical pressure of ordinary water; IAPWS-95 fixes 22.064 MPa as a parameter, while the measured value is known to about 0.03 MPa, tied to the temperature uncertainty", src: [ ~"../sources/materials-and-engineering.spw#src_mateng_iapws_r2_83", ~"../sources/materials-and-engineering.spw#src_mateng_wagner_pruss_2002" ], status: #settled
  }
 }
 
@@ -157,7 +161,7 @@
 ^"steel"{
  %mateng.steel.stainless_cr_min_wt_pct{
   value: 10.5, unit: "wt percent Cr", abs: 0
-  at: "minimum chromium in the European definition of stainless steel, EN 10088-1:2014", src: ~"../sources/materials-and-engineering.spw#src_mateng_en_10088_1", status: #settled
+  at: "minimum chromium in the European definition of stainless steel as stated in EN 10088-1:2014; EN 10088-1:2023 replaced it, so check the 2023 definition clause before use", src: ~"../sources/materials-and-engineering.spw#src_mateng_en_10088_1", status: #verify, as_of: "2026-10-03"
  }
  %mateng.steel.co2_share_energy_pct{
   value: 7, unit: "percent", abs: 1
@@ -217,7 +221,11 @@
  }
  %mateng.chron.sulawesi_stencil_min_ka{
   value: 39.9, unit: "ka", abs: 0.1
-  at: "minimum uranium-series age of the oldest dated hand stencil, Maros karsts, Sulawesi", src: ~"../sources/materials-and-engineering.spw#src_mateng_aubert_2014", status: #settled
+  at: "minimum uranium-series age of the Maros hand stencil reported in 2014, then the oldest dated hand stencil; older stencils have since been dated", src: ~"../sources/materials-and-engineering.spw#src_mateng_aubert_2014", status: #settled, as_of: "2014 report, read 2026-10-03"
+ }
+ %mateng.chron.muna_stencil_min_ka{
+  value: 67.8, unit: "ka", abs: 3.8
+  at: "minimum-age constraint for a hand stencil at Liang Metanduno, Muna Island, off southeast Sulawesi, from laser-ablation U-series dating of overlying calcite at 71.6 +/- 3.8 ka", src: ~"../sources/materials-and-engineering.spw#src_mateng_oktaviana_2026", status: #emerging, as_of: "January 2026 report, read 2026-10-03"
  }
  %mateng.chron.chauvet_early_start_ka{
   value: 37, unit: "ka cal BP", abs: 1
@@ -237,7 +245,7 @@
 ^"nanoscale"{
  %mateng.nano.tbg_magic_angle_deg{
   value: 1.1, unit: "degree", abs: 0.1
-  at: "twist angle of bilayer graphene showing correlated insulating and superconducting states", src: ~"../sources/materials-and-engineering.spw#src_mateng_cao_2018", status: #settled
+  at: "twist angle of bilayer graphene showing correlated insulating and superconducting states", src: [ ~"../sources/materials-and-engineering.spw#src_mateng_cao_2018_insulator", ~"../sources/materials-and-engineering.spw#src_mateng_cao_2018" ], status: #settled
  }
  %mateng.nano.stem_probe_pm{
   value: 50, unit: "pm", abs: 0

@@ -7,7 +7,7 @@
 #:domain #!spw_perspectives
 #:form #!comparison
 #:level #!intro
-#:review #!unreviewed
+#:review #!adversarial_checked
 #:valence #!bonk
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -39,10 +39,26 @@
   }
   ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r9"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r10"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r11"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r12"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r13"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ added: "the directive row now also cites Kernighan and Ritchie beside the ISO C standard"
  corrections: #[
   "the 2026-10-02 gate receipt said pass while forward refs to planned files failed; it now records partial, and the 2026-10-03 gate passed once those files existed",
-  "the keyboard keystone carried an interpretive clause about C habits inside a settled statement; the clause now sits in its own habit_reading binding"
+  "the keyboard keystone carried an interpretive clause about C habits inside a settled statement; the clause now sits in its own habit_reading binding",
+  "the literals row listed 1_000 as a C-family number without qualification; ISO C through C17 has no digit separator and C23 writes 1'000, so the row now names the languages that write 1_000 and probes it"
  ]
 }
 
@@ -54,7 +70,7 @@
  #>spw_perspectives_c_family_standing
  ^["hypothesis"]{
   #:claim #!interpretive
-  statement: "This reading of C-family habits was written by an agent outside the cluster; it stays unreviewed until a working C, Java, JavaScript, or Rust programmer runs the rows."
+  statement: "This reading of C-family habits was written by an agent outside the cluster; it stays a hypothesis until a working C, Java, JavaScript, or Rust programmer runs the rows."
   member_probe: "a programmer from the cluster types each habit from memory, predicts the parse, and marks each row as true to practice or not"
  }
 }
@@ -66,7 +82,7 @@
   habit: "a hash at line start opens a preprocessor directive in C, an attribute in Rust, and a private name in JavaScript"
   spw: "a hash touching a word is a tag, so the directive name becomes a tag label and the rest of the line a prose payload"
   probe_run: "#include with stdio.h in angle brackets gives a tag labeled include with the bracketed header as payload; #if 0 gives a tag labeled if"
-  sources: [ ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_iso_c_2018", ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_ecma_262_2022" ]
+  sources: [ ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_kr_1988", ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_iso_c_2018", ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_ecma_262_2022" ]
   breaks: "nothing is included, compiled out, or made private"
  }
  #>spw_perspectives_c_family_assign
@@ -105,9 +121,10 @@
  #>spw_perspectives_c_family_literals
  ^["literals"]{
   #:claim #!interpretive
-  habit: "0xFF, 1e-3, -70, and 1_000 are numbers"
-  spw: "only integers and point decimals are numbers; 0xFF becomes 0 and the name xFF, and a leading minus is a lexer error that drops the sign"
-  probe_run: "mask: 0xFF splits with no error; temp: -70 keeps 70 and reports one lexer error while success stays true"
+  habit: "0xFF, 1e-3, -70, and 1_000 (Java, JavaScript, Rust; C23 writes 1'000) are numbers"
+  habit_sources: [ ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_iso_c_2024", ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_wg14_n2626", ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_ecma_262_2022" ]
+  spw: "only integers and point decimals are numbers; 0xFF becomes 0 and the name xFF, 1_000 becomes 1 and the name _000, and a leading minus is a lexer error that drops the sign"
+  probe_run: "mask: 0xFF splits with no error; temp: -70 keeps 70 and reports one lexer error while success stays true; x: 1_000 at HEAD 651b535b on 2026-10-03 bound x to 1 and left _000 as a loose name with no error"
   source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_lexer"
   cites: [ "packages/spw-seed/src/lexer/matchers/literals.ts:95-120", "scripts/analyzers/spw-cut-gate.ts:193" ]
  }
@@ -135,7 +152,7 @@
   spw: "a tilde before a quoted path is a link resolved against the citing file, then the repository root"
   example: ~"../doors/tilde.spw#spw_door_tilde_link"
   bridge: "this is the closest friend in the row set: the quoted include already behaves like a path ref"
-  breaks: "nothing is included; only an expand pass inlines a reflexive bundle"
+  breaks: "nothing is included; spw expand projects only the first target of a reflexive edge, and the source is never changed"
  }
  #>spw_perspectives_c_family_frames
  ^["frames_and_particles"]{

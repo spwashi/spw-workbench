@@ -1,0 +1,168 @@
+# Market Reading
+#
+# A trail for reading a market number critically before using it: replication status, sampling, identification, dated receipts, and then the hooks that move bench cells.
+
+#>trail_market_reading
+#:layer #!pragmatics
+#:domain #!trail
+#:form #!trail
+#:level #!intro
+#:review #!adversarial_checked
+#:valence #!bane
+#:era #!current
+
+^"emit"{
+ ~#title: "Market Reading"
+ ~#claim: "Twelve stops teach one order for reading a market number: ask whether it replicated, how it was sampled, what identifies the cause, whose share it is and when, and which hooks it moves."
+ ~#proof: "Every stop is an anchor in the language-and-mind, formal, society, or making class; the method claims here cite Leamer, Angrist and Pischke, and the Open Science Collaboration."
+ ~#door: "Pick one market number from this week and carry it through the stops in order."
+ ~#audience: "creators, managers, and students who quote numbers about audiences and money"
+ continuity: "Market Reading | whose share"
+ cold_open: "Before you repeat a market number, ask if it held up, who was asked, whose share it is, and when."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "stops follow the market-reading row of final-plan-v3 trails",
+  "every stop anchor was matched against the cut on disk on 2026-10-03",
+  "Angrist and Pischke 2010, Leamer 2010, and the Open Science Collaboration 2015 were matched against Crossref on 2026-10-03"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "fact-check 2026-10-03: the Singles Day note said the 2021 actions changed how the total is reported; no source ties the 2022 end of the published total to those actions, so the note now lists them side by side"
+ ]
+}
+
+^["edges"]{
+ feeds: [ ~"./novel-to-screen.spw#trail_novel_to_screen" ]
+ see: [ ~"./corrections.spw#trail_corrections" ]
+}
+
+^["concepts"]{
+ primary: [ #dated_receipt, #identification ]
+ transfers: [ #replication, #sampling_frame ]
+ tensions: [ #overclaim ]
+}
+
+#>trail_market_stops
+^["stops"]{
+ classes: #[ language_and_mind, formal, society, making ]
+ walk: <<
+  ~"../language-and-mind/cognition/replication-ledger.spw#cognition_replication_ledger" ;
+  ~"../language-and-mind/cognition/reasoning-and-decision.spw#cognition_reasoning" ;
+  ?{ "would a famous finding you have repeated survive a large replication" } ~<prediction> ;
+  ~"../formal/mathematics/engineering-core/probability-and-statistics.spw#mathematics_probstat" ;
+  ~"../society/economics/econometrics-and-data.spw#economics_econometrics" ;
+  ~"../society/markets/reading-market-reports.spw#markets_reading_reports" ;
+  ?{ "is this number a share of people, of time, or of money" } ~<prediction> ;
+  ~"../society/markets/market-probe-battery.spw#markets_probe_battery" ;
+  ~"../society/markets/market-hooks.spw#markets_hooks" ;
+  ~"../society/markets/media-market-receipts.spw#markets_media_receipts" ;
+  ~"../society/platforms/monetization-receipt.spw#live_platforms_monetization" ;
+  ~"../making/authorship/platforms-and-business-models.spw#authorship_platforms" ;
+  ?{ "which of these terms will have changed by next season" } ~<prediction> ;
+  ~"../society/management/revenue-management.spw#management_revenue" ;
+  ~"../society/markets/singles-day-live-commerce.spw#markets_singles_day"
+ >>
+ ^["notes"]{
+  cognition_replication_ledger: "first ask whether the finding behind a number has replicated"
+  cognition_reasoning: "anchoring and framing shape how a reader hears a number before checking it"
+  mathematics_probstat: "every error bar has a model behind it; ask which model"
+  economics_econometrics: "each causal design buys its answer with one assumption, named beside its check"
+  markets_reading_reports: "the six reading states; the step most often skipped is whose share it is"
+  markets_probe_battery: "each recurring release has a month, a publisher, and a caveat"
+  markets_hooks: "when a signal moves, follow the hook to the anchor it changes before quoting it"
+  markets_media_receipts: "receipts carry a publisher and a date, and unread cells stay empty"
+  live_platforms_monetization: "a gift price is a dated receipt set by the platform, never a constant"
+  authorship_platforms: "each publishing route trades reach for control on dated terms"
+  management_revenue: "perishable capacity is priced before demand arrives, and parity rules are dated law"
+  markets_singles_day: "a festival-scale number, the 2021 regulatory actions, and 2022, when Alibaba stopped publishing a total"
+ }
+}
+
+#>trail_market_order
+^["reading_order"]{
+ steps: << replicated ; sampled ; identified ; dated ; hooked >>
+ replicated: "has the finding behind the number held up when someone repeated it"
+ sampled: "who was asked, how many, and from which frame"
+ identified: "what assumption turns a correlation into the cause the headline claims"
+ dated: "whose share, of what, published when, and by whom"
+ hooked: "which anchors in other classes must be rechecked if this number moves"
+}
+
+^["method"]{
+ #>trail_market_osc
+ ^["replication_first"]{
+  #:claim #!settled
+  statement: "A large coordinated effort repeated 100 psychology studies and found replication effects smaller on average and less often significant than the originals."
+  source: ~"../registries/sources/trails.spw#src_trail_osc_2015"
+  reads: %[
+   life.replication.osc_original_sig_pct,
+   life.replication.osc_replication_sig_pct
+  ]
+  see: [ ~"../language-and-mind/cognition/replication-ledger.spw#cognition_replication_ledger_osc" ]
+ }
+ #>trail_market_leamer
+ ^["fragile_specifications"]{
+  #:claim #!settled
+  statement: "Leamer argued in 1983 that results which change under small specification choices are not believable, and asked authors to report how sensitive their estimates are."
+  source: ~"../registries/sources/trails.spw#src_trail_leamer_1983"
+ }
+ #>trail_market_credibility
+ ^["credibility_dispute"]{
+  #:claim #!contested
+  statement: "Angrist and Pischke argued in 2010 that research design had taken much of the con out of econometrics; Leamer replied that design leaves judgment about assumptions and generality in place."
+  source: ~"../registries/sources/trails.spw#src_trail_angrist_pischke_2010"
+  counter: ~"../registries/sources/trails.spw#src_trail_leamer_2010"
+  ^["limits"]{
+   holds: "applied microeconomics and program evaluation, the field both papers address"
+   fails: "market share reports, which rarely make causal claims and fail on sampling and dating first"
+  }
+ }
+ #>trail_market_order_reading
+ ^["why_this_order"]{
+  #:claim #!interpretive
+  statement: "Replication comes first because a number resting on an effect that vanished needs no further reading, and hooks come last because they matter only for numbers that survive."
+  see: [ ~"../society/markets/reading-market-reports.spw#markets_reading_states" ]
+ }
+}
+
+^["try"]{
+ #>trail_market_try_one_number
+ ^["one_number"]{
+  materials: [ "one market or audience number from this week", "a pen", "the reading order card" ]
+  steps: <<
+   "write the number and where you met it" ;
+   "guess whose share it is before you open the source" ;
+   "find the publisher, the sample, and the release date" ;
+   "mark each of the five reading steps passed, failed, or unknown" ;
+   "decide to quote it, date it, or leave the cell empty"
+  >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "no hazard worth naming"
+  shows: ~"./market-reading.spw#trail_market_order_reading"
+ }
+}
+
+#>trail_market_staleness_q
+?["Does a market receipt go stale faster than a replicated finding?"]{
+ #:depth #!social ~#lens(market flow)
+ #:claim #!speculative
+ ~#hypothesis: "Service share receipts should change within a release cycle, while effects that survived large replications should hold for years, so receipts need a calendar and findings need a ledger."
+ !probe{ "track one podcast share receipt across three releases beside one replicated effect" =id[p_trail_market_staleness] =kind[lookup] }
+ $%[econ.podcast.edison_2024_youtube_pct, life.replication.osc_replication_sig_pct]
+ breaks: "a share changes because the market moves, while a lab effect changes because the first estimate was wrong, so staleness means different things in each"
+ ~"./market-reading.spw#trail_market_order_reading" ~#neighbor(nearest)
+}

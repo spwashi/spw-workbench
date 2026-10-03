@@ -7,7 +7,7 @@
 #:domain #!spw_theory
 #:form #!probe_battery
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -35,7 +35,15 @@
  ^["receipts"]{
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[
+  "the digit claim said #!3 lexes as two operator marks and a number; that holds only after a key or a case particle, and at the start of a line #!3 leaves a prose payload as #>12a does"
+ ]
 }
 
 ^["edges"]{
@@ -83,9 +91,13 @@
  #>spw_theory_particle_digit_drop
  ^["digit_drop"]{
   #:claim #!settled
-  statement: "A particle name must start with a letter or underscore; #!3 lexes as two operator marks and a number, #>12a leaves a prose payload, and parse reports no error."
+  statement: "Particle names start with a letter or underscore: at line start #!3 and #>12a leave prose payloads, after a key or case particle #!3 becomes two operator marks and a number, with no parse error."
   sources: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_code_particle_lexer", ~"../../registries/sources/spw-design-studies.spw#src_lab_probe_parser" ]
   cites: [ "packages/spw-seed/src/lexer/matchers/particles.ts:33" ]
+  ^["limits"]{
+   holds: "probes rerun on 2026-10-03 at 651b535b, where the seed lexer and grammar match 1aa1dc23"
+   fails: "after a key, #>12a turns the whole surface to prose, still with no parse error"
+  }
  }
  #>spw_theory_particle_header_binds_card
  ^["header_binds_card"]{

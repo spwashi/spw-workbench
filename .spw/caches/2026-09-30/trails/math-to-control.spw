@@ -1,0 +1,158 @@
+# Math to Control
+#
+# A trail through the one math core every engineer shares, from local linear maps and eigenvalues through transforms to the feedback loop where they converge.
+
+#>trail_math_to_control
+#:layer #!pragmatics
+#:domain #!trail
+#:form #!trail
+#:level #!intro
+#:review #!adversarial_checked
+#:valence #!bone
+
+^"emit"{
+ ~#title: "Math to Control"
+ ~#claim: "Eleven stops show electrical, mechanical, and chemical engineers sharing one math core of linear maps, eigenvalues, and transforms that converges on the feedback loop."
+ ~#proof: "Every stop is an anchor in the formal or physical class; the origin claims here cite Mayr, Maxwell, and Wiener, and the theorems stay at their stops."
+ ~#door: "Start at the calculus and linear algebra stop, and at each engineering stop name the math it borrowed."
+ ~#audience: "engineering students in any discipline and the people who teach them"
+ continuity: "Math to Control | feedback loop"
+ cold_open: "Every engineer shares one math core, and the feedback loop is where it all comes together."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "stops follow the math-to-control row of final-plan-v3 trails",
+  "every stop anchor was matched against the cut on disk on 2026-10-03",
+  "Mayr 1970 and Maxwell 1868 were matched against Crossref on 2026-10-03"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+}
+
+^["edges"]{
+ feeds: [ ~"./clocks-and-cadences.spw#trail_clocks_and_cadences" ]
+ see: [ ~"../formal/mathematics/engineering-math-bridge.spw#mathematics_bridge" ]
+}
+
+^["concepts"]{
+ primary: [ #feedback, #spectral_decomposition ]
+ transfers: [ #prerequisite, #duality ]
+ tensions: [ #regime_limit ]
+}
+
+#>trail_math_stops
+^["stops"]{
+ classes: #[ formal, physical ]
+ walk: <<
+  ~"../formal/mathematics/engineering-core/calculus-and-linear-algebra.spw#mathematics_calc_linalg" ;
+  ~"../formal/mathematics/analysis-and-algebra-core.spw#mathematics_core" ;
+  ~"../formal/mathematics/engineering-core/differential-equations.spw#mathematics_diffeq" ;
+  ?{ "what single test tells you a linear system will settle" } ~<prediction> ;
+  ~"../formal/mathematics/engineering-core/transforms-and-complex-methods.spw#mathematics_transforms" ;
+  ~"../physical/engineering/control-and-signals.spw#engineering_control_signals" ;
+  ?{ "what does feedback buy, and what does it cost" } ~<prediction> ;
+  ~"../physical/engineering/electrical-core.spw#engineering_electrical" ;
+  ~"../physical/engineering/transport-phenomena.spw#engineering_transport" ;
+  ~"../physical/chemistry/chemical-engineering.spw#chemistry_chemeng" ;
+  ~"../physical/engineering/mechanical-advanced.spw#engineering_mechanical_advanced" ;
+  ?{ "what goes wrong first when the computer solves the loop for you" } ~<prediction> ;
+  ~"../formal/mathematics/engineering-core/numerical-methods.spw#mathematics_numerics" ;
+  ~"../formal/mathematics/engineering-core/optimization.spw#mathematics_optimization"
+ >>
+ ^["notes"]{
+  mathematics_calc_linalg: "a derivative is a local linear map, so most engineering starts here and ends in a matrix"
+  mathematics_core: "the pure core states each theorem with its hypotheses; read them before trusting a shortcut"
+  mathematics_diffeq: "every eigenvalue with negative real part means the linear system settles"
+  mathematics_transforms: "convolution becomes multiplication, and pole locations become stability"
+  engineering_control_signals: "the convergence point: feedback lets an imperfect machine track a goal, and margins are warnings"
+  engineering_electrical: "the electrical engineer meets the loop in feedback amplifiers and the op-amp rules"
+  engineering_transport: "the same core returns as balances and dimensionless groups, the models a controller is built on"
+  chemistry_chemeng: "process control holds a reactor near a set point while scale-up adds hazards"
+  engineering_mechanical_advanced: "estimation and models with limits; a filter can diverge if its model is wrong"
+  mathematics_numerics: "the computed loop is the exact loop of a nearby problem, so conditioning matters"
+  mathematics_optimization: "the last stop prices each constraint, which is how a controller chooses among goals"
+ }
+}
+
+#>trail_math_legs
+^["legs"]{
+ core: #[ mathematics_calc_linalg, mathematics_core, mathematics_diffeq, mathematics_transforms ]
+ convergence: #[ engineering_control_signals ]
+ disciplines: #[ engineering_electrical, engineering_transport, chemistry_chemeng, engineering_mechanical_advanced ]
+ computation: #[ mathematics_numerics, mathematics_optimization ]
+}
+
+^["origins"]{
+ #>trail_math_ktesibios
+ ^["float_regulator"]{
+  #:claim #!settled
+  statement: "Mayr traces the earliest known feedback device to the float regulator of the water clock of Ktesibios in Alexandria, in the third century BCE."
+  source: ~"../registries/sources/trails.spw#src_trail_mayr_1970"
+  ^["limits"]{
+   holds: "devices that survive in texts and that Mayr counts as closed-loop regulation"
+   fails: "devices lost from the record, in Alexandria or elsewhere, that may be older"
+  }
+ }
+ #>trail_math_governors
+ ^["governors"]{
+  #:claim #!settled
+  statement: "Maxwell analyzed governors in 1868 by asking when small disturbances of a regulated machine die away, an early stability analysis of feedback."
+  source: ~"../registries/sources/trails.spw#src_trail_maxwell_1868"
+  see: [ ~"../formal/mathematics/engineering-core/differential-equations.spw#mathematics_diffeq_stability" ]
+ }
+ #>trail_math_cybernetics
+ ^["cybernetics"]{
+  #:claim #!settled
+  statement: "Wiener named cybernetics in 1948 as control and communication in the animal and the machine, carrying the loop from machines into living systems."
+  source: ~"../registries/sources/trails.spw#src_trail_wiener_1948"
+ }
+ #>trail_math_convergence
+ ^["convergence"]{
+  #:claim #!interpretive
+  statement: "Electrical, mechanical, and chemical engineers each linearize, transform, and check eigenvalues, and the feedback loop is where those three habits meet in one design."
+  see: [ ~"../physical/engineering/control-and-signals.spw#engineering_control_signals_nyquist" ]
+  ^["limits"]{
+   holds: "linear and linearized systems near an operating point"
+   fails: "strongly nonlinear, switched, or delayed systems, where the core needs other tools"
+  }
+ }
+}
+
+^["try"]{
+ #>trail_math_try_cup
+ ^["cup_thermostat"]{
+  materials: [ "a mug of warm tap water", "a kitchen thermometer", "a bowl of ice cubes", "a timer", "paper and pen" ]
+  steps: <<
+   "pick a target a few degrees below the starting temperature" ;
+   "write a guess for how far below the target you will overshoot" ;
+   "read the temperature every thirty seconds and add one ice cube whenever it is above target" ;
+   "plot the readings and mark the overshoot" ;
+   "repeat waiting one minute between readings and compare the plots"
+  >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "use warm tap water, never boiling water, and keep the thermometer out of reach of children"
+  shows: ~"./math-to-control.spw#trail_math_convergence"
+ }
+}
+
+#>trail_math_sampling_q
+?["Does a slowly sampled loop lose stability before it shows aliasing?"]{
+ #:depth #!mathematical ~#lens(signal path)
+ #:claim #!speculative
+ ~#hypothesis: "As a loop is sampled more slowly, its phase margin should shrink before its fastest mode visibly aliases, so the loop wobbles before the plot looks wrong."
+ !probe{ "simulate one second-order loop at falling sample rates and log margin and alias" =id[p_trail_math_sample_margin] =kind[sim] }
+ $%[formal.transforms.nyquist_rate_factor, formal.numerics.rk4_order]
+ ~"./math-to-control.spw#trail_math_convergence" ~#neighbor(nearest)
+}

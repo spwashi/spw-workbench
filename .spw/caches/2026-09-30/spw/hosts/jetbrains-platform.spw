@@ -7,7 +7,7 @@
 #:domain #!editor_hosts
 #:form #!registry
 #:level #!practitioner
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 #:era #!current
 
@@ -22,7 +22,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "gemini-3.8-flash-high"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ ".spw/caches/jetbrains/compatibility.spw", ".spw/caches/jetbrains/lsp-client.spw" ]
@@ -31,8 +31,30 @@
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected
+   note: "the JetBrains feature table reread; its bracketed patch releases replace the section years"
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r7"]{
+   event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected
+   note: "the availability line carried the commercial-only wording the fact-checker corrected in the feature radar"
+  }
+  ^["r8"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r9"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+   note: "toolchain, build range, verifier hosts, two-stage launcher, settings, and the JetBrains feature table confirmed"
+  }
+  ^["r10"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: [
+  "the availability line said the LSP API ships in the commercial IntelliJ-based IDEs; JetBrains also lists unified PyCharm without a Pro subscription since 2025.1",
+  "the first revision gave inlay hints and folding from 2025.2 and rename from 2026.1; the table marks 2025.2.2 and 2026.1.1",
   "the raw compatibility cache gave Gradle task paths under extensions:intellij-spw; the plugin is its own root project, so tasks are test, buildPlugin, and the verify tasks",
   "the raw lsp-client cache named settings customCommand, customWorkingDirectory, and autoStart; the state fields are enabled, command, and workDir",
   "the raw lsp-client cache put an environment variable and local source checkouts in the discovery ladder; the JetBrains launcher reads neither",
@@ -146,14 +168,15 @@
  }
  #>editor_hosts_jetbrains_platform_feature_table
  ^["feature_table"]{
-  #:claim #!emerging
-  statement: "The JetBrains feature table lists document links from 2025.1, inlay hints and folding from 2025.2, and code lens and rename from 2026.1, so admitted builds differ in what the server can show."
+  #:claim #!settled
+  statement: "The JetBrains feature table lists document links from 2025.1, inlay hints and folding from 2025.2.2, code lens from 2026.1, and rename from 2026.1.1, so admitted builds differ in what the server can show."
   reads: %[hosts.jb.native_lsp_rename_min_ide]
   source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jetbrains_lsp_docs"
-  as_of: "JetBrains documentation read 2026-10-02"
+  as_of: "JetBrains documentation read 2026-10-02 and reread 2026-10-03"
   verify: "whether Rename Spw Symbol works on builds 242 through 253 has not been run; the raw cache said rename was verified on 262 only"
  }
- availability: "the LSP API ships in the commercial IntelliJ-based IDEs; JetBrains says plugins using it are unavailable in IntelliJ IDEA open source builds and Android Studio"
+ availability: "JetBrains lists the LSP API in IntelliJ IDEA, WebStorm, PhpStorm, PyCharm, DataSpell, RubyMine, CLion, DataGrip, GoLand, Rider, and RustRover, and since 2025.1 in unified PyCharm without a Pro subscription"
+ unavailable: "JetBrains says plugins using it are unavailable in IntelliJ IDEA open source builds and Android Studio; read 2026-10-03"
  availability_source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_jetbrains_lsp_docs"
 }
 

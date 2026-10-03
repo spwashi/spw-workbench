@@ -1,0 +1,130 @@
+# Spw First Contact
+#
+# A short trail for first contact with Spw: one door, one perspective, one false friend, and a pause, before the practiced circuit that this plan once tried to fit into a first hour.
+
+#>trail_spw_first_contact
+#:layer #!pragmatics
+#:domain #!trail
+#:form #!trail
+#:level #!intro
+#:review #!adversarial_checked
+#:valence #!bonk
+
+^"emit"{
+ ~#title: "Spw First Contact"
+ ~#claim: "First contact with Spw is one door, one perspective, and one false friend, followed by a pause; the longer first hour once planned here moved to the Spw circuit."
+ ~#proof: "The owner note says a newcomer lands on one fragment and a circuit is earned; retrieval and spacing research gives the pause its reason."
+ ~#door: "Open the doors index, choose the one mark you already type, and stop after its false friend."
+ ~#audience: "practitioners from other fields meeting Spw for the first time"
+ continuity: "Spw First Contact | one door"
+ cold_open: "Meet Spw through one door, one perspective, and one false friend, then pause before the longer circuit."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new" ]
+ method: #authored
+ evidence: #[
+  "final-plan-v3 keeps this path in the trails package while the spw branch plan moves the first-hour tour to spw-circuit",
+  "every stop anchor was matched against the cut on disk on 2026-10-03"
+ ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+ }
+ corrections: #[
+  "fact-check 2026-10-03: the pause reading credited spacing evidence to Roediger and Karpicke 2006, a retrieval study; Cepeda and colleagues 2006 now carries the spacing half"
+ ]
+}
+
+^["edges"]{
+ feeds: [ ~"./spw-circuit.spw#trail_spw_circuit" ]
+}
+
+^["concepts"]{
+ primary: [ #false_friend, #walk ]
+ transfers: [ #spacing ]
+ tensions: [ #overclaim ]
+}
+
+#>trail_first_contact_stops
+^["stops"]{
+ classes: #[ spw, learning ]
+ walk: <<
+  ~"../spw/doors/index.spw#spw_doors" ;
+  ?{ "which one mark do you already type every day" } ~<prediction> ;
+  ~"../spw/perspectives/index.spw#spw_perspectives_index" ;
+  ~"../spw/glossary/false-friends.spw#spw_false_friends" ;
+  ?{ "will a line pasted from your own notes mean what you meant" } ~<prediction> ;
+  ~"../learning/institutions/pedagogical-scaffolding.spw#institutions_pedagogy"
+ >>
+ ^["notes"]{
+  spw_doors: "open one door only, the mark or region you already know, and leave the rest quiet"
+  spw_perspectives_index: "open only the perspective whose notation you write every day"
+  spw_false_friends: "find the habit your field ranks first, and check one pasted line against the parse"
+  institutions_pedagogy: "the pause: retrieval and spacing beat rereading, so come back another day before the circuit"
+ }
+}
+
+^["readings"]{
+ #>trail_first_contact_one_fragment
+ ^["one_fragment"]{
+  #:claim #!settled
+  statement: "The owner note says a newcomer may land on one fragment, a practiced circuit is earned by holding attention, and the circuit is not the door."
+  source: ~"../registries/sources/trails.spw#src_trail_owner_resume"
+  cites: [ ".spw/caches/resume/2026-09-30-direction.spw:30" ]
+  label: "owner hold"
+ }
+ #>trail_spw_first_contact_plan
+ ^["planned_first_hour"]{
+  #:claim #!superseded
+  statement: "The plan trails list drafted this file as a first hour touring perspectives, false friends, transforms, contraptions, graph idioms, and open questions; the spw branch plan moved that tour to the Spw circuit."
+  source: ~"../registries/sources/trails.spw#src_trail_plan_v3"
+  sources: [ ~"../registries/sources/trails.spw#src_trail_spw_critic" ]
+  replaced_by: ~"./spw-circuit.spw#trail_spw_circuit"
+  why: "a command or concept tour offered as onboarding is what the contract arcs frame refuses"
+ }
+ #>trail_first_contact_pause
+ ^["pause_has_a_reason"]{
+  #:claim #!interpretive
+  statement: "Ending first contact with a pause follows the retrieval and spacing evidence at the last stop: coming back later to recall the one door should hold better than reading on."
+  source: ~"../registries/sources/trails.spw#src_trail_roediger_karpicke_2006"
+  sources: [ ~"../registries/sources/trails.spw#src_trail_cepeda_2006" ]
+  basis: "Roediger and Karpicke test retrieval against restudy; Cepeda and colleagues synthesize the spacing studies"
+  see: [ ~"../learning/institutions/pedagogical-scaffolding.spw#institutions_pedagogy_retrieval", ~"../learning/institutions/pedagogical-scaffolding.spw#institutions_pedagogy_spacing" ]
+ }
+}
+
+^["try"]{
+ #>trail_first_contact_try_paste
+ ^["one_door_one_paste"]{
+  materials: [ "a scratch .spw file outside the cut", "one line from your own notes", "the spw command line" ]
+  steps: <<
+   "read the door for the mark you already type" ;
+   "write what you expect your pasted line to mean in Spw" ;
+   "paste the line into the scratch file and run spw select on it" ;
+   "mark whether it parsed as you meant, then close the file for the day"
+  >>
+  time: .{ n: 15, unit: "minutes" }
+  safety: "paste only your own words, with no names, emails, or account handles"
+  status: #implemented
+  cites: [ "packages/spw-cli/src/commands.ts:330" ]
+  shows: ~"./spw-first-contact.spw#trail_first_contact_one_fragment"
+ }
+}
+
+#>trail_first_contact_recall_q
+?["Does one door and a pause make the circuit easier later?"]{
+ #:depth #!educational ~#lens(applied attention)
+ #:claim #!speculative
+ ~#hypothesis: "A reader who recalls one door after a pause should predict more particle bindings correctly on the circuit than a reader who toured every door in one sitting."
+ !probe{ "keep your own tally of binding guesses on the circuit after a paused or an unpaused first contact" =id[p_trail_first_contact_pause] =kind[field] }
+ $%[spw.fam.clusters, spw.fam.false_friend]
+ ~"./spw-first-contact.spw#trail_first_contact_pause" ~#neighbor(nearest)
+}

@@ -7,7 +7,7 @@
 #:domain #!spw
 #:form #!glossary
 #:level #!practitioner
-#:review #!spot_checked
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
@@ -34,8 +34,19 @@
   ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
- corrections: #[ "the idioms are a-cut practice learned in this build, not repository canon" ]
+ corrections: #[
+  "the idioms are a-cut practice learned in this build, not repository canon",
+  "the link-check idiom said census counts anchored links as broken; that held until c79a096a, so the reason now names the commit",
+  "the lens and handle counts came from a scorecard snapshot and read no cell; they are recounted at commit 229aedcf with git grep and read registry cells"
+ ]
 }
 
 ^["edges"]{
@@ -85,16 +96,22 @@
  #>spw_idiom_closed_facets
  ^["closed_facets"]{
   #:claim #!settled
-  statement: "The raw shelf carried 165 distinct lens phrases in 167 uses, so its lens facet grouped almost nothing."
-  source: ~"../registries/sources/spw-branch.spw#src_spw_study_scorecard"
+  statement: "At 229aedcf the raw shelf carried 231 distinct lens phrases in 232 uses, so its lens facet grouped almost nothing."
+  reads: %[spw.corpus.raw_lens_distinct, spw.corpus.raw_lens_uses]
+  source: ~"../registries/sources/spw-branch.spw#src_spw_raw_shelf"
+  see: [ ~"../registries/sources/spw-branch.spw#src_spw_study_scorecard" ]
+  earlier: "the review scorecard counted 165 distinct in 167 uses on a 152-file snapshot of the same shelf"
   do: "draw every axis, lens, relation, and status from the vocabulary, and add a value only when it recurs"
   learned: ~"../vocabulary.spw#cut_vocabulary"
  }
  #>spw_idiom_registries
  ^["registries_once"]{
   #:claim #!settled
-  statement: "The raw shelf carried 337 metric handles and used each exactly once, so no two surfaces could be compared through a shared number."
-  source: ~"../registries/sources/spw-branch.spw#src_spw_study_scorecard"
+  statement: "At 229aedcf the raw shelf carried 469 metric handles and used each exactly once, so no two surfaces could be compared through a shared number."
+  reads: %[spw.corpus.raw_handles]
+  source: ~"../registries/sources/spw-branch.spw#src_spw_raw_shelf"
+  see: [ ~"../registries/sources/spw-branch.spw#src_spw_study_scorecard" ]
+  earlier: "the review scorecard counted 337 handles, all unique, on the earlier snapshot"
   do: "write a number once as a registry cell and read it from every surface that needs it"
   learned: ~"../registries/quantities/materials-and-engineering.spw#q_mateng_water"
  }
@@ -120,9 +137,9 @@
  }
  #>spw_idiom_check_links
  ^["check_links"]{
-  do: "check link health with spw resolve and the cut gate"
-  avoid: "reading link health from census or graph counts"
-  why: "census counts anchored links as broken"
+  do: "check link health with spw resolve and the cut gate, which exist to check links"
+  avoid: "reading link health from census or graph counts alone"
+  why: "until c79a096a census counted anchored links as broken; the counts now agree, but a count is not a check"
   learned: ~"./inspection-and-ir.spw#spw_ir_trust_census"
  }
 }

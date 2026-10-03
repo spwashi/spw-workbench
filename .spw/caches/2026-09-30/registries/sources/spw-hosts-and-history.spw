@@ -1,6 +1,6 @@
 # Sources: Spw Hosts and History
 #
-# Bibliography anchors for the editor hosts and workbench history surfaces. Repository entries pin a path at commit 1aa1dc23; claims add the exact lines in a cites string.
+# Bibliography anchors for the editor hosts and workbench history surfaces. Repository entries pin a path at a named commit, most at 1aa1dc23; claims add the exact lines in a cites string.
 
 #>src_hosts_registry
 #:layer #!reference
@@ -22,9 +22,33 @@
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r4"]{ event: #sourced, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected
+   note: "JetBrains and LSP4IJ pages reread; three entries added for commits after the as_of commit"
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r10"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+   note: "every pinned path was checked for existence at its commit; the cut plan was pinned to a commit that does not hold it"
+  }
+  ^["r11"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
- checked: "every repository path was opened at commit 1aa1dc23 on 2026-10-02; the four web documents were fetched the same day"
+ checked: "every repository path pinned to 1aa1dc23 was opened at that commit on 2026-10-02; the cut plan and the entries that name a later commit or the working tree were opened there instead; the four web documents were fetched on 2026-10-02"
  added: "on 2026-10-03 the commit gate, mutation, cut stream, and contract entries were opened in place; the two HOPL papers were matched against Crossref, the SVG and ECMA-48 records against their publisher pages, and the GQL date against its public record"
+ after_as_of: "three commits on 2026-10-03 follow 1aa1dc23: 6690d686 lands the lens index, c79a096a the corpus graph fragments, and 651b535b shelves waves 1 through 3; entries that need them pin their own commit"
+ corrections: #[
+  "the lens patch entry said unapplied; that held at 1aa1dc23, and the patch landed on main as 6690d686 on 2026-10-03",
+  "the rewrite plan entry was cited for a 2026-02-15 rewrite; it records the published rewrite of 2026-03-26, and its stream now has its own entry",
+  "SVG 2 was missing although the SVG plan names it; it is added beside SVG 1.1, which the cut keeps as the stable Recommendation",
+  "the cut plan entry was pinned to 1aa1dc23, which does not hold the file; it was written on 2026-10-02 and first committed in 651b535b",
+  "the commit-msg hook had no entry of its own; scripts/commit-msg is tracked and now has one"
+ ]
  kinds: "code and canon entries name a file and a commit; study entries are internal reports; web entries carry a url and an access date"
  groups: #[ vscode, lsp, jetbrains, neovim, canon, history, external, curriculum_precedents ]
 }
@@ -76,7 +100,9 @@
  #>src_hosts_seed_comments
  ^["seed_comments"]{ title: "Seed lexer comment matchers", path: "packages/spw-seed/src/lexer/matchers/comments.ts", commit: "1aa1dc23", kind: #code }
  #>src_hosts_lens_patch
- ^["lens_patch"]{ title: "Lens visibility patch for the LSP index and Concepts tree, unapplied", path: ".agents/plans/caches-cut-2026-09-30/references/patches/lens.diff", commit: "1aa1dc23", kind: #study }
+ ^["lens_patch"]{ title: "Lens visibility patch for the LSP index and Concepts tree, unapplied at 1aa1dc23", path: ".agents/plans/caches-cut-2026-09-30/references/patches/lens.diff", commit: "1aa1dc23", kind: #study }
+ #>src_hosts_lens_commit
+ ^["lens_commit"]{ title: "Commit 6690d686: index lens readings and show them where wonders are read", path: "packages/spw-lsp/src/server-index.ts, packages/spw-lsp/src/apposition.ts, packages/spw-lsp/src/handlers/wonder.ts", commit: "6690d686", kind: #code }
  #>src_hosts_fragnav_patch
  ^["fragnav_patch"]{ title: "Fragment navigation patch and hardening review", path: ".agents/plans/caches-cut-2026-09-30/references/patches/fragnav-hardening.md", commit: "1aa1dc23", kind: #study }
 }
@@ -132,6 +158,8 @@
  ^["caches_index"]{ title: "Raw caches shelf index with scrutiny and quarantine frames", path: ".spw/caches/index.spw", commit: "1aa1dc23", kind: #canon }
  #>src_hosts_resume_note
  ^["resume_note"]{ title: "Resume direction note of 2026-09-30, an owner hold", path: ".spw/caches/resume/2026-09-30-direction.spw", commit: "1aa1dc23", kind: #canon }
+ #>src_hosts_resume_note_w3
+ ^["resume_note_w3"]{ title: "Resume direction note, its not-in-this-revision frame rewritten when waves 1 through 3 were shelved", path: ".spw/caches/resume/2026-09-30-direction.spw", commit: "651b535b", kind: #canon }
  #>src_hosts_claude_md
  ^["claude_md"]{ title: "Repository harness notes, commit conventions", path: "CLAUDE.md", commit: "1aa1dc23", kind: #canon }
  #>src_hosts_tokens_study
@@ -141,14 +169,18 @@
  #>src_hosts_review_scorecard
  ^["review_scorecard"]{ title: "Review scorecard of the raw shelf, two rounds", path: ".agents/plans/caches-cut-2026-09-30/references/review/scorecard.md", commit: "1aa1dc23", kind: #study }
  #>src_hosts_cut_plan
- ^["cut_plan"]{ title: "Final plan v3 for the 2026-09-30 cut", path: ".agents/plans/caches-cut-2026-09-30/references/panel/final-plan-v3.json", commit: "1aa1dc23", kind: #study }
+ ^["cut_plan"]{ title: "Final plan v3 for the 2026-09-30 cut, written 2026-10-02 and first committed in 651b535b", path: ".agents/plans/caches-cut-2026-09-30/references/panel/final-plan-v3.json", commit: "651b535b", kind: #study }
 }
 
 ^["history"]{
  #>src_hosts_git_log
  ^["git_log"]{ title: "Git history of main", path: "git log and git rev-list at the named commit", commit: "1aa1dc23", kind: #record }
+ #>src_hosts_git_log_w3
+ ^["git_log_w3"]{ title: "Git history of main through the commit that shelved waves 1 through 3", path: "git log, git rev-list, and git archive at the named commit", commit: "651b535b", kind: #record }
  #>src_hosts_rewrite_plan
  ^["rewrite_plan"]{ title: "Archived plan: rewrite-hash-references", path: ".agents/plans/_archive/rewrite-hash-references/PLAN.md", commit: "1aa1dc23", kind: #record }
+ #>src_hosts_rewrite_stream
+ ^["rewrite_stream"]{ title: "Archived plan stream: rewrite-hash-references, 2026-03-26", path: ".agents/plans/_archive/rewrite-hash-references/wip.spw", commit: "1aa1dc23", kind: #record }
  #>src_hosts_plan_index
  ^["plan_index"]{ title: "Plans flat index, derived from plan cards", path: ".agents/plans/index.spw", commit: "1aa1dc23", kind: #record }
  #>src_hosts_plan_index_script
@@ -161,6 +193,8 @@
  ^["plan_cards_curriculum"]{ title: "Curriculum plans: html-css, html-svg, logic-terminal mastery, with PLAN.md and SOURCE.txt", path: ".agents/plans", commit: "1aa1dc23", kind: #record }
  #>src_hosts_commit_hooks
  ^["commit_hooks"]{ title: "Commit gate hooks: pre-commit, commit-msg, commit-review scripts, Touch ID helper", path: "scripts/pre-commit", commit: "1aa1dc23", kind: #code }
+ #>src_hosts_commit_msg_hook
+ ^["commit_msg_hook"]{ title: "Tracked commit-msg hook, which sources the message validator", path: "scripts/commit-msg", commit: "1aa1dc23", kind: #code }
  #>src_hosts_commit_workflow
  ^["commit_workflow"]{ title: "Commit with Touch ID verification workflow", path: ".agents/workflows/commit-review.md", commit: "1aa1dc23", kind: #canon }
  #>src_hosts_commit_skill
@@ -168,7 +202,7 @@
  #>src_hosts_cli_help
  ^["cli_help"]{ title: "spw help output", path: "packages/spw-cli/src/main.ts help", commit: "1aa1dc23", kind: #record }
  #>src_hosts_cut_census
- ^["cut_census"]{ title: "Census of the 2026-09-30 cut by grep over care and review particles", path: ".spw/caches/2026-09-30", commit: "working tree on 2026-10-03 during wave 3", kind: #record }
+ ^["cut_census"]{ title: "Census of the 2026-09-30 cut by grep over care and event receipts", path: ".spw/caches/2026-09-30", commit: "651b535b, which shelved waves 1 through 3", kind: #record }
  #>src_hosts_cut_stream
  ^["cut_stream"]{ title: "Plan card and stream of caches-cut-2026-09-30", path: ".agents/plans/caches-cut-2026-09-30/wip.spw", commit: "working tree on 2026-10-03", kind: #record }
  #>src_hosts_cut_contract
@@ -204,7 +238,7 @@
   title: "Language Server Protocol (LSP), IntelliJ Platform Plugin SDK"
   publisher: "JetBrains"
   url: "https://plugins.jetbrains.com/docs/intellij/language-server-protocol.html"
-  accessed: "2026-10-02"
+  accessed: "2026-10-02; reread 2026-10-03, when the table gave patch releases in brackets"
   kind: #documentation
  }
  #>src_hosts_lsp4ij
@@ -212,7 +246,7 @@
   title: "LSP4IJ, a Language Server Protocol client for IntelliJ"
   publisher: "Red Hat, EPL-2.0"
   url: "https://github.com/redhat-developer/lsp4ij"
-  accessed: "2026-10-02"
+  accessed: "2026-10-02; reread 2026-10-03: EPL-2.0, all IntelliJ flavors, IntelliJ IDEA 2024.2 or newer"
   kind: #software
  }
  #>src_hosts_vscode_languageclient
@@ -237,7 +271,9 @@
   title: "Web Content Accessibility Guidelines (WCAG) 2.2"
   publisher: "W3C Recommendation"
   year: 2023
+  version: "first a Recommendation in October 2023; the page read on 2026-10-03 is the Recommendation of 12 December 2024"
   url: "https://www.w3.org/TR/WCAG22/"
+  accessed: "2026-10-03; SC 1.4.3 and the large-scale text definition reread"
   kind: #standard
  }
 }
@@ -259,6 +295,17 @@
   date: "16 August 2011"
   url: "https://www.w3.org/TR/SVG11/"
   accessed: "2026-10-03"
+  kind: #standard
+ }
+ #>src_hosts_svg2_cr_2018
+ ^["svg2_cr_2018"]{
+  title: "Scalable Vector Graphics (SVG) 2"
+  publisher: "W3C Candidate Recommendation"
+  year: 2018
+  date: "04 October 2018"
+  editors: "Amelia Bellamy-Royds; Bogdan Brinza; Chris Lilley; Dirk Schulze; David Storey; Eric Willigers"
+  url: "https://www.w3.org/TR/SVG2/"
+  accessed: "2026-10-03; the dated version at that address was still the 2018 Candidate Recommendation"
   kind: #standard
  }
  #>src_hosts_ecma48_1991

@@ -1,0 +1,186 @@
+# Rubric Lens
+#
+# Compensatory, conjunctive, and multiplicative aggregation applied to the same synthetic rubric profiles: each rule ranks them differently, and only one of the three survives a relabeling of the levels.
+
+#>spw_lab_rubric_lens
+#:layer #!pragmatics
+#:domain #!spw
+#:form #!probe_battery
+#:level #!foundation
+#:review #!adversarial_checked
+#:valence #!bonk
+
+^"emit"{
+ ~#title: "Rubric Lens"
+ ~#claim: "The same synthetic rubric profiles rank differently under a mean, a minimum, and a geometric mean, so the aggregation rule is a policy choice that the scores alone do not reveal."
+ ~#proof: "Einhorn contrasted compensatory and noncompensatory rules in 1970; Stevens tied each scale to the transformations it allows; productConstraint at commit 1aa1dc23 computes the multiplicative rule."
+ ~#door: "Score profiles A and B under all three rules before you read the ledger, then say which rule your own grading uses."
+ ~#audience: "teachers, assessment designers, review panels, and Spw authors who write review rules"
+ continuity: "Rubric Lens | aggregation rule"
+ cold_open: "Average the scores and one profile wins; take the weakest score and the other wins, so the aggregation rule decides the ranking."
+}
+
+^"provenance"{
+ as_of: "2026-10-03"
+ generator: "claude-opus-5.5"
+ revised_by: "claude-opus-5.5 writer"
+ lineage: #[ "new", "persona study contraption_catalog[17], references/studies/persona-synthesis.json", "sketch references/spw-branch/seeds/contraptions/rubric-lens.spw" ]
+ method: #authored
+ evidence: #[ "the three aggregates for each profile under both level maps were computed by a scratch script on 2026-10-03" ]
+ ^["receipts"]{
+  ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 persona study", care: #skim, outcome: #raw }
+  ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+ }
+ corrections: #[
+  "the level map and the profiles are teaching parameters; they sit in the parameters frame and in probe expectations, never in a claim",
+  "the persona study read the canon rule that subjective measures may rank and disclose only as grading ethics; it governs which measures may gate writes, and the mirror says so",
+  "a second level map is added, since a ranking that changes under relabeling is the point the first sketch could not show",
+  "the mirror said a sourced surface fails if any keystone claim lacks a source; the gate checks every claim that is neither speculative nor interpretive, on surfaces reviewed sourced or higher, and warns elsewhere"
+ ]
+}
+
+^["edges"]{
+ grounds: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_einhorn_1970" ]
+ see: [ ~"./band-coverage.spw#spw_lab_band_coverage", ~"./closure-atlas.spw#spw_lab_closure_atlas" ]
+}
+
+^["concepts"]{
+ primary: [ #measure, #accountability ]
+ transfers: [ #ordering, #reflexive_mirror ]
+ tensions: [ #overclaim ]
+}
+
+^["tool"]{
+ status: #proposed
+ verb: "a verb that would apply a level map to rubric frames and print every aggregate side by side; not yet a command"
+ implemented: #[
+  "packages/spw-seed/src/math/equation.ts:104 productConstraint, a clamped product with optional exponents; exponents of one quarter give the geometric mean of four factors",
+  "packages/spw-seed/src/canonical/measure-protocol.ts:441 loadMeasureContextFromSpw"
+ ]
+ sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_equation", ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_measure" ]
+}
+
+#>spw_lab_rubric_lens_parameters
+^["parameters"]{
+ status: "teaching parameters for this bench; the profiles are synthetic and describe no student"
+ order: << beginning ; developing ; proficient ; extending >>
+ map_even: .{ beginning: 0.25, developing: 0.5, proficient: 0.75, extending: 1.0 }
+ map_stretched: .{ beginning: 0.1, developing: 0.5, proficient: 0.9, extending: 1.0 }
+ ~#(both maps keep the order of the levels; only the spacing differs)
+ ^["profiles"]{
+  #>spw_lab_rubric_lens_profile_a
+  ^["profile_a"]{
+   evidence: #extending, reasoning: #beginning,
+   design: #extending, communication: #extending
+  }
+  #>spw_lab_rubric_lens_profile_b
+  ^["profile_b"]{
+   evidence: #proficient, reasoning: #proficient,
+   design: #proficient, communication: #proficient
+  }
+  #>spw_lab_rubric_lens_profile_c
+  ^["profile_c"]{
+   evidence: #developing, reasoning: #developing,
+   design: #developing, communication: #developing
+  }
+ }
+ ^["rules"]{
+  compensatory: "arithmetic mean: strength on one criterion can make up for weakness on another"
+  conjunctive: "minimum: the weakest criterion sets the result"
+  multiplicative: "geometric mean: every criterion counts and a near-zero one drags the whole down"
+ }
+}
+
+^["world"]{
+ #>spw_lab_rubric_lens_einhorn
+ ^["noncompensatory"]{
+  #:claim #!settled
+  statement: "Einhorn compared linear compensatory models with conjunctive and disjunctive noncompensatory models of judgment, in which a low value on one attribute cannot be offset by a high value elsewhere."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_einhorn_1970"
+ }
+ #>spw_lab_rubric_lens_stevens
+ ^["admissible"]{
+  #:claim #!settled
+  statement: "Stevens defined an ordinal scale as one whose statements survive any order-preserving transformation, so treating ordinal levels as equally spaced adds an interval assumption."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_stevens_1946"
+ }
+ #>spw_lab_rubric_lens_min_invariant
+ ^["minimum_survives"]{
+  #:claim #!settled
+  statement: "The minimum of a profile picks the same level under every order-preserving relabeling, while the mean and the geometric mean depend on the spacing chosen."
+  source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_stevens_1946"
+  ~#(the minimum commutes with any increasing map, so it is safe on an ordinal scale)
+ }
+}
+
+^["battery"]{
+ #>spw_lab_rubric_lens_even
+ ^["even_map"]{
+  !probe{ "score profiles A, B, and C under the even map with all three rules" =id[p_contrap_rubric_even] =kind[calc] }
+  predict: ?{ "which profile does each rule put first" } ~<guess>
+  expect: "the mean puts A first at 0.8125; the minimum and the geometric mean put B first at 0.75, with A at 0.25 and near 0.71"
+  shows: ~"./rubric-lens.spw#spw_lab_rubric_lens_einhorn"
+ }
+ #>spw_lab_rubric_lens_split
+ ^["a_against_c"]{
+  !probe{ "rank A against C under each rule" =id[p_contrap_rubric_split] =kind[calc] }
+  expect: "the mean and the geometric mean prefer A, the minimum prefers C, so each pair of rules disagrees somewhere among the three profiles"
+  shows: ~"./rubric-lens.spw#spw_lab_rubric_lens_parameters"
+ }
+ #>spw_lab_rubric_lens_stretch
+ ^["stretched_map"]{
+  !probe{ "switch to the stretched map and rerank A against B under each rule" =id[p_contrap_rubric_stretch] =kind[calc] }
+  predict: ?{ "which rule changes its verdict" } ~<guess>
+  expect: "only the mean changes: A falls to 0.775 and B rises to 0.9, while the minimum ranks the pair as before"
+  shows: ~"./rubric-lens.spw#spw_lab_rubric_lens_min_invariant"
+ }
+}
+
+#>spw_lab_rubric_lens_mirror
+^["language_mirror"]{
+ #>spw_lab_rubric_lens_review_rules
+ ^["two_review_rules"]{
+  #:claim #!settled
+  statement: "The cut aggregates review two ways: the review axis takes the highest care any passing receipt reports, while a surface reviewed sourced or higher fails if any non-speculative, non-interpretive claim lacks a source."
+  scope: "the gate reads every #:claim whose mood is not speculative or interpretive, not only keystone claims, and fails on surfaces reviewed sourced, adversarial_checked, or expert_reviewed; elsewhere it warns"
+  cites: [ "scripts/analyzers/spw-cut-gate.ts:316-322" ]
+  sources: [ ~"../../registries/sources/spw-contraptions.spw#src_contrap_cut_contract", ~"../../registries/sources/spw-contraptions.spw#src_contrap_code_gate" ]
+ }
+ reading: "a maximum over receipts and a minimum over claims; honesty about sourcing is conjunctive, while the record of care is disjunctive"
+ canon: "docs/theory/spw/operational-field.spw:71 lets subjective measures rank and disclose only; it governs which measures may gate keys and writes, not how a person is graded"
+ standing: "a-cut: the review rules are this cut contract and gate; a-canon: the measure law is canon text"
+ source: ~"../../registries/sources/spw-contraptions.spw#src_contrap_canon_operational_field"
+ !probe{ "list surfaces whose review axis would drop if it were read as a minimum over receipts instead of a maximum" =id[p_contrap_rubric_mirror] =kind[census] }
+}
+
+^["limits"]{
+ holds: "how a stated rule ranks stated profiles under a stated level map"
+ fails: "a rubric is ordinal, so any numeric map is a teaching choice; the profiles are synthetic; and no tool here scores, ranks, or records a student or a reader"
+}
+
+^["try"]{
+ #>spw_lab_rubric_lens_try
+ ^["three_rules_by_hand"]{
+  materials: [ "a rubric you already use or one invented for the exercise", "a calculator", "paper" ]
+  steps: << "write two invented profiles, one even and one with a single weak criterion" ; "map levels to numbers and write the map down" ; "compute the mean, the minimum, and the geometric mean for each" ; "change the map without changing its order and compute again" ; "note which verdicts moved" >>
+  time: .{ n: 20, unit: "minutes" }
+  safety: "use invented profiles only, never a real person"
+  shows: ~"./rubric-lens.spw#spw_lab_rubric_lens_stretch"
+ }
+}
+
+#>spw_lab_rubric_lens_q
+?["When a course announces a conjunctive grading rule, does effort shift toward the weakest criterion?"]{
+ #:depth #!educational ~#lens(applied attention)
+ #:claim #!speculative
+ ~#hypothesis: "Announcing a minimum rule should shift practice toward each learner weakest criterion more than announcing a mean, since a strength can no longer cover a gap."
+ !probe{ "review published studies of grading schemes for reported changes in study time per criterion, by announced rule" =id[p_contrap_rubric_q] =kind[lit] }
+ $%[probe.wonder_count]
+ ~"./rubric-lens.spw#spw_lab_rubric_lens_einhorn" ~#neighbor(nearest)
+ breaks: "a formula captures none of the growth, context, and evidence that teachers weigh beside a rubric, and learners respond to more than the announced rule"
+}

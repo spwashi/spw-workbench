@@ -7,7 +7,7 @@
 #:domain #!registry
 #:form #!registry
 #:level #!mixed
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"provenance"{
@@ -22,14 +22,22 @@
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
  }
  status_legend: "settled cells were read from the linked source or follow from a stated exact derivation; verify cells hold a reported value no one on this bench has read in its source yet"
  derivations: "a cell with a derivation field states how its value follows from definitions; the derivation checker contraption reads these fields, and no gate evaluates them yet"
- review_note: "every cell links a source; the 2x2 game count now carries its derivation and is settled"
+ review_note: "every cell links a source; the 2x2 game count now carries its derivation and is settled; on 2026-10-03 an adversarial pass rechecked the derivations and counts the bench cites, corrected the drift direction, and found no other error"
  corrections: #[
-  "the strict ordinal 2x2 game count was a verify cell; it follows exactly from four-factorial squared over four, since swapping either player strategies fixes no strict game, so it is settled"
+  "the strict ordinal 2x2 game count was a verify cell; it follows exactly from four-factorial squared over four, since swapping either player strategies fixes no strict game, so it is settled",
+  "the drop-frame drift cell said the labels fall behind real time; dropping 108 labels an hour where 107.892 would be exact overcorrects, so the labels run ahead, and the magnitude was right"
  ]
  added: "on 2026-10-03 four cells were added: the Beaufort metres-per-second shared edges, the prime count below one hundred, the Collatz run from 27, and the Alhambra plane-group count Grunbaum reports, which is contested"
+ added_late: "on 2026-10-03 the drop-frame drift cell was added for the derivation checker; its derivation was evaluated in exact fractions, and every other derivation field in this registry was evaluated the same day and passed its own tolerance"
  folded: "the plan named topic registries for dimensions and symmetries; their cells live here under q_lab_dim and q_lab_sym, and registries/symmetries.spw holds the symmetry rows"
 }
 
@@ -47,7 +55,7 @@
 ^["keys"]{
  dim: #[ si_base_count, knot_m_per_s ]
  sym: #[ point_groups_3d, space_groups_3d, bravais_3d, plane_groups, frieze_groups, alhambra_plane_groups_n ]
- rate: #[ ntsc_fps, df_labels_per_hour, gregorian_leaps_per_400y, mired_at_3200k ]
+ rate: #[ ntsc_fps, df_labels_per_hour, df_drift_s_per_day, gregorian_leaps_per_400y, mired_at_3200k ]
  num: #[ collatz_verified_log2, eca_rule_count, primes_below_100, collatz_27_steps ]
  games: #[ strict_ordinal_2x2_count ]
  band: #[ beaufort_force_count, beaufort_mps_shared_n ]
@@ -106,6 +114,10 @@
  %contrap.rate.df_labels_per_hour{
   value: 108, unit: "frame labels per hour", abs: 0, derivation: "2 x (60 - 6)"
   at: "drop-frame timecode skips labels 00 and 01 each minute except minutes divisible by ten", src: ~"../sources/spw-contraptions.spw#src_contrap_smpte_12_1_2014", status: #settled
+ }
+ %contrap.rate.df_drift_s_per_day{
+  value: 0.0864, unit: "s/day", abs: 0.00001, derivation: "24 x 108 / 30000"
+  at: "how far drop-frame labels run ahead of real time in a day at 30000/1001; timecode reads 01:00:00;00 about 3.6 ms before a real hour has passed, and the 1001 cancels", src: ~"../sources/spw-contraptions.spw#src_contrap_smpte_12_1_2014", status: #settled
  }
  %contrap.rate.gregorian_leaps_per_400y{
   value: 97, unit: "leap years", abs: 0, derivation: "100 - 3"

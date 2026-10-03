@@ -7,7 +7,7 @@
 #:domain #!lang_design
 #:form #!comparison
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 
 ^"emit"{
@@ -30,13 +30,22 @@
   ^["r1"]{ event: #generated, at: "2026-09-30", agent: "gemini-3.8-flash-high", care: #glance, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the raw file listed ten operators and left out the hash, the dot, and the coupling mark; canon names thirteen",
   "the raw file called = a constraint; canon reads = as configuration, and = with a body as a neutral bias edge",
   "the raw file read valence as emotional and operational charge; canon calls the pentad charge-neutral material quality",
   "the raw file revived dual_read_cards; canon conventions retire dual-read as a public term",
-  "the raw claims that files test their own invariants and record their own telemetry had no basis in code and are dropped"
+  "the raw claims that files test their own invariants and record their own telemetry had no basis in code and are dropped",
+  "the Python family meaning of @ now names matrix multiplication beside decorators, citing PEP 465",
+  "the refuted raw-list claim counted ten operators and named the coupling mark, which only the lineage file shows; it now states what the scorecard records and cites canon for thirteen"
  ]
 }
 
@@ -64,7 +73,7 @@
    c: ~"../../registries/sources/spw-design-studies.spw#src_lab_kr_1988"
    shell: ~"../../registries/sources/spw-design-studies.spw#src_lab_posix_2017"
    rust: ~"../../registries/sources/spw-design-studies.spw#src_lab_klabnik_nichols_2023"
-   python: ~"../../registries/sources/spw-design-studies.spw#src_lab_pep318"
+   python: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_pep318", ~"../../registries/sources/spw-design-studies.spw#src_lab_pep465" ]
    lisp: ~"../../registries/sources/spw-design-studies.spw#src_lab_clhs_1996"
    markdown: ~"../../registries/sources/spw-design-studies.spw#src_lab_commonmark"
    regex: ~"../../registries/sources/spw-design-studies.spw#src_lab_posix_2017"
@@ -133,7 +142,7 @@
  ^["at"]{
   mark: "@"
   canon: "perspective"
-  families: .{ python: "decorator", lisp: "splice inside a backquote, as ,@", chat: "a mention" }
+  families: .{ python: "decorator, and matrix multiplication", lisp: "splice in a backquote, as ,@", chat: "a mention" }
   spw: "a root reference such as @root/x.spw, notifying no one"
   gloss: ~"../glossary/operators.spw#spw_gloss_op_at"
  }
@@ -223,9 +232,10 @@
  #>lang_design_spw_position_raw_list
  ^["raw_operator_list"]{
   #:claim #!refuted
-  statement: "The raw generation listed ten operators, called = a constraint, and left out the hash, the dot, and the coupling mark."
+  statement: "The raw generation left out the hash and dot sigils and called = a constraint, as the scorecard records; canon names thirteen operators."
   source: ~"../../registries/sources/spw-design-studies.spw#src_lab_study_scorecard"
   counter: ~"../../registries/sources/spw-design-studies.spw#src_lab_canon_operators"
+  cites: [ ".agents/plans/caches-cut-2026-09-30/references/review/scorecard.md:121", "docs/theory/spw/operators.spw:28-42" ]
  }
  #>lang_design_spw_position_valence
  ^["valence_as_material"]{

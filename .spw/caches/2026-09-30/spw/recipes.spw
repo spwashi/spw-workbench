@@ -7,7 +7,7 @@
 #:domain #!spw
 #:form #!protocol
 #:level #!practitioner
-#:review #!spot_checked
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -34,10 +34,18 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the study wonder recipe used spw emit expand with --bind; emit expand fills templates and is not a wonder view, and the rename to emit fill is only a proposal",
-  "recipes name outline, never its aliases skim and read"
+  "recipes name outline, never its aliases skim and read",
+  "the registry recipe check said census counts anchored links as broken; that held until c79a096a, and a rerun at 651b535b reported none broken"
  ]
 }
 
@@ -100,8 +108,8 @@
   command: "spw census .spw/caches/2026-09-30/registries"
   keeps: #[ files, lines, links, roles ]
   drops: #[ values, units, status, sources ]
-  check: "census counts anchored links as broken, so trust spw resolve or the cut gate for link health"
-  as_of: "1aa1dc23, 2026-10-02"
+  check: "read values, units, and status in the registry itself; since c79a096a census resolves links as spw resolve does, and resolve or the cut gate stay the link checks"
+  as_of: "651b535b, 2026-10-03"
   see: [ ~"./inspection-and-ir.spw#spw_ir_tool_trust" ]
  }
  #>spw_recipes_outline

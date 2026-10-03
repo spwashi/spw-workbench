@@ -7,7 +7,7 @@
 #:domain #!spw
 #:form #!field_guide
 #:level #!intro
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!honk
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -36,10 +36,23 @@
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r10"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r11"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the study used a medication dilution as its ratio example; this door uses a screen aspect ratio, so no medication concentration appears",
-  "the borrowed-line keystone cited spw-cut-gate.ts lines 214 to 217; the empty-binding check runs from line 215 to 217"
+  "the borrowed-line keystone cited spw-cut-gate.ts lines 214 to 217; the empty-binding check runs from line 215 to 217",
+  "the only-binder keystone cited only the lines that build a binding node; it now cites from the colon check at line 894"
  ]
 }
 
@@ -53,7 +66,7 @@
   #:claim #!settled
   statement: "A key, a colon, and a value make a binding node, and a colon inside the value makes another binding, so a bare call time becomes a key bound to a number."
   source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
-  cites: [ "packages/spw-seed/src/grammar/expressions.ts:922-928" ]
+  cites: [ "packages/spw-seed/src/grammar/expressions.ts:894-928" ]
   probe_run: "call: 06:30 binds call to a binding of 06 to 30, and aspect: 16:9 binds aspect to a binding of 16 to 9"
   ~#spoken(colon)
   ^["limits"]{

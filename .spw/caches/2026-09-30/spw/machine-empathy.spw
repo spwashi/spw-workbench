@@ -7,7 +7,7 @@
 #:domain #!spw
 #:form #!field_guide
 #:level #!advanced
-#:review #!spot_checked
+#:review #!adversarial_checked
 #:valence #!bane
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -35,12 +35,21 @@
   ^["r1"]{ event: #generated, at: "2026-10-02", agent: "claude-opus-5.5", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the study labeled cut rules and the owner note as canon; here a-canon means repository canon, a-cut means this dated cut, and owner hold means the resume note",
   "the study said practice logs accuracy to a reader-owned file; tools write nothing about readers, and a reader may keep a tally by hand",
   "the path ranks path-aware parsing before the honesty floor, since publishing lexer errors first would flood wip files",
-  "the care ladder and receipts have one home in inspection and IR; this surface links there"
+  "the care ladder and receipts have one home in inspection and IR; this surface links there",
+  "the pathless LSP parse sat at server-index.ts:371 at 1aa1dc23 and sits at :387 at 651b535b, after 6690d686 added the apposition index",
+  "the not-a-stage claim credited canon with saying ladder rungs never rank a reader; canon says only that the form-catalog arrow is not a developmental stage, and this cut extends that"
  ]
 }
 
@@ -104,9 +113,16 @@
  #>spw_empathy_not_stage
  ^["not_a_stage"]{
   #:claim #!settled
-  statement: "Canon says form-ladder rungs are not a developmental stage, so a ladder rung never ranks a reader."
+  statement: "Canon says the arrow between forms in the form catalog means ordered enrichment or inspection, and not a developmental stage."
   source: ~"../registries/sources/spw-branch.spw#src_spw_canon_form_ladders"
-  cites: [ "docs/theory/spw/form-ladders.spw:81" ]
+  cites: [ "docs/theory/spw/form-ladders.spw:80-81" ]
+  label: "a-canon"
+  ^["cut_extension"]{
+   #:claim #!interpretive
+   statement: "This cut extends that reading to its own level and care ladders, so a rung never ranks a reader."
+   source: ~"../registries/sources/spw-branch.spw#src_spw_study_critic"
+   label: "a-cut"
+  }
  }
  orthogonal: "an intro reader may audit a graduate surface, and a practitioner may glance at an intro door"
 }
@@ -158,7 +174,7 @@
  label: "ranked proposals; tooling lands outside this cut"
  ^["r1_path_aware_parse"]{
   change: "parse with the document path and a diagnostics-only event policy in the LSP"
-  cites: [ "packages/spw-lsp/src/server-index.ts:371" ]
+  cites: [ "packages/spw-lsp/src/server-index.ts:387" ]
   status: #proposed, effort: "small"
   reads: %[spw.lsp.wip_files, spw.lsp.wip_errors_pathless]
  }

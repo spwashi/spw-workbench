@@ -7,7 +7,7 @@
 #:domain #!spw_perspectives
 #:form #!comparison
 #:level #!intro
-#:review #!unreviewed
+#:review #!adversarial_checked
 #:valence #!honk
 
 ^"emit"{
@@ -34,7 +34,21 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5 study agents", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r6"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r7"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #pass
+  }
+  ^["r8"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[
+  "the pipes row said both pipe forms end in a greater-than sign; the magrittr pipe ends in a percent sign, and the greater-than sign sits in its middle"
+ ]
 }
 
 ^["edges"]{
@@ -46,7 +60,7 @@
  #>spw_perspectives_social_standing
  ^["hypothesis"]{
   #:claim #!interpretive
-  statement: "These rows were written by an agent outside the cluster; they stay unreviewed until a working social scientist moves one real codebook page through them."
+  statement: "These rows were written by an agent outside the cluster; they stay hypotheses until a working social scientist moves one real codebook page through them."
   member_probe: "a researcher converts one page of a public codebook, marks each row as fitting or not, and lists any field with no home"
  }
 }
@@ -64,8 +78,8 @@
  ^["pipes"]{
   #:claim #!settled
   habit: "a magrittr pipe or a native R pipe between two steps"
-  statement: "Both pipe forms end in a greater-than sign, so either one outside a string turns the surface to prose."
-  probe_run: "d: a %>% b and d: a |> b each degraded to prose at 1aa1dc23"
+  statement: "Both pipe forms contain a greater-than sign, inside %>% and at the end of |>, and it lexes as a capsule close, so either one outside a string turns the surface to prose."
+  probe_run: "d: a %>% b and d: a |> b each degraded to prose at 1aa1dc23, both with the warning that structured parsing stopped at CAPSULE_CLOSE"
   source: ~"../../registries/sources/spw-doors-perspectives.spw#src_doors_seed_grammar"
  }
  #>spw_perspectives_social_missing

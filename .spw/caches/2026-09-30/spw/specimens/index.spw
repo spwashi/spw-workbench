@@ -7,17 +7,17 @@
 #:domain #!spw
 #:form #!index
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!honk
 
 ^"emit"{
  ~#title: "Spw Specimens"
- ~#claim: "One hundred twenty field habits were fed to the parser one line at a time, and most of them changed shape with no tool reporting it."
+ ~#claim: "One hundred twenty field habits were fed to the parser one at a time; most changed shape, and half of all rows changed shape with no tool reporting it."
  ~#proof: "Every row records its fingerprint signature, verdict, and loudness at commit 1aa1dc23, and all rows were replayed against the parser on 2026-10-03."
  ~#door: "Open the battery for your own field, then follow a row to the false friend it illustrates."
  ~#audience: "practitioners checking their own notation, and maintainers looking for regression fixtures"
  continuity: "Spw Specimens | changed shape"
- cold_open: "Most habits from other fields changed shape in the parser, and no tool said a word."
+ cold_open: "Most habits from other fields changed shape in the parser, and half of all habits did it with no tool saying a word."
 }
 
 ^"provenance"{
@@ -30,7 +30,14 @@
   ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #pass }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[
+  "the card said most rows changed shape with no tool reporting it; a replay of all rows finds that most changed shape, but only half of all rows did so silently"
+ ]
 }
 
 ^["edges"]{
@@ -74,6 +81,13 @@
    holds: "one parse of one line, with any following line and a final newline, at commit 1aa1dc23"
    fails: "the count measures the parser, not how strongly a habit pulls on a reader, and a parser change makes it a historical reading"
   }
+ }
+ #>spw_specimens_quiet_change
+ ^["quiet_change"]{
+  #:claim #!settled
+  statement: "Every row that passes every tool changed shape except the clean ones, so half of all rows changed shape with no tool reporting it."
+  reads: %[gloss.spec.rows_n, gloss.spec.silent_n, gloss.spec.clean_n]
+  source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes"
  }
 }
 

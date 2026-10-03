@@ -7,7 +7,7 @@
 #:domain #!spw
 #:form #!protocol
 #:level #!practitioner
-#:review #!spot_checked
+#:review #!adversarial_checked
 #:valence #!boon
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -35,11 +35,17 @@
   ^["r1"]{ event: #generated, at: "2026-10-01", agent: "claude-opus-5.5", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the study had practice log accuracy per role to a file; tools write nothing about readers here, and a reader may keep a tally by hand",
   "exercise one used the alias read; it now uses the canonical outline command with a line window",
-  "presets in the study were scratch JSON never loaded in VS Code; they carry status scratch"
+  "presets in the study were scratch JSON never loaded in VS Code; they carry status scratch",
+  "the disfluency counter cited Diemand-Yauman 2011, which tested retention in learning; the reasoning claim Meyer failed to replicate is Alter, Oppenheimer, Epley, and Eyre 2007"
  ]
 }
 
@@ -117,11 +123,12 @@
   #:claim #!refuted
   statement: "Hard-to-read fonts improve problem solving on Cognitive Reflection Test items."
   source: ~"../registries/sources/spw-branch.spw#src_spw_meyer_2015"
-  counter: ~"../registries/sources/spw-branch.spw#src_spw_diemand_yauman_2011"
+  counter: ~"../registries/sources/spw-branch.spw#src_spw_alter_2007"
+  see: [ ~"../registries/sources/spw-branch.spw#src_spw_diemand_yauman_2011" ]
   reads: %[spw.research.meyer_experiments]
   ^["limits"]{
    holds: "the refutation covers disfluent fonts on reasoning problems"
-   fails: "it does not test learning from text or code; this surface makes no claim that monochrome improves learning"
+   fails: "it does not test learning from text or code, the separate claim of Diemand-Yauman and colleagues; this surface makes no claim that monochrome improves learning"
   }
  }
  #>spw_practice_generation

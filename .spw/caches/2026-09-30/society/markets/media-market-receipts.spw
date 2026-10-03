@@ -36,10 +36,14 @@
   ^["r5"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
   ^["r6"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker",
+   care: #adversarial, outcome: #corrected }
+  ^["r9"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  recheck: "on 2026-10-03 the writer re-read the Edison page of 2024-10-23, the Nielsen release of 2025-06-17, and the IAB 2025 page; every printed value matched, and a note on other Edison waves was added"
  corrections: #[
-  "fact check: IAB 2024 was given as near 258 billion dollars; the report gives 258.6 billion, up 14.9 percent, and its web headline rounds to 259 and 15"
+  "fact check: IAB 2024 was given as near 258 billion dollars; the report gives 258.6 billion, up 14.9 percent, and its web headline rounds to 259 and 15",
+  "fact check 2026-10-03: the windows row called 90 days the theatrical exclusivity; that was the window before physical home video, and digital sell-through came after 74 to 76 days"
  ]
  rebuilt: "podcast platform shares are rebuilt from the Edison page, not from the dropped raw podcasting file, whose ranking was inverted"
 }
@@ -130,8 +134,9 @@
  #>markets_receipts_windows
  ^["theatrical_windows"]{
   #:claim #!settled
-  statement: "Before 2020 major US chains held about 90 days of theatrical exclusivity; after the pandemic, deals shortened windows, including a 45-day window Warner Bros. agreed with Regal for 2022."
-  reads: %[econ.media.window_2019_home_video_days, econ.media.window_wb_regal_2022_days]
+  statement: "Before 2020 major US chains required about 90 days before physical home video and 74 to 76 before digital sell-through; later deals shortened windows, such as a 45-day Warner Bros. and Regal window for 2022."
+  reads: %[econ.media.window_2019_home_video_days, econ.media.window_2019_digital_days]
+  also_reads: %[econ.media.window_wb_regal_2022_days]
   source: ~"../../registries/sources/economy-and-markets.spw#src_econ_wiki_release_window"
   tier: "encyclopedia; check the studio and exhibitor announcements before reuse"
   ^["limits"]{

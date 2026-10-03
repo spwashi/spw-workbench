@@ -7,7 +7,7 @@
 #:domain #!spw
 #:form #!glossary
 #:level #!foundation
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bone
 
 ^"emit"{
@@ -34,11 +34,17 @@
   ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{ event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #pass }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
  corrections: #[
   "the persona amendment cited display.ts:304 and :1040-1041 for the LSP aliases; the kinds are declared at display.ts:33-41, and 1040-1041 maps them to symbol kinds",
-  "the persona amendment listed aspect beside the lexed aims; aspect lexes as an ANNOTATION token, and particleMix counts it from raw text, which also counts named appositions"
+  "the persona amendment listed aspect beside the lexed aims; aspect lexes as an ANNOTATION token, and particleMix counts it from raw text, which also counts named appositions",
+  "the mix row said a tilde-hash mark counts when a letter follows; the pattern also counts an underscore"
  ]
+ drift: "display.ts cites are pinned at 1aa1dc23; at 651b535b the kinds sit at display.ts:36 and :63-66, and the prefix table moved to packages/spw-lsp/src/apposition.ts:14-21"
  labels: "a-canon names the five aims; a-cut adds the plain words; no row here is an owner hold"
 }
 
@@ -170,7 +176,7 @@
  #>spw_gloss_particle_mix_counts
  ^["mix_counts"]{
   #:claim #!settled
-  statement: "particleMix counts every tilde-hash mark followed by a letter as aspect, so a named apposition such as a lens reading adds one aspect, while an anonymous apposition adds none."
+  statement: "particleMix counts every tilde-hash mark followed by a letter or underscore as aspect, so a named apposition such as a lens reading adds one aspect, while an anonymous one adds none."
   source: ~"../../registries/sources/spw-glossary-specimens.spw#src_gloss_parser_probes"
   cites: [ "packages/spw-seed/src/canonical/particles.ts:125,129" ]
   ^["limits"]{

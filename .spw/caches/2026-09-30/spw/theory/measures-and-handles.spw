@@ -7,7 +7,7 @@
 #:domain #!spw_theory
 #:form #!ledger
 #:level #!advanced
-#:review #!sourced
+#:review #!adversarial_checked
 #:valence #!bonk
 
 ^"emit"{
@@ -21,7 +21,7 @@
 }
 
 ^"provenance"{
- as_of: "2026-10-02"
+ as_of: "2026-10-03"
  generator: "claude-opus-5.5"
  revised_by: "claude-opus-5.5 writer"
  lineage: #[ "new" ]
@@ -35,7 +35,19 @@
  ^["receipts"]{
   ^["r2"]{ event: #revised, at: "2026-10-02", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-02", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r6"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+  }
+  ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
+ corrections: #[
+  "the LSP wonder claim cited a source anchor missing from the registry; src_lab_code_lsp_wonder now exists with its locator at 6690d686",
+  "the scale reading credited Stevens with a bounded proportion type and an absolute count; Stevens named four types, and the absolute scale is a later name, now sourced to Tal",
+  "the lens recount called its six frequent values canon; they come from tracked .spw files across plans, biome, docs, and lib"
+ ]
 }
 
 ^["edges"]{
@@ -83,8 +95,8 @@
  #>spw_theory_measures_scale_types
  ^["scale_types"]{
   #:claim #!interpretive
-  statement: "Read through Stevens, the three profiles are three scale types: a bounded proportion, a ratio quantity with a unit, and an absolute count, which one sigil cannot tell apart."
-  see: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_stevens_1946" ]
+  statement: "All three profiles are ratio scales in the four-type scheme of Stevens; later theory names ratio scales with a natural unit, as for counts and probabilities, absolute, and one sigil hides that split."
+  see: [ ~"../../registries/sources/spw-design-studies.spw#src_lab_stevens_1946", ~"../../registries/sources/spw-design-studies.spw#src_lab_tal_2020" ]
  }
 }
 
@@ -127,7 +139,7 @@
  #>spw_theory_measures_lens_drift
  ^["lens_drift"]{
   #:claim #!settled
-  statement: "The round-one snapshot held 165 lens values in 167 uses; the recount finds 231 values in 232 uses, while six canon lens values each recur sixty times or more."
+  statement: "Round one held 165 lens values in 167 uses and the recount 231 in 232, while six lens values across tracked .spw files in plans, biome, and docs recur sixty times or more."
   reads: %[
    lab.drift.round1_lens_distinct_n,
    lab.drift.round1_lens_uses_n,
@@ -138,10 +150,22 @@
  }
  #>spw_theory_measures_lsp_blind
  ^["lsp_reads_old_form"]{
-  #:claim #!settled
-  statement: "The LSP wonder hover still reads the lens from a slash comment and the neighbor from the angle form, so ~#lens and ~#neighbor appositions show nothing there."
+  #:claim #!superseded
+  statement: "At commit 1aa1dc23 the LSP wonder hover read the lens only from a slash comment and the neighbor only from the angle form, so lens and neighbor appositions showed nothing."
   source: ~"../../registries/sources/spw-design-studies.spw#src_lab_code_lsp_display"
   cites: [ "packages/spw-lsp/src/handlers/display.ts:304", "packages/spw-lsp/src/handlers/display.ts:308" ]
+ }
+ #>spw_theory_measures_lsp_lens
+ ^["lsp_reads_apposition"]{
+  #:claim #!settled
+  statement: "From commit 6690d686 the wonder hover reads a lens apposition first, then a lens datum, then the legacy comment, and still finds a neighbor only in the angle form."
+  source: ~"../../registries/sources/spw-design-studies.spw#src_lab_code_lsp_wonder"
+  cites: [ "packages/spw-lsp/src/handlers/wonder.ts:177-200", "packages/spw-lsp/src/handlers/wonder.ts:221" ]
+  supersedes: [ ~"./measures-and-handles.spw#spw_theory_measures_lsp_blind" ]
+  ^["limits"]{
+   holds: "the wonder hover and inlay at 6690d686 and the 651b535b head"
+   fails: "a later LSP change that reads the neighbor apposition; the neighbor half of this claim should be rechecked then"
+  }
  }
 }
 

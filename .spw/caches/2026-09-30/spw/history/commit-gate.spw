@@ -31,8 +31,18 @@
   ^["r1"]{ event: #generated, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #read, outcome: #raw }
   ^["r2"]{ event: #revised, at: "2026-10-03", agent: "claude-opus-5.5 writer", care: #audit, outcome: #pass }
   ^["r3"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r4"]{
+   event: #fact_checked, at: "2026-10-03", agent: "claude-opus-5.5 fact-checker"
+   care: #adversarial, outcome: #corrected
+   note: "the tracked commit-msg hook was missed by a string search; an edited rename was shown to skip the prompt as well"
+  }
+  ^["r5"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
  }
- probes: "two probes ran on 2026-10-03 in a scratch directory outside the repository: a stub helper that exits 2, and a throwaway repository with staged deletions, a rename, and nothing staged"
+ probes: "three probes ran on 2026-10-03 in a scratch directory outside the repository: a stub helper that exits 2, a throwaway repository with staged deletions, a rename, and nothing staged, and a rename with one appended line"
+ corrections: #[
+  "the install claim said no tracked file installs the commit-msg hook; scripts/commit-msg is tracked and sources the validator, and what is missing is an install step for either hook",
+  "the unasked-paths claim named only pure renames; a rename whose content also changed keeps status R under git rename detection and skips the prompt too"
+ ]
  installed: "in the checkout read on 2026-10-03 the installed pre-commit hook matched scripts/pre-commit byte for byte"
 }
 
@@ -124,7 +134,7 @@
   #>workbench_history_commit_gate_s_message
   ^["message"]{
    enters: "an authorized pre-commit"
-   work: "the commit-msg hook sources the validator"
+   work: "the commit-msg hook, tracked as scripts/commit-msg, sources the validator"
    on_message: ?match[message]{
     "a subject starting with Merge" => "pass",
     "an absolute user path anywhere" => "reject",
@@ -133,7 +143,7 @@
     "an episode block" => "pass"
    }
    status: #implemented
-   cites: "scripts/commit-review/validate-commit-message.sh:16-48"
+   cites: [ "scripts/commit-msg:12", "scripts/commit-review/validate-commit-message.sh:16-48" ]
   }
   #>workbench_history_commit_gate_s_committed
   ^["committed"]{ enters: "both hooks pass", work: "git writes the commit", status: #implemented }
@@ -159,11 +169,12 @@
  #>workbench_history_commit_gate_unasked
  ^["paths_that_never_ask"]{
   #:claim #!settled
-  statement: "The engine lists only added, copied, and modified files, so a commit of only deletions, only pure renames, or nothing staged passes the hook without a prompt."
+  statement: "The engine lists only added, copied, and modified files, so a commit of only deletions or renames, including renames with edits, or of nothing staged passes the hook without a prompt."
+  renames: "git rename detection is on by default, so an edited file moved above the similarity threshold shows status R, not M, and edited code can reach a commit unreviewed when it travels with a rename"
   source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_commit_engine"
   sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_claude_md" ]
   cites: [ "scripts/commit-review/run-review.sh:25-33", "scripts/pre-commit:37-39", "CLAUDE.md:166" ]
-  evidence: "in a throwaway repository a staged deletion plus a pure rename gave a total of zero, nothing staged gave zero, and one added file gave one"
+  evidence: "in a throwaway repository a staged deletion plus a pure rename gave a total of zero, nothing staged gave zero, and one added file gave one; a 50-line file moved with git mv plus one appended line showed R095 and zero listed files"
   canon_says: "the harness notes say the hook blocks all commits"
   ^["limits"]{
    holds: "for the pre-commit prompt; the message validator still runs on these commits"
@@ -173,11 +184,12 @@
  #>workbench_history_commit_gate_install
  ^["hook_install"]{
   #:claim #!settled
-  statement: "The repository tracks the pre-commit script with its own install comment and the message validator, but no tracked file installs the commit-msg hook that calls the validator."
-  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_commit_validator"
-  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_commit_hooks" ]
-  cites: [ "scripts/pre-commit:12", "scripts/commit-review/validate-commit-message.sh:51-53" ]
-  evidence: "a search of scripts, the commit-review skill, and package.json for commit-msg found only the validator itself"
+  statement: "The repository tracks both hooks, scripts/pre-commit and scripts/commit-msg, which sources the validator; only pre-commit carries an install comment, and no tracked script installs either hook."
+  source: ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_commit_msg_hook"
+  sources: [ ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_commit_hooks", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_commit_validator", ~"../../registries/sources/spw-hosts-and-history.spw#src_hosts_commit_gate_plan" ]
+  cites: [ "scripts/commit-msg:12", "scripts/pre-commit:12", ".agents/plans/commit-gate-redesign/wip.spw:86-88" ]
+  evidence: "git ls-tree at 1aa1dc23 lists scripts/commit-msg with mode 100755, last changed on 2026-04-04, and it matches the installed hook byte for byte; it never contains the string commit-msg, which an earlier search missed"
+  install: "the only install instruction is a comment at scripts/pre-commit:12; package.json and the scripts hold no step that copies a hook or sets core.hooksPath"
   ^["limits"]{
    holds: "for a fresh clone, which gets no hooks until someone copies them in"
    fails: "for this checkout, where both hooks are installed"
