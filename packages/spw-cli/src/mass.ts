@@ -13,6 +13,7 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
+import { resolveWorkspacePath, tryDiscoverSpwWorkspace } from './workspace'
 import {
   applyMassCorrections,
   measureMass,
@@ -163,10 +164,21 @@ export async function runSpwMassCli(argv: string[] = process.argv): Promise<void
     return
   }
 
-  const repoRoot = process.cwd()
+  // Mounted runs (npm --prefix .spw/_workbench) start inside the workbench, so a
+  // relative target is read from the consumer root, the way query and lint read it.
+  const workspace = await tryDiscoverSpwWorkspace()
+  const repoRoot = workspace?.consumerRoot ?? process.cwd()
   const fileSet = new Set<string>()
   for (const target of cli.targets) {
-    for (const file of await collectSpwFiles(target)) fileSet.add(file)
+    const absolute = path.isAbsolute(target) || !workspace
+      ? path.resolve(target)
+      : await resolveWorkspacePath(workspace, target)
+    const files = await collectSpwFiles(absolute)
+    if (files.length === 0) {
+      console.error(`spw mass: no .spw files at ${target} (${path.relative(repoRoot, absolute) || '.'} from ${repoRoot})`)
+      process.exitCode = 1
+    }
+    for (const file of files) fileSet.add(file)
   }
 
   const reports: SubjectReport[] = []

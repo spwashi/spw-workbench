@@ -1,9 +1,10 @@
 import { promises as fs } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { fingerprintSource, parse, SYNTAX_CATALOG } from '@spwashi/spw-seed'
 import { resolveInitRuntimeContext, seedConsumerScaffold } from './init'
+import { runSpwMassCli } from './mass'
 
 const QUEST_FILES = ['asks.spw', 'experiments.spw', 'forks.spw', 'index.spw', 'shelves.spw', 'wonders.spw']
 
@@ -71,6 +72,22 @@ describe('spw init --preset quest', () => {
     const forks = await fs.readFile(path.join(quest, 'forks.spw'))
     expect(Number(declared![1])).toBe(forks.toString('utf8').split('\n').length - 1)
     expect(Number(declared![2])).toBe(forks.byteLength)
+  })
+
+  it('measures the consumer quest when run from inside the mounted workbench', async () => {
+    // npm --prefix .spw/_workbench starts the CLI inside the mount; targets still read from the consumer root.
+    const mount = path.join(root, '.spw', '_workbench')
+    await fs.mkdir(mount, { recursive: true })
+    const lines: string[] = []
+    const cwd = vi.spyOn(process, 'cwd').mockReturnValue(mount)
+    const log = vi.spyOn(console, 'log').mockImplementation((...args) => { lines.push(args.join(' ')) })
+    const err = vi.spyOn(console, 'error').mockImplementation((...args) => { lines.push(args.join(' ')) })
+    try {
+      await runSpwMassCli(['node', 'spw', 'measure', '.spw/quest'])
+    } finally {
+      cwd.mockRestore(); log.mockRestore(); err.mockRestore()
+    }
+    expect(lines.join('\n')).toMatch(/1 subject\(s\), 0 drifted/)
   })
 
   it('cites only files that exist beside it', async () => {
