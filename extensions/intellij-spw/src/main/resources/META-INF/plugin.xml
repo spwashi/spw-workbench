@@ -12,6 +12,7 @@
     <br>
     <b>v0.3.0 features:</b>
     <ul>
+      <li><b>Spw quest</b> — <b>Help | Start the Spw quest</b> opens a <code>quest.spw</code> scratch file: short panels, one line of Spw to try in each</li>
       <li>Semantic TextMate highlighting — operators (<code>!</code>, <code>^</code>, <code>~</code>, <code>?</code>, <code>=</code>, <code>@</code>), valence modifiers (boon/bane/bone/bonk/honk), and container semantics</li>
       <li>File type support for <code>.spw</code> — architecture scaffolds, theory docs, wip streams</li>
       <li>Optional LSP integration (project or mounted-workbench discovery, with configurable command and working directory)</li>
@@ -40,6 +41,8 @@
         <platform.lsp.serverSupportProvider implementation="com.spwashi.spw.SpwLspServerSupportProvider"/>
         <notificationGroup id="Spw LSP" displayType="BALLOON"/>
         <notificationGroup id="Spw Instruments" displayType="BALLOON"/>
+        <notificationGroup id="Spw onboarding" displayType="BALLOON"/>
+        <postStartupActivity implementation="com.spwashi.spw.SpwQuestOnboardingActivity"/>
         <projectConfigurable
             id="spw.lsp"
             groupId="tools"
@@ -97,5 +100,12 @@
                     description="Preview a mark, anchor, case, or mood rename across the consumer corpus without writing"/>
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </group>
+        <action id="Spw.StartQuest"
+                class="com.spwashi.spw.SpwStartQuestAction"
+                text="Start the Spw quest"
+                description="Open quest.spw, a scratch file with the quest panels and one line of Spw to try in each">
+            <add-to-group group-id="ToolsMenu" anchor="after" relative-to-action="Spw.Instruments"/>
+            <add-to-group group-id="HelpMenu" anchor="last"/>
+        </action>
     </actions>
 </idea-plugin>
