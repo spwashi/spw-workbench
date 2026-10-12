@@ -84,6 +84,25 @@ Depends on:
 | **No progressive source inspector** | Current commands expose operator and phase probes, but not the shared tokens → structure → trace product or its completeness/cost receipt |
 | **Panel temptation** | Avoid porting Concepts/Atlas trees; prefer quickfix + float + notify |
 
+## Mounted-consumer asks (2026-10-12)
+
+A mounted consumer's editor review (pin `229aedcf`) made no Neovim-specific ask. What follows is **derived** from the routing table in `vscode-lsp-roadmap/PLAN.md`, statuses re-checked against `main`. Under the held method matrix, nothing here earns a new `:Spw*` wrapper or custom request; native projections of standard LSP products only.
+
+| Row (consumer name) | Neovim projection |
+|---------------------|-------------------|
+| `diagnostics_match_the_parser`, `one_fact_model` | Diagnostics and the references quickfix come from the server; no change once the server is parser-first |
+| `file_navigation`, `symbol_resolution` | `gf`/`gF` and `:SpwOpenRef` should defer to `textDocument/definition` and `documentLink`, which now land fragments on their anchor line (`861fa214`) |
+| `stream_time` | `>>[` completion arrives through the existing LSP completion path; Timeline is VS Code chrome, not ported |
+| `plan_context` | The planned `:SpwPlan` and statusline helper are the projection; hover shows the wonder question |
+| `fact_store_with_readiness` | Standard `$/progress` surfaces in the statusline or notify; no Spw view |
+| `move_updates_citations` | `willRenameFiles` is client-capability dependent; confirm what `vim.lsp` sends and what file-tree plugins trigger before claiming it |
+| `capture_mode` | A reading profile (`vim.g.spw_reading_profile = 'capture'`) turning inlay hints off; no lens setting to add |
+| Plans, Questions, Tending views | Not ported; quickfix from a server product at most, once one exists |
+
+- **A second extractor lives here.** `lua/spw/navigation.lua` finds citations with Lua patterns (`~"..."`, `~<...>`, `@root/path`), and `completion.lua` reads root aliases by pattern. These are the Neovim copy of the disagreement the consumer measured on the server (regex over strings, comments and backtick examples). This extends the plan's rule that Lua never parses Spw for meaning: audit them against the server's parser-first answers and prefer the LSP result when attached.
+- **Grammar drift.** `syntax/spw.vim` and `queries/spw/*.scm` are copies to check when `?[operator_table]` (roadmap) settles, including how a hash-space line reads as a comment.
+- **Placement preview.** `?[leaf_placement]` is held at the roadmap; no Neovim command until a transport exists.
+
 ## Scope
 
 ### In scope

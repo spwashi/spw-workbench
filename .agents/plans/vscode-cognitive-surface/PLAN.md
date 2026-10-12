@@ -61,6 +61,14 @@ Roadmap rung **5** — polish after rungs 0–4. May draft copy earlier; must no
 
 **Doctrine inputs:** `operational-topography` and `vscode-editor-contract` own evidence eligibility, grades, authority, and differential shape. Garden profiles may own measurement recipes; cognitive profiles own wording, disclosure, rendered rotations, and explicit learning/joy experiments.
 
+## Mounted-consumer asks (2026-10-12)
+
+Routed from the roadmap table in `vscode-lsp-roadmap/PLAN.md`.
+
+- **Capture as a reading profile.** What helps while working crowds the frame while recording: resolved-path inlays, `|scope` inlays, reference lenses, header pragmatics. Add `capture` beside author, prompt, research and creative: lenses and inlay hints off, semantic colours and brace highlights kept, one status-bar indicator, and a setting that turns lenses off on their own (none exists today). Every surface reads the profile; none grows its own switch.
+- **Words.** Layer one of a hover or view speaks the consumer's words from the glossaries its manifest names, not workbench terms (form coupling, occupancy, payload, liminal). This feeds `?[cross_surface_copy]`.
+- **Copy rule.** One fixed layout; capture keeps only the first line.
+
 ## Files
 
 ```text

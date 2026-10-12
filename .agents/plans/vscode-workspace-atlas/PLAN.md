@@ -21,6 +21,14 @@ Roadmap rung **3a (follow-up)** — core atlas view and LSP workspace handlers a
 
 See `.agents/plans/vscode-lsp-roadmap/PLAN.md`.
 
+## Mounted-consumer asks (2026-10-12)
+
+Routed from the roadmap table in `vscode-lsp-roadmap/PLAN.md`; they land **after** the tree extraction named in the card, never in `workspace-tree.ts` as it stands.
+
+- **Workspace view repairs.** The Spirit node reads the annotation index once at activation and shows "No annotations indexed yet" while the server is still filling (a mounted consumer saw 3 files at 15 s, 74 at 60 s, 120 at 150 s). Refresh once when the server reports ready and show "Indexing N of M" until then. Show the repo root as `.` or its name, not an absolute home path. Group a mounted workbench root apart from consumer roots. Per root: files, unresolved citations, open questions.
+- **Plans, Questions, Tending (VS Code chrome).** A Plans node from `.agents/plans` (archive tagged, not skipped), plans touching the open file, a Questions view of open wonder blocks, and a Tending view ordered by the dates files carry. All wait on the LSP indexing `.agents/plans` as a manifest root with an archived tier (`vscode-plugin-performance` owns readiness; `manifest_scope_with_tiers` in the roadmap table). IntelliJ and Neovim do not port these.
+- **Memory.** Hot, Warm and Cold are server attention (requests since read, writes), not due-ness, and track gitignored scratch. Label scratch or skip it and rename or filter the tiers; whether Tending replaces Memory or sits beside it is the creator's call.
+
 ## Files
 
 ```text

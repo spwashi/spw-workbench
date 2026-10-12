@@ -34,6 +34,16 @@ Does **not** replace `typescript-perf-audit-infra` (that measures `tsc`). Editor
 | Explicit instrument traffic | **Landed** — Form/Stack/Cache are user-invoked; editor TTL cache now exposes its own receipt |
 | File size pressure | `display.ts` ~1410, `server-index.ts` ~1160, trees ~725–750 |
 
+## Mounted-consumer asks (2026-10-12)
+
+Routed from the roadmap table in `vscode-lsp-roadmap/PLAN.md`. This plan stays dormant; the consumer's figures are **named costs** for the retained bench sample the card asks for, not a reason to change startup yet.
+
+- **Named costs (consumer, pin `229aedcf`).** A hover count filled 3 files at 15 s, 74 at 60 s, 120 at 150 s. The CLI's integrity pass alone took about 50 s and 490 MB; a bare query peaked near 560 MB; under swap pressure a query was killed. Cache hits were always 0.
+- **Readiness.** Views that count must know whether the index is complete. Report building N of M, ready or stale over standard LSP progress, and refresh each view once on ready.
+- **Fact store.** Facts per file keyed by content hash, shared by the CLI and the server, updated per changed file from the watcher. This bears on `?[annotation_transport]` (a per-file delta replaces the client rebuild).
+- **Trigger budget.** Nothing runs on a timer when nothing changed; capture mode silences everything but on-save diagnostics. This extends `?[visibility_rule]`.
+- **Scope.** Index what the manifest declares and honor `scan_exclusion` and `.gitignore` rather than the fixed `IGNORED_DIRS`; tag archived and scratch facts so counts can say live versus archived and never count scratch.
+
 ## Files
 
 ```text

@@ -28,6 +28,14 @@ Roadmap rung **0**. Blocks honest performance and surface work when payload owne
 
 See `.agents/plans/vscode-lsp-roadmap/PLAN.md`.
 
+## Mounted-consumer asks (2026-10-12)
+
+Routed from the roadmap table in `vscode-lsp-roadmap/PLAN.md`. Two asks are contract-shaped, and both are **proposals** until the creator calls them.
+
+- **Layer rule (`layered_presentation`).** A payload that reaches a hover or view carries three layers in a fixed order: meaning (one line, in the consumer's words from glossaries its manifest names), then evidence (where it points, who cites it), then geometry (behind `Spw: Inspect Form`). Today the hover chain returns the first layer that matches, so a citation gets geometry. The contract names the layer a payload belongs to; the surface does not choose.
+- **Gesture rule (`gesture_semantics`).** Each editor gesture carries the operator whose meaning it already has: hover `?` (never writes), references `@`, outline `#>`, inlays `.` (resolved value, never prose), lenses `%` (one measure with unit and age), diagnostics and fixes `!` (previewed before writing), rename `=`, completion `$`, snippets and templates `^`, preview `~`, tasks `*`, status bar `[`. A payload declares its gesture, so a `?` surface that writes or a `%` lens with no unit is a contract violation, testable without a screenshot.
+- Open calls: whether `~` is the preview gesture, whether diagnostics are `!` or `*`, and whether the table follows the operator canon when the workbench holds it (`?[operator_table]` in the roadmap).
+
 ## Files
 
 ```text

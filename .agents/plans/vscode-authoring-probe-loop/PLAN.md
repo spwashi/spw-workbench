@@ -94,6 +94,15 @@ Do **not** add client-local regex geometry.
 | `^["open"]` / plan `wip.spw` | What is unresolved? | status strip plan chip | `:SpwPlan` |
 | Spirit sigil under cursor | Where am I in the sequence? | context strip + hover badges | statusline / `:SpwPhase` if earned |
 
+## Mounted-consumer asks (2026-10-12)
+
+Routed from the roadmap table in `vscode-lsp-roadmap/PLAN.md`. LSP products first; VS Code adds only chrome.
+
+- **Stream time (`stream_time`).** Completion after `>>[` inserts a stamp (`YYYY-MM-DD HH:MM`) read from the workspace manifest's declared clock, with a setting to override, then offers the schema's stream types. This replaces the `>>[${1:timestamp}]` snippet, which asks for a typed time. Hover on an entry names its age and type; a diagnostic flags an entry stamped earlier than the one above it or in the future. Completion, hover and diagnostics are standard LSP, so Neovim and IntelliJ receive them free; the Timeline provider and `%` entry-count lens are VS Code chrome.
+- **Plan context (`plan_context`).** Same slice as the roadmap's plan-context item: inside `.agents/plans/<slug>/`, status, gate and next commit from `wip.spw` `^["cache"]`; hover on a wonder pointer shows its `?["…"]` question and `~#taste` line, not only the path; counts say "Indexing N of M" until ready.
+- **Triggers (`triggers`).** Act at moments the work changes: typing `>>[` (stamp), creating a `.spw` file (offer the folder's header skeleton), saving (lint and freshness as diagnostics, never writes), index ready (refresh once). Never on a timer when nothing changed. A commit trigger is opt-in at most.
+- **Placement preview (`leaf_placement`).** Held at the roadmap as `?[leaf_placement]`; the consumer would compose its five sensors in a script before any workbench change.
+
 ## Files
 
 ```text

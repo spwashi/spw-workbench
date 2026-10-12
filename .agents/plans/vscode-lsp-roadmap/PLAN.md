@@ -110,6 +110,37 @@ Priority order for “plugin feels like a workbench”:
 6. **Brace material packet** — coupling occupancy/payload (formContext); dual liminality never collapsed.
 7. **Screenshot/LLM play policy** — stable semantic tokens; vision proposes, AST/plan disposes.
 
+## Mounted-consumer asks (2026-10-12)
+
+A mounted consumer's review (pin `229aedcf`, asks named in backticks below; no consumer paths cited) measured the editor against its own corpus. This table is the one routing layer: each ask gets a **layer**, an **owner plan**, and a **status re-checked against `main` at `7351fb0a`**. Only two `spw-lsp` commits landed since the pin (`861fa214` fragments, `6690d686` `~#lens()` readings), so most asks are open. The consumer's gesture table, commit trigger and Memory-vs-Tending choice are **proposals**, not decisions; the creator's dated calls are only "index plans" and "operators live in the workbench".
+
+| Ask (consumer name) | Layer | Owner plan | Status on main |
+|---------------------|-------|------------|----------------|
+| `one_fact_model`, `diagnostics_match_the_parser`: one extraction for CLI, diagnostics, links, lenses | seed + LSP | `citation-navigation` | open: `selectPathRefs` still runs `fallbackPathRefs` first (`spw-selector.ts:301`) |
+| `fact_store_with_readiness`, `manifest_scope_with_tiers`: facts by content hash, readiness, tiers, `.agents/plans` as a root | LSP | `vscode-plugin-performance` (store, readiness), `vscode-workspace-atlas` (roots) | open: `IGNORED_DIRS` unchanged (`server-index.ts:131`), no readiness state |
+| `references_that_navigate`: lenses open a peek; parser-found anchors | LSP | `citation-navigation` | open: lens `command: ''` (`display.ts:949-970`) |
+| `move_updates_citations`, `edits_from_facts`: `willRenameFiles` from a `path` refactor kind | LSP | `citation-navigation`, `refactor-experiment-lifecycle` (4e) | open: no `willRenameFiles` handler |
+| `file_navigation`: fragments, routes, hierarchical symbols | LSP | `citation-navigation` | **partly landed**: fragments (`861fa214`); routes, leading slash, flat outline open |
+| `symbol_resolution`: file-scoped alias binder | LSP | `citation-navigation` | open: no binder |
+| `hovers_that_answer`, `layered_presentation`: meaning, then evidence, then geometry | LSP content | `vscode-editor-contract` (layer rule), `vscode-cognitive-surface` (words) | open: first-match chain unchanged |
+| `gesture_semantics`: one operator per editor gesture | contract | `vscode-editor-contract` | proposal; table awaits the creator |
+| `tokenizer_integration`, `syntax_highlighting`: one operator table; semantic tokens and grammars read it | seed + every grammar | held here (`?[operator_table]`); soft link `shape-syntax-ecology` | open; creator call: operators live in the workbench |
+| `stream_time`: site-clock stamp completion, entry hover, Timeline | LSP + VS Code chrome | `vscode-authoring-probe-loop` | open: snippet still asks for a typed timestamp |
+| `plan_context`: status, gate, wonder pointer in hover and status bar | LSP + VS Code chrome | `vscode-authoring-probe-loop` | open; same slice as rung 4 plan-context |
+| `triggers`: act at typing `>>[`, creating a file, saving, index ready | VS Code chrome | `vscode-plugin-performance` (budget), `vscode-authoring-probe-loop` | open; commit trigger is a question |
+| `workspace_view`, `plans_and_questions_views`, `tending_view` | VS Code chrome | `vscode-workspace-atlas` | open; waits on the plans root and readiness |
+| `capture_mode` | VS Code chrome | `vscode-cognitive-surface` (a reading profile) | open |
+| `spw_beyond_spw_files`: injections for HTML attributes, Markdown, commit messages | VS Code grammar | held here (`?[beyond_spw_files]`) | open: no `injectTo` in `package.json` |
+| `leaf_placement`: preview a construct at a tree's root | LSP + CLI | held here (`?[leaf_placement]`) | proposal; name and transport open |
+| `consumer_adapters`, `trace_hover`: route, id and dataset-key resolvers | LSP | held | not earned; needs a manifest adapter contract first |
+
+### Reading the table
+
+- **Standard LSP first.** Fact readiness should ride `$/progress`; `willRenameFiles`, lenses, links and completion are standard. Any ask that needs a new `spw/*` method joins the held method matrix in `lsp-custom-request-completions`; none earns a method here.
+- **Chrome stays VS Code.** Plans, Questions and Tending views, capture mode, the Timeline provider and the Memory rename are VS Code client chrome. IntelliJ and Neovim project the LSP-level rows only (doctrine 12).
+- **Grammar drift is cross-host.** The operator-table ask touches the VS Code TextMate grammar, the IntelliJ copy (already without `dialect-exp`), and Neovim's `syntax/spw.vim` and `queries/spw/*.scm`.
+- **The consumer's probes are fixtures.** Each ask carries a probe line; port those that run against this repo into LSP tests before closing a row.
+
 ## Imagination / play (roadmap-level)
 
 Plans in this ecology are for **humans who deepen expertise**—optionally folding an LLM via IDE or screenshot. They are not execution authority. Play: open three plans (syntax-profile-stack, form-geometry-editor, shape-syntax-ecology) and reconstruct the lattice without chat history.
