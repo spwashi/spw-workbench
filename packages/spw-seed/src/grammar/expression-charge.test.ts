@@ -11,9 +11,9 @@ import type {
   SequenceNode,
 } from '../types'
 
-function proseCodes(result: { warnings: Array<{ data?: { code?: string } }> }): string[] {
+function proseCodes(result: { warnings: Array<{ data?: unknown }> }): string[] {
   return result.warnings
-    .map(warning => warning.data?.code)
+    .map(warning => (warning.data as { code?: string } | undefined)?.code)
     .filter((code): code is string => typeof code === 'string')
 }
 
@@ -35,7 +35,7 @@ function subjectOf(expr: ExpressionNode): string | undefined {
 function modeOf(expr: ExpressionNode): string[] {
   const parameter = expr.frame?.content[0]
   if (!parameter || parameter.type !== 'Parameter') return []
-  const value = (parameter as ParameterNode).value
+  const value = (parameter as ParameterNode).value as { type: string } | undefined
   if (!value || typeof value !== 'object') return []
   if (value.type === 'Expression') return chargeOf(value as ExpressionNode)
   if (value.type === 'Identifier') return [(value as IdentifierNode).token.value]
