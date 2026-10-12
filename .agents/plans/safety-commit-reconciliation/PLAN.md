@@ -55,25 +55,14 @@ The authoritative initial manifest is `git show --name-status a333db8d`. Partiti
 
 ## Commits
 
-1. `.[plans] =scope[safety-commit-reconciliation] — record reconstruction invariants and manifest`
-2. `^seed[workspace,coupling,topography] =stabilize[kernels] — restore portable kernels and repair structural invariants`
-3. `^seed[topography] =repair[parse-health] — count escaped delimiter parity once`
-4. `&[runtime] =integrate[coupling-events] — restore runtime interpretation and relation evidence`
-5. `^seed[workspace] =define[manifest-evidence] — make root authority diagnosable`
-6. `&[analyzers] =measure[topography] — delegate parse health to Seed evidence`
-7. `&[cli,workspace] =orient[mounted-consumers] — anchor navigation in consumer authority`
-8. `^seed[mutation] =converge[plans] — reach virtual fixed points`
-9. `&[cli,pulse] =preview[mutations] — restore guarded probe and write gates`
-10. `&[cli,workspace] =repair[mount-role] — keep designated mounts infrastructure`
-11. `&[lsp,workspace] =expose[versioned-evidence] — address consumer authority by URI`
-12. `&[vscode] =navigate[workspace-evidence] — bundle a URI-native thin client`
-13. `^seed[query] =select[ordered-evidence] — make structural queries truthful`
+Landed: 86d433b4 (2), 55190299 (3), 51d36684 (5), f96015fc (6), eb45f240 (7), 86e0469e (8), 5f1dff99 (9), 28906c5d (10), 0a8adfe2 (11), 47f4015c (12), 90b05f53 (13), 7471a4fd (18), 1128e3f0 (19); ba436e40 merged the series into main without rewriting history. Commits 1 and 4 have no one-to-one hash found.
+
+Remaining, each handed to its owning plan or closed:
+
 14. `&[cli,query] =quote[shell-examples] — preserve selector sigils at the argv boundary`
 15. `&[lsp,vscode] =distinguish[couple,capsule] — present angle boundaries without relabeling <>`
 16. `.[canon,skills] =align[operational-theory] — restore exhibits after executable behavior exists`
 17. `.[plans] =rebase[checkpoint-ecology] — restore plan surfaces and refresh dependency truth`
-18. `^seed[form-contours] =project[density] — replay reviewed contour and mobility receipts`
-19. `&[runtime,plans] =integrate[liminality-bridge] — replay explicit effects and aligned theory`
 
 Each commit must pass the smallest relevant build/test/lint gate and contain exactly one `#[episode]{ ... }` block.
 

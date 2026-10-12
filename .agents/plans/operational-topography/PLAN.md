@@ -88,9 +88,9 @@ This plan's landed spacing contract remains authoritative for raw trivia, displa
 [MOD] .agents/plans/vscode-cognitive-surface/vscode-cognitive-surface.spw
 [MOD] .agents/plans/neovim-spw-surfaces/PLAN.md
 [MOD] .agents/plans/neovim-spw-surfaces/wip.spw
-[MOD] .agents/plans/mounted-workbench-organelle/PLAN.md
-[MOD] .agents/plans/mounted-workbench-organelle/wip.spw
-[MOD] .agents/plans/mounted-workbench-organelle/mounted-workbench-organelle.spw
+[MOD] .agents/plans/_archive/mounted-workbench-organelle/PLAN.md
+[MOD] .agents/plans/_archive/mounted-workbench-organelle/wip.spw
+[MOD] .agents/plans/_archive/mounted-workbench-organelle/mounted-workbench-organelle.spw
 [MOD] .agents/plans/mounted-consumer-tooling/mounted-consumer-tooling.spw
 [MOD] .agents/plans/spw-site-install/spw-site-install.spw
 [MOD] .agents/plans/vscode-workspace-atlas/PLAN.md
@@ -263,6 +263,8 @@ babble -> candidate pattern -> exact fixture -> impact packet -> steward review
 11. `&[runtime,cli] =plan[hydration] — compile abstract sequences into previewable effect plans`
 12. `&[vscode,neovim] =project[topography] — render one server-owned contract in thin clients`
 13. `![topography] *verify[semantics,portability,cost] — prove invariants and negative controls`
+
+Landed: 1-8 through a333db8d, 86d433b4, 55190299, f96015fc, 7471a4fd and a4d21953 (not one-to-one; see wip.spw ^done). Open: 9 `^seed[grammar] — populate openLabel/closeLabel`; 11 hydration planner; 12 editor projection moved to form-geometry-editor; 13 verify.
 
 Fuzz strategy:
 

@@ -1,59 +1,68 @@
 # wip — audit-css-tokens
 # Branch: feature/audit-css-tokens
 # Started: 2026-02-20
+# Rescoped: 2026-10-12 from the lost src/ui/tokens layout onto the installable-book preset in the CLI templates
 
 #>plan_audit_css_tokens
-#:plan #!curriculum_formation
+#:plan #!execution_truth
 #:layer #!pragmatics
 
-~["card"]{
- phase: #stranded
- gist: "Color, rhythm, and spacing trace to named Valence token scales instead of ad-hoc hex values."
- touches: [~"docs/design/spw", ~"docs/design/md/dom-css-testing-harness.md", ~".spw/biome/ocean/style.spw"]
+!["card"]{
+ phase: #planning
+ gist: "A season override re-themes every color in the installable-book preset, because no literal bypasses a token."
+ touches: [~"packages/spw-cli/templates/init/presets/installable-book/public/assets", ~"packages/spw-cli/src/init-presets.ts"]
+ will_touch: [~"packages/spw-cli/src/installable-book-tokens.test.ts"]
  entry: ~"./PLAN.md"
- next: "Human disposition: src/ui/tokens and src/styles never existed here (touches keep only docs/design and biome); relocate to a site repo, re-scope to token literature, or archive."
+ next: "Answer ?[alpha_method], then land ~[1]: name the washes style.css hardcodes as substrate tokens."
 }
 
 ^["edges"]{
  feeds: [~"../ecosystem-surface-governance/wip.spw"]
+ shares: [~"../audit-data-attributes/wip.spw"]
 }
 
 ^["roots"]{
  @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
  @plan: ~".agents/plans/audit-css-tokens/PLAN.md"
+ @code: ~"packages/spw-cli/templates/init/presets/installable-book/public/assets/substrate.css"
  @pattern: ~".spw/patterns/literate-ui.spw"
- @workspace: ~".spw/workspace.spw"
 }
 
 ^["intent"]{
- ~#goal: "Perform a deep, curricular audit of CSS tokens to normalize the visual vocabulary across the app. This evolves the codebase from ad-hoc aesthetics to a rigorous mathematical design system."
- ~#taste: "correctness, clarity, and expressiveness through the cultivation of aesthetic taste and strict proportional constraints."
+ ~#goal: "Make the installable-book preset's token layer complete: every color in style.css traces to a substrate.css token, so a season.css override re-themes the whole page."
+ ~#taste: "correctness and clarity: one source of truth per color role, and a promise (swappable season) that a test can falsify."
 }
 
 ^["development"]{
- lane: #curriculum_formation
+ lane: #execution_truth
  ladder: #component
- develops: [#css_taste, #token_judgment, #semantic_transfer, #component_readability]
- review_surfaces: [@cluster, @plan, @pattern, @workspace]
- snippet_routes: [#token_example, #audit_excerpt, #css_probe, #component_note]
+ develops: [#css_taste, #token_judgment, #semantic_transfer]
+ review_surfaces: [@cluster, @plan, @code, @pattern]
+ snippet_routes: [#token_example, #css_probe]
 }
 
 ^["concept_index"]{
- primary: [#css, #tokens, #themes, #semantics, #component, #naming]
- surfaces: [#css, #dom, #docs, #audit]
- tensions: [#token_drift, #naming_bloat, #semantic_ambiguity, #style_overfit]
+ primary: [#css, #tokens, #themes, #season_layer, #oklch]
+ surfaces: [#cli_templates, #css, #docs]
+ tensions: [#token_drift, #hardcoded_hue, #naming_bloat, #browser_support]
  transfers: [#component, #page]
 }
 
 ^["recursive_improvement"]{
  loop: [
-  "? reread token usage and UI patterns before widening the taxonomy",
-  "< ship one naming or coverage refinement that clarifies a token role",
-  "$ record which visual or semantic distinction became easier to reuse",
-  "^ feed the stable token language into later components, pages, and docs",
-  "% keep audits concrete enough to sharpen actual design taste",
+  "? reread the preset literals before naming a token, so each new token has at least two uses",
+  "< ship one token or one literal retirement per commit",
+  "$ record which season override became possible",
+  "^ feed the settled token roles back into the init preset docs",
+  "% keep the guard test cheap enough to run in test:cli",
  ]
- gates: [#naming_truth, #coverage, #transfer]
+ gates: [#naming_truth, #coverage, #season_swap]
+}
+
+^["risk_model"]{
+ hard_failures: ["a new token changes the rendered default palette"]
+ soft_failures: ["color-mix is unavailable in an older consumer browser"]
+ non_negotiables: ["the default look of a freshly initialized site stays visually the same"]
 }
 
 ^["stream"]{
@@ -63,67 +72,55 @@
  >>[2026-02-20 01:54] decide — This audit will focus on mapping existing token usage, identifying hardcoded values that should be tokens, and proposing a unified CSS custom property architecture.
  >>[2026-02-20 05:25] revise — Expanded plan to 26 commits to emphasize taste development and a masterclass-style refactor sequence.
  >>[2026-07-27 13:15] observe — plan-ecology sweep: every predicted path targets src/ui/tokens/, which no longer exists in this repo. src/ now holds only runtime, seed, and testing shims. This plan is stranded on a deleted layout, not in progress — disposition (relocate to a site repo, re-scope against packages/, or archive as superseded) is a user call.
+ >>[2026-10-12 14:30] observe — re-ground: the named token surface that survives is the installable-book init preset in the CLI templates (substrate.css defines the --spw-* scale, season.css overrides six, style.css has 73 var() uses and 5 oklch literals, one tint oklch(55% 0.15 45 / 0.08) repeated twice); no hex values remain in docs/design/spw or the ocean style surface. A re-scope would target that preset, not src/ui/tokens.
+ >>[2026-10-12 14:30] revise — commits trimmed from the copied 26 to ~[1], ~[2], ~[26]; ~[3]..~[25] target src/ui/tokens, src/styles and src/ui/elements, none of which exist, and are marked DROPPED. Disposition of the plan itself stays a human call, tracked once in hygiene-index-consolidation ?[stranded_fate].
+ >>[2026-10-12 14:57] decide — User decided on 2026-10-12 to rescope this plan rather than archive it
+ >>[2026-10-12 14:57] observe — Correction to the 14:30 note: season.css overrides no tokens, it holds a header comment, an empty layer season block, and a commented dark example. The five oklch literals in style.css hardcode hue 45 or 80, so a season override cannot reach them, and the callout border follows data-spw-affect while its background does not.
+ >>[2026-10-12 14:57] revise — Rescoped to planning on the installable-book preset: goal is a complete token layer so a season override re-themes every color. Commits are now 1 to 4 (name the washes, retire the literals, add a guard test, optional type scale). Old 1 2 and 26 moved to done as dropped. Three questions open, one dark-season wonder carries a probe.
 }
 
 ^["open"]{
  # Unresolved questions. Remove when resolved (log resolution in stream first).
+ ?[alpha_method]: "May the preset derive washes with color-mix(in oklch, var(--spw-accent) 8%, transparent), or must it stay on plain oklch() with a literal alpha for older browsers? Unblocks the form of ~[1]."
+ ?[ground_lift]: "Is the page gradient start at style.css line 21 (oklch(97% 0.01 80)) meant to follow --spw-ground in a season, or is it a fixed highlight? Unblocks whether ~[1] adds --spw-ground-lift or derives it."
+ ?[type_scale]: "Does the preset want a font-size scale token before a second season ships (style.css keeps 0.95rem and 0.78rem literals, and substrate.css has only leading tokens)? Unblocks ~[4]."
 }
 
 ^["commits"]{
- ~[1]: "&[styles] — baseline: map and categorize all existing hardcoded hex and rgba values"
- ~[2]: "&[styles] — baseline: map existing spatial and typographic hardcoded values"
- ~[3]: "vocab[tokens] — define the Spw Color Valence vocabulary and nomenclature"
- ~[4]: "^seed[tokens] — establish the mathematical color scale (lightness/chroma progression)"
- ~[5]: "&[tokens] — generate canonical CSS custom properties for the Valence primitives"
- ~[6]: "&[tokens] — generate semantic (usage-based) color aliases mapped to primitives"
- ~[7]: "![tokens] — write visual regression tests/swatches for the Valence palette"
- ~[8]: "vocab[tokens] — define the typographic scale and rhythmic density vocabulary"
- ~[9]: "^seed[tokens] — establish fluid typography equations and line-height ratios"
- ~[10]: "&[tokens] — generate canonical CSS properties for the typography system"
- ~[11]: "vocab[tokens] — define the spatial containment and geometric metrics vocabulary"
- ~[12]: "^seed[tokens] — establish the 4px/8px spatial grid and border-radius scales"
- ~[13]: "&[tokens] — generate canonical CSS properties for grid, padding, and radii"
- ~[14]: "&[registry] — centralize token injection into the global application stylesheet"
- ~[15]: "&[elements] — refactor base layouts (header, sidebar) to consume fluid spatial tokens"
- ~[16]: "&[elements] — refactor interactive surfaces (cards, panels) to consume spatial/radii tokens"
- ~[17]: "&[elements] — refactor text components to consume standard typographic rhythm tokens"
- ~[18]: "&[elements] — refactor navigation links and buttons to use Valence semantic colors"
- ~[19]: "&[elements] — refactor form inputs and states (focus, disabled) to use Valence colors"
- ~[20]: "&[elements] — refactor alerts, badges, and status indicators to use specific Valences"
- ~[21]: "&[elements] — audit and remove legacy z-index hardcodes, applying elevation tokens"
- ~[22]: "&[elements] — audit and remove legacy box-shadow hardcodes, applying depth tokens"
- ~[23]: "&[styles] — delete the legacy unstructured CSS variable definitions"
- ~[24]: "![elements] — verify component rendering consistency across light/dark themes"
- ~[25]: ".[docs] — construct the interactive CSS token gallery UI for the workbench"
- ~[26]: ".[docs] — write the curriculum: 'Developing Taste in Spw CSS Architecture'"
+ # Old ~[1] and ~[2] (baseline lists) are satisfied by the 2026-10-12 measurement in ^["done"]; old ~[3]..~[25] and ~[26] are in ^["done"] ~#dropped.
+ ~[1]: "#[cli] — name the preset washes in substrate.css: an accent wash, an ink wash, a figure veil, and the ground lift as tokens derived from the base tokens"
+ ~[2]: "&[cli] — replace the five oklch literals in style.css (lines 20, 21, 47, 204, 218) with those tokens"
+ ~[3]: "![cli] — add installable-book-tokens.test.ts: style.css names no color literal, and every --spw-* in the season.css example block exists in substrate.css"
+ ~[4]: "#[cli] — add a font-size scale to substrate.css and retire the rem literals in style.css, only if ?[type_scale] is answered yes"
 }
 
 ^["cache"]{
- ~#status: "stranded"
+ ~#status: "planning"
+ ~#base_ref: "main@551bb419"
+ ~#rebased_at: "2026-10-12"
  ~#files_hot: ""
  ~#next_commit: "1"
- ~#open_count: "0"
- ~#last_stream: "2026-07-27 13:15"
+ ~#open_count: "3"
+ ~#last_stream: "2026-10-12 14:57"
  ~#taste_debt: ""
 }
 
 ^["done"]{
- # Written at merge time.
+ # Written at merge time, and incrementally while the plan runs.
+ ~#dropped: [
+  "~[3]..~[25] (original) — targeted src/ui/tokens, src/styles, and src/ui/elements, which no longer exist (logged in stream 2026-10-12)",
+  "~[1] and ~[2] (original) — baseline lists of color and spacing literals; replaced by the measurement below and the new ~[1]..~[3]",
+  "~[26] (original) — curriculum prose 'Developing Taste in Spw CSS Architecture'; no grounded reader today, reopen as a .[docs] note once ~[3] lands if wanted",
+ ]
+ ~#resolved(unnamed_tint): "Which color literals in the installable-book preset have no --spw-* token? — style.css holds five oklch literals (lines 20, 21, 47, 204, 218); four restate base tokens with an alpha or hardcoded hue (accent 55% 0.15 45 twice, ink 25% 0.02 80, figure 99% 0.01 80), one (97% 0.01 80 at line 21) names no token; evidence: grep of style.css against substrate.css, 2026-10-12"
+ ~#resolved(hue_lock): "Do those literals follow a re-theme? — no: they hardcode hue 45 and 80, while substrate.css moves --spw-accent per data-spw-affect and the season.css example moves ground, figure, and ink; the callout border follows the token and its background does not; evidence: style.css line 203 vs 204, substrate.css lines 67-71"
+ ~#resolved(season_overrides): "How many tokens does season.css override? — none: the file is a header comment, an empty @layer season, and a commented example; the 14:30 stream claim of six overrides is stale; evidence: read of season.css, 2026-10-12, git log shows only 3734eecc and d5031987 touching the assets"
 }
 
-#>wonder_agents_plans_auditcsstokens_wip_1
-?["What is the ecological temperature of reading wip — audit-css-tokens?"]{
-  #:depth #!experiential // lens: ecological zone
-  $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
-  ~#structure: "roots → intent → development → concept_index → recursive_improvement → stream → open" // frame flow
-  !probe{ "read aloud for 30 seconds; where do you pause? pauses mark biome edges." }
-}
-
-#>wonder_agents_plans_auditcsstokens_wip_2
-?["What concept is conspicuously absent from wip — audit-css-tokens?"]{
-  #:depth #!computational // lens: molecular binding
-  ~#present: [#experiential, #computational]
-  ~#expected_but_missing: "?" // the reader fills this gap
-  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
+#>wonder_audit_css_tokens_dark_season
+?["Which rules in the preset keep their warm light colors when the commented dark-season example in season.css is applied?"]{
+  #:depth #!computational // lens: token coverage
+  ~#hypothesis: "the page gradient, pre, callout, and notice backgrounds stay light because they hardcode oklch literals"
+  !probe{ "copy the commented :root block from season.css into @layer season in a scratch copy of the preset, serve public/, load index.html, and read getComputedStyle background-color for body, pre, .spw-callout, and .spw-notice (the notice appears only after a service-worker update, so inject one); rerun after ~[2] to see the set shrink to empty" }
   $%[plan.commit_count, plan.phase_progress]
 }

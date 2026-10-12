@@ -16,9 +16,9 @@ Taste note: improve **correctness** and **recognizability** of the taught noun c
 ## Files
 
 ```
-[NEW] .agents/plans/noun-postfix-containers/PLAN.md
-[NEW] .agents/plans/noun-postfix-containers/FIX.md
-[NEW] .agents/plans/noun-postfix-containers/wip.spw
+[NEW] .agents/plans/_archive/noun-postfix-containers/PLAN.md
+[NEW] .agents/plans/_archive/noun-postfix-containers/FIX.md
+[NEW] .agents/plans/_archive/noun-postfix-containers/wip.spw
 [MOD] packages/spw-seed/src/types/ast/nodes.ts
 [MOD] packages/spw-seed/src/grammar/expressions.ts
 [MOD] packages/spw-seed/src/instrumentation/preview.ts
@@ -38,6 +38,8 @@ Taste note: improve **correctness** and **recognizability** of the taught noun c
 2. &[spw-seed] — bind same-line frame, body, and shell onto one expression
 3. ![spw-seed] — prove the noun specimen is one expression
 ```
+
+All three landed together as f3061c52 (`&[spw-seed] — bind same-line postfix containers onto one noun`).
 
 Fuzz strategy: `npm run test:seed` stabilize; `npm run lint:spw -- --strict` as ship gate for the seed package.
 

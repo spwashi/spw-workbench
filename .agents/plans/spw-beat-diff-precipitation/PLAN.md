@@ -19,25 +19,26 @@ Implement configurable beat mechanics, multi-layered diff analysis (object/prope
 
 ---
 
+## Rescope (2026-10-12)
+
+User decision: rescope, do not archive. The configurable-TTL idea survives, but the authority already exists: `.spw/biome/ocean/algos/cache.spw` `^"tiers"` declares ttlBeats 8/64/256, while `packages/spw-lsp/src/server-index.ts` hardcodes `WARM_TTL = 64` and `COLD_TTL = 256`. The diff engine is superseded by `ChangeReport` (`packages/spw-seed/src/canonical/change-report.ts`). `spw beat` in the CLI is a pure cadence tick and is untouched. `stateReload` and the Neovim listener are dormant.
+
 ## Affected Files
 
-- `[MOD]` `.spw/workspace.spw` — Add `^"beat_config"{}` and `^"diff_analysis"{}` organelle blocks.
-- `[MOD]` `packages/spw-lsp/src/types.ts` — Add `BeatConfig`, `DiffAnalysisParams`, `SpwStateReloadParams` types.
-- `[MOD]` `packages/spw-lsp/src/workspace-authority.ts` — Parse `beat_config` and `diff_analysis` from workspace authority files.
-- `[MOD]` `packages/spw-lsp/src/server-index.ts` — Integrate dynamic beat TTLs, object/property diffing engine, and state precipitation triggers.
-- `[NEW]` `packages/spw-lsp/src/handlers/diff-precipitation.ts` — Handler module for document/line diffing, object diffing, and register precipitation.
-- `[MOD]` `packages/spw-lsp/src/stdio-server.ts` — Broadcast `$spw/stateReload` notifications on hot write beats.
-- `[MOD]` `extensions/neovim-spw/lua/spw/lsp.lua` — Register `$spw/stateReload` notification listener for live inline register updates.
-- `[MOD]` `extensions/neovim-spw/lua/spw/commands.lua` — Add `:SpwStateReload` command and statusline integration.
+- `[MOD]` `packages/spw-lsp/src/server-index.ts` — take tier TTLs from the authority.
+- `[MOD]` `packages/spw-lsp/src/workspace-authority.ts` — read `ttlBeats` from cache.spw.
+- `[NEW]` a test under `packages/spw-lsp/src/__tests__/` pinning constants to the authority.
+- `[MOD]` `.spw/biome/ocean/algos/cache.spw` only if the hot TTL question resolves toward editing the authority.
 
 ---
 
 ## Commits
 
-1. `.[spw,workspace] =beat[configuration] — add beat_config and diff_analysis organelles to workspace schema`
-2. `&[spw-lsp] *beat[telemetry-ttl] — make beat TTLs configurable and emit $spw/stateReload on hot write beats`
-3. `![spw-lsp] *diff[precipitation] — implement object/property/line diffing and state precipitation pipeline`
-4. `&[neovim] =surface[hot-reload] — add $spw/stateReload listener and live register overlay statusline`
+1. `![lsp] — failing test: WARM_TTL and COLD_TTL equal ttlBeats in cache.spw ^"tiers"`
+2. `&[lsp] — read tier TTLs from the cache.spw authority via workspace-authority; keep 64 and 256 as fallback`
+3. `.[plans] — reconcile with apposition-cache-granules so granule policy and tier TTLs share one authority`
+
+Dropped: beat_config/diff_analysis organelles, the LSP diff engine, stateReload, the Neovim listener.
 
 ---
 

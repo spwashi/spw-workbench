@@ -66,12 +66,12 @@ Taste note:
 
 ## Commits
 
-1. `.[plans] — file naming-profile-convention-align with naming census`  
+1. `.[plans] — file naming-profile-convention-align with naming census` (landed inside 08e2bc1c)
 2. `.[spw] — naming-alignment pattern: families, head-noun bans, co-development rule`  
 3. `![spw] — freeze census: profile families, language features, constants, convention coverage gaps`  
 4. `vocab[conventions] — index file-physics, hash-resonance, styles; refresh naming + cli from living registry`  
 5. `vocab[profile] — qualify profile families in help and public docs (format vs mutation vs dialect vs emit)`  
-6. `vocab[constants] — public effect.l* only; historical grade map; orchestrator marked non-ladder`  
+6. `vocab[constants] — effect.l* only in living docs; shares the S0-S3 rename with seed-roundness-grades commit 1 (CLI help already speaks effect.l*)`  
 7. `vocab[identity] — cross-link surface-identity + CLI modes + derived kinds in alignment map`  
 8. `![hygiene] — alignment checklist gate for new public names; taste/lint hook optional`  
 9. `.[plans] — point seed-roundness, cli-mode-overhaul, hygiene appendices at alignment map`  

@@ -75,7 +75,6 @@ Taste note:
 [MOD?] packages/spw-seed/src/canonical/particles.ts — only if the spike lands: `ParticleNode.aim` union gains `~` (evidential); `particleMix` gains an evidential count
 [MOD?] packages/spw-seed/src/types/ast/nodes.ts — aim union + optional mood payload
 [MOD?] scripts/analyzers/spw-cut-gate.ts — S0 probe verb lint, `$%[… = …]` latch diffing, `#~derived` staleness check
-[NEW?] src/lang/seeds/probes/ — wonder probe over the seven proposals
 
 Craft guard:
 - spw-cut-gate.ts is 337 lines; three new checks must not push it past 600 — extract a `checks/` module if it does.
@@ -83,10 +82,13 @@ Craft guard:
 
 ## Commits
 
-1. .[plans] — initialize syntax-hardware-alignment plan surfaces
-2. ^seed[particles] — lexer/parser spike: #!route(...) payload and #~ evidential aim
-3. ![cut-gate] — S0 probe verb lint, $%[… = …] latch diffing, #~derived staleness check
-4. ^seed[probes] — wonder probe over the seven proposals in src/lang/seeds/probes/
+1. .[plans] — initialize syntax-hardware-alignment plan surfaces (landed inside 5acc5545)
+2. ^seed[particles] — lexer spike: #~ evidential aim with #!route(...) payload
+3. ![cut-gate] — S0 probe verb lint, scoped to the !probe[S0] form
+4. ![cut-gate] — $%[… = …] latch diffing
+5. ![cut-gate] — #~derived staleness check (needs 2)
+
+Dropped: the former commit 4 pointed at src/lang/seeds/probes/, which does not exist.
 
 Fuzz strategy:
 - Explore loop: `fuzz:explore --target=seed` while the aim-union spike is open

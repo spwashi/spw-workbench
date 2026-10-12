@@ -101,43 +101,24 @@
  >>[2026-08-24 10:15] decide — mount, capabilities, and doctor disclose a compatibility vector with both revisions and per-capability status; `v0.4` remains a possible language gate, not a claim that all dimensions moved together.
  >>[2026-08-24 10:16] decide — resolved [review-entrypoint]: the mounted review skill owns authority/provenance procedure while CLI roots, doctor, capabilities, and probes remain composable instruments; no monolithic command is required.
  >>[2026-08-24 10:17] decide — resolved [review-retention]: generated caches are ephemeral, explicit consumer claims are durable by local policy, and upstream exchange is always a deliberate human-gated distillation.
+ >>[2026-10-12 14:26] revise — Reconciled the 26 planned commits against history: seven landed hashes recorded in done, four concrete commits remain (spw capabilities, mount vector fields, doctor comparison, fixtures); three open questions sharpened to one-sentence decisions.
+ >>[2026-10-12 14:26] observe — No spw capabilities command exists in packages/spw-cli/src; doctor reports pin drift against checkout head but has no compatibility vector; the init template scaffolds neither workspace paths nor tsconfig paths.
 }
 
 ^["open"]{
- ?[node-resolution]: "How do consumer-local node scripts resolve @spwashi/* imports — via package.json workspace paths pointing into .spw/_workbench/packages/, or via tsconfig paths?"
- ?[submodule-update]: "What is the cadence for submodule updates — pin to tagged releases, track main, or manual advance?"
- ?[multi-consumer]: "When multiple deployments share one codebase, which repository boundary owns .spw authority and review retention?"
+ ?[node-resolution]: "Should spw init scaffold workspace paths or tsconfig paths so consumer scripts resolve @spwashi/* from .spw/_workbench/packages, given the init template today writes neither?"
+ ?[submodule-update]: "Is advancing the pin a manual consumer act (doctor warns only when the declared pin differs from the checkout head), or should doctor also warn when the pin trails a tagged release?"
+ ?[multi-consumer]: "When two deployments share one codebase, does .spw authority and review retention live in the shared repository or in each deployment repository?"
  # resolved: [review-entrypoint] — see stream 2026-08-24 10:16
  # resolved: [review-retention] — see stream 2026-08-24 10:17
 }
 
 ^["commits"]{
- ~[1]: "#[submodule] — define .spw/_workbench submodule convention and _-prefix semantics"
- ~[2]: ".[conventions] — add .spw/conventions/submodule.spw documenting the engagement model"
- ~[3]: "#[mount] — formalize mount.spw protocol: version tracking, surface engagement, resolution paths"
- ~[4]: "&[mount] — implement mount resolution in spw-runtime: read mount.spw, resolve spec paths through _workbench"
- ~[5]: "![mount] — verify mount resolution finds spec library, parser, and runtime from submodule path"
- ~[6]: "&[cli-init] — implement spw init: scaffold .spw/ with mount, index, workspace"
- ~[7]: "&[templates] — create mount.spw template with submodule connection and version pin"
- ~[8]: "&[templates] — create index.spw and workspace.spw templates for consumer-local canon"
- ~[9]: "&[templates] — create CLAUDE.md fragment for .spw-enabled consumer repositories"
- ~[10]: "![cli-init] — verify spw init creates correct .spw/ structure alongside existing _workbench submodule"
- ~[11]: "&[cli] — add submodule-aware path resolution: spw commands find packages via .spw/_workbench/"
- ~[12]: "![cli] — verify spw commands work when invoked from a consumer repository with _workbench mounted"
- ~[13]: "&[vscode] — add .spw/_workbench detection for LSP server resolution"
- ~[14]: "![vscode] — verify extension activates correctly in a consumer repository with only .spw/_workbench"
- ~[15]: "&[cli-doctor] — implement spw doctor: verify submodule present, parser loadable, LSP reachable"
- ~[16]: "![cli-doctor] — verify spw doctor output is actionable for each failure mode"
- ~[17]: "#[engagement] — define engagement protocol: how a site selects spec subsystems and conventions"
- ~[18]: "#[exchange] — define exchange protocol: how a site contributes surfaces back to the ecosystem"
- ~[19]: ".[docs] — write site-install guide: submodule setup, init, mount, editor, health check"
- ~[20]: ".[docs] — write mount protocol reference"
- ~[21]: ".[plans] — write spw-site-install.spw artifact formalizing the submodule integration model"
- ~[22]: "#[site-review] — define mounted-workbench discovery, authority, provenance, and output contract"
- ~[23]: "&[site-review] — expose a portable review entrypoint to repo-local models"
- ~[24]: "![consumer-review] — verify identity-free reviews remain consumer-owned and revision-aware"
- ~[25]: "&[cli,consumer] — expose roots, doctor, capabilities, and review orchestration contracts"
- ~[26]: "![cli,consumer] — verify relative-path output and distinct failure states in generated fixtures"
+ # ~[1]..~[24] landed — see ^["done"]
+ ~[25]: "&[cli] — add spw capabilities --json emitting the compatibility vector (both revisions, schemas, per-capability status); spw capabilities does not exist yet"
+ ~[26]: "#[mount] — add the compatibility-vector fields to the mount.spw init template and .spw/conventions/submodule.spw"
+ ~[27]: "&[cli,doctor] — doctor compares the mount.spw declared vector with the spw capabilities output, beside the existing pin drift check"
+ ~[28]: "![cli,consumer] — verify relative-path output and distinct failure states for the vector in generated identity-free fixtures"
 }
 
 ^["cache"]{
@@ -148,11 +129,13 @@
  ~#files_hot: "packages/spw-runtime/src/site-install.ts, packages/spw-runtime/src/index.ts, packages/spw-lsp/src/helpers.ts, packages/spw-lsp/src/server-index.ts, packages/spw-cli/src/init.ts, packages/spw-cli/src/doctor.ts, packages/spw-cli/templates/init/base/.spw/mount.spw, .agents/plans/spw-site-install/PLAN.md, .agents/plans/spw-site-install/wip.spw"
  ~#next_commit: "25"
  ~#open_count: "3"
- ~#last_stream: "2026-08-24 10:17"
+ ~#last_stream: "2026-10-12 14:26"
  ~#taste_debt: "Mount metadata still needs a tested compatibility-vector schema and doctor currently checks less than its convention promises. Keep review output consumer-owned, revision-aware, and human-gated before exchange; `_workbench` must never become an excuse to absorb consumer canon."
 }
 
 ^["done"]{
+ ~#shipped: ["c5f4dcb3 &[install,release,plans] =ground[submodule-truth] — submodule convention, _workbench boundary", "45c6b7f3 &[site-install,mount] =ground[shared-resolution] — mount resolution from .spw/mount.spw", "0d3d82cc &[cli] =site[doctor-install] — doctor and init bootstrap", "eb45f240 &[cli,workspace] =orient[mounted-consumers] — CLI resolution anchored in consumer authority", "bca875c7 &[canon,tooling] =abstract[mounted-consumers] — site-review boundary and authority", "ccea9c97 .[cli,doctor] =disclose[portable-state] — relative paths and pin status", "a7622c94 .[docs] =story[site-install-release-shape] — install story"]
+ ~#unmatched: "original commits 7 to 10, 13, 14, 17 to 20 and 22 to 24 have no one-to-one hash; init templates, the install story, and site-review rules landed under the commits above"
  # Written at merge time.
  # ~#shipped: []
  # ~#dropped: []

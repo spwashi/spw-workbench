@@ -11,13 +11,13 @@
  gist: "The compiler climbs 5.9 → 6 → 7 in green rungs, with dual-install and no silent default flip."
  touches: [~"tsconfig.base.json", ~"package.json", ~"extensions/vscode-spw/package.json"]
  entry: ~"./typescript-upgrade-ladder.spw"
- next: "Rung A: drop baseUrl from tsconfig.base.json, set explicit types, and pin extensions/vscode-spw typescript (still ^5.2.0) to the root."
+ next: "Rung A: drop baseUrl from tsconfig.base.json (probed green on 5.9.3) and from extensions/vscode-spw/tsconfig.json (its paths need rewriting), set types to node, and pin extensions/vscode-spw typescript (still ^5.2.0) to the root."
 }
 
 ^["edges"]{
  needs: [~"../typescript-perf-audit-infra/wip.spw"]
  feeds: [~"../typescript-toolchain-observatory/wip.spw"]
- shares: [~"../audit-fuzz-truthfulness/wip.spw"]
+ shares: [~"../audit-fuzz-truthfulness/wip.spw", ~"../lukewarm-backlog/wip.spw"]
 }
 
 ^["roots"]{
@@ -112,24 +112,35 @@
  >>[2026-07-20] decide — ladder order is non-skippable: prep on 5.9 → 6 clean → dual 7+6 API → optional default flip. Speed claims require perf-audit baselines.
  >>[2026-07-20] decide — never land ignoreDeprecations:6.0 on mainline; treat deprecations as rung A/B work.
  >>[2026-07-20] taste — version story should be as clear as Spw sigils: one command, one compiler, one documented fallback.
+ >>[2026-10-12 14:38] observe — rung A probe on 5.9.3: a scratch copy of tsconfig.base.json with baseUrl removed and its paths made absolute, same include set as tsconfig.typecheck.json, type-checks with exit 0 and no errors (7 s). The paths entries are ./-prefixed and a grep for bare imports from src, packages, scripts, lib, or docs finds none, so root baseUrl is not load-bearing. extensions/vscode-spw/tsconfig.json is a second baseUrl site ('../..') whose paths are written relative to it without ./, so removing it there needs the paths rewritten; that site was not tested and ~[2] did not name it.
+ >>[2026-10-12 14:38] observe — eslint ^9.39.4 and @typescript-eslint/parser ^8.57.2 are devDependencies, but the repo has no eslint config file and no package script invokes eslint; npm run lint is lint:spw plus lint:docs. Every vitest config sets globals false and every describe-using test file checked imports from vitest; @types/node is the root types package and @types/vscode belongs to the extension.
+ >>[2026-10-12 14:38] revise — ~[1] landed in a333db8d and moved to ^[done]. ~[2] split into ~[2] (baseUrl), ~[10] (explicit types), ~[11] (extension pin and its own baseUrl); ~[9] drops the non-standard sigil suffix. ?[types_array] resolved and moved to ^[done]. ?[eslint_peer] rewritten as ?[eslint_gate] because eslint may not be a gate at all, which changes the case for the rung C dual-install. Card next corrected for the second baseUrl site.
+ >>[2026-10-12 15:00] revise — corrected ?[eslint_gate]: eslint.config.js exists at the repo root, so the gap is that no package.json script runs eslint, not a missing config; routed from lukewarm-backlog ?[eslint_unwired].
 }
 
 ^["open"]{
- ?[eslint_peer]: "Does current @typescript-eslint 8.x resolve against @typescript/typescript6 alias cleanly in this workspace?"
- ?[types_array]: "Exact types entries needed (node only vs node + vitest/jest globals)?"
- ?[default_rung_d]: "Promote 7 as default in same PR series or wait for 7.1 API?"
+ ?[eslint_gate]: "eslint and @typescript-eslint/parser are devDependencies and eslint.config.js exists, but no script runs them; is eslint still meant to gate anything (then rung C keeps the typescript6 alias for its API), or should the dependencies go? Decides whether ~[6] and ~[7] carry any eslint resolution work."
+ ?[default_rung_d]: "Promote 7 as the default tsc in the same series (needs eslint dropped or aliased) or wait for the 7.1 programmatic API? Decides whether ~[9] is scheduled at all."
 }
 
 ^["commits"]{
- ~[1]: ".[plans] — stage typescript-upgrade-ladder planning artifacts"
- ~[2]: "#[tsconfig] — remove baseUrl; explicit types; align extension TS pin (rung A)"
+ # ~[1] landed — see ^["done"]
+ ~[2]: "#[tsconfig] — remove baseUrl from tsconfig.base.json (rung A; probed green on 5.9.3)"
+ ~[10]: "#[tsconfig] — set types to node in the root config (rung A; split from ~[2])"
+ ~[11]: "#[tsconfig] — align extensions/vscode-spw typescript ^5.2.0 to the root pin and rewrite its own baseUrl '../..' paths (rung A; split from ~[2])"
  ~[3]: "![types] — verify 5.9 prep: build, fuzz:types, test:run"
  ~[4]: "#[toolchain] — adopt TypeScript 6.0 and clear bridge deprecations (rung B)"
  ~[5]: "![types] — verify TypeScript 6 green across packages and scripts"
  ~[6]: "#[toolchain] — dual-install TypeScript 7 native + typescript6 API (rung C)"
  ~[7]: "![types] — verify native tsc typecheck and eslint still resolve"
  ~[8]: ".[docs] — document version ladder, dual-install, and default policy"
- ~[9]: "#[toolchain]? — promote TypeScript 7 as primary default (rung D, optional)"
+ ~[9]: "#[toolchain] — promote TypeScript 7 as primary default (rung D, optional)"
+}
+
+^["done"]{
+ # Written at merge time.
+ ~#shipped: ["a333db8d &[seed,cli,lsp,docs] =integrate[operational-topography] — land coupling/topography engine and plan sync (adds the staged plan artifacts, ~[1])"]
+ ~#resolved(types_array): "Exact types entries needed (node only vs node + vitest/jest globals)? — node only for the root config; every vitest config sets globals false and test files import from vitest (extension keeps @types/vscode in its own project); evidence: stream 2026-10-12 observe"
 }
 
 ^["cache"]{
@@ -138,8 +149,16 @@
  ~#rebased_at: ""
  ~#hygiene_split: "none"
  ~#files_hot: "package.json, tsconfig.base.json, extensions/vscode-spw/package.json"
- ~#next_commit: "1"
- ~#open_count: "3"
- ~#last_stream: "2026-07-20"
+ ~#next_commit: "2"
+ ~#open_count: "2"
+ ~#last_stream: "2026-10-12 15:00"
  ~#taste_debt: "fuzz:types currently aliases tsc with no version identity in output"
+}
+
+#>wonder_typescript_upgrade_ladder_extension_baseurl
+?["Does extensions/vscode-spw still build and bundle after its baseUrl and typescript pin are changed in step with the root?"]{
+  #:depth #!computational // lens: second config site
+  ~#hypothesis: "the extension typechecks with paths rewritten relative to its tsconfig, because its two path aliases point at files the root config already resolves"
+  !probe{ "in a scratch copy of extensions/vscode-spw/tsconfig.json drop baseUrl and prefix the two paths with ../../, then run tsc -p on it with the root typescript 5.9.3 and compare to the current result" }
+  $%[plan.commit_count, plan.phase_progress]
 }

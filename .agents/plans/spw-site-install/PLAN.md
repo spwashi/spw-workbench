@@ -84,49 +84,14 @@ Commits 1-3 establish the shared boundary and mount contract. After that, CLI in
 
 The submodule convention, mount resolver, portable init/doctor surfaces, and plan artifact have landed on `main`, though not always under the original commit numbering. The next coherent implementation slice is the repo-local review contract; remaining CLI/editor/docs items should be reconciled against that contract rather than replayed mechanically.
 
-### Submodule Convention
-1. `#[submodule] — define .spw/_workbench submodule convention and _-prefix semantics`
-2. `.[conventions] — add .spw/conventions/submodule.spw documenting the engagement model`
+Landed (see wip.spw ^["done"]): c5f4dcb3, 45c6b7f3, 0d3d82cc, eb45f240, bca875c7, ccea9c97, a7622c94. The original commits 1 to 24 have no one-to-one hash for several items (init templates, site-review rules); they landed inside these.
 
-### Mount Protocol
-3. `#[mount] — formalize mount.spw protocol: version tracking, surface engagement, resolution paths`
-4. `&[mount] — implement mount resolution in spw-runtime: read mount.spw, resolve spec paths through _workbench`
-5. `![mount] — verify mount resolution finds spec library, parser, and runtime from submodule path`
+Remaining:
 
-### CLI Init
-6. `&[cli-init] — implement spw init: scaffold .spw/ with mount, index, workspace (resolve CLI from _workbench)`
-7. `&[templates] — create mount.spw template with submodule connection and version pin`
-8. `&[templates] — create index.spw and workspace.spw templates for consumer-local canon`
-9. `&[templates] — create CLAUDE.md fragment for .spw-enabled consumer repositories`
-10. `![cli-init] — verify spw init creates correct .spw/ structure alongside existing _workbench submodule`
-
-### CLI Resolution
-11. `&[cli] — add submodule-aware path resolution: spw commands find packages via .spw/_workbench/`
-12. `![cli] — verify spw commands work when invoked from a consumer repository with _workbench mounted`
-
-### Editor Integration
-13. `&[vscode] — add .spw/_workbench detection: extension finds LSP server from submodule path`
-14. `![vscode] — verify extension activates correctly in a consumer repository with only .spw/_workbench`
-
-### Health Check
-15. `&[cli-doctor] — implement spw doctor: verify submodule present, parser loadable, LSP reachable`
-16. `![cli-doctor] — verify spw doctor output is actionable for each failure mode`
-
-### Engagement & Exchange
-17. `#[engagement] — define engagement protocol: how a site selects spec subsystems and conventions`
-18. `#[exchange] — define exchange protocol: how a site contributes surfaces back to the ecosystem`
-
-### Documentation
-19. `.[docs] — write site-install guide: submodule setup, init, mount, editor, health check`
-20. `.[docs] — write mount protocol reference`
-21. `.[plans] — write spw-site-install.spw artifact formalizing the submodule integration model`
-
-### Repo-local Review
-22. `#[site-review] — define mounted-workbench discovery, authority, provenance, and output contract`
-23. `&[site-review] — expose a portable review entrypoint to repo-local models`
-24. `![consumer-review] — verify identity-free reviews remain consumer-owned and revision-aware`
-25. `&[cli,consumer] — expose roots, doctor, capabilities, and review orchestration contracts`
-26. `![cli,consumer] — verify relative-path output and distinct failure states in generated fixtures`
+25. `&[cli] — add spw capabilities --json emitting the compatibility vector (both revisions, schemas, per-capability status)`
+26. `#[mount] — add the compatibility-vector fields to the mount.spw init template and submodule convention`
+27. `&[cli,doctor] — doctor compares the declared vector with the spw capabilities output, beside the pin drift check`
+28. `![cli,consumer] — verify relative-path output and distinct failure states for the vector in generated fixtures`
 
 Fuzz strategy:
 - Explore: `npm run test:seed` (ensure templates parse)

@@ -87,15 +87,15 @@ Taste note:
 
 ## Commits
 
-1. `.[plans] — file cli-mode-overhaul with mode audit matrix`  
+1. `.[plans] — file cli-mode-overhaul with mode audit matrix` (landed)  
 2. `vocab[cli] — mode taxonomy (measure preview stream precipitate generate patch write) + CommandSpec fields`  
 3. `![cli] — complete mode×ceiling×artifact audit for all registry verbs + orphans`  
 4. `#[cli] — envelope v1: mode, ceiling, optional precipitates/patch/cacheKey`  
 5. `^seed[derived] — register precipitate/planned/patch (or audit-chosen) derived kinds; exclude from canon walks`  
 6. `&[cli] — flow-cache for hot/patch intermediate Spw (beat- or hash-keyed under gen policy)`  
 7. `&[cli] — migrate writers to mode-declared paths; help lists modes not only verbs`  
-8. `#[cli] — spw capabilities --json from registry modes; absorb plan status/check`  
-9. `vocab[cli] — free rename/merge pass driven by audit (no muscle-memory veto)`  
+8. `#[cli] — spw capabilities --json from registry modes; shape agreed with absorb-spwq-cli before either lands; plan status/check absorption depends on hygiene-index-consolidation commit 7`  
+9. `vocab[cli] — rename pass for what remains after the census/graph/density aliases: ls vs query, atlas vs graph (no muscle-memory veto)`  
 10. `![cli] — envelope coverage, flow-cache fixpoint, hot-loop smoke, agent compose demos`
 
 Fuzz strategy:

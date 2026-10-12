@@ -121,6 +121,8 @@ Roadmap rung **0c** (after operational-topography kernel, before or parallel to 
 5. `&[lsp,cli] =pulse[edits] — SourceEdit → TextEdit + check/apply commands`
 6. `![lsp] *verify[form-geometry] — hover/actions/formContext tests`
 
+Landed: 1 (bab81e15); 2, 3, 4 and 6 together in a999a24f. Open: 5.
+
 ## Agentic Hygiene
 
 - Rebase target: current `main` (path-nav + handoff landed 2026-07-21; re-pin SHA before P0)

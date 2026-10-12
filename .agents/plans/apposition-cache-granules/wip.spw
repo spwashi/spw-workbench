@@ -112,23 +112,23 @@
  >>[2026-08-24 13:00] decide — line offsets remain locations rather than identities, and cache warmth or edit cadence never becomes a person-level or authority-facing score.
  >>[2026-09-30 16:54] revise — the leak test may proceed. The granule key waits on syntax-hardware-alignment: an apposition is not a cache convenience until it is one wire. Warmth stays off any authority-facing score.
  >>[2026-10-03 02:39] implement — Applied uncommitted (caches-cut-2026-09-30 lens patch, reviewed approve-with-nits in three rounds). WIRE: the LSP index adds an apposition kind with body; workspace/symbol matches readings on their body and ranks exact name matches first under the 40 cap; hover adds wonder and apposition cards with lens precedence apposition, datum, comment; inlay and semantic tokens paint apposition bodies as one string; spw/annotations records carry kind apposition and body; the VS Code concepts and workspace trees accept the kind. New modules packages/spw-lsp/src/apposition.ts and handlers/wonder.ts. COST: per-request medians under load (main to patched): wonder hover 0.15 to 0.92 ms, inlay 0.28 to 0.32 ms, semantic tokens on a big doc 5.0 to 6.8 ms, workspace symbol lens 10.5 to 15 ms; tests LSP 263 pass plus 1 known failure, VS Code 14 of 14, extension tsc clean. Follow-ups: spw-probes resonance, references, rename, and documentHighlight still read ~#lens( by regex.
+ >>[2026-10-12 14:29] revise — Resolved ?[ordering]: spw-beat-diff-precipitation is stranded and server-index.ts still has static WARM_TTL and COLD_TTL, so no dynamic-TTL edit collides with commits 3 to 5 today.
+ >>[2026-10-12 14:29] revise — Resolved ?[granule_agreement] for now: geometric-analysis-tooling is dormant and its card says not to ship a fingerprint product from character scans, so no second key format competes; reopen if it reheats.
+ >>[2026-10-12 14:29] observe — Commit 6 landed in effect as b8a6949d: scanAppositions in apposition-scan.ts returns name, raw body, span and a body mask hash without a parse. The eviction leak is unfixed on reading: evictStale deletes only documents entries and no leak test exists; no peekDocument exists; server-index.ts is 1302 lines.
 }
 
 ^["open"]{
- ?[coverage]: "Does apposition-keyed granularity pay for itself when 63% of surfaces carry no apposition? Measure reparse volume on a real edit sequence before building past commit 7."
- ?[anonymous]: "5 anonymous appositions anchor a span but supply no key. Degrade to span-position identity, or exclude them from granule keying entirely?"
- ?[ordering]: "spw-beat-diff-precipitation edits server-index.ts for dynamic TTLs and collides with commits 3-5. Land this plan first, or rebase onto it?"
- ?[granule_agreement]: "geometric-analysis-tooling will key on shapeFingerprint. Should both plans share one granule identity type before either ships a key format?"
+ ?[coverage]: "Does apposition-keyed granularity pay for itself when 182 of 493 surfaces carried an apposition on 2026-07-27, so that commit 7 is built only if a real edit sequence shows most edited lines inside appositions?"
+ ?[anonymous]: "The 5 anonymous appositions anchor a span but supply no key: does commit 7 give them span-position identity, or exclude them from granule keying?"
 }
 
 ^["commits"]{
- ~[1]: ".[plans] — file apposition-cache-granules"
- ~[2]: "![spw-lsp] — pin the confirmed cache defects: eviction leak and recency flattening"
+ # ~[1], ~[6] landed — see ^["done"]
+ ~[2]: "![spw-lsp] — pin the confirmed cache defects: eviction leak (evictStale deletes only documents) and recency flattening"
  ~[3]: "&[spw-lsp] — evict a document's index entries with the document"
  ~[4]: "&[spw-lsp] — peekDocument for bulk reads so fan-out stops flattening recency"
  ~[5]: "&[spw-lsp] — derive workspaceAnnotations from annotationsByFile, dropping the per-save rebuild"
- ~[6]: "^seed[spw-seed] — apposition scan: name, body, and span hash without a parse"
- ~[7]: "^seed[spw-seed] — frame-level content hashes keyed by apposition name"
+ ~[7]: "^seed[spw-seed] — frame-level content hashes keyed by apposition name, built on scanAppositions"
  ~[8]: "&[spw-lsp] — retain the inbound reference index the graph build already computes"
  ~[9]: "&[spw-lsp] — reuse derived data when a granule's apposition envelope is unchanged"
  ~[10]: "#[spw-lsp] — codeLens surfacing granule tier, volatility, inbound degree, and hash age"
@@ -142,10 +142,22 @@
  ~#hygiene_split: "required — in-flight grammar edits touch types/ast/nodes.ts, where AppositionLabel lives"
  ~#files_hot: "packages/spw-lsp/src/server-index.ts, packages/spw-lsp/src/types.ts, packages/spw-seed/src/types/ast/nodes.ts"
  ~#next_commit: "1"
- ~#open_count: "4"
- ~#last_stream: "2026-10-03 02:39"
+ ~#open_count: "2"
+ ~#last_stream: "2026-10-12 14:29"
  ~#taste_debt: "two-axis eviction (tier x volatility) is correct and deferred; granule identity must reconcile apposition name, content, structural ancestry, and future shape fingerprints without treating activity metadata as human evidence"
 }
 
 ^["done"]{
+ ~#shipped: ["08e2bc1c &[canon-rewrite-v2] (carried the plan files in; planned commit 1)", "b8a6949d ^seed[lattice] — parse-free apposition unit cells (stands in for planned commit 6: name, body, span and mask hash without a parse)"]
+ ~#resolved(ordering): "Land this plan first or rebase onto spw-beat-diff-precipitation edits to server-index.ts? — no collision today: that plan is stranded and TTLs are still static; evidence: stream 2026-10-12 observe on ordering"
+ ~#resolved(granule_agreement): "Should both plans share one granule identity type before either ships a key format? — moot while geometric-analysis-tooling is dormant; reopen if it reheats; evidence: stream 2026-10-12 revise on granule_agreement"
+}
+
+#>wonder_agents_plans_appositioncachegranules_w_1
+?["On a real edit sequence, what share of edited lines sit inside an apposition envelope rather than outside any?"]{
+  #:depth #!computational // lens: invalidation proportionality
+  $^["open"]@here => %[edit.lines_in_apposition, edit.lines_total]
+  ~#hypothesis: "most edits fall outside appositions, so per-granule invalidation would rarely beat whole-file"
+  !probe{ "for the last 50 commits touching .spw surfaces, take each hunk's changed line ranges and test them against the spans from scanAppositions on the post-commit text; report the in-envelope share per file and overall." }
+  $%[apposition.coverage, edit.in_envelope_share]
 }

@@ -80,11 +80,13 @@ Server routing is not capability advertisement. The current tree has no single c
 
 ## Commits
 
-1. `vocab[lsp] =register[protocol] — one source for custom method identity and discovery`
-2. `![lsp] *audit[capabilities] — matrix handled/advertised/configured/invoked/observed/tested`
-3. `vocab[lsp] — demote or implement phantom spw/* client types`
-4. `^seed[lsp] =request[earned] — implement only justified semantic requests`
-5. `![lsp] =evidence[snapshots] — server + mounted-consumer evidence`
+Landed: a999a24f (spw/formContext handler, test and client type).
+
+1. `vocab[lsp] =register[protocol] — one registry listing the 23 methods the stdio switch handles and spw/workspaceManifest/v1`
+2. `![lsp] *audit[capabilities] — matrix with one row per registry entry and an evidence state from registered through tested`
+3. `vocab[lsp] — type or document the methods missing from SpwCustomRequestMap (it types 14 of the 23)`
+4. `![lsp] — one stdio dispatch test for each method no test names`
+5. `^seed[lsp] =request[earned] — a new request, only after a cost sample and a language wire both exist; held`
 
 ## Agentic Hygiene
 

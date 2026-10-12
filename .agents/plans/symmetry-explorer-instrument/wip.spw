@@ -7,11 +7,11 @@
 #:layer #!pragmatics
 
 ?["card"]{
- phase: #stranded
- gist: "A D4/Z4 symmetry explorer animates the eight group actions on a 2x2 tile grid."
- touches: [~"src"]
+ phase: #planning
+ gist: "An executable D4/Z4 group in the seed gives the .{sym:D4} application surfaces a tested meaning."
+ touches: [~"packages/spw-seed/src/math", ~".spw/applications/symmetry"]
  entry: ~"./PLAN.md"
- next: "Human disposition: relocate to a site repo, re-scope under packages/, or archive; src/ui/viz is gone, so touches fall back to src."
+ next: "Write the failing D4 test first: eight actions on a 2x2 tile, composition closes, every element has an inverse."
 }
 
 ^["roots"]{
@@ -22,7 +22,7 @@
 }
 
 ^["intent"]{
- ~#goal: "Create a visual instrument for D4/Z4 symmetry groups."
+ ~#goal: "Make D4/Z4 executable in the seed (pure, tested), then let a visual instrument consume it wherever it is homed."
  ~#taste: "visual wonder — smooth, axis-bound rotations and reflections that validate mathematical theory."
 }
 
@@ -56,22 +56,36 @@
  >>[2026-03-19 00:00] observe — current symmetry docs are text-only. The D4 group has 8 actions: E, R90, R180, R270, MX, MY, MD1, MD2.
  >>[2026-03-19 00:01] decide — map these actions to CSS `transform` rules. Use `--spw-beat` for transition timing to stay in sync with the workbench's rhythm.
  >>[2026-07-27 13:15] observe — plan-ecology sweep: every predicted path targets src/ui/viz/, which no longer exists in this repo. src/ now holds only runtime, seed, and testing shims. This plan is stranded on a deleted layout, not in progress — disposition (relocate to a site repo, re-scope against packages/, or archive as superseded) is a user call.
+ >>[2026-10-12 14:26] revise — withdrew the three fictional commits (paths never existed in this history; sigils viz[, styles[, exhibit[ are outside the convention) and kept one disposition commit. Replaced grid_size and substrate_hook with a single disposition question: grid_size is answered by symmetry-applications.spw (2x2 tile for spatial.grid), and substrate_hook only matters once a home exists.
+ >>[2026-10-12 14:31] revise — convention: resolved questions and landed commits are kept in ^["done"] (resolved(label) and shipped) rather than deleted; ^["commits"] keeps a pointer comment.
+ >>[2026-10-12 14:51] decide — User decision 2026-10-12: rescope, do not archive. Live slice is a pure D4/Z4 group module in the seed; the DOM exhibit waits on a home. grep of seed, cli and runtime finds no group code though spw mount ships five .{sym:D4} surfaces.
 }
 
 ^["open"]{
- ?[grid_size]: "Should we stick to the 2x2 tile grid mentioned in `symmetry-applications.spw`, or allow N x N?"
- ?[substrate_hook]: "How should the instrument signal its state back to the `RegisterBank`? Substrate events or direct binding?"
+ ?[home]: "Where does the visual instrument live once the pure module exists: docs/design (next to semantic-features-demo.html), a site repo via the submodule model, or nowhere until a second consumer asks?"
+ ?[facet_meaning]: "Should the .{sym:D4} and .{sym:Z4} facets stay free prose in the five symmetry surfaces, or should a lint/selector read them and call the group module (for example to generate the 8 mirrored selector variants named in symmetry-applications.spw)?"
+ ?[substrate_hook]: "How should an instrument signal its state back to the RegisterBank, via substrate events or direct binding? Only matters once home is answered."
 }
 
 ^["commits"]{
- ~[1]: "viz[ui] — implement Symmetry Explorer DOM instrument and D4 state"
- ~[2]: "styles[ui] — add CSS transformation layer for D4 symmetry group"
- ~[3]: "exhibit[docs] — embed symmetry-explorer instrument in documentation context"
+ # Withdrawn earlier: three commits naming src/ui/viz and src/styles/viz (never existed in this history; viz[, styles[, exhibit[ sigils outside the convention). See ^["done"] ~#dropped.
+ # ~[1]: SUPERSEDED — disposition record; answered by the rescope in the 2026-10-12 decide entry. Replaced by the three commits below.
+ ~[1]: "![seed] — failing tests for a D4/Z4 group: eight actions on a 2x2 tile, closure, inverses, Z4 as the rotation subgroup"
+ ~[2]: "^seed[math] — add the pure D4/Z4 module under packages/spw-seed/src/math and export it; no DOM, no runtime dependency"
+ ~[3]: ".[symmetry] — point the five symmetry application surfaces at the module and record the 8 actions as the canonical order"
+}
+
+^["done"]{
+ ~#resolved(grid_size): "Stick to the 2x2 tile grid, or allow N x N? — symmetry-applications.spw defines spatial.grid as a 2x2 tile; evidence: .spw/applications/symmetry/symmetry-applications.spw line 12"
+ ~#resolved(disposition): "Relocate, re-scope, or archive? — re-scoped by the user on 2026-10-12; the DOM/CSS exhibit is deferred behind a pure seed module; evidence: grep of packages/spw-seed, spw-cli, spw-runtime finds no D4, dihedral or rotate/reflect group code, while mount.ts still ships five symmetry surfaces"
+ ~#dropped: ["viz[ui] implement Symmetry Explorer DOM instrument (src/ui/viz does not exist)", "styles[ui] CSS transformation layer (src/styles/viz does not exist)", "exhibit[docs] embed instrument in documentation (depended on the first)"]
 }
 
 ^["cache"]{
- ~#status: "stranded"
- ~#files_hot: "src/ui/viz/symmetry-explorer.ts, src/styles/viz/symmetry-explorer.css"
+ ~#status: "planning"
+ ~#base_ref: "main@551bb419"
+ ~#files_hot: ".spw/applications/symmetry/symmetry-applications.spw,packages/spw-seed/src/math/index.ts"
  ~#next_commit: "1"
- ~#open_count: "2"
+ ~#open_count: "3"
+ ~#last_stream: "2026-10-12 14:51"
 }

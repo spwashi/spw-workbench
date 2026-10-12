@@ -16,9 +16,9 @@ Taste note: improve correctness and readability together—structured-looking so
 ## Files
 
 ```text
-[NEW] .agents/plans/spw-syntax-warning-cleanup/FIX.md
-[NEW] .agents/plans/spw-syntax-warning-cleanup/PLAN.md
-[NEW] .agents/plans/spw-syntax-warning-cleanup/wip.spw
+[NEW] .agents/plans/_archive/spw-syntax-warning-cleanup/FIX.md
+[NEW] .agents/plans/_archive/spw-syntax-warning-cleanup/PLAN.md
+[NEW] .agents/plans/_archive/spw-syntax-warning-cleanup/wip.spw
 
 [MOD] packages/spw-seed/src/dialect/detect.ts
 [MOD] packages/spw-seed/src/dialect/dialect.test.ts
@@ -45,15 +45,15 @@ Taste note: improve correctness and readability together—structured-looking so
 
 ## Commits
 
-1. `.[plans] — classify Spw syntax warning roots`
-2. `![spw-seed] — constrain dialect and binding lookahead`
-3. `&[spw-seed] — parse indentation-bounded block scalars`
-4. `![spw-seed] — keep operator suffixes on their line`
-5. `.[spw-corpus] — align active surfaces with parser contracts`
-6. `.[spw-corpus] — distinguish prose from structured conventions`
-7. `.[spw-exhibits] — separate notation from execution`
-8. `.[docs,plans] — record syntax-boundary opportunities`
-9. `![spw-lint] — prove a warning-free source corpus`
+1. `.[plans] — classify Spw syntax warning roots` (bbf75ecd)
+2. `![spw-seed] — constrain dialect and binding lookahead` (9d749e81)
+3. `&[spw-seed] — parse indentation-bounded block scalars` (a2b70907)
+4. `![spw-seed] — keep operator suffixes on their line` (26efe00d)
+5. `.[spw-corpus] — align active surfaces with parser contracts` (b3cb5f57)
+6. `.[spw-corpus] — distinguish prose from structured conventions` (5af7cef5)
+7. `.[spw-exhibits] — separate notation from execution` (dcfa8a56)
+8. `.[docs,plans] — record syntax-boundary opportunities` (6582f392)
+9. `![spw-lint] — prove a warning-free source corpus` (1fa5c556)
 
 ## Agentic Hygiene
 

@@ -11,7 +11,7 @@
  gist: "Selectors, spwq, and docs share the canonical register phases lex→parse→semantic→optimize→pragmatic."
  touches: [~"packages/spw-seed/src/query", ~"packages/spw-cli/src/query.ts", ~"docs/runtime/spw/register-bank.spw"]
  entry: ~"./PLAN.md"
- next: "Add a phase predicate to selector-expr.ts using PHASE_ORDER names, or fold that remainder into spw-q-stabilization."
+ next: "Answer phase_home (PHASE_ORDER lives in spw-runtime but selectors live in portable spw-seed) before adding any phase predicate to selector-expr.ts, or fold the remainder into spw-q-stabilization."
 }
 
 ^["edges"]{
@@ -94,52 +94,47 @@
  >> [2026-03-05 19:06] revise — narrow the remaining branch scope to selector grammar, `spwq` wiring, and docs alignment; the build-fix work is no longer part of this plan.
  >> [2026-03-05 19:06] hygiene — `src/runtime/state/register-helpers.ts` is untracked extraction drift duplicating helpers still defined in `register-bank.ts`; leave it out of this branch.
  >> [2026-03-05 19:06] taste — keep the next increment narrow; chemistry/metaphysics redesign should sit on top of a query/docs-aligned baseline and truthful audits.
+ >>[2026-10-12 14:28] revise — reconciled commits with git: ~[1] superseded by P0 landing (181071ef); ~[2] landed as 14fd2c5c; the runtime half of ~[3] landed in 181071ef (RegisterPhase is PHASE_ORDER, sem/opt/prag kept as RegisterPhaseAlias). Remaining ~[3]..~[6] made concrete. Card next corrected.
+ >>[2026-10-12 14:28] observe — selector-expr.ts, query/types.ts, presets.ts, match.ts and cli query.ts contain no phase vocabulary; register-bank.spw mentions lex and parse once. The old next move (selector predicate over PHASE_ORDER) would make portable spw-seed import spw-runtime, so the three titled-only questions were replaced by phase_home and phase_subject and the two template wonders by one two-ladders wonder.
+ >>[2026-10-12 14:31] revise — convention: resolved questions and landed commits are kept in ^["done"] (resolved(label) and shipped) rather than deleted; ^["commits"] keeps a pointer comment.
 }
 
 ^["open"]{
- ?["selector-expr grammar — operational/positional surface"]
- ?["wire canonical phase names through spwq"]
- ?["align docs to the shipped register baseline"]
+ ?[phase_home]: "PHASE_ORDER lives in spw-runtime/src/state/types.ts but selectors live in the portable spw-seed, which may not import runtime; does the canonical phase list move into seed, or does the selector treat phase names as opaque strings that the CLI validates?"
+ ?[phase_subject]: "Does a selector phase predicate pick register cells by RegisterPhase (5 names) or AST nodes by spirit-sequence phaseIndex (7 sigils in the LSP's SIGIL_SEMANTICS)? The answer decides whether commit 3 belongs in seed at all."
 }
 
 ^["commits"]{
- ~[1]: ".[plans] — refresh plan artifacts after P0 runtime stabilization"
- ~[2]: "^seed[query] — add Spw-native selector expression grammar for operational/positional selectors"
- ~[3]: "vocab[query] — align selector/runtime phase terminology on canonical names"
- ~[4]: "&[spwq] — wire selector expressions and canonical phase predicates into CLI flows"
- ~[5]: "![query] — validate selector semantics against shipped runtime phase invariants"
- ~[6]: ".[docs] — align register/query docs and mark chemistry redesign as a follow-on"
+ # ~[1]..~[2] landed or superseded — see ^["done"]
+ # ~[3]: (old vocab[query] align terminology) runtime side LANDED in 181071ef: RegisterPhase is PHASE_ORDER with sem, opt, prag kept as RegisterPhaseAlias; the selector side has no phase vocabulary yet, so the remainder is the new ~[3]
+ ~[3]: "^seed[query] — selector phase predicate in selector-expr.ts, placed according to phase_home and phase_subject"
+ ~[4]: "&[cli] — accept the phase predicate through selectors.ts and spw query"
+ ~[5]: "![query] — selector tests pin canonical phase names and the alias behaviour"
+ ~[6]: ".[docs] — add the five-phase glossary to docs/runtime/spw/register-bank.spw (it mentions lex and parse once, in the facet note)"
 }
 
 ^["cache"]{
- ~#status: "planning"
+ ~#status: "dormant"
  ~#base_ref: "main@181071ef85bc2e505dfc99925fe55ebc5adcf3c9"
  ~#rebased_at: ""
  ~#hygiene_split: "exclude untracked `src/runtime/state/register-helpers.ts` from this branch"
- ~#files_hot: "src/seed/query/selector-expr.ts, src/seed/query/match.ts, scripts/spwq.ts, docs/runtime/spw/register-bank.spw"
- ~#next_commit: "1"
- ~#open_count: "3"
- ~#last_stream: "2026-03-05 19:06"
+ ~#files_hot: "packages/spw-seed/src/query/selector-expr.ts, packages/spw-cli/src/query.ts, docs/runtime/spw/register-bank.spw"
+ ~#next_commit: "3"
+ ~#open_count: "2"
+ ~#last_stream: "2026-10-12 14:31"
  ~#taste_debt: "defer the broader chemistry/metaphysics rename until audits and selector semantics are clearer"
 }
 
 ^["done"]{
- # Written at merge time.
+ ~#shipped: ["14fd2c5c ^seed[query] =selectorExpr[parser,tokenizer] — Spw-native selector expression grammar", "181071ef vocab[runtime] =satisfies[phase-contracts] — stabilize P0 runtime and seed invariants"]
+ ~#resolved(selector-expr grammar): "selector-expr grammar — operational/positional surface — the Spw-native grammar landed; phase predicates are the remainder, see phase_home and phase_subject; evidence: 14fd2c5c"
 }
 
 #>wonder_agents_plans_registerphaseevolution_wip_1
-?["How does this file's voice differ from @here?"]{
-  #:depth #!educational // lens: molecular binding
-  ~<@here> // nearest neighbor
-  $%[op.distribution]@here vs $%[op.distribution]@here
-  !probe{ "compare operator frequencies; files with similar content but different operator ratios have different voices." }
-}
-
-#>wonder_agents_plans_registerphaseevolution_wip_2
-?["What invariant holds across every frame in wip — register-phase-evolution?"]{
-  #:depth #!experiential // lens: ecological zone
-  $^["_"]@here => %[shared.property]
-  ~#hypothesis: "all frames in this file share ____"
-  !probe{ "extract the property common to every frame in this file; if none exists, the file may lack cohesion or may be a deliberate collection." }
-  $%[register.bank_size, register.active_bindings]
+?["Can the 7-step spirit sequence and the 5-step register pipeline be mapped monotonically, or are they truly orthogonal phase axes?"]{
+  #:depth #!computational // lens: two ladders
+  $^["open"]@here => $^["commits"]@here
+  ~#hypothesis: "no monotone map exists, so a phase predicate must name its axis."
+  !probe{ "list the SIGIL_SEMANTICS entries with phaseIndex >= 0 in packages/spw-lsp/src/server-index.ts (phase 0 to 6) beside PHASE_ORDER in packages/spw-runtime/src/state/types.ts (lex, parse, semantic, optimize, pragmatic); try to draw a monotone map and record the first operator that has no defensible register phase." }
+  $%[phase.spirit_count, phase.register_count]
 }

@@ -64,13 +64,13 @@ Derived from corpus measurement in commit 7, not hand-picked.
 
 ## Commits
 
-1. `.[plans] — file apposition-cache-granules`
+Landed in effect: 08e2bc1c (plan files, commit 1) and b8a6949d (parse-free apposition scan stands in for commit 6).
+
 2. `![spw-lsp] — pin the confirmed cache defects: eviction leak and recency flattening`
 3. `&[spw-lsp] — evict a document's index entries with the document`
 4. `&[spw-lsp] — peekDocument for bulk reads so fan-out stops flattening recency`
 5. `&[spw-lsp] — derive workspaceAnnotations from annotationsByFile, dropping the per-save rebuild`
-6. `^seed[spw-seed] — apposition scan: name, body, and span hash without a parse`
-7. `^seed[spw-seed] — frame-level content hashes keyed by apposition name`
+7. `^seed[spw-seed] — frame-level content hashes keyed by apposition name, built on scanAppositions`
 8. `&[spw-lsp] — retain the inbound reference index the graph build already computes`
 9. `&[spw-lsp] — reuse derived data when a granule's apposition envelope is unchanged`
 10. `#[spw-lsp] — codeLens surfacing granule tier, volatility, inbound degree, and hash age`

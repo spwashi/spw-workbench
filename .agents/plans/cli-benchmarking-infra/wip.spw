@@ -129,17 +129,16 @@
 }
 
 ^["commits"]{
-  ~[1]: ".[plans] — stage cli-benchmarking-infra planning artifacts"
-  ~[2]: "#[bench] — add retained-sample statistics, outcomes, and data models"
-  ~[3]: "#[bench] — add synthetic, workbench, and identity-free consumer-shape workloads"
-  ~[4]: "#[bench] — implement in-process and subprocess harness with first-event and profiling hooks"
-  ~[5]: "#[bench] — add comprehensive benchmark suite across all 5 CLI command groups"
-  ~[6]: "#[bench] — add TypeScript toolchain profiler and TS7 readiness matrix"
-  ~[7]: "#[bench] — implement differential comparison, instrumented spans, and outcome-aware regression gate"
-  ~[8]: "#[bench] — add multi-dimensional efficiency report generator (Markdown, Terminal, JSON, Spw)"
-  ~[9]: "#[bench] — create unified runner CLI and wire package scripts"
-  ~[10]: "![bench] — add test suite for stats math, harness, attribution, and reporters"
-  ~[11]: ".[bench] — document benchmarking protocol, efficiency lattice, and runbook"
+ # ~[1] landed — see ^["done"]
+ ~[2]: "#[bench] — add retained-sample statistics, outcome classes, and data models under scripts/bench"
+ ~[3]: "#[bench] — add synthetic, workbench, and identity-free consumer-shape workloads"
+ ~[4]: "#[bench] — implement in-process and subprocess harness with first-event and profiling hooks"
+ ~[5]: "#[bench] — benchmark the first slice only: cold root help, one light command, and inspect source stage cadence with loaded-module receipts"
+ ~[6]: "#[bench] — implement differential comparison, instrumented spans, and outcome-aware regression gate"
+ ~[7]: "#[bench] — add efficiency report generator (Markdown, Terminal, JSON, Spw) and wire package scripts"
+ ~[8]: "![bench] — add test suite for stats math, harness, attribution, and reporters"
+ ~[9]: "#[bench] — widen to the remaining CLI command groups, then the TypeScript toolchain profiler and TS7 readiness matrix"
+ ~[10]: ".[bench] — document benchmarking protocol, efficiency lattice, and runbook"
 }
 
 ^["stream"]{
@@ -161,9 +160,17 @@
   >>[2026-08-24 12:58] revise — teach through rather than product as the CLI execution-horizon handle; the benchmark schema records resolved stage, API option, parser profile, event policy, and bundle/import boundary as separate fields.
   >>[2026-08-24 13:02] observe — after authority extraction became lazy, three fresh command-registry imports measured 211–324 ms against one earlier 969 ms observation and a split build moved the 3.4 MB compiler into an authority-only chunk; retain this as a workload hypothesis until the multi-sample harness controls environment and variance.
  >>[2026-09-30 16:54] decide — this plan leads the primed queue with syntax-hardware-alignment. Retained samples come before mode contracts, LSP method matrices, and editor journeys. A single timing observation stays a hypothesis until the harness keeps raw samples and separates environment faults.
+ >>[2026-10-12 14:25] revise — git shows scripts/bench and bench:* package scripts do not exist yet; commit 1 (plan surfaces) is on main. Cut 11 commits to 10: first-slice benchmark commit now follows taste_debt (root help, one light command, inspect source cadence), unified runner merged into the report commit, wider command groups and TS7 matrix moved last. Added wonder on cold-import sample count.
 }
 
 ^["open"]{
+}
+
+^["done"]{
+ ~#shipped: [
+  "6b49b60c .[plans] =orient[consumer-direction] — refresh ecology (~[1]: planning surfaces first filed here)",
+ ]
+}
 }
 
 ^["cache"]{
@@ -174,6 +181,13 @@
   ~#files_hot: ".agents/plans/cli-benchmarking-infra/PLAN.md, .agents/plans/cli-benchmarking-infra/wip.spw, .agents/plans/cli-benchmarking-infra/cli-benchmarking-infra.spw, package.json"
   ~#next_commit: "2"
   ~#open_count: "0"
-  ~#last_stream: "2026-09-30 16:54"
+  ~#last_stream: "2026-10-12 14:25"
   ~#taste_debt: "The first implementation slice should cover representative workloads, startup composition, and truthful output cadence before promising every CLI command, compiler candidate, profiler, bundle budget, and report form."
+}
+
+#>wonder_cli_benchmarking_infra_1
+?["How many fresh-process samples does cold command-registry import need before its spread is narrow enough to compare two builds?"]{
+ ~#answer_shape: [#sample_count, #spread_ratio, #environment_fault_rule]
+ !probe{ "import the command registry in 30 fresh node processes, keep every wall time, and report max/min; the 211-324 ms versus 969 ms observations in the stream say a single reading is not admissible, so if max/min stays above 2x after 30 runs the harness must classify UNSTABLE rather than compare." }
+ $%[product.elapsed_ms, event.count]
 }

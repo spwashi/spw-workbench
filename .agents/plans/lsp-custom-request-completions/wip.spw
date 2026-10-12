@@ -11,7 +11,7 @@
  gist: "Every spw/* method has one registry entry and a matrix row from handled through tested."
  touches: [~"packages/spw-lsp/src/stdio-server.ts", ~"packages/spw-lsp/src/types.ts", ~"extensions/vscode-spw/src/lsp/custom-requests.ts"]
  entry: ~"./PLAN.md"
- next: "Hold the 23-method matrix and formContext. Add a client type only after a bench names its cost and a language sample names its wire."
+ next: "formContext landed (a999a24f); write the registry (commit 1) from the stdio switch, then the matrix. Add a client type only after a bench names its cost and a language sample names its wire."
 }
 
 ^["edges"]{
@@ -97,20 +97,22 @@
  >>[2026-07-21] observe — seed form-geometry/pulse land; formContext proposed as next earned custom method after registry.
  >>[2026-07-21] decide — prefer implementing spw/formContext (with tests) over reopening phantom resonance/frequency unless a surface hard-requires them; do not type formContext in client until server handler exists.
  >>[2026-09-30 16:54] revise — hold the matrix and formContext. Declaration is still not a mandate. A method is earned when a retained cost sample and a language wire both exist; editor parity does not create either.
+ >>[2026-10-12 14:28] revise — Resolved ?[formContext_min]: spw/formContext landed in a999a24f with a handler (handlers/form-context.ts), form-context.test.ts and a client type; its result carries coupling, mobility and conceptual rules plus label position, not ladder axes.
+ >>[2026-10-12 14:28] revise — Resolved ?[root_authority]: 0a8adfe2 landed workspace-authority.ts and URI-first manifest v1 where a consumer root outranks a mounted workbench and initialization inside a mount re-anchors to the outer consumer.
+ >>[2026-10-12 14:28] observe — The stdio switch handles 23 spw/* methods (7 direct, 16 through handleSpwProbe) but SpwCustomRequestMap types 14; the phantom resonance, operatorFrequency, phaseContext and registerSnapshot types are now handled server-side. No registry exists; a name grep finds test files naming only 8 of the 23.
 }
 
 ^["open"]{
- ?[earned_requests]: "Which custom requests enable a distinct authoring task that standard LSP cannot describe?"
- ?[cost_budget]: "What latency and scan budget makes a capability suitable for interactive editor use?"
- ?[root_authority]: "How should consumer-owned roots override mounted-workbench defaults without client-specific logic?"
- ?[formContext_min]: "Minimal coupling+rules only, or always include ladder axes and topography?"
+ ?[earned_requests]: "Of the handled spw/* methods that no extension or CLI file calls (a first screen names select, referenceGraph, corpus, resonance, registerSnapshot, particles, phraseScan, channelPolicy), which leave the stdio switch and which stay as documented probes?"
+ ?[cost_budget]: "What p95 milliseconds per request, on the identity-free mounted-consumer fixture, admits a method to the interactive set, and does vscode-plugin-performance own that number?"
 }
 
 ^["commits"]{
- ~[1]: "![lsp] *audit[capabilities] — map advertised, invoked, observed, and tested behavior"
- ~[2]: "![lsp] *audit[mounted-consumer] — exercise root discovery and failure modes"
- ~[3]: "^seed[lsp] =request[earned] — implement justified semantic requests"
- ~[4]: "![lsp] =evidence[snapshots] — verify server and editor capability claims"
+ ~[1]: "vocab[lsp] =register[protocol] — one registry listing the 23 methods the stdio switch handles (stdio-server.ts) and spw/workspaceManifest/v1, so identity is not scattered across the switch and the client map"
+ ~[2]: "![lsp] *audit[capabilities] — matrix with one row per registry entry and an evidence state from registered through tested (optional lsp-capability-matrix.spw)"
+ ~[3]: "vocab[lsp] — type or document the methods missing from SpwCustomRequestMap (it types 14 of the 23); type one only when a caller earns it"
+ ~[4]: "![lsp] — one stdio dispatch test for each method no test names (a name grep finds 8 of 23 named)"
+ ~[5]: "^seed[lsp] =request[earned] — a new request, only after a retained cost sample and a language wire both exist; held"
 }
 
 ^["cache"]{
@@ -120,10 +122,21 @@
  ~#hygiene_split: "audit evidence separate from implementation"
  ~#files_hot: "packages/spw-lsp/src/stdio-server.ts, packages/spw-lsp/src/server-index.ts, extensions/vscode-spw/src/lsp/custom-requests.ts, .agents/plans/form-geometry-editor/PLAN.md"
  ~#next_commit: "1"
- ~#open_count: "4"
- ~#last_stream: "2026-09-30 16:54"
- ~#taste_debt: "No protocol registry yet; formContext is proposed next earned method after registry, not a free add to the phantom map"
+ ~#open_count: "2"
+ ~#last_stream: "2026-10-12 14:28"
+ ~#taste_debt: "No protocol registry yet; the stdio switch is the only list of handled methods and the client map types 14 of 23"
 }
 
 ^["done"]{
+ ~#shipped: ["a999a24f &[lsp] — project form geometry into hover, code actions, and a probe (spw/formContext handler, test, client type)"]
+ ~#resolved(formContext_min): "Minimal coupling and rules only, or always include ladder axes and topography? — the result carries coupling, mobility, conceptual rules and label position, not ladder axes; evidence: a999a24f"
+ ~#resolved(root_authority): "How should consumer-owned roots override mounted-workbench defaults without client-specific logic? — URI-first manifest v1 with workspace-authority.ts, consumer root outranks the mount; evidence: 0a8adfe2"
+}
+
+#>wonder_agents_plans_lspcustomrequestcompletions_w_1
+?["How many of the 23 handled spw/* methods does a landed surface actually call, and how many reach a test through the stdio dispatch?"]{
+  #:depth #!computational // lens: evidence states
+  $^["contract_axes"]@here => %[methods.handled, methods.invoked, methods.tested]
+  !probe{ "list the case labels in stdio-server.ts, then for each method grep extensions and packages/spw-cli for a call site and packages/spw-lsp/src/__tests__ for a dispatch; a method with neither is a demotion candidate, one with both is a registry seed." }
+  $%[lsp.method_count, lsp.invoked_count, lsp.tested_count]
 }

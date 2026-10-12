@@ -35,11 +35,18 @@ plan-index.ts is ~520 lines with 4 imports (under the 600-line guard); split car
 
 ## Commits
 
-1. &[plans] — schema v2: lane-glyph cards, phases, edges, and an index generator
-2. &[cli] — resolve refs against the citing file, then the consumer root
-3. &[seed] — read every stream entry head in latestTimestamp
-4. ![audit] — scan packages in the marker audit; describe boonhonk truthfully
-5. .[plans] — card every live plan; derive the index; route readers to it
+Landed:
+
+1. b42f9853 &[plans] — schema v2: lane-glyph cards, phases, edges, and an index generator
+2. 2c082311 &[cli] — resolve refs against the citing file, then the consumer root
+3. e495d903 &[seed] — read every stream entry head in latestTimestamp
+4. 1f17c86e ![audit] — scan packages in the marker audit; describe boonhonk truthfully
+5. da5189bb .[plans] — card every live plan; derive the index; route readers to it
+
+Remaining:
+
+6. &[cli] — spw resolve passes the citing file's path to parse, so plan streams lex under their own dialect
+7. ![plans] — run plan-index --check inside fuzz:stabilize so CI agrees with the commit gate
 
 ## Agentic Hygiene
 

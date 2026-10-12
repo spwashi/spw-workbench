@@ -20,7 +20,7 @@
 }
 
 ^["edges"]{
- feeds: [~"../vscode-lsp-roadmap/wip.spw", ~"../editor-cli-instruments/wip.spw"]
+ feeds: [~"../vscode-lsp-roadmap/wip.spw", ~"../_archive/editor-cli-instruments/wip.spw"]
  shares: [~"../shape-syntax-ecology/wip.spw", ~"../curiosity-mutation-ergonomics/wip.spw", ~"../form-geometry-editor/wip.spw", ~"../measure-invariant-generalization/wip.spw"]
 }
 
@@ -423,58 +423,56 @@
  >>[2026-07-27] note — mutation-flow-automata.spw: φ_lower → plan id; * worktree handle; selection as cell filter
  >>[2026-07-27] revise — shape-syntax-ecology; imagination/play; dialect-honest selection hashes
  >>[2026-08-24] implement — oneshot --json now emits spw.refactor.plan/1 inside the CLI envelope, with effect grade and named omissions for hashes, parent plan, worktree apply, and rebase. This is the review card, not the full lifecycle.
+ >>[2026-10-12 14:36] observe — measured plan-only spw refactor --rename mark:present=presentX --json (no --write; git status clean afterwards): .spw (788 .spw files) took 112 s wall for 24 edits in 24 files, docs (149 files) took 17 s for 15 edits, so roughly 0.12 to 0.14 s per file, one run each, and node startup is included.
+ >>[2026-10-12 14:36] revise — reconciled with code: ~[1] landed; the types half of ~[2] landed as the review card in 75d8f9d2 (packages/spw-seed/src/ir/refactor-plan.ts, 82 lines, still lists selection_hashes, parent_plan, worktree_apply and rebase as omissions), refactor-plan.test.ts has two tests and none for stale hash, conflict or compose. Questions subcommand_shape (answered by the 2026-07-27 decide: extend the refactor CLI) and lsp_when (~[9] is already an optional follow-on) resolved into done; remaining questions sharpened; wonders 2, 3 and 5 replaced by one per-file-cost wonder; ~[6] sigil corrected to &[cli].
 }
 
 ^["open"]{
- ?[hash_basis]: "contentHash over raw file bytes vs canonicalize(profile) — raw is simpler; canonical resists format-only drift. Which default?"
- ?[subcommand_shape]: "spw refactor plan|check|apply vs spw experiment … as top-level group?"
- ?[partial_apply]: "allow non-overlapping subset apply on conflict, or always all-or-nothing for workspace l2?"
- ?[worktree_path]: "convention under repo .spw/gen/worktrees vs sibling directory — security and mount policy?"
- ?[selection_revision]: "is git blob oid worth storing alongside contentHash, or hash-only?"
- ?[bias_roundtrip]: "must patch.spw round-trip after plan compile, or one-way compile is enough for v1?"
- ?[lsp_when]: "WorkspaceEdit from plan in this branch or strictly editor follow-on?"
- ?[streaming]: "large monorepo selection — stream edits per file vs full plan in memory?"
+ ?[hash_basis]: "Should selection contentHash be raw utf8 bytes or canonicalize(profile)? Raw is simpler; canonical resists format-only drift. The answer unblocks ~[2] and the card's next move."
+ ?[partial_apply]: "On a conflict, may workspace (l2) apply a non-overlapping subset, or is it always all-or-nothing? RefactorPlanFileCard already carries a withheld count, so the plan can express a subset; the answer unblocks ~[5]."
+ ?[worktree_path]: "Do experiment worktrees live under .spw/gen/worktrees (inside the repo, so .gitignore needs a new entry because it lists gen/ subdirs one by one) or in a sibling directory (outside mount policy)? The answer unblocks ~[6]."
+ ?[selection_revision]: "If hash_basis is raw bytes, is a git blob oid stored beside contentHash redundant? The answer fixes the selection field list in ~[2]."
+ ?[bias_roundtrip]: "Must patch.spw round-trip after plan compile, or is one-way compile enough for v1? The answer sets the scope of ~[7]."
+ ?[streaming]: "RefactorPlanCard.report holds every file's edits in memory and a plan-only pass cost about 0.12 to 0.14 s per file when I measured it (788 files took 112 s); at what corpus size do we stream edits per file instead, or is the canary selection enough?"
 }
 
 ^["commits"]{
- ~[1]: ".[refactor] — plan refactor-experiment-lifecycle artifacts"
- ~[2]: "vocab[seed] — spw.refactor.plan/1 types, hash, check"
- ~[3]: "![seed] — refactor-plan tests (stale hash, conflict, compose)"
- ~[4]: "#[cli] — selection corpus + plan/check from semantic rules"
- ~[5]: "&[cli] — hash-gated apply workspace + receipt envelope"
- ~[6]: "^[cli] — worktree apply (l1) + episode commit helper"
- ~[7]: "#[cli] — bias/experiment surface → plan compile"
- ~[8]: ".[docs] — refactor-experiment + pulse-mutate matrix"
- ~[9]: "#[lsp]? — WorkspaceEdit from plan (optional follow-on)"
+ # ~[1] landed — see ^["done"]
+ ~[2]: "vocab[seed] — selection contentHash and a stale-refusing check on spw.refactor.plan/1 (the card from 75d8f9d2 omits selection_hashes)"
+ ~[3]: "![seed] — refactor-plan tests for stale hash, conflict and compose (refactor-plan.test.ts has two tests today: omissions and effect raise)"
+ ~[4]: "#[cli] — selection corpus and plan/check from semantic rules"
+ ~[5]: "&[cli] — hash-gated workspace apply and receipt envelope"
+ ~[6]: "&[cli] — worktree apply (l1) and episode commit helper"
+ ~[7]: "#[cli] — bias/experiment surface compiles to a plan"
+ ~[8]: ".[docs] — refactor-experiment and pulse-mutate matrix"
+ ~[9]: "#[lsp] — WorkspaceEdit from plan (optional follow-on)"
 }
 
 ^["cache"]{
- ~#status: "planning"
- ~#base_ref: "main@0c7cdfb7178079bf27a9a062ba1b310d07296f41"
+ ~#status: "active"
+ ~#base_ref: "main@551bb419"
  ~#rebased_at: ""
  ~#hygiene_split: "plan-only vs implement; exclude untracked *.d.ts"
  ~#files_hot: "packages/spw-cli/src/refactor.ts, packages/spw-seed/src/canonical/semantic-edit.ts, packages/spw-cli/src/envelope.ts"
- ~#next_commit: "1"
- ~#open_count: "8"
- ~#last_stream: "2026-08-24"
+ ~#next_commit: "2"
+ ~#open_count: "6"
+ ~#last_stream: "2026-10-12 14:36"
  ~#taste_debt: "hash_basis and partial_apply undecided — block apply-workspace design until resolved"
  ~#phase: "pre-flight"
  ~#related_plans: "curiosity-mutation-ergonomics, measure-invariant-generalization, form-geometry-editor, vscode-lsp-roadmap"
 }
 
 ^["done"]{
- # Written at merge time.
- # ~#shipped: []
- # ~#dropped: []
- # ~#surprised: ""
- # ~#duration: ""
- # ~#taste: ""
+ ~#shipped: ["da5189bb .[plans] — card every live plan; derive the index; route readers to it", "75d8f9d2 &[seed,cli] — emit spw.refactor.plan/1 as the review card"]
+ ~#resolved(subcommand_shape): "spw refactor plan|check|apply vs spw experiment as a top-level group? — extend the refactor CLI, no new top-level command; evidence: stream 2026-07-27 decide, cli_sketch"
+ ~#resolved(lsp_when): "WorkspaceEdit from plan in this branch or an editor follow-on? — follow-on; evidence: ~[9] is marked optional follow-on in ^[\"commits\"]"
 }
 
 # ── Wonders (species: algebraic, reverse-edge, thrift, vcs) ──
 
 #>wonder_refactor_experiment_lifecycle_1
 ?["What is the algebraic closure of a refactor plan under rebase?"]{
+  ~#blocked_on: "rebase is a named omission in refactor-plan.ts; no parent_plan field exists yet"
   #:depth #!computational
   #:species #!algebraic_closure
   $^["plan_model"]@here => %[formula.compose]
@@ -484,43 +482,21 @@
 }
 
 #>wonder_refactor_experiment_lifecycle_2
-?["What is conspicuously absent from multi-file mutate that plan lifecycle must supply?"]{
-  #:depth #!educational
-  #:species #!blind_spot
-  ~#present: [#profile, #dry_run, #multi_path]
-  ~#expected_but_missing: "frozen selection hash + durable plan id + worktree sandbox"
-  !probe{ "list mutate flags; list pulse refuse conditions; the gap is the experiment spine" }
-  $%[file.frame_count, file.annotation_density]
-  ~<packages/spw-cli/src/mutate.ts>
-  ~<docs/runtime/md/pulse-mutate-beat.md>
-}
-
-#>wonder_refactor_experiment_lifecycle_3
-?["Does reversing apply direction (workspace → plan) change meaning?"]{
-  #:depth #!stylistic
-  #:species #!reverse_edge
-  !probe{ "git diff after ad-hoc edit cannot always reconstitute SemanticRule; plan→tree is generative, tree→plan is archaeology — name the loss" }
-  $%[line.operator_density]
-  ~<.agents/plans/refactor-experiment-lifecycle/PLAN.md>
+?["Does plan-only refactor cost scale linearly with file count, and is the time in parsing or in rule evaluation?"]{
+  #:depth #!computational
+  #:species #!thrift
+  ~#hypothesis: "about 0.12 to 0.14 s per file, dominated by parse, so a hash gate that re-reads every file at apply time doubles the cost."
+  !probe{ "time npm run -s spw -- refactor docs --rename mark:present=presentX --json (149 files, 17 s when measured) against the same command on .spw (788 files, 112 s); then profile one file's planSemanticEdits against parse(); never pass --write." }
+  $%[plan.files, plan.wall_seconds]
+  ~<packages/spw-cli/src/refactor.ts>
 }
 
 #>wonder_refactor_experiment_lifecycle_4
 ?["When is an intermediate surface thriftless theater?"]{
+  ~#blocked_on: "~[7] — bias-apply.ts exists but no patch.spw compile to a plan does"
   #:depth #!mathematical
   #:species #!felt_rhythm
   !probe{ "if patch.spw is only JSON with braces, delete it; thrift = human can edit poles without fighting the format" }
   $%[file.brace_depth_max, line.operator_density] => ~#reading_feel
   ~<packages/spw-cli/src/bias-apply.ts>
-}
-
-#>wonder_refactor_experiment_lifecycle_5
-?["How does effect.l1.worktree teach the practice circuit?"]{
-  #:depth #!educational
-  #:species #!ecological_zone
-  // wonder → substrate(selection) → potentiation(plan) → cluster(canary)
-  // → confluence(multi-file edits) → performance(apply) → evaluation(verify)
-  // → metareference(episode + Spw-Plan trailer)
-  !probe{ "map each lifecycle stage to the practice circuit; where do humans drop the thread today?" }
-  $%[process.iteration_count]
-  ~<.agents/plans/curiosity-mutation-ergonomics/curiosity-mutation-ergonomics.spw>
 }

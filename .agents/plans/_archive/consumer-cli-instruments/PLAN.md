@@ -16,8 +16,8 @@ Taste note: improve **truthfulness**, **composability**, and **portability**. Em
 ## Files
 
 ```
-[NEW] .agents/plans/consumer-cli-instruments/PLAN.md
-[NEW] .agents/plans/consumer-cli-instruments/wip.spw
+[NEW] .agents/plans/_archive/consumer-cli-instruments/PLAN.md
+[NEW] .agents/plans/_archive/consumer-cli-instruments/wip.spw
 [MOD] packages/spw-seed/src/types/token.ts
 [MOD] packages/spw-seed/src/lexer/profiles.ts
 [MOD] packages/spw-seed/src/lexer/matchers/operators.ts
@@ -57,12 +57,12 @@ Taste note: improve **truthfulness**, **composability**, and **portability**. Em
 
 ## Commits
 
-1. `.[plans] =scope[consumer-cli-instruments] — record mounted-consumer CLI and grammar gaps`
-2. `^seed[project-join] — lex ~> as one project connector`
-3. `&[lattice] — count ~#name: cells as a distinct species`
-4. `^seed[fingerprint] — name AST node-count signatures`
-5. `#[cli] — add fingerprint, resolve, and lint commands`
-6. `&[cli] — prune infrastructure by default and emit query --stats`
+1. `.[plans] =scope[consumer-cli-instruments] — record mounted-consumer CLI and grammar gaps` (landed 3907cabb)
+2. `^seed[project-join] — lex ~> as one project connector` (landed f681d043)
+3. `&[lattice] — count ~#name: cells as a distinct species` (landed inside 5f181249 with commit 4)
+4. `^seed[fingerprint] — name AST node-count signatures` (landed 5f181249)
+5. `#[cli] — add fingerprint, resolve, and lint commands` (landed inside f92382fe with commit 6)
+6. `&[cli] — prune infrastructure by default and emit query --stats` (landed f92382fe)
 
 Fuzz strategy:
 - Explore: targeted seed lexer/parse tests for `~>` and lattice colon cells.

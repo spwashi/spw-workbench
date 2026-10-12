@@ -16,7 +16,7 @@
 
 ^["edges"]{
  needs: [~"../spw-site-install/wip.spw", ~"../absorb-spwq-cli/wip.spw"]
- shares: [~"../ecosystem-surface-governance/wip.spw"]
+ shares: [~"../ecosystem-surface-governance/wip.spw", ~"../lukewarm-backlog/wip.spw"]
 }
 
 ^["roots"]{
@@ -97,69 +97,57 @@
  >>[2026-03-27 14:27] note — recursive improvement for DX should be measured by support compression: fewer words needed to tell a new user what failed, why, and what to do next.
  >>[2026-03-28 09:47] rebase — refreshed baseline to main@b41caa6b and added references/index.spw so LSP payload, VS Code language-extension, status-bar, and command-surface contracts can discipline station language.
  >>[2026-03-28 16:51] revise — runtime-telemetry-canon moved to archive as a landed precedent, and the current runtime hot surface remains packages/spw-runtime/src/pipeline/ rather than a diagnostics directory that does not exist yet.
+ >>[2026-10-12 14:32] revise — replaced the 20 boilerplate commits with six that have a code target: ~[11] spw doctor landed (0d3d82cc, now in done); no SPW-* code exists anywhere in packages/, ParseEvent carries rule but no code, LSP diagnostics use source 'spw' with message '<rule>: parse error' and no code, and vscode-spw has only the context-strip status item and no output channel. Added doctor_id_reconcile (doctor uses nine kebab-case ids); sharpened doctor_depth and station_count; replaced both template wonders with one CLI-versus-LSP wording wonder.
+ >>[2026-10-12 14:48] observe — Dogfood pass 2026-10-12: spw mem dump snapshots the runtime memory directory only (7 files, about 13.6 KB), not the surfaces a bulk pass edits, so it cannot bracket a plan edit; git is the real snapshot here. Question for this plan: should mem dump accept extra roots, or is a pulse delta report the intended before-and-after receipt?
+ >>[2026-10-12 15:00] observe — an Spw.l parse reports a node at raw line 3 column 1 as line 1 column 24 while the offset matches raw, so a station message quoting line and column could point at collapsed text; opened ?[position_basis]; routed from lukewarm-backlog ?[span_collapsed_text].
 }
 
 ^["open"]{
- ?[station_count]: "Do we want publish/release as a first-class station, or should release remain a downstream literature surface that quotes the same codes?"
- ?[doctor_depth]: "How much environment probing belongs in `spw doctor` before the command becomes noisy or brittle?"
+ ?[station_count]: "Do we want publish/release as a first-class station, or should release remain a downstream literature surface that quotes the same codes? The answer fixes the station list in commit 1."
+ ?[doctor_id_reconcile]: "spw doctor's nine checks use kebab-case ids (git-root, workbench-pin, ...); do SPW-<STATION>-<NNN> codes replace those ids or sit beside them as a second field? The answer decides the shape of commit 1."
+ ?[doctor_depth]: "spw doctor probes the checkout, pin and runtime but no check starts the LSP or looks for the extension; should the next check launch the server, or only verify the launcher path? Past that point doctor gets slow and brittle."
+ ?[position_basis]: "Do station messages quote line and column from the collapsed Spw.l text or from the raw source (a node at raw line 3 column 1 parses as line 1 column 24)? Tracked at ~"../lukewarm-backlog/wip.spw" ?[span_collapsed_text]."
 }
 
 ^["commits"]{
- ~[1]: "#[dx-diagnostics] — define diagnostic ID registry and station attribution contract (SPW-SEED-*, SPW-RT-*, SPW-LSP-*, SPW-CLI-*, SPW-VSCODE-*)"
- ~[2]: "&[seed] — add parse timing hooks to spw-seed parser entry points"
- ~[3]: "&[seed] — add structured error codes to lexer and grammar failures"
- ~[4]: "![seed] — verify diagnostic codes appear in parse error output for malformed .spw files"
- ~[5]: "&[runtime] — wire diagnostic station hooks through pipeline and substrate"
- ~[6]: "&[runtime] — add resonance cycle instrumentation with opt-in timing"
- ~[7]: "![runtime] — verify diagnostic propagation through substrate event chain"
- ~[8]: "&[lsp] — propagate structured diagnostics from seed/runtime to LSP responses"
- ~[9]: "&[lsp] — add performance telemetry to LSP context (parse duration, response latency)"
- ~[10]: "![lsp] — smoke test: LSP diagnostic payloads carry station codes and timing"
- ~[11]: "&[cli] — add `spw doctor` subcommand for installation health check"
- ~[12]: "&[cli] — add `--diagnostics` flag to existing commands for verbose station output"
- ~[13]: "![cli] — verify `spw doctor` reports parser loaded, LSP reachable, and extension-connectable conditions"
- ~[14]: "&[vscode] — add Spw output channel with structured diagnostic log"
- ~[15]: "&[vscode] — add status bar indicator for LSP connection health and parse performance"
- ~[16]: "&[vscode] — add settings validation with actionable error messages"
- ~[17]: "![vscode] — verify output channel shows station-attributed diagnostics during editing"
- ~[18]: ".[docs] — write DX playbook: installation, health check, and troubleshooting flow"
- ~[19]: ".[docs] — write instrumentation guide: how to read station codes and where each station lives"
- ~[20]: ".[plans] — formalize the station model in runtime-dx-foundation.spw"
+ # ~[11] landed — see ^["done"]
+ # Dormant: the original 20 commits were a station-by-station template. Only the slices below have a concrete code target today; the rest are deferred until commit 1 settles the code shape.
+ ~[1]: "#[dx-diagnostics] — station registry: station ids (seed, runtime, lsp, cli, vscode) and the SPW-<STATION>-<NNN> shape, with doctor's check ids as the first entries"
+ # ~[2]: DEFERRED — parse timing hooks (packages/spw-seed/src/instrumentation/metrics.ts already tracks rule timings; check what it exposes before adding hooks)
+ ~[3]: "&[seed] — a stable code per grammar rule on parse errors (ParseEvent carries rule and position today, no code)"
+ ~[4]: "![seed] — malformed .spw fixtures show the code in parse error output"
+ # ~[5]..~[7]: DEFERRED — runtime station hooks, resonance timing, propagation test; reheat after ~[3]
+ ~[8]: "&[lsp] — set Diagnostic.code and a next-action message from the station code in handlers/analysis.ts (it emits source 'spw' and the message '<rule>: parse error' today)"
+ # ~[9]..~[10]: DEFERRED — LSP latency telemetry and its smoke test
+ # ~[12]: DEFERRED — --diagnostics flag on existing commands
+ ~[13]: "&[cli] — spw doctor gains a check for LSP launch, with a case in doctor.test.ts (doctor.test.ts has no LSP case today)"
+ ~[14]: "&[vscode] — Spw output channel carrying station-attributed diagnostics (no output channel exists; the only status item is the context strip)"
+ # ~[15]..~[17]: DEFERRED — status bar health, settings validation, output channel test
+ # ~[18]..~[19]: DEFERRED — DX playbook and instrumentation guide; write them from what ~[1]..~[14] actually ship
+ # ~[20]: DEFERRED — formalize the station model in runtime-dx-foundation.spw after ~[1]
 }
 
 ^["cache"]{
- ~#status: "planning"
+ ~#status: "dormant"
  ~#base_ref: "main@b41caa6b"
  ~#rebased_at: "2026-03-28"
  ~#hygiene_split: "none; prior drift landed on main"
  ~#files_hot: "packages/spw-runtime/src/pipeline/, packages/spw-seed/src/parser.ts, packages/spw-lsp/src/context.ts, packages/spw-cli/src/main.ts, extensions/vscode-spw/src/extension.ts, .agents/plans/runtime-dx-foundation/, .agents/plans/runtime-dx-foundation/references/"
  ~#next_commit: "1"
- ~#open_count: "2"
- ~#last_stream: "2026-03-28 16:51"
+ ~#open_count: "4"
+ ~#last_stream: "2026-10-12 15:00"
  ~#taste_debt: "every station phrase should survive movement between code, CLI, docs, status copy, and support conversation"
 }
 
 ^["done"]{
- # Written at merge time.
- # ~#shipped: []
- # ~#dropped: []
- # ~#surprised: ""
- # ~#duration: ""
- # ~#taste: ""
+ ~#shipped: ["0d3d82cc &[cli] =site[doctor-install] — tighten external site bootstrap ergonomics"]
 }
 
 #>wonder_agents_plans_runtimedxfoundation_wip_1
-?["What makes a station model feel like product language rather than debug residue?"]{
+?["When the same malformed .spw file fails in the CLI and in the LSP, do the two messages share any wording, and does either say what to do next?"]{
   #:depth #!educational // lens: service design
-  $^["concept_index"]@here => $^["recursive_improvement"]@here
-  !probe{ "pick one failure and trace whether the same station wording survives code, CLI, editor, and docs." }
-  $%[runtime.stage, runtime.queue_depth]
-}
-
-#>wonder_agents_plans_runtimedxfoundation_wip_2
-?["Where does recursive improvement compress support effort in this branch?"]{
-  #:depth #!computational // lens: maintenance economics
-  $^["development"]@here => $^["commits"]@here
-  !probe{ "which commit removes the most explanation burden from future install or support work?" }
-  ~<.agents/plans/runtime-dx-foundation/runtime-dx-foundation.spw>
+  $^["open"]@here => $^["commits"]@here
+  ~#hypothesis: "the messages share nothing and neither names a next action."
+  !probe{ "feed one malformed fixture to npm run spw:ls or the validator and to publishDiagnostics in packages/spw-lsp/src/handlers/analysis.ts, whose message is '<rule>: parse error'; compare words for what failed, where, and what to do next." }
+  $%[diagnostic.shared_words, diagnostic.has_next_action]
 }

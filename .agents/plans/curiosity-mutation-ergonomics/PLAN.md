@@ -244,15 +244,15 @@ Both must lower to the **same differential kernel** (`SourceEdit` / pulse plan).
 
 ## Commits
 
-1. `.[curiosity] — plan curiosity-mutation-ergonomics artifacts`
-2. `vocab[seed] — combinator-space cells and sparse visit report`
-3. `^seed[curiosity] — explore/stabilize/measure profile planners (plan-only)`
-4. `![seed] — combinator + profile tests on fixtures`
-5. `#[cli] — spw explore invitations and walks`
-6. `&[cli] — wire explore/stabilize into pulse/mutate profile surface`
-7. `.[theory] — curiosity combinators + pulse-mutate-beat families`
-8. `#[lsp] — curiosity invitations (earned method or diagnostics)`
-9. `&[editors] — VS Code lenses + Neovim :SpwExplore projections`
+1. landed (da5189bb, 08e2bc1c) — `.[curiosity] — plan curiosity-mutation-ergonomics artifacts`
+2. `^seed[curiosity] — combinator-space.ts: cells, a visit set, and a sparse report (new module; no edits to pulse.ts)`
+3. `^seed[curiosity] — explore profile planner (plan-only, effect.l0) registered beside layout_canonical and measure_only`
+4. `![seed] — fixture tests for the sparse report and for the explore planner never writing`
+5. `#[cli] — spw explore invitations and walks (or the --profile spelling, per the open question cli_name)`
+6. `&[cli] — wire explore and stabilize into the pulse/mutate profile surface`
+7. `.[theory] — curiosity combinators in pulse-mutate-beat.md and mutation-flow-automata.spw`
+
+Deferred until commit 5 has users: `#[lsp]` curiosity invitations and `&[editors]` lenses.
 
 ## Fuzz strategy
 

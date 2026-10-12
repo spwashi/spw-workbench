@@ -86,7 +86,7 @@ These are implementation facts, not a claim that the current layout is broken. T
 
 ## Commits
 
-1. `.[plans] — define package contracts, environment receipts, and iteration-radius measures`
+1. LANDED in c46558ff: `.[plans] — define package contracts, environment receipts, and iteration-radius measures`
 2. `#[packages] — audit declared and imported workspace boundaries`
 3. `vocab[tooling] — add redacted environment and failure-locality receipts`
 4. `&[doctor] — explain runtime, lockfile, ABI, native, platform, and cache mismatches`

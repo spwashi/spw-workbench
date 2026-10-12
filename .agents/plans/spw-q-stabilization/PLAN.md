@@ -50,9 +50,11 @@ Turn the current v1-shaped proposal into a testable pre-v1 candidate whose synta
 
 ## Commits
 
-1. `.[spw-q] — reframe v1 proposal as a versioned experimental candidate`
-2. `vocab[seed] — replace ordinal epistemic grades with evidence provenance`
-3. `![spw-q] — verify evidence invariants and candidate cross-references`
+1. `.[spw-q] — reframe v1 proposal as a versioned experimental candidate` (landed in b7c5c7df)
+2. `vocab[seed] — replace ordinal epistemic grades with evidence provenance` (landed in b7c5c7df)
+3. `![spw-q] — verify evidence invariants and candidate cross-references` (landed in b7c5c7df)
+4. `^seed[query] — spell the product predicate in selector-expr.ts once O1 is chosen`
+5. `![spw-q] — fixture proving the product spelling cannot collide with an operation label`
 
 ## Agentic Hygiene
 

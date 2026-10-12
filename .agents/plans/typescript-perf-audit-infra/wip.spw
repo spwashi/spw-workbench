@@ -110,16 +110,17 @@
  >>[2026-07-20] decide — keep audit scripts separate from fuzz:types so ship gates stay binary while perf stays comparative.
  >>[2026-07-20] taste — a good audit row should answer: which compiler, which config, how long, did it pass — without narrative fluff.
  >>[2026-09-30 16:54] decide — reheated to planning beside cli-benchmarking-infra. Compiler identity rows are performance scrutiny, not a prelude to the upgrade ladder. Editor startup work stays dormant until a retained sample exists.
+ >>[2026-10-12 14:37] observe — measured by hand on one machine, TypeScript 5.9.3, npx tsc -p tsconfig.typecheck.json --noEmit run three times back to back: wall times 6.28 s, 6.27 s, 6.17 s, all exit 0. That is about a 2 percent spread warm; a cold-process run was not measured. No scripts/analyzers/typescript-perf.ts or audit:ts:perf script exists yet, so ~[2]..~[6] are all still open. The repo has no CI configuration (no .github or equivalent at the root), and node_modules/.cache is git-ignored while .agents/state is tracked.
+ >>[2026-10-12 14:37] revise — ~[1] landed in a333db8d and moved to ^[done]. ?[ci_gate] resolved (non-gating: no CI config exists and the 2026-07-20 decision keeps audit scripts apart from fuzz:types) and moved to ^[done]. ?[cache_location] and ?[median_runs] sharpened with the facts above; a wonder added for the cold-versus-warm spread, the one unmeasured input to ?[median_runs].
 }
 
 ^["open"]{
- ?[cache_location]: "Prefer node_modules/.cache/spw-ts-perf vs .agents/state/typescript-perf for local baselines?"
- ?[ci_gate]: "Stay non-gating forever, or later optional budget with high variance tolerance?"
- ?[median_runs]: "v1 single run only, or n=3 median from the start?"
+ ?[cache_location]: "node_modules/.cache is git-ignored and already holds the tsbuild output, while .agents/state is tracked, so a baseline there would be committed; should perf baselines stay machine-local under node_modules/.cache/spw-ts-perf? Decides where commit 2 writes rows and whether a baseline is ever diffed in git."
+ ?[median_runs]: "Three back-to-back warm runs spread about 2 percent (6.17 to 6.28 s); is a single run per row enough for v1 if each row records the run count, or take n=3 median from the start? Decides the row schema in commit 2."
 }
 
 ^["commits"]{
- ~[1]: ".[plans] — stage typescript-perf-audit-infra planning artifacts"
+ # ~[1] landed — see ^["done"]
  ~[2]: "#[audit] — add typescript-perf single-run profiler with JSON identity schema"
  ~[3]: "#[audit] — add version/config matrix runner and compare mode"
  ~[4]: "#[audit] — wire package scripts audit:ts:perf(+json/matrix)"
@@ -127,14 +128,28 @@
  ~[6]: "![audit] — smoke matrix on current 5.9; golden schema shape tests if cheap"
 }
 
+^["done"]{
+ # Written at merge time.
+ ~#shipped: ["a333db8d &[seed,cli,lsp,docs] =integrate[operational-topography] — land coupling/topography engine and plan sync (adds the staged plan artifacts, ~[1])"]
+ ~#resolved(ci_gate): "Stay non-gating forever, or later optional budget with high variance tolerance? — non-gating: the repo has no CI configuration and the 2026-07-20 decision keeps audit scripts apart from fuzz:types so ship gates stay binary; evidence: stream 2026-07-20 decide and the 2026-10-12 revise entry"
+}
+
 ^["cache"]{
  ~#status: "planning"
  ~#base_ref: "main@bca875c7f059edc8b9df4696cce9ed92a52acc1b"
  ~#rebased_at: ""
  ~#hygiene_split: "none"
- ~#files_hot: "package.json, scripts/analyzers/typescript-perf.ts"
- ~#next_commit: "1"
- ~#open_count: "3"
- ~#last_stream: "2026-09-30 16:54"
+ ~#files_hot: "package.json"
+ ~#next_commit: "2"
+ ~#open_count: "2"
+ ~#last_stream: "2026-10-12 14:37"
  ~#taste_debt: "no baseline store yet; claims about TS7 speed remain folklore for this repo"
+}
+
+#>wonder_typescript_perf_audit_infra_cold_warm
+?["Does a cold-process typecheck row differ from a warm back-to-back one by more than the roughly 2 percent seen between warm runs?"]{
+  #:depth #!computational // lens: measurement noise
+  ~#hypothesis: "the first run after the machine has been idle is slower than the warm 6.2 s by more than the warm spread, so a single-run row needs a warm-up or a run count"
+  !probe{ "after the machine has been idle, time npx tsc -p tsconfig.typecheck.json --noEmit once, then twice more back to back; compare the first to the mean of the next two" }
+  $%[plan.commit_count, plan.phase_progress]
 }

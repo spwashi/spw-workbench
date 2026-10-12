@@ -223,32 +223,32 @@ Do not mint performance-only parser profiles. Separate lex/product entry points 
 
 ## Commits
 
-1. `.[plans] — define gap-affinity, formatting, product, and migration contracts`
-2. `vocab[seed] — add gap, affinity, parse-product, and event-policy types`
-3. `^seed[lexer] — preserve token gaps and segment dot identifiers without source loss`
+1. `.[plans] — define gap-affinity, formatting, product, and migration contracts` (landed `c46558ff`)
+2. `vocab[seed] — add gap, affinity, parse-product, and event-policy types` (landed `cdd0b40a`)
+3. `^seed[lexer] — preserve token gaps and segment dot identifiers without source loss` (landed `cdd0b40a`)
 4. `^seed[parser] — resolve declared affinity and normalize qualified, edge, common, and ordinal products`
-5. `&[seed] — add question-oriented products and measured instrumentation policies`
+5. `&[seed] — add question-oriented products and measured instrumentation policies` (landed `deb9e226`, `8d454ad6`)
 6. `&[format] — emit association-aware spacing differentials and identity receipts`
-7. `&[cli,lsp] — share spacing inspection and parser-context formatting surfaces`
+7. `&[cli,lsp] — share spacing inspection and parser-context formatting surfaces` (CLI half landed `211d7653`; LSP half open)
 8. `#[measure] — census compatibility and benchmark product/event policy costs`
 9. `![seed,format,lsp] — prove round-trip, profile, migration, and negative-control invariants`
 10. `.[theory] — publish capability, formatter, and projection handoff guidance`
 
 Current progressive tooling episode:
 
-1. `.[plans] — bound progressive source-product protocol and CLI slice`
-2. `vocab[ir]+&[seed,cli] — expose tokens, structure, and trace intermediates`
-3. `.[docs,plans] — teach product depth, omissions, and progressive projection`
+1. `.[plans] — bound progressive source-product protocol and CLI slice` (landed `43b8443e`)
+2. `vocab[ir]+&[seed,cli] — expose tokens, structure, and trace intermediates` (landed `deb9e226`)
+3. `.[docs,plans] — teach product depth, omissions, and progressive projection` (landed `9cb5646b`)
 
 Current CLI handle episode:
 
-1. `.[plans] — separate work, retention, and display handles`
-2. `.[plans] — tune corpus work as near, standard, and far spread`
-3. `vocab[cli]+&[inspect,corpus] — extract typed arguments and teach canonical handles`
-4. `.[plans] — separate parser horizon, profile, and bundle contracts`
-5. `vocab[api]+&[cli] — align through and defer compiler loading`
-6. `&[cli] — make source samples visibly bounded`
-7. `.[docs,plans] — document handle cost boundaries and compatibility aliases`
+1. `.[plans] — separate work, retention, and display handles` (landed `dc3846b2`)
+2. `.[plans] — tune corpus work as near, standard, and far spread` (landed `8b4d2cdc`)
+3. `vocab[cli]+&[inspect,corpus] — extract typed arguments and teach canonical handles` (landed `40c03d20`)
+4. `.[plans] — separate parser horizon, profile, and bundle contracts` (landed `80a3ca9b`)
+5. `vocab[api]+&[cli] — align through and defer compiler loading` (landed `f3ab94eb`)
+6. `&[cli] — make source samples visibly bounded` (landed `1e95d17b`)
+7. `.[docs,plans] — document handle cost boundaries and compatibility aliases` (landed `0fb37533`)
 
 Fuzz strategy:
 

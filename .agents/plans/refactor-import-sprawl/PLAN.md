@@ -2,94 +2,54 @@
 
 ## Goal
 
-Consolidate the file and folder sprawl in `src/platform/bootstrap` and elevate it into a rigorous curricular exercise traversing the application's topological module architecture. Currently, `bootstrap` acts as a dumping ground for UI layout wiring, feature-specific setups (audio, editor, settings), and actual application initialization. This masterclass will extract UI and feature wiring to their appropriate domains (`app` and `features`), leaving `bootstrap` focused purely on deterministic `init` boot sequences.
+Make the package DAG (seed, then runtime, then cli and lsp) and the 12-import craft guard mechanically checked, so the layer rules in `CLAUDE.md` describe something a script enforces.
 
-**Taste Note:** Improves **layering** (strictly enforcing the Directed Acyclic Graph: infra ← platform ← app ← ui), **naming** (clarifying initialization vs wiring), and actively develops **taste in dependency injection** by transforming a simple file move into a study of module boundaries.
+Measured 2026-10-12: `spw-seed` imports no other package; `spw-runtime` imports seed; `spw-cli` and `spw-lsp` import seed and runtime and nothing else. No `package.json` declares an `@spwashi` dependency, `scripts/pre-commit` holds no import check, and `lib/spw` (named in `CLAUDE.md`) does not exist. Nine non-test, non-barrel files exceed 12 import lines; `packages/spw-cli/src/commands.ts` leads with 43 but is a dispatcher with a help and run pair per subcommand.
+
+The original plan (a 26-commit bootstrap extraction over `src/platform`, `src/app`, and `src/features`) was stranded when that layout vanished; on 2026-10-12 the user chose to rescope rather than archive.
+
+**Taste Note:** layering and clarity. A boundary stated in prose gets a failing case, and a size guard reports its outliers.
 
 ## Scope
 
-- **In scope**: A deep 5-phase curricular audit: Architectural Tooling, App Layer Orchestration, Feature Boundary Wiring, Platform Boot Sequencing, and DI Verification. Moving files out of `src/platform/bootstrap` to `src/app/layout`, `src/features`, and `src/platform/bootstrap/init/`. Updating import paths across the codebase and formalizing the module DAG.
-- **Out of scope**: Refactoring the internal logic of the extracted files, unless explicitly required to decouple them from `bootstrap` or fix circular dependencies. Modifying `src/ui/elements` internals.
+- **In scope**: a new analyzer under `scripts/analyzers`, its fixture test, an npm script, optional pre-commit wiring, and `CLAUDE.md` Layer Boundaries text.
+- **Out of scope**: moving files between packages, intra-package cycles (one value-level cycle exists in the seed grammar and is recorded, not planned), and `extensions/`.
 
 ## Agentic Hygiene
 
-- **Rebase target**: `origin/maina290a6`
+- **Rebase target**: `main@551bb419` (2026-10-12)
 - **Rebase cadence**: rebase before commit 1 and again before merge
-- **Hygiene split**: isolate unrelated out-of-scope drift into `feature/refactor-import-sprawl-agentic-hygiene` before implementation commits
+- **Hygiene split**: isolate unrelated drift into `feature/refactor-import-sprawl-agentic-hygiene` before implementation commits
 
 ## Files
 
-Predicted file movements:
-
 ```
-[MOD] src/platform/bootstrap/init.ts
-[NEW] src/platform/bootstrap/init/init-prism.ts (Moved from src/platform/bootstrap/init-prism.ts)
-[NEW] src/platform/bootstrap/init/init-sidebar.ts (Moved from src/platform/bootstrap/init-sidebar.ts)
-[NEW] src/platform/bootstrap/init/init-worker.ts (Moved from src/platform/bootstrap/init-worker.ts)
-
-[NEW] src/app/layout/dock-overlay.ts (Moved from src/platform/bootstrap/dock-overlay.ts)
-[NEW] src/app/layout/drawer.ts (Moved from src/platform/bootstrap/drawer.ts)
-[NEW] src/app/layout/panel-docking.ts (Moved from src/platform/bootstrap/panel-docking.ts)
-[NEW] src/app/layout/panel-layout.ts (Moved from src/platform/bootstrap/panel-layout.ts)
-
-[NEW] src/features/audio/audio-wiring.ts (Moved from src/platform/bootstrap/audio.ts)
-[NEW] src/features/editor/authoring-wiring.ts (Moved from src/platform/bootstrap/authoring.ts)
-[NEW] src/features/editor/editor-wiring.ts (Moved from src/platform/bootstrap/editor.ts)
-[NEW] src/features/inspector/inspector-wiring.ts (Moved from src/platform/bootstrap/inspector.ts)
-[NEW] src/features/onboarding/onboarding-wiring.ts (Moved from src/platform/bootstrap/onboarding.ts)
-[NEW] src/features/settings/settings-wiring.ts (Moved from src/platform/bootstrap/settings.ts)
-[NEW] src/features/settings/settings-actions.ts (Moved from src/platform/bootstrap/settings-actions.ts)
-
-[NEW] src/app/stage-gates.ts (Moved from src/platform/bootstrap/stage-gates.ts)
-[NEW] src/app/theme-manager.ts (Moved from src/platform/bootstrap/theme.ts)
-[NEW] src/app/mode-manager.ts (Moved from src/platform/bootstrap/mode.ts)
-
-[DEL] src/platform/bootstrap/ (All original flat files listed above)
+[NEW] scripts/analyzers/package-dag-check.ts
+[NEW] scripts/analyzers/__tests__/package-dag-check.test.ts
+[MOD] package.json                      (lint:arch)
+[MOD] scripts/pre-commit                (only if ?[gate_home] says so)
+[MOD] CLAUDE.md                         (Layer Boundaries, commit 6)
+[MOD] packages/spw-cli/src/commands.ts  (only if ?[dispatcher_exempt] says split)
 ```
 
 ### Craft guard
 
-- During the move, we will flag any file that exceeds 600 lines or 12 imports. (`settings-actions.ts` is historically large and will be monitored for split opportunities during EXECUTION).
-- We will actively enforce strict boundaries: `src/platform` files must **never** import `src/app` or `src/features` nodes.
+- The analyzer must run in well under a second so it can sit in a pre-commit hook.
+- The 12-import table is warn-only until the allowlist is agreed.
 
 ## Commits
 
-Preflight: `&[hygiene] — rebase onto origin/main and isolate unrelated drift before implementation commits`
-
-1. `&[arch] — baseline: generate initial dependency graph visualization of bootstrap sprawl`
-2. `^seed[arch] — explicitly define the topological DAG (Infra ← Platform ← App ← UI)`
-3. `![arch] — introduce strict dependency linting rules (eslint-plugin-boundaries) to enforce DAG`
-4. `&[arch] — audit: fix existing import violations breaking the new topological rules`
-5. `&[arch] — audit: resolve any circular dependency warning loops originating in bootstrap`
-6. `vocab[app] — define the Spw structural nomenclature for Application vs Platform boundaries`
-7. `&[app/layout] — extract 'dock-overlay' and 'drawer' out of platform and into the app layer`
-8. `&[app/layout] — extract 'panel-layout' and 'panel-docking' out of platform and into the app layer`
-9. `&[app/state] — extract 'theme-manager' and 'mode-manager' into application orchestrators`
-10. `&[app] — extract application 'stage-gates' lifecycle controller`
-11. `![app] — resolve resulting dependency breakages and document the new App orchestration graph`
-12. `vocab[features] — define the standard for Feature 'wiring' abstractions`
-13. `&[features/editor] — extract 'editor-wiring' and 'authoring-wiring' out of bootstrap`
-14. `&[features/settings] — extract 'settings-wiring' and 'settings-actions' out of bootstrap`
-15. `&[features/audio] — extract 'audio-wiring' out of bootstrap`
-16. `&[features] — extract remaining 'inspector' and 'onboarding' peripheral wirings`
-17. `vocab[platform] — define the strict deterministic lifecycle of the boot sequence`
-18. `&[bootstrap] — restructure remaining flat initialization scripts into platform/bootstrap/init/`
-19. `&[bootstrap] — enforce strict phase-ordering (e.g. init-worker before init-prism)`
-20. `&[bootstrap] — refactor the central init.ts file to reflect the new phased boot sequence`
-21. `&[di] — audit: review where global singletons are used vs injected dependencies`
-22. `&[di] — refactor critical boot sequence params to utilize explicit dependency injection`
-23. `![bootstrap] — execute rigorous headless boot tests to ensure timing invariants aren't broken`
-24. `&[arch] — delete the legacy flat bootstrap folder entirely`
-25. `.[docs] — construct the interactive Module Topology visualization for the workbench`
-26. `.[docs] — write the curriculum: "Developing Taste in Spw Architectural Topologies"`
+1. `^seed[arch] — add scripts/analyzers/package-dag-check.ts: read imports in packages/*/src and fail on any edge outside seed to runtime to cli and lsp`
+2. `![arch] — fixture the failing case in scripts/analyzers/__tests__: a temp tree where seed imports runtime exits 1, and the live tree exits 0`
+3. `#[arch] — wire the check as npm run lint:arch, and into lint or the pre-commit hook per ?[gate_home]`
+4. `![arch] — extend the analyzer with a warn-only table of non-test, non-barrel files over 12 imports, with a dispatcher allowlist per ?[dispatcher_exempt]`
+5. `&[cli] — split commands.ts by command group, only if ?[dispatcher_exempt] answers split`
+6. `.[docs] — restate CLAUDE.md Layer Boundaries as the package DAG once ~[3] lands, per ?[claude_md_layers]`
 
 ## Dependencies
 
-none
+- None. `audit-data-attributes` no longer waits on this plan.
 
 ## Spw Artifact
 
-```
-.agent/plans/refactor-import-sprawl/refactor-import-sprawl.spw
-```
-A distilled `.spw` artifact representing the mathematical Directed Acyclic Graph (DAG) of the Spw architecture, defining the strict topological rules and boundaries of "Wiring vs Initialization".
+None planned. The analyzer and its fixture are the checkable record.

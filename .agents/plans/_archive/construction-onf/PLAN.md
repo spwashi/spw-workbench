@@ -15,13 +15,13 @@ One align episode. Preserve frame/body/scope/capsule and bare identifier shape. 
 [MOD] packages/spw-runtime/src/interpreter/interpreter.ts and types.ts — projection boundary and loss receipt
 [NEW] packages/spw-runtime/src/interpreter/construction.test.ts — value/effect compatibility
 [MOD] docs/research/spw/construction-worlds.spw — structural status only
-[NEW] .agents/plans/construction-onf/PLAN.md and wip.spw — bounded plan and evidence
+[NEW] .agents/plans/_archive/construction-onf/PLAN.md and wip.spw — bounded plan and evidence
 
 ### Craft guard
 normalize.ts remains below 600 lines; construction logic stays in a focused helper. index.ts is already above the guard and receives exports only. Runtime changes are confined to its entry boundary, not evaluator dispatch.
 
 ## Commits
-1. &[seed,runtime] — preserve normalized construction attachments
+1. &[seed,runtime] — preserve normalized construction attachments (landed as `55c16e3b`)
 Plan recorded before code and included in the single requested episode.
 
 ## Agentic Hygiene

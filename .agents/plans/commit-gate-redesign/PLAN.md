@@ -33,11 +33,9 @@ Craft guard:
 
 ## Commits
 
-1. `.[plans] — add commit-gate redesign plan surfaces`
-2. `&[commit-review] — extract shared review runner and commit-message validation`
-3. `&[commit-review] — add summary renderer and informed authorization flow`
-4. `&[commit-review] — unify poll-review with shared engine and harden agent attribution`
-5. `.[docs] — update commit-review skill and workflow documentation`
+Landed: f9c73daf (plan), 03983755 (shared runner), 76160302 (renderer and authorization), c4be2f46 (agent context), 37b6f42b (poll-review on the shared engine).
+
+5. `.[docs] — document the run, render, authorize ceremony and the set-agent-context helpers in the workflow and skill`
 
 ## Agentic Hygiene
 

@@ -198,15 +198,16 @@ The plugin needs an evidence plan, not just a feature list.
 ## Commits
 
 1. `#[obsidian-spw]` — scaffold plugin, build config, styles, and entry point
-2. `^seed[obsidian-spw]` — build token-map adapter from `spw-seed` into CM6 stream semantics
-3. `&[obsidian-spw]` — register `.spw` file view and shared DOM token renderer
-4. `&[obsidian-spw]` — add reading-view renderer for `` ```spw `` fences
-5. `&[obsidian-spw]` — ship stdio process manager and JSON-RPC transport
-6. `&[obsidian-spw]` — add Concepts leaf using annotation and co-occurrence data
-7. `&[obsidian-spw]` — add Workspace Atlas leaf with vault-native topology and temperature
-8. `&[obsidian-spw]` — add context strip and cursor-driven refresh plumbing
-9. `&[obsidian-spw]` — add settings, health controls, and resilience polish
-10. `.[obsidian-spw]` — finalize README, workspace wiring, and planning artifacts
+2. `![obsidian-spw]` — fence-scope probe: a logging editor extension against a note with a `spw` fence and a plain note
+3. `^seed[obsidian-spw]` — build token-map adapter from `spw-seed` into CM6 stream semantics
+4. `&[obsidian-spw]` — register `.spw` file view and shared DOM token renderer
+5. `&[obsidian-spw]` — add reading-view renderer for `` ```spw `` fences
+6. `&[obsidian-spw]` — ship stdio process manager and JSON-RPC transport
+7. `&[obsidian-spw]` — add Concepts leaf using annotation and co-occurrence data
+8. `&[obsidian-spw]` — add Workspace Atlas leaf with vault-native topology and temperature
+9. `&[obsidian-spw]` — add context strip and cursor-driven refresh plumbing
+10. `&[obsidian-spw]` — add settings, health controls, and resilience polish
+11. `.[obsidian-spw]` — finalize README, workspace wiring, and planning artifacts
 
 Fuzz strategy:
 

@@ -84,12 +84,12 @@ Achieve a reviewable CLI foundation across `@spwashi/spw-cli`: routed package sc
 
 ## Commits
 
-1. `#[cli] — add versioned JSON response envelope schema and builders`
-2. `vocab[cli] — make query/view option parsing fail closed`
-3. `&[cli] — migrate invent and map to the versioned envelope`
-4. `&[cli] — remove legacy scripts and shims, clean package.json scripts`
-5. `.[cli] — add caching architecture plan for corpus scanning and queries`
-6. `![cli] — verify full test suite across CLI package and workspace`
+1. `#[cli] — add versioned JSON response envelope schema and builders` (landed in b7c5c7df)
+2. `vocab[cli] — make query/view option parsing fail closed` (landed in b7c5c7df)
+3. `&[cli] — migrate invent and map to the versioned envelope` (landed in b7c5c7df)
+4. `&[cli] — remove legacy scripts and shims, clean package.json scripts` (landed in b7c5c7df)
+5. `.[cli] — add caching architecture plan for corpus scanning and queries` (landed in b7c5c7df)
+6. `![cli] — verify full test suite across CLI package and workspace` (landed in b7c5c7df)
 
 ## Agentic Hygiene
 

@@ -14,9 +14,9 @@ An independent consumer should be able to mount the workbench, give a repository
 ## Files
 
 ```text
-[NEW] .agents/plans/mounted-workbench-organelle/PLAN.md
-[NEW] .agents/plans/mounted-workbench-organelle/wip.spw
-[NEW] .agents/plans/mounted-workbench-organelle/mounted-workbench-organelle.spw
+[NEW] .agents/plans/_archive/mounted-workbench-organelle/PLAN.md
+[NEW] .agents/plans/_archive/mounted-workbench-organelle/wip.spw
+[NEW] .agents/plans/_archive/mounted-workbench-organelle/mounted-workbench-organelle.spw
 [NEW] packages/spw-seed/src/workspace-roots.ts
 [MOD] packages/spw-seed/src/index.ts
 [NEW] src/seed/workspace-roots.test.ts
@@ -61,13 +61,7 @@ An independent consumer should be able to mount the workbench, give a repository
 
 ## Commits
 
-1. `.[plans] =scope[mounted-workbench-organelle] — define executable orientation slice`
-2. `^seed[workspace-roots] =parse[manifest] — share root declarations across tooling`
-3. `&[cli] =navigate[roots,tree] — add mount-safe workspace discovery and file trees`
-4. `.[mount,docs] =prompt[working-references] — seed concise consumer orientation`
-5. `&[vscode] =navigate[roots,landmarks] — add workspace-aware quick navigation`
-6. `.[canon,plans] =align[organelle-machinery] — register contracts and capability truth`
-7. `![tooling] *verify[mounted-navigation] — exercise parser, CLI, LSP, docs, and extension`
+All landed: b4832193 (scope), 51d36684 (manifest evidence), eb45f240 and 28906c5d (CLI roots, tree, mount role), 47f4015c (VS Code navigation). Planned commits 4, 6 and 7 have no one-to-one hash.
 
 Fuzz strategy:
 - Explore: targeted root-parser, CLI-tree, LSP-workspace, and VS Code compile loops.
@@ -101,4 +95,4 @@ Fuzz strategy:
 
 ## Spw Artifact
 
-`.agents/plans/mounted-workbench-organelle/mounted-workbench-organelle.spw` records the neutral mounted-instrument contract plus an optional organelle translation: consumer-owned intent enters through a small prompt surface, bounded root and selection machinery routes it, and editor/CLI projections remain replaceable.
+`.agents/plans/_archive/mounted-workbench-organelle/mounted-workbench-organelle.spw` records the neutral mounted-instrument contract plus an optional organelle translation: consumer-owned intent enters through a small prompt surface, bounded root and selection machinery routes it, and editor/CLI projections remain replaceable.

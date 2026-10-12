@@ -75,24 +75,39 @@
  >>[2026-07-23 07:13] observe — orphan scoping mattered twice: non-.spw targets were becoming graph nodes (678), and archived/.agents surfaces are unreferenced BY DESIGN. Scoping to surfaces-that-expected-referrers left 9 real canon orphans including docs/waypoints/index.spw — an index nothing links to.
  >>[2026-07-23 06:32] open — three questions raised for the user: header particles in outline (keep as leaves / anchors only / hide), incoming-ref hub detection (needs reverse index), cold tier populated from workspace scan vs session-only.
  >>[2026-07-23 03:22] decide — user: recognize FILE PATTERNS for semantic depth. First-class pattern: the header particle stack (deixis + case/mood pair — `#>anchor` `#:layer #!pragmatics`) opening ~every canonical file. Census commit added: discover recurring particle stacks corpus-wide (spw:formula/analyze), name them in the registry, refactor only where a recognized pattern adds nuance — never mechanical rewriting.
+ >>[2026-10-12 14:24] revise — commits ~[1]-~[9] reconciled against git and moved to done (hashes recorded); ~[8] had no commit of its own, its coverage shipped inside ~[3] and ~[6]; added ~[11] comment-filtered noise lint from the 07:13 findings; prose_chunks question sharpened to a corpus-checkable form
+ >>[2026-10-12 14:31] revise — per convention change: resolved questions and landed commits moved into ^done as ~#resolved(label) and ~#shipped hash entries, nothing deleted; pointer comments left in ^commits
 }
 
 ^["open"]{
- ?[prose_chunks]: "after DIRECTIVE lexing, what remains of the Prose fallback for #-lines — does ProseChunk need its own refinement pass? (user flagged)"
- ?[pattern_refactors]: "census will surface candidate file-pattern refactors; which (if any) to apply is a per-pattern decision with the user at commit 9."
+ ?[prose_chunks]: "which #-lines in the corpus still lex as ProseChunk after PARTICLE lexing (plain # comments only, or bare #>/#: without a name too) — decides whether the ~[10] glossary needs a prose-fallback rule?"
+ ?[pattern_refactors]: "census names the recurring header particle stacks; which of them (if any) earn a mechanical refactor at ~[10] is a per-pattern call for the user."
 }
 
 ^["commits"]{
- ~[1]: ".[plans] =stage[directive-lattice] — plan artifacts"
- ~[2]: "^seed[lexer] — DIRECTIVE token family ⟨stance⟩#⟨aim⟩name"
- ~[3]: "&[seed-grammar] — directive nodes bind to the following expression"
- ~[4]: "vocab[seed] — normalize directive regs + rename lattice vocabulary"
- ~[5]: "&[seed-query] — directive selectors (aim/name); anchors preset"
- ~[6]: "^seed[fragment] — resolve ~\"file#anchor\" → anchored node span"
- ~[7]: "&[cli] — mount verifies fragments; expand projects fragment regions"
- ~[8]: "![seed] — corpus roundtrip gate + particle + fragment coverage"
- ~[9]: "^seed[census] — particle-stack discovery + noise/underspecification detection (orphan deixis, unbound case, boundary-less # marks, duplicate anchors) feeding lint diagnostics and mutation profiles (user: develop more useful patterns for old .spw)"
- ~[10]: ".[canon] — particle-lattice registry; naming conventions; pattern refactors (user-gated)"
+ # ~[1]..~[9] landed — see ^["done"]
+ ~[10]: ".[canon] — particle-lattice registry (.spw/registries/directive-lattice.spw): stance×aim cells, census counts, header particle stack, glossary lead (particle=family, anchor=deixis's bookmark); pattern refactors user-gated"
+ ~[11]: "^seed[census] — comment-filtered noise lint: orphan deixis, unbound case, boundary-less # marks (the 1527-mark census dominated by #-comment continuations must drop to the real residue)"
+}
+
+^["done"]{
+ ~#shipped: [
+  "272f5bd8 .[plans] =stage[directive-lattice] — particle lattice for the # family",
+  "8cdaf2a9 ^seed[lexer] — PARTICLE token family ⟨stance⟩#⟨aim⟩name",
+  "25ca2e29 &[seed-grammar] — particle nodes bind to the following expression",
+  "dcddb4a5 vocab[seed] — mood joins the particle family; lattice regs complete",
+  "7fc7ebb9 &[seed-query] — particle selectors: aim/name patterns, particles + anchors presets",
+  "cf629afb ^seed[fragment] — resolve ~\"file#anchor\" to the deixis-anchored node",
+  "2b9216c7 &[cli] — mount verifies fragments; expand projects anchored regions",
+  "cd65cb21 &[lsp] — spw/particles: per-document anchor table + dialect signature",
+  "2573f763 ^seed[census] — particle census: dialect signatures + noise detection",
+  "c4c3e9c1 &[lsp] — the outline lists anchors, not the whole header stack",
+  "45c13e6b &[lsp] — go-to-definition lands on the anchor, not the top of the page",
+  "75e2f2c3 &[lsp] — cache tiers gain a second axis: what a surface is made of",
+  "224d4c10 ^seed[lsp] — read the cache back as a record of attention",
+ ]
+ ~#surprised: "the 'addressed' archetype never fired: every canon surface opens with the same header stack, so deixis counts barely vary while classification does"
+ # ~[8] (corpus roundtrip gate) has no commit of its own: coverage landed inside particle-grammar.test.ts and resolve-fragment.test.ts with ~[3] and ~[6]
 }
 
 ^["cache"]{
@@ -101,8 +116,8 @@
  ~#rebased_at: ""
  ~#hygiene_split: "none — note: user stash 'grok-working-tree-before-reconciliation' pending on main touches overlapping files (index.spw, seed index); reconcile at their merge"
  ~#files_hot: "packages/spw-seed/src/lexer/*"
- ~#next_commit: "1"
+ ~#next_commit: "10"
  ~#open_count: "2"
- ~#last_stream: "2026-07-23 07:13"
+ ~#last_stream: "2026-10-12 14:31"
  ~#taste_debt: ""
 }

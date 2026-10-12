@@ -60,10 +60,10 @@ The user's original request also named four genuinely new grammar features (name
 
 ```
 1. .[theory,prompts] — rename S0-S3 shorthand to effect.l0.measure..l3.external across living docs only
-2. ^seed[differential] — explicit label/ruleId conflict handling for overlapping SourceEdit differentials; tests
-3. ^seed[range-transform] — implement range-address + span-transform per docs/theory/spw/range-transform.spw; tests
-4. ^seed[n-range] — close NRangeNode parser/normalize gaps (empty n-range, source spans); tests
-5. #[query] — configurable indexing handles on the query engine; document perf tradeoff
+2. (dropped) differential label conflicts: applyEdits already rejects overlapping and out-of-range edits, tested in semantic-edit.test.ts
+3. ![seed] — tests for range-transform.ts (module itself landed)
+4. ![seed] — tests for empty n-range '(())' (fix landed in bbb14615)
+5. (merged) IndexConfig wired into corpus-scan.ts; query-engine wiring awaits a consumer
 6. .[plans] — close seed-roundness-grades; retrospective + follow-up plan slugs for track B
 ```
 

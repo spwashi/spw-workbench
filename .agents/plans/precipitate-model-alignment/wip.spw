@@ -11,11 +11,11 @@
  gist: "Precipitate, substrate, assay, and resonance name checkable roles in the runtime pipeline."
  touches: [~"packages/spw-runtime/src/pipeline", ~"docs/runtime/spw/runtime-foundation.spw", ~"docs/specs/spw/spec-alignment.spw"]
  entry: ~"./precipitate-model-alignment.spw"
- next: "Reheat by retargeting Files from the src/runtime/pipeline shims to packages/spw-runtime/src/pipeline, then ship commit 1."
+ next: "Reheat: answer failure_continuity (the invariant and the parse-failure branch disagree), then ship commit 1 against packages/spw-runtime/src/pipeline."
 }
 
 ^["edges"]{
- shares: [~"../cli-mode-overhaul/wip.spw"]
+ shares: [~"../cli-mode-overhaul/wip.spw", ~"../lukewarm-backlog/wip.spw"]
 }
 
 ^["roots"]{
@@ -60,18 +60,24 @@
  >>[2026-03-13 00:00] observe — current runtime precipitates are concrete stage artifacts in src/runtime/pipeline/stages.ts, but docs/spec surfaces still mix older stage stories and looser chemistry language.
  >>[2026-03-13 00:01] decide — treat precipitate alignment as a semantics-rigor task first: define material roles before changing implementation names or checks.
  >>[2026-03-13 00:02] taste — the chemistry should stay operational: substrate is medium, precipitate is stable stage output, telemetry is assay, resonance is derived pattern.
+ >>[2026-10-12 14:25] revise — commits retargeted to packages/spw-runtime/src/pipeline (src/runtime/pipeline is now a re-export shim) and made concrete; no runtime test references runSpwStepped or collectPrecipitates, so ~[3] is a real gap. Questions precipitate_boundary and telemetry_relation resolved by code: Precipitate in stages.ts is per-stage only (PipelineProjection is a keyed map of them) and RuntimeTelemetry is collected once per run by collectTelemetry, not per stage.
+ >>[2026-10-12 14:25] observe — invariant stage_continuity (exactly one precipitate per stage) disagrees with the parse-failure branch in runSpwStepped, which returns after the parse precipitate; five malformed inputs I tried (}}}, unterminated string, mismatched brace, empty) all still parsed successfully and yielded four precipitates, so the branch is reachable only through errors I could not trigger. Opened failure_continuity and telemetry_locality.
+ >>[2026-10-12 14:31] revise — convention: resolved questions and landed commits are kept in ^["done"] (resolved(label) and shipped) rather than deleted; ^["commits"] keeps a pointer comment.
+ >>[2026-10-12 15:00] observe — six malformed inputs through runSpwStepped (}}} unterminated string unclosed bracket empty parens and a sigil mix) all returned success true with 4 precipitates, and normalize.test.ts covers success paths only; opened ?[failure_branch_test]; routed from lukewarm-backlog.
 }
 
 ^["open"]{
- ?[precipitate_boundary]: "Is a precipitate strictly a per-stage artifact, or do we want a second-order 'runtime precipitate' notion for aggregated outputs?"
- ?[telemetry_relation]: "Should telemetry remain outside the precipitate list, or should each stage own a local assay slice?"
+ ?[telemetry_locality]: "The invariant telemetry_locality says assays are local to the acting stage, but collectTelemetry runs once after the last stage; do we amend the invariant to say run-level, or add a per-stage assay slice to Precipitate?"
+ ?[failure_continuity]: "stage_continuity says each stage MUST produce exactly one precipitate, but the parse-failure branch in runSpwStepped returns before normalize and interpret; do we restate the invariant as at-most-one, or make the failure branch yield empty precipitates?"
  ?[normalize_role]: "Is normalize best described as clarification, crystallization, or simply canonical reduction in the chemistry model?"
+ ?[failure_branch_test]: "Which input reaches the parse-failure return in runSpwStepped (six malformed inputs I ran all returned success true), and does that branch get a test before failure_continuity is settled? Tracked at ~"../lukewarm-backlog/wip.spw" ?[precipitate_failure_untested]."
 }
 
 ^["commits"]{
- ~[1]: ".[precipitate] — write canonical chemistry note and align runtime/spec vocabulary"
- ~[2]: "vocab[runtime] — tighten precipitate, telemetry, and stage contracts"
- ~[3]: "![precipitate] — add drift checks for precipitate vocabulary and stage semantics"
+ # ~[1]: PARTLY LANDED — the canonical note precipitate-model-alignment.spw exists; docs alignment remains and is now ~[1] below
+ ~[1]: ".[precipitate] — retarget the note's src/runtime paths to packages/spw-runtime and label spec-alignment's distill_extract stages (prime, wonder, extract) as a proposal beside the shipped desugar, parse, normalize, interpret"
+ ~[2]: "vocab[runtime] — doc-comment Precipitate as strictly per-stage and PipelineProjection as a keyed view, once telemetry_locality and failure_continuity are answered"
+ ~[3]: "![runtime] — test that collectPrecipitates yields desugar, parse, normalize, interpret in STAGE_ORDER for valid source (no runtime test covers runSpwStepped today)"
 }
 
 ^["cache"]{
@@ -79,12 +85,14 @@
  ~#base_ref: "main@46d4a17"
  ~#rebased_at: ""
  ~#hygiene_split: "none"
- ~#files_hot: "docs/specs/spw/spec-alignment.spw, docs/runtime/spw/runtime-foundation.spw, src/runtime/pipeline/stages.ts, src/runtime/pipeline/types.ts"
+ ~#files_hot: "docs/specs/spw/spec-alignment.spw, docs/runtime/spw/runtime-foundation.spw, packages/spw-runtime/src/pipeline/stages.ts, packages/spw-runtime/src/pipeline/types.ts"
  ~#next_commit: "1"
- ~#open_count: "3"
- ~#last_stream: "2026-03-13 00:02"
+ ~#open_count: "4"
+ ~#last_stream: "2026-10-12 15:00"
  ~#taste_debt: "The repo has chemistry-adjacent terms (substrate, resonance, valence, quality), but precipitate boundaries are not yet normalized across docs and code comments."
 }
 
 ^["done"]{
+ ~#resolved(precipitate_boundary): "Is a precipitate strictly a per-stage artifact, or is there a second-order runtime precipitate? — per-stage only in code; PipelineProjection is a keyed map of stage precipitates; evidence: packages/spw-runtime/src/pipeline/stages.ts, stream 2026-10-12 revise"
+ ~#resolved(telemetry_relation): "Should telemetry stay outside the precipitate list, or should each stage own an assay slice? — outside today: RuntimeTelemetry is collected once per run by collectTelemetry; whether the invariant should change is the open question telemetry_locality; evidence: stream 2026-10-12 revise"
 }

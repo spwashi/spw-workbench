@@ -39,13 +39,12 @@ The desired end state is a single package-owned CLI surface where selector behav
 
 Commits 2-3 establish selector truth and package ownership. Commit 4 hardens the public vocabulary so site-install, DX, and release docs can speak about one CLI surface.
 
-1. .[selector-dogfood] — plan and document the selector normalization slice
-2. &[selector-dogfood] — repair AST traversal and add corpus-level selector coverage
-3. &[spwq-cli] — absorb spwq into the package-owned CLI with compatibility wrappers
-4. .[cli-conventions] — normalize alias/docs language and record future bin DX direction
-5. ![cli] *audit[mounted-consumer] — inventory root, health, capability, and review gaps
-6. &[cli] =observe[mounted-consumer] — implement roots, doctor, capabilities, and review contracts
-7. ![cli] *verify[portable-evidence] — exercise JSON/Spw output against identity-free fixtures
+1. .[selector-dogfood] — plan and document the selector normalization slice (landed)
+2. &[selector-dogfood] — repair AST traversal and add corpus-level selector coverage (landed, 508f7c37)
+3. &[spwq-cli] — absorb spwq into the package-owned CLI with compatibility wrappers (landed, 6a89cfff)
+4. .[cli-conventions] — normalize alias/docs language and record future bin DX direction (landed, 99958883)
+5. &[cli] =observe[capabilities] — add `spw capabilities` as a relative, scriptable snapshot beside the shipped roots and doctor verbs; shape agreed with cli-mode-overhaul commit 8 before either lands
+6. ![cli] *verify[portable-evidence] — exercise roots, doctor, and capabilities JSON/Spw output against identity-free fixtures
 
 Fuzz strategy:
 - Explore loop: `npm run test:seed -- spwq-corpus`

@@ -4,7 +4,7 @@ Align the precipitate model to the shipped runtime and formalize its runtime che
 
 ## Goal
 
-The current runtime already has a concrete precipitate pipeline in `src/runtime/pipeline/stages.ts`, but the adjacent spec and theory surfaces still describe older or looser stage stories. This pass will make the precipitate model explicit, canonical, and falsifiable: what counts as a precipitate, what does not, and how precipitates relate to substrate events and resonances. The taste target is clarity + correctness: implementors should be able to read one contract and know the runtime chemistry without reconstructing it from scattered notes.
+The current runtime already has a concrete precipitate pipeline in `packages/spw-runtime/src/pipeline/stages.ts`, but the adjacent spec and theory surfaces still describe older or looser stage stories. This pass will make the precipitate model explicit, canonical, and falsifiable: what counts as a precipitate, what does not, and how precipitates relate to substrate events and resonances. The taste target is clarity + correctness: implementors should be able to read one contract and know the runtime chemistry without reconstructing it from scattered notes.
 
 ## Scope
 
@@ -18,21 +18,21 @@ The current runtime already has a concrete precipitate pipeline in `src/runtime/
 [NEW] `.agents/plans/precipitate-model-alignment/precipitate-model-alignment.spw`  
 [MOD] `docs/specs/spw/spec-alignment.spw`  
 [MOD] `docs/runtime/spw/runtime-foundation.spw`  
-[MOD] `src/runtime/pipeline/stages.ts`  
-[MOD?] `src/runtime/pipeline/types.ts`  
+[MOD] `packages/spw-runtime/src/pipeline/stages.ts`  
+[MOD?] `packages/spw-runtime/src/pipeline/types.ts`  
 [MOD?] `docs/runtime/md/runtime-foundation.md`  
 [MOD?] `scripts/analyzers/`
 
 Craft guard:
-- `src/runtime/pipeline/stages.ts` is already concept-dense; prefer terminology tightening and helper extraction over expanding one file further.
+- `packages/spw-runtime/src/pipeline/stages.ts` is already concept-dense; prefer terminology tightening and helper extraction over expanding one file further.
 - Keep the chemistry vocabulary single-sourced; avoid a second parallel ontology in both docs and comments.
 - Any enforcement should be narrow and local, not a new sprawling analyzer.
 
 ## Commits
 
-1. `.[precipitate] — write canonical chemistry note and align runtime/spec vocabulary`
-2. `vocab[runtime] — tighten precipitate, telemetry, and stage contracts`
-3. `![precipitate] — add drift checks for precipitate vocabulary and stage semantics`
+1. `.[precipitate] — retarget the note's src/runtime paths to packages/spw-runtime and label spec-alignment's distill_extract stages as a proposal beside the shipped four` (the note itself already exists)
+2. `vocab[runtime] — doc-comment Precipitate as strictly per-stage and PipelineProjection as a keyed view, once telemetry_locality and failure_continuity are answered`
+3. `![runtime] — test that collectPrecipitates yields the four stages in STAGE_ORDER for valid source (no runtime test covers runSpwStepped today)`
 
 Fuzz strategy:
 - Explore: `npm run fuzz:explore`

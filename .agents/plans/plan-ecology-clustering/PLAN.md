@@ -56,11 +56,10 @@ Current execution should strengthen this spine in roughly that order. The gap-af
 
 ## Commits
 
-1. `.[plans] — stage plan-ecology-clustering artifacts`
-2. `.[plans] — define cluster taxonomy, commit bar, and per-plan learning/research map`
-3. `.[plans] — align governance and release plans to clustered urgency and discussion value`
-4. `.[plans] — reframe curriculum plans as contributor-formation and research lanes`
-5. `![plans] — verify clustering language stays coherent across active planning surfaces`
+Landed in 9c1ebc10: commits 1 to 4. Remaining:
+
+5. `![plans] — verify: spw:plan:index --check clean, spw:plan:check across every slug, and lint:spw on plan-ecology-clustering.spw`
+6. `.[plans] — settle plan_map coverage: backfill the missing rows or state the covered phases in the frame header`
 
 Fuzz strategy:
 - Explore: `npm run lint:spw`

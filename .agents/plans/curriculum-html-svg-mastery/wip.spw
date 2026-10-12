@@ -7,15 +7,17 @@
 #:layer #!pragmatics
 
 ~["card"]{
- phase: #dormant
- gist: "Fifty hand-authored SVG labs turn coordinates, paths, filters, and motion into Spw precedent."
- touches: [~".agents/skills/spw-css-dom-lab", ~"docs/design/spw/theme-stage-0-snapshots.spw", ~".spw/patterns/literate-ui.spw"]
+ phase: #planning
+ gist: "Five hand-authored SVG labs under docs/learn/labs/html-svg turn geometry into checked Spw precedent."
+ touches: [~"docs/design/spw/theme-stage-0-snapshots.spw", ~".spw/patterns/literate-ui.spw", ~"docs/learn"]
+ will_touch: [~"docs/learn/labs/html-svg"]
  entry: ~"./PLAN.md"
- next: "Reheat with a stream entry, then scaffold Lab 1.01 (svg context dimensions) in a new .agents/skills/spw-css-dom-lab/labs-svg/."
+ next: "After html-css commit 1 creates docs/learn/labs, ship Lab 1.01 (svg context dimensions) as html-svg/01-coordinates-strata.md plus its jsdom check."
 }
 
 ^["edges"]{
- shares: [~"../curriculum-html-css-mastery/wip.spw", ~"../audit-css-tokens/wip.spw"]
+ needs: [~"../curriculum-html-css-mastery/wip.spw"]
+ shares: [~"../audit-css-tokens/wip.spw", ~"../curriculum-logic-terminal-mastery/wip.spw"]
 }
 
 ^["roots"]{
@@ -77,102 +79,49 @@
  qualities: [#expressiveness, #transfer, #mathematical_clarity]
 }
 
+^["lab_format"]{
+ # Format is owned by ../curriculum-html-css-mastery/wip.spw (see its lab_format frame). This frame records only what is svg-specific.
+ ~#home: "docs/learn/labs/html-svg/, created by this plan only after html-css commit 1 lands the shared home, README and runner"
+ ~#tiers_here: "structural (viewBox, attributes, element tree via jsdom), pure (path data parsed and evaluated in TypeScript), browser (rendering, filters, SMIL timing; attested by hand)"
+ ~#known_gap: "jsdom lacks getTotalLength and getBBox on path elements, so geometry claims need the pure tier"
+}
+
 ^["stream"]{
  >>[2026-02-20 02:32] observe — SVG is often treated as a black box (exported assets) rather than a hand-coded, deeply integrated extension of the DOM.
  >>[2026-02-20 02:32] decide — This curriculum will focus on raw, hand-authored SVG specs (coordinate math, path calculus, filter composition) and how they reflect Spw's rendering paradigms (lenses, shaders, stages).
  >>[2026-02-20 05:45] revise — Expanded plan to 50 commits to match the rigor of html-css-mastery, breaking the curriculum into 5 deep-dive phases of 10 commits each.
  >>[2026-03-28 09:47] implement — added references/index.spw and richer development frames so SVG coordinates, paths, filters, animation, and foreignObject interop become topical anchors with reusable heuristics instead of diffuse reading memory.
+ >>[2026-10-12 14:25] revise — Collapsed 50 lesson-stub commits to 7 work units (hygiene preflight, five labs-svg files, one snippet fold-in); no labs-svg directory exists in git history. Lesson list kept as ~#covers. Replaced two template wonders with a precedent audit of in-repo SVG.
+ >>[2026-10-12 14:54] decide — reheat these curricula, 2026-10-12
+ >>[2026-10-12 14:54] revise — Reheated to planning. Lab home docs/learn/labs/html-svg under the shared format owned by curriculum-html-css-mastery; needs edge added. Lab 1.01 is commit 1, blocked on the css home commit. jsdom lacks getTotalLength and getBBox, so path claims need a pure-tier evaluator.
 }
 
 ^["open"]{
-}
-
-^["commits"]{
- # --- Phase 1: Coordinate Systems vs. Spw Strata ---
- ~[1]: "^seed[curriculum] — scaffold Lab 1.01: Context Dimensions (svg element)"
- ~[2]: "^seed[curriculum] — scaffold Lab 1.02: User Space vs Viewport Space"
- ~[3]: "^seed[curriculum] — scaffold Lab 1.03: The viewBox attribute"
- ~[4]: "^seed[curriculum] — scaffold Lab 1.04: Aspect Ratio preservation mechanics"
- ~[5]: "^seed[curriculum] — scaffold Lab 1.05: Group transforms and matrix math"
- ~[6]: "^seed[curriculum] — scaffold Lab 1.06: Nested SVG coordinates"
- ~[7]: "^seed[curriculum] — scaffold Lab 1.07: Absolute vs Relative positioning"
- ~[8]: "^seed[curriculum] — scaffold Lab 1.08: Reusing elements via <use>"
- ~[9]: "^seed[curriculum] — scaffold Lab 1.09: Defs and shadow trees"
- ~[10]: "![curriculum] — establish Spw Reflection: Mapping viewBox logic to infinite Spw Strata"
-
- # --- Phase 2: Path Calculus vs. Spw Geometric Expressions ---
- ~[11]: "^seed[curriculum] — scaffold Lab 2.01: The Path (d) attribute foundation"
- ~[12]: "^seed[curriculum] — scaffold Lab 2.02: Lines (M, L, H, V)"
- ~[13]: "^seed[curriculum] — scaffold Lab 2.03: Strict relative syntax (m, l, h, v)"
- ~[14]: "^seed[curriculum] — scaffold Lab 2.04: Cubic Beziers (C, S)"
- ~[15]: "^seed[curriculum] — scaffold Lab 2.05: Quadratic Beziers (Q, T)"
- ~[16]: "^seed[curriculum] — scaffold Lab 2.06: Elliptical Arcs (A)"
- ~[17]: "^seed[curriculum] — scaffold Lab 2.07: Stroke properties (dasharray, linecap)"
- ~[18]: "^seed[curriculum] — scaffold Lab 2.08: Fill rules (nonzero vs evenodd)"
- ~[19]: "^seed[curriculum] — scaffold Lab 2.09: Geometric markers"
- ~[20]: "![curriculum] — establish Spw Reflection: Mapping logical AST relations to continuous Béziers"
-
- # --- Phase 3: Filter Primitives vs. Spw Shaders ---
- ~[21]: "^seed[curriculum] — scaffold Lab 3.01: Filter effects region boundaries"
- ~[22]: "^seed[curriculum] — scaffold Lab 3.02: <feGaussianBlur> mechanisms"
- ~[23]: "^seed[curriculum] — scaffold Lab 3.03: Color transformations via <feColorMatrix>"
- ~[24]: "^seed[curriculum] — scaffold Lab 3.04: Dynamic compositing (<feBlend>, <feComposite>)"
- ~[25]: "^seed[curriculum] — scaffold Lab 3.05: Noise generation (<feTurbulence>)"
- ~[26]: "^seed[curriculum] — scaffold Lab 3.06: Displacement maps and distortion"
- ~[27]: "^seed[curriculum] — scaffold Lab 3.07: Lighting effects (diffuse, specular)"
- ~[28]: "^seed[curriculum] — scaffold Lab 3.08: Morphology (dilate, erode)"
- ~[29]: "^seed[curriculum] — scaffold Lab 3.09: Transfer curves (<feComponentTransfer>)"
- ~[30]: "![curriculum] — establish Spw Reflection: Using filters as cognitive WebGL-free Shaders"
-
- # --- Phase 4: Declarative Animations vs. Spw Temporal Flow ---
- ~[31]: "^seed[curriculum] — scaffold Lab 4.01: SMIL basics (<animate>)"
- ~[32]: "^seed[curriculum] — scaffold Lab 4.02: Animating along paths (<animateMotion>)"
- ~[33]: "^seed[curriculum] — scaffold Lab 4.03: Transform animations (<animateTransform>)"
- ~[34]: "^seed[curriculum] — scaffold Lab 4.04: Morphing path attributes"
- ~[35]: "^seed[curriculum] — scaffold Lab 4.05: KeyTimes and KeySplines"
- ~[36]: "^seed[curriculum] — scaffold Lab 4.06: Event synchronization (begin='x.click')"
- ~[37]: "^seed[curriculum] — scaffold Lab 4.07: Repeat counts and fill behaviors"
- ~[38]: "^seed[curriculum] — scaffold Lab 4.08: Additive and accumulative animation"
- ~[39]: "^seed[curriculum] — scaffold Lab 4.09: CSS animation interop"
- ~[40]: "![curriculum] — establish Spw Reflection: Translating state machines to continuous temporal flow"
-
- # --- Phase 5: ForeignObject vs. Spw Containment ---
- ~[41]: "^seed[curriculum] — scaffold Lab 5.01: The <foreignObject> spec"
- ~[42]: "^seed[curriculum] — scaffold Lab 5.02: Rendering HTML nodes inside SVG"
- ~[43]: "^seed[curriculum] — scaffold Lab 5.03: Z-index and stacking contexts"
- ~[44]: "^seed[curriculum] — scaffold Lab 5.04: Pointer event propagation"
- ~[45]: "^seed[curriculum] — scaffold Lab 5.05: Text wrapping challenges"
- ~[46]: "^seed[curriculum] — scaffold Lab 5.06: Applying SVG filters to HTML blocks"
- ~[47]: "^seed[curriculum] — scaffold Lab 5.07: Scroll contexts inside vectors"
- ~[48]: "^seed[curriculum] — scaffold Lab 5.08: Interactive form controls in spatial nodes"
- ~[49]: "^seed[curriculum] — scaffold Lab 5.09: Masking and clipping HTML boundaries"
- ~[50]: "![curriculum] — establish Spw Reflection: Embedding text-editors inside skewed nodes"
+ ?[path_parser]: "Does Lab 2 hand-write a small path-data parser in the lab directory, or adopt a dependency? No svg or bezier package appears in package.json or node_modules (checked 2026-10-12), and a dependency is a repo-wide decision. Unblocks commit 3."
+ ?[browser_only]: "Same question as html-css ?[browser_only]; this plan follows whatever that plan decides for filters, SMIL playback and layout. Unblocks commits 4 to 6."
 }
 
 ^["cache"]{
  ~#status: "planning"
- ~#base_ref: "main@b41caa6b"
- ~#rebased_at: "2026-03-28"
- ~#files_hot: ".agents/plans/curriculum-html-svg-mastery/, .agents/plans/curriculum-html-svg-mastery/references/, .agents/skills/spw-css-dom-lab/labs-svg/"
+ ~#base_ref: "main@551bb419"
+ ~#rebased_at: "2026-10-12"
+ ~#files_hot: ".agents/plans/curriculum-html-svg-mastery/"
  ~#next_commit: "1"
- ~#open_count: "0"
- ~#last_stream: "2026-03-28 09:47"
+ ~#open_count: "2"
+ ~#last_stream: "2026-10-12 14:54"
  ~#taste_debt: "keep each lab anchored in hand-authored geometry and transfer questions rather than drifting into exported-asset folklore"
 }
 
-#>wonder_agents_plans_curriculumhtmlsvgmastery_wi_1
-?["What is the ecological temperature of reading wip — curriculum-html-svg-mastery?"]{
-  #:depth #!experiential // lens: ecological zone
-  $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
-  ~#structure: "roots → intent → development → concept_index → recursive_improvement → stream → open" // frame flow
-  !probe{ "read aloud for 30 seconds; where do you pause? pauses mark biome edges." }
+^["done"]{
+ ~#dropped: "commit 1 hygiene preflight (rebase and isolate drift) — replaced by base_ref main@551bb419 and a new directory; dropped 2026-10-12"
+ ~#resolved(precedent_audit): "How much hand-authored SVG does the repo ship for Labs 1 to 5 to review against? — little; re-run 2026-10-12 of the grep over docs packages extensions src listed 5 paths: the installable-book icon.svg, the vscode icon.svg, an intellij spwFile.svg in src and a copy under build, and an intellij build problems report html; none is under docs or src, and per-pattern counts were not separated; ts, tsx, css and html sources in docs, packages and the vscode extension showed no filter, animate or foreignObject match; evidence: stream 2026-10-12; consequence: only Lab 1 can lean on repo icons, Labs 3 to 5 name the absence in their Repo pattern reviewed section"
 }
 
 #>wonder_agents_plans_curriculumhtmlsvgmastery_wi_2
-?["What concept is conspicuously absent from wip — curriculum-html-svg-mastery?"]{
-  #:depth #!computational // lens: molecular binding
-  ~#present: [#experiential, #computational]
-  ~#expected_but_missing: "?" // the reader fills this gap
-  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
+?["Which SVG geometry claims can a no-browser check assert at all?"]{
+  #:depth #!computational // lens: capability probe
+  ~#hypothesis: "viewBox and attribute facts check in jsdom, but path length, bounding box and transform results need a pure-TypeScript evaluator"
+  ~#observed: "one scratch run on 2026-10-12 with the repo jsdom: svg viewBox.baseVal.width read 10 for viewBox 0 0 10 10, while typeof getTotalLength and typeof getBBox on a path element were both undefined"
+  !probe{ "for each of the five lab families, write one assertion in a scratch check and record whether jsdom answers it, a ~40-line TypeScript evaluator answers it, or only a browser can; the result fixes ?[path_parser] and each Check tier before commit 3" }
   $%[plan.commit_count, plan.phase_progress]
 }

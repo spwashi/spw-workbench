@@ -70,6 +70,9 @@
  >>[2026-08-24 11:13] revise — newlineAsSpace must become a source-mapped gap projection that preserves raw coordinates and discloses which gap classes collapse; the stack carries the declared association capability in product provenance.
  >>[2026-08-24 11:14] decide — parser product requests and event policies are execution/disclosure axes adjacent to dialect and surface policy. They may change cost and visibility, never semantic interpretation.
  >>[2026-08-24 12:57] decide — distribution entry points are a package axis, not a syntax profile: through controls the last executed stage, eventPolicy controls retention, and bundle choice controls shipped modules while all share one semantic kernel.
+ >>[2026-10-12 14:28] revise — commits ~[1]-~[4] landed together in 08e2bc1c; added ~[5] gap projection and ~[6] provenance/mount capabilities from the 08-24 decisions; closed cli_profile, stack_disagree (one resolveSurfaceProfile feeds CLI and LSP), invisible_axis (hover prints mutation and reading); sharpened data_driven_paths, edition, flip_hash; the header-vs-path wonder was already answered by dialect.test.ts and is replaced
+ >>[2026-10-12 14:28] observe — parse of an Spw.l source: baz at raw line 3 column 1 reports span offset 23 (matches raw) but line 1 column 24, so line and column describe the collapsed text
+ >>[2026-10-12 14:31] revise — per convention change: resolved questions and landed commits moved into ^done as ~#resolved(label) and ~#shipped hash entries, nothing deleted; pointer comments left in ^commits
 }
 
 ^["examples"]{
@@ -82,20 +85,27 @@
 }
 
 ^["open"]{
- ?[cli_profile]: "spw profile --show next? (partially landed)"
- ?[data_driven_paths]: "load path table from registry .spw?"
- ?[autorefactor_p0]: "quoted_frame codemod via semantic-edit?"
- ?[invisible_axis]: "mutation/reading still missing from hover?"
- ?[stack_disagree]: "LSP vs CLI stack authority?"
- ?[edition]: "require @edition on packages/**?"
- ?[flip_hash]: "does dialect flip alone change contentHash?"
+ ?[data_driven_paths]: "The path table exists twice, as ^path_defaults in .spw/registries/syntax-profile-stack.spw and as code in dialect/syntax-stack.ts; which one is the source of truth, and is the other generated or deleted?"
+ ?[autorefactor_p0]: "Is the quoted_frame codemod one semantic-edit patch, given action.quoted_frame_to_bracket is cited as =exp but absent from syntax-catalog.ts?"
+ ?[edition]: "Which surfaces must carry @edition (registries only, or packages/**), and who rejects a missing one? Answer decides whether edition enters parse-product provenance."
+ ?[flip_hash]: "Parse products carry no content hash or cache key today; when a cached product exists (apposition-cache-granules), must dialect x preprocess be part of its key?"
 }
 
 ^["commits"]{
- ~[1]: "vocab[seed] - dialect detect + surface profile stack"
- ~[2]: "![seed] - parse autoDialect + tests"
- ~[3]: ".[theory]: syntax-profile-stack + dialect-spec examples"
- ~[4]: "#[review] - expand syntax-review profiles and patterns"
+ # ~[1]..~[4] landed together in 08e2bc1c — see ^["done"]
+ ~[5]: "^seed[products] — newlineAsSpace becomes a source-mapped gap projection: raw line/column survive and the product discloses which gap classes collapsed (see wonder 1)"
+ ~[6]: "&[cli] — mount capabilities and parse-product provenance report resolved dialect and gap capability (edition joins once ?[edition] is answered)"
+}
+
+^["done"]{
+ ~#shipped: [
+  "08e2bc1c &[canon-rewrite-v2] — land tip capability on upstream; phase 0 field clocks",
+  "9d749e81 ![spw-seed] — constrain dialect and binding lookahead",
+ ]
+ ~#resolved(cli_profile): "spw profile --show next? — spw surface / spw profile already print the resolved stack; evidence: packages/spw-cli/src/profile.ts"
+ ~#resolved(stack_disagree): "LSP vs CLI stack authority? — both call the seed resolveSurfaceProfile, one authority; evidence: packages/spw-lsp/src/handlers/display.ts, packages/spw-cli/src/profile.ts"
+ ~#resolved(invisible_axis): "mutation/reading still missing from hover? — hover prints mutation and reading rows; evidence: packages/spw-lsp/src/handlers/display.ts"
+ # planned ~[1]-~[4] all landed in 08e2bc1c; 9d749e81 later constrained dialect and binding lookahead
 }
 
 ^["cache"]{
@@ -104,17 +114,15 @@
  ~#rebased_at: "2026-08-24"
  ~#next_commit: "compatibility_disclosure"
  ~#files_hot: "packages/spw-seed/src/dialect/*, packages/spw-seed/src/lexer/matchers/identifiers.ts, packages/spw-seed/src/parser/parse.ts, packages/spw-seed/src/parser/products.ts, packages/spw-seed/package.json"
- ~#open_count: "7"
- ~#last_stream: "2026-08-24 12:57"
+ ~#open_count: "4"
+ ~#last_stream: "2026-10-12 14:31"
  ~#taste_debt: "Core stack support is landed; follow-on work must reconcile CLI/LSP authority, edition/product-key behavior, and package entry-point provenance before adding more dialect surface area."
 }
 
-^["done"]{
- ~#shipped: [#dialect_detection, #preprocess, #parse_fields, #registry, #review_profiles]
-}
-
 #>wonder_syntax_profile_stack_1
-?["Does path Spw.p fight header Spw.m?"]{
-  !probe{ =id[p_override] }
-  // header wins - document in stack resolve_order
+?["After the Spw.l newline preprocess, do parse spans still point at the raw source, or at the collapsed text?"]{
+  #:depth #!computational
+  ~#hypothesis: "offsets can coincide for a single newline but line and column describe the collapsed text, so editors would mis-place diagnostics"
+  !probe{ "parse '@dialect:Spw.l\\nfoo bar\\nbaz {\\n  x\\n}\\n' and read the span of the baz node against src.indexOf('baz'); on 2026-10-12 the offset matched (23) but the span said line 1 column 24 where the raw source has line 3 column 1, and the preprocessed text was 33 characters against 35 raw" }
+  $%[span.offset_delta, span.line_delta, product.dialectPreprocessed]
 }

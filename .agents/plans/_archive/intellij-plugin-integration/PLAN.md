@@ -33,14 +33,7 @@ No files expected to exceed 600 lines or 12 imports. Keep settings/UI classes sm
 
 ## Commits
 
-1. #[intellij-spw] — wire TextMate bundle + LSP preflight notifications
-2. &[intellij-spw] — add LSP settings hooks and configuration UI
-3. .[intellij-spw] — add file icon and align docs/build metadata
-4. &[intellij-spw] — tighten LSP settings + TextMate diagnostics
-5. #[repo] — ignore build artifacts and remove local Gradle props
-6. ![intellij] *audit[surfaces] — map advertised, configured, invoked, observed, and tested behavior
-7. &[intellij,mount] — resolve LSP startup from a consumer's mounted .spw/_workbench
-8. ![intellij,mount] — verify startup and diagnostics from an identity-free consumer fixture
+All landed or satisfied: f04cad68, a2e49bd0, 6f6278b7, 56cc81c5 (commits 7 and 8 via the shared resolver and fixture-shaped tests). Commits 1 to 5 predate the rewritten history, so their mapping to these hashes is approximate.
 
 ## Agentic Hygiene
 

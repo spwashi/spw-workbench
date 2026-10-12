@@ -7,20 +7,20 @@
 #:layer #!pragmatics
 
 @["card"]{
- phase: #stranded
- gist: "Spw concepts are looked up, selected, and manipulated through typed, previewable command intents."
+ phase: #done
+ gist: "Rehomed 2026-10-12: palette, concept-lookup and previewable-manipulation intents moved into vscode-authoring-probe-loop and vscode-editor-contract."
  touches: [~"extensions/vscode-spw/src", ~"packages/spw-lsp/src/handlers", ~"packages/spw-seed/src/query/selector-expr.ts", ~".spw/conventions/selection.spw"]
  entry: ~"./PLAN.md"
- next: "Human disposition: nominate a packages-era editor host or archive; src/core and src/ui targets no longer exist."
+ next: "Archive this directory; nothing is left here."
 }
 
 ^["edges"]{
- shares: [~"../vscode-authoring-probe-loop/wip.spw", ~"../vscode-workspace-atlas/wip.spw", ~"../prompt-surface-align/wip.spw", ~"../register-phase-evolution/wip.spw"]
+ shares: [~"../../vscode-authoring-probe-loop/wip.spw", ~"../../vscode-workspace-atlas/wip.spw", ~"../prompt-surface-align/wip.spw", ~"../../register-phase-evolution/wip.spw"]
 }
 
 ^["roots"]{
  @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
- @plan: ~".agents/plans/command-experience-tools/PLAN.md"
+ @plan: ~".agents/plans/_archive/command-experience-tools/PLAN.md"
  @pattern: ~".spw/patterns/literate-ui.spw"
  @workspace: ~".spw/workspace.spw"
 }
@@ -59,63 +59,43 @@
 ^["stream"]{
  >>[2026-02-20 03:17] observe — The Spw Workbench needs to evolve its interactive surface: moving beyond a static editor into a rich command environment where AST objects can be manipulated and Spw concepts are natively cross-referenced.
  >>[2026-02-20 03:17] decide — Structuring a 26-commit marathon plan to build out: the core command bus, the visual palette, the concept lookup engine, specific object manipulators, and finalizing with documentation.
+ >>[2026-10-12 14:27] revise — src/core and src/ui do not exist; the vscode extension already ships a concepts tree view and registerCommand entries. Replaced the 26 speculative commits with a disposition commit plus one conditional re-home commit, added open question disposition, and swapped two template wonders for one grounded in concepts-tree.ts.
+ >>[2026-10-12 14:53] note — User decision 2026-10-12: rehomed, not archived here. Palette routing and concept lookup and manipulation commands moved to vscode-authoring-probe-loop; the intent target preview payload moved to vscode-editor-contract. CommandBus and src ui elements dropped. Phase set to done for the coordinator to archive.
 }
 
 ^["open"]{
+ # Closed 2026-10-12: disposition resolved by rehoming; see ^["done"].
 }
 
 ^["commits"]{
- ~[1]: "&[core] — establish the central `CommandBus` and action registry"
- ~[2]: "vocab[core] — define rigorous `CommandIntent` and `ActionContext` branded types"
- ~[3]: "&[platform] — wire the `CommandBus` to global keyboard shortcuts and the REPL"
- ~[4]: "&[ui/command] — scaffold the visual `CommandPalette` overlay component"
- ~[5]: "&[ui/command] — implement fuzzy-matching and command history in the palette"
- ~[6]: "^seed[reference] — design the `ConceptReference` data topology for Spw ontologies"
- ~[7]: "vocab[reference] — type the `Definition`, `Sigil`, and `Valence` reference nodes"
- ~[8]: "&[platform] — build the `ConceptLookupService` to query the reference topology"
- ~[9]: "&[ui/elements] — implement the `ConceptHoverCard` for inline Spw documentation"
- ~[10]: "&[editor] — wire editor tooltips to the `ConceptLookupService`"
- ~[11]: "&[ui/command] — integrate concept lookup directly into the Command Palette search"
- ~[12]: "&[editor] — scaffold the `ASTObjectSelector` for semantic code selection"
- ~[13]: "vocab[editor] — define `SelectionBoundary` and `GeometricTarget` types"
- ~[14]: "&[editor] — implement structural expansion (select parent/child/sibling node)"
- ~[15]: "&[ui/tools] — scaffold the `ObjectInspector` panel for selected AST nodes"
- ~[16]: "&[ui/tools] — implement `ValenceManipulator` UI (dialing boon/bane on nodes)"
- ~[17]: "&[platform] — wire `ValenceManipulator` to emit AST transformation intents"
- ~[18]: "&[ui/tools] — implement `StrataShifter` UI (moving objects between semantic layers)"
- ~[19]: "&[platform] — wire `StrataShifter` to emit structural modification intents"
- ~[20]: "&[ui/command] — map object manipulation intents back into the globally accessible `CommandBus`"
- ~[21]: "&[core] — implement the AST transformation engine listening to the `CommandBus`"
- ~[22]: "![core] — write integration tests for visual-to-AST command flow"
- ~[23]: "&[ui/elements] — polish the animations and transitions for the Command Palette opening/closing"
- ~[24]: "&[ui/elements] — polish the visual feedback mapping (color flashes) when objects are manipulated"
- ~[25]: ".[docs] — write the `Command Experience` and `Object Manipulation` user guides"
- ~[26]: ".[docs] — update the Spw linguistic architectural diagrams covering the new command flow"
+ # ~[1]: DONE — disposition recorded; see ^["done"] ~#resolved(disposition)
+ # ~[2]: DROPPED — manipulation commands now live as commits 7 and 8 in vscode-authoring-probe-loop
+}
+
+^["done"]{
+ ~#resolved(disposition): "Archive, or re-home the palette, concept lookup and AST manipulation intents in the vscode-* plans? — re-homed by the user decision of 2026-10-12; evidence: the extension already contributes about 20 spw.* commands and a concepts tree, and src/core and src/ui do not exist"
+ ~#shipped: [
+  "palette routing: each command names its surface (palette, lens, hover, atlas, CLI) -> vscode-authoring-probe-loop ^\"rehomed_intents\" and ?[command_budget]",
+  "concept lookup gap check -> vscode-authoring-probe-loop ?[concept_lookup_gap] and commit 7",
+  "previewable semantic-edit manipulation commands -> vscode-authoring-probe-loop ?[manipulation_commands] and commit 8",
+  "intent/target/preview payload and the no-direct-mutation guard -> vscode-editor-contract ?[command_intent_shape]",
+ ]
+ ~#dropped: ["CommandBus and command-intents models (src/core)", "command-palette and concept-reference elements (src/ui); VS Code provides the palette", "object-inspector and visual AST manipulation (speculative, no preview or undo story)", "the original 26-commit marathon", "ConceptLookupService; the question the wonder asked is carried by ?[concept_lookup_gap]"]
 }
 
 ^["cache"]{
- ~#status: "planning"
+ ~#status: "done"
+ ~#base_ref: "main@551bb419"
  ~#files_hot: ""
- ~#next_commit: "1"
+ ~#next_commit: ""
  ~#open_count: "0"
- ~#last_stream: "2026-02-20 03:17"
+ ~#last_stream: "2026-10-12 14:53"
  ~#taste_debt: ""
 }
 
-#>wonder_agents_plans_commandexperiencetools_wip_1
-?["How does intent teach stream — command-experience-tools/wip?"]{
-  #:depth #!educational // lens: living system
-  $^["intent"] => $^["stream"] // trace the edge
-  &[@biome, @spw] // confluence of references
-  !probe{ "draw the relationship: is it containment, reference, or emergent? does reversing the direction change meaning?" }
-  $%[plan.commit_count, plan.phase_progress]
-}
-
-#>wonder_agents_plans_commandexperiencetools_wip_2
-?["What is the curation density of stream (command-experience-tools/wip)?"]{
-  #:depth #!experiential // lens: curated collection
-  $^["intent"]@biome => %[collection.measure]
-  ~<.agents/plans/command-experience-tools/wip.spw> // introspect
-  !probe{ "measure: how many distinct concepts does this frame bind? what is the ratio of structural operators to content — and what does that density reveal?" }
-  $%[plan.commit_count, plan.phase_progress]
+#>wonder_command_experience_tools_1
+?["Does the concepts tree already do the concept lookup this plan wanted a ConceptLookupService for?"]{
+ ~#answer_shape: [#covered_lookups, #uncovered_lookups]
+ !probe{ "list the node kinds in extensions/vscode-spw/src/views/concepts-tree.ts and tick off Definition, Sigil, and Valence from the planned reference nodes; any kind with no tree node or hover is the real gap." }
+ $%[plan.commit_count, plan.phase_progress]
 }

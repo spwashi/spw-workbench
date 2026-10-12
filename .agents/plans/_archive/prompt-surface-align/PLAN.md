@@ -14,8 +14,8 @@ The desired end state is that the prompt-pack files parse cleanly, stop raising 
 ## Files
 
 ```text
-[MOD] .agents/plans/prompt-surface-align/PLAN.md
-[MOD] .agents/plans/prompt-surface-align/wip.spw
+[MOD] .agents/plans/_archive/prompt-surface-align/PLAN.md
+[MOD] .agents/plans/_archive/prompt-surface-align/wip.spw
 [MOD] packages/spw-seed/src/lexer/profiles.ts
 [MOD] src/seed/lexer/profiles.ts
 [MOD] src/seed/__tests__/parser.test.ts
@@ -37,11 +37,11 @@ The JSON TextMate grammars are large and duplicated across VS Code and IntelliJ,
 
 ## Commits
 
-1. `.[prompt-surface] — plan parser and editor alignment for prompt packs`
-2. `&[seed] — eliminate prompt-pack lexer errors in parser surface`
-3. `&[lsp] — align annotation and completion support with prompt headers`
-4. `&[plugins] — teach VS Code and IntelliJ prompt-surface syntax`
-5. `![prompt-surface] — lock prompt parsing and plugin anchor behavior with tests`
+1. `.[prompt-surface] — plan parser and editor alignment for prompt packs` (landed `73775143`)
+2. `&[seed] — eliminate prompt-pack lexer errors in parser surface` (landed `7f5fb324`)
+3. `&[lsp] — align annotation and completion support with prompt headers` (landed `7f5fb324`)
+4. `&[plugins] — teach VS Code and IntelliJ prompt-surface syntax` (landed `7f5fb324`)
+5. `![prompt-surface] — lock prompt parsing and plugin anchor behavior with tests` (landed `7f5fb324`)
 
 Fuzz strategy:
 - Explore loop: `fuzz:explore --target=prompt-surface`

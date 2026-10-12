@@ -24,9 +24,9 @@ The `spw-workbench` uses an instrumentation-first philosophy where design decisi
 
 ## Commits
 
-1. `.[runtime] — trace RegisterBank logic to stability and timing axes`
-2. `.[runtime] — trace Substrate and stages to disclosure, noise, and resolution axes`
-3. `![infra] — enhance marker audit to recognize @spw:axis traces`
+1. landed in 82da41d4 — `.[runtime] — trace RegisterBank logic to stability and timing axes`
+2. landed in 82da41d4 — `.[runtime] — trace Substrate and stages to disclosure, noise, and resolution axes` (the markers use layer, representation and quality keys; see the open question axis_vocabulary in wip.spw)
+3. `![audit] — spw-marker-audit lists the six axes with marker counts and flags unknown axis keys` (the scan-roots half landed in 1f17c86e)
 
 ## Agentic Hygiene
 

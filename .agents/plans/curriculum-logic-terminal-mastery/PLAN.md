@@ -32,7 +32,7 @@ Unify the previous paradigms. Designing a CLI that leverages TTY interactivity, 
 
 ## Agentic Hygiene
 
-- **Rebase target**: `main@3b1747c4` (updated 2026-03-27)
+- **Rebase target**: `main@551bb419` (updated 2026-10-12)
 - **Rebase cadence**: rebase before commit 1 and again before merge
 - **Hygiene split**: isolate unrelated out-of-scope drift into `feature/curriculum-logic-terminal-mastery-agentic-hygiene` before implementation commits
 
@@ -40,9 +40,9 @@ Unify the previous paradigms. Designing a CLI that leverages TTY interactivity, 
 
 Predicted file scaffolding:
 ```
-[NEW] .agents/skills/spw-logic-terminal-lab/labs/01-tty-ansi-buffers.md
+[NEW] docs/learn/labs/logic-terminal/01-tty-ansi-buffers.md
 ... (Files 02 through 25)
-[NEW] .agents/skills/spw-logic-terminal-lab/labs/26-terminal-mastery-synthesis.md
+[NEW] docs/learn/labs/logic-terminal/26-terminal-mastery-synthesis.md
 [MOD] .spw/conventions/selection.spw
 [MOD] .spw/tooling/vscode-spw.spw
 [MOD] packages/spw-seed/src/query/selector-expr.ts
@@ -53,32 +53,15 @@ Predicted file scaffolding:
 
 Preflight: `&[hygiene] — rebase onto origin/main and isolate unrelated drift before implementation commits`
 
-1. `^seed[curriculum] — scaffold Lab 1: TTY Buffers and ANSI Escape Codes`
-2. `^seed[curriculum] — scaffold Lab 2: Standard Streams and POSIX Pipelines`
-3. `^seed[curriculum] — scaffold Lab 3: The Architecture of REPL Evaluation Loops`
-4. `^seed[curriculum] — scaffold Lab 4: Terminal UI Constraints (Curses/Blessed mechanics)`
-5. `![curriculum] — establish Spw Reflection: The Terminal as a continuous spatial compiler`
-6. `^seed[curriculum] — scaffold Lab 5: Prolog Horn Clauses and Declarative Facts`
-7. `^seed[curriculum] — scaffold Lab 6: Unification Algorithms and Substitution`
-8. `^seed[curriculum] — scaffold Lab 7: Resolution, Backtracking, and the Cut Operator (!)`
-9. `^seed[curriculum] — scaffold Lab 8: Homoiconicity and Logic as Data`
-10. `![curriculum] — establish Spw Reflection: Unification vs Semantic Pattern Matching`
-11. `^seed[curriculum] — scaffold Lab 9: Haskell Absolute Purity and the IO Monad`
-12. `^seed[curriculum] — scaffold Lab 10: Lazy Evaluation and Infinite Thunks`
-13. `^seed[curriculum] — scaffold Lab 11: Algebraic Data Types (Sum and Product Types)`
-14. `^seed[curriculum] — scaffold Lab 12: Typeclasses and Parametric Polymorphism`
-15. `![curriculum] — establish Spw Reflection: Mapping Purity to Spw Valences (Bones vs Boons)`
-16. `^seed[curriculum] — scaffold Lab 13: Property Graph Models (Nodes, Edges, Properties)`
-17. `^seed[curriculum] — scaffold Lab 14: Cypher and GQL Pattern Matching Syntax`
-18. `^seed[curriculum] — scaffold Lab 15: Recursive Traversals and Transitive Closures`
-19. `^seed[curriculum] — scaffold Lab 16: Subgraph Projections and Isomorphisms`
-20. `![curriculum] — establish Spw Reflection: Mapping Graph Traversals to Semantic Resonance`
-21. `^seed[curriculum] — scaffold Lab 17: Synthesis: The Polyglot AST Interface`
-22. `^seed[curriculum] — scaffold Lab 18: Synthesis: Piped AST Streams in Bash`
-23. `^seed[curriculum] — scaffold Lab 19: Synthesis: Visualizing AST Graphs in raw TTY`
-24. `^seed[curriculum] — scaffold Lab 20: Synthesis: Designing the Conversational Prompt`
-25. `![curriculum] — establish Spw Reflection: The CLI as a Metacognitive Collaborator`
-26. `.[docs] — write the definitive curriculum guide for 'Logic Terminal Mastery'`
+1. `&[hygiene] — rebase onto main and isolate unrelated drift before lab commits`
+2. `^seed[curriculum] — scaffold spw-logic-terminal-lab with labs/01-terminal-tty.md (TTY lab plus terminal-as-compiler reflection)` (TTY buffers and ANSI escapes; standard streams and POSIX pipelines; REPL evaluation loops; curses and blessed UI constraints; terminal-as-continuous-spatial-compiler reflection)
+3. `^seed[curriculum] — scaffold labs/02-prolog-unification.md (Prolog lab plus pattern-matching reflection)` (Horn clauses and facts; unification and substitution; resolution, backtracking, cut; homoiconicity; unification-vs-semantic-pattern-matching reflection)
+4. `^seed[curriculum] — scaffold labs/03-haskell-purity.md (Haskell lab plus valence reflection)` (purity and the IO monad; lazy evaluation and thunks; algebraic data types; typeclasses and parametric polymorphism; purity-to-valence (bone vs boon) reflection)
+5. `^seed[curriculum] — scaffold labs/04-graph-gql.md (property-graph lab plus resonance reflection)` (property graph model; Cypher and GQL pattern syntax; recursive traversal and transitive closure; subgraph projection and isomorphism; traversal-to-semantic-resonance reflection)
+6. `^seed[curriculum] — scaffold labs/05-cli-synthesis.md (synthesis lab against the spw CLI)` (polyglot AST interface; piped AST streams in bash; AST graphs in raw TTY; conversational prompt design; CLI-as-metacognitive-collaborator reflection)
+7. `.[docs] — write the Rosetta-stone .spw artifact translating one problem into Prolog, Haskell, GQL, and Spw`
+
+Collapsed from 26 lesson-stubs (20 labs plus 5 reflections plus a guide) to the real work units: one file per phase. No docs/learn/labs/logic-terminal directory exists yet; the lesson list now lives in ~#covers.
 
 ## Dependencies
 
@@ -114,3 +97,7 @@ Preflight: `&[hygiene] — rebase onto origin/main and isolate unrelated drift b
 ## Spw Artifact
 
 A formal `.spw` document that acts as a Rosette Stone, translating a single conceptual problem into Prolog facts, Haskell types, GQL queries, and pure Spw syntax—executed via the CLI.
+
+## Reheated 2026-10-12
+
+The live commit list, shared lab format, verification tiers and open questions are in wip.spw (the commits and lab_format frames); the shared format is owned by curriculum-html-css-mastery. Lab home: docs/learn/labs/logic-terminal/. The commit list above predates the reheat where the two differ.

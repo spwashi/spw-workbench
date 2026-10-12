@@ -6,11 +6,11 @@
 @dialect:Spw.p
 
 !["card"]{
- phase: #landed
- gist: "Sense verbs compose over named IRs and one progressive product protocol, not accreted names."
- touches: [~"packages/spw-seed/src/ir", ~"packages/spw-cli/src/inspect-source.ts", ~"packages/spw-cli/src/envelope.ts", ~"packages/spw-cli/src/commands.ts"]
+ phase: #active
+ gist: "Census, graph and query accept one shared glob selection; verb names and aliases already landed."
+ touches: [~"packages/spw-seed/src/ir", ~"packages/spw-cli/src/fs-walk.ts", ~"packages/spw-cli/src/corpus-scan.ts", ~"packages/spw-cli/src/commands.ts"]
  entry: ~"./cli-sense-reorientation.spw"
- next: "Adopt spw.progressive-product/1 in one non-parser producer and review compatibility before any verb renames."
+ next: "Write the failing fixture test: a quoted glob and its directory form must select the same surfaces, then add the shared resolver in fs-walk.ts."
 }
 
 ^["edges"]{
@@ -93,6 +93,11 @@
  >>[2026-08-24 12:14] observe — deb9e226 supplies the first representative producer: spw.progressive-product/1 plus source.tokens/1, source.structure/1, and source.trace/1 with live NDJSON stage emission.
  >>[2026-08-24 12:15] revise — the next protocol task is adoption by one non-parser producer and compatibility review, not inventing a second envelope or beginning the verb rename sequence.
  >>[2026-08-24 12:16] rebase — refresh the plan basis from ancestral main@66ed9a2 to current main@c46558f while preserving the existing CLI direction.
+ >>[2026-10-12 14:26] observe — resolved by code: census, graph, measure, stack are canonical in commands.ts with invent, map, mass/thrift, and surface/profile as aliases, so census_vs_roster, graph_rename, surface_vs_stack, profile_compat, surface_p0 are answered; inv, geom, topo aliases exist (ultra_short). Still open: spw census 'prompts/**' reports 0 files while spw census prompts reports 95, so SelectionIR globs have not landed; no stream or crystallize verb exists.
+ >>[2026-10-12 14:27] revise — commits 1-2 moved to done (aliases in commands.ts); commit 3 kept with a concrete glob repro; commit 4 swapped from surface composite to the progressive-product adoption named in the card; open questions cut from 9 to 4 and sharpened. Phase is landed so no wonders added.
+ >>[2026-10-12 14:52] revise — Phase landed was wrong for the glob feature: repro verified, census graph and query on a quoted glob all report 0 files while the directory form reports 95. Rescoped to active with one shared resolver in fs-walk.ts, fixtures first, then a probe. Verb names and aliases stay landed. Capabilities ownership left untouched.
+ >>[2026-10-12 14:55] decide — User decided 2026-10-12 to start the shared glob resolver with the first three private walkers: census, graph and query. Other walkers follow after the resolver is proven. Glob engine still open: Node 23 here has fs.glob but the engines floor is 20.19 and 22.12 only gets an experimental fs.glob.
+ >>[2026-10-12 14:57] decide — User decided 2026-10-12 to back the shared glob resolver with picomatch. Declared as a dependency of packages/spw-cli at ^4.0.7; it was only present transitively through vitest. No Node upgrade plan yet; the engines floor stays 20.19.
 }
 
 ^["examples"]{
@@ -106,33 +111,50 @@
 }
 
 ^["open"]{
- ?[census_vs_roster]: "census (population) vs roster (list) - PLAN rec census; reopen if roster preferred"
- ?[surface_vs_stack]: "surface composite primary; stack thin - confirm"
- ?[graph_rename]: "dual-primary map+graph one release then prefer graph?"
- ?[measure_fold]: "when to fold authority/taste/analyze under measure only?"
- ?[crystallize_cli]: "ship crystallize as top-level or spw stream crystallize?"
- ?[ultra_short]: "ship any of inv/geom/topo only, or also g for graph?"
- ?[profile_compat]: "profile -> surface stack vs profile -> full surface?"
- ?[surface_p0]: "implement surface as HotSession.inspect wrapper first?"
- ?[envelope_v2]: "when require ir+cache blocks in every --json?"
+ ?[selection_contract]: "What does SelectionIR carry once built: uris only, or uris plus contentHashes and the originating globs, and may --json envelopes expose the glob that produced a selection?"
+ ?[quoting]: "An unquoted prompts/** is expanded by the shell before the CLI sees it; should the CLI detect the already-expanded list and treat both forms identically, as the never: unquoted_star_cli entry already assumes?"
+ ?[surface_composite]: "stack already answers to surface and profile; should surface become the identity+form+ego-graph composite PLAN.md describes, or stay a pure alias? Decides whether a composite commit exists."
+ ?[measure_fold]: "Do authority, taste, and density (alias analyze) fold under spw measure, or stay top-level? Decides which aliases the next rename commit adds."
+ ?[crystallize_cli]: "Ship crystallize as top-level spw crystallize or as spw stream crystallize? No stream verb exists in commands.ts yet; this fixes the name when the first stream producer lands."
+ ?[envelope_v2]: "At what point must every --json envelope carry ir and cache blocks? Decides the schemaVersion bump in envelope.ts."
 }
 
 ^["commits"]{
- ~[1]: ".[plans]: cli-sense-reorientation IR + verb map"
- ~[2]: "vocab[cli] - census/measure/surface aliases"
- ~[3]: "#[cli] - SelectionIR globs"
- ~[4]: "&[cli] - surface composite"
+ # ~[1]..~[2] landed — see ^["done"]
+ # Rescoped 2026-10-12: ~[3] split into fixtures first, then the resolver, then verb wiring; the progressive-product adoption keeps its slot after the glob slice.
+ ~[3]: "![cli] — fixture tree and failing tests: a quoted glob, its directory form, and a no-match glob select the expected surfaces for census, graph and query"
+ ~[4]: "#[cli] — one resolveSelection(globs, roots) beside collectSpwFiles in fs-walk.ts returning SelectionIR uris; census, graph and query call it"
+ ~[5]: "&[cli] — measure and the remaining private collectSpwFiles copies adopt resolveSelection (scope decided by ?[walker_fork])"
+ ~[6]: "&[cli] — adopt spw.progressive-product/1 in one non-parser producer (census) with a compatibility test against the inspect source stages"
+ ~[7]: ".[docs] — l/x dense serialization + * crystallize"
+}
+
+^["validation"]{
+ !probe{ "before commit 3: run spw census 'prompts/**', spw graph 'prompts/**' and spw query --from 'prompts/**' --skim against prompts as a directory; the glob forms must report the directory counts, and a glob that matches nothing must say so instead of printing a zero census." }
 }
 
 ^["cache"]{
- ~#status: "planning"
- ~#base_ref: "main@c46558ffbb29a10abb1fee11dbec8aa522cbc8b3"
- ~#rebased_at: "2026-08-24"
- ~#files_hot: ".agents/plans/cli-sense-reorientation/PLAN.md, .agents/plans/cli-sense-reorientation/wip.spw, packages/spw-seed/src/ir/progressive.ts, packages/spw-cli/src/inspect-source.ts, packages/spw-cli/src/envelope.ts"
- ~#next_commit: "progressive_protocol_second_producer"
- ~#open_count: "9"
- ~#last_stream: "2026-08-24 12:16"
+ ~#status: "active"
+ ~#base_ref: "main@551bb419"
+ ~#rebased_at: "2026-10-12"
+ ~#files_hot: ".agents/plans/cli-sense-reorientation/PLAN.md, .agents/plans/cli-sense-reorientation/wip.spw, packages/spw-cli/src/fs-walk.ts, packages/spw-seed/src/ir/slices.ts, packages/spw-cli/src/corpus-scan.ts"
+ ~#next_commit: "3"
+ ~#open_count: "6"
+ ~#last_stream: "2026-10-12 14:57"
  ~#taste_debt: "One parser-backed producer now proves the protocol, but a non-parser producer and compatibility review are still needed before the wider IR catalog or CLI rename sequence can rely on it."
 }
 
-^["done"]{}
+^["done"]{
+ ~#resolved(glob_engine): "Which matcher backs the shared resolver: node fs.glob (absent on the engines floor ^20.19), a declared picomatch dependency (it sits in node_modules today but no package.json declares it), or a small in-house ** and * matcher limited to what prompts/** and **/*.spw need? — picomatch, declared as a dependency of packages/spw-cli (^4.0.7; it was only present transitively through vitest); evidence: user decision 2026-10-12, declared in packages/spw-cli/package.json, cli tests 265 of 265 pass"
+ ~#resolved(walker_fork): "fs-walk.ts has the shared collectSpwFiles, yet geometry, format, authority, mass, pulse and ls/scan each keep a private copy; does the resolver replace all of them in one commit, or only the sense verbs (census, graph, query) first? — first the three sense verbs (census, graph, query); the other private walkers follow once the resolver is proven; evidence: user decision 2026-10-12"
+ ~#shipped: [
+  "08e2bc1c &[canon-rewrite-v2] — land tip capability on upstream; phase 0 field clocks (~[1] plan filed and ~[2] census/measure/stack aliases both first appear here)",
+ ]
+ ~#observed(glob_gap): "2026-10-12 repro, run by the rescoping agent: spw census 'prompts/**' reported files 0, spw graph 'prompts/**' files 0, spw query --from 'prompts/**' scanned=0, while spw census prompts reported files 95 lines 9205; evidence: no glob handling in fs-walk.ts, and SelectionIR in packages/spw-seed/src/ir/slices.ts is a type only"
+ ~#resolved(census_vs_roster): "census (population) vs roster (list) — census is the canonical verb, invent/inventory/inv are aliases in commands.ts; evidence: stream 2026-10-12 14:26"
+ ~#resolved(graph_rename): "dual-primary map+graph one release then prefer graph? — graph is canonical and map/topo are aliases; evidence: stream 2026-10-12 14:26"
+ ~#resolved(surface_vs_stack): "surface composite primary; stack thin? — stack is the canonical command and surface/profile are its aliases; evidence: stream 2026-10-12 14:26"
+ ~#resolved(profile_compat): "profile -> surface stack vs profile -> full surface? — profile resolves to the stack command; evidence: stream 2026-10-12 14:26"
+ ~#resolved(surface_p0): "implement surface as HotSession.inspect wrapper first? — moot, surface shipped as an alias of stack; evidence: stream 2026-10-12 14:26"
+ ~#resolved(ultra_short): "ship any of inv/geom/topo only, or also g for graph? — inv, geom, topo aliases exist and no g alias; evidence: stream 2026-10-12 14:26"
+}

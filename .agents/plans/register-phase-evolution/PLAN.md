@@ -53,12 +53,12 @@ This is the language-design rung in the current ecology. Its real value is not j
 
 ## Commits
 
-1. `.[plans] — refresh plan artifacts after P0 runtime stabilization`
-2. `^seed[query] — add Spw-native selector expression grammar for operational/positional selectors`
-3. `vocab[query] — align selector/runtime phase terminology on canonical names`
-4. `&[spwq] — wire selector expressions and canonical phase predicates into CLI flows`
-5. `![query] — validate selector semantics against shipped runtime phase invariants`
-6. `.[docs] — align register/query docs and mark chemistry redesign as a follow-on`
+Landed or superseded: 1 (superseded; P0 landed in 181071ef), 2 (14fd2c5c selector expression grammar), and the runtime half of the old 3 (181071ef).
+
+3. `^seed[query] — selector phase predicate in selector-expr.ts, placed according to the open questions phase_home and phase_subject`
+4. `&[cli] — accept the phase predicate through selectors.ts and spw query`
+5. `![query] — selector tests pin canonical phase names and the alias behaviour`
+6. `.[docs] — add the five-phase glossary to docs/runtime/spw/register-bank.spw`
 
 ## Agentic Hygiene
 

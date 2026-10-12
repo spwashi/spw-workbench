@@ -16,7 +16,7 @@
 
 ^["edges"]{
  needs: [~"../lsp-custom-request-completions/wip.spw"]
- shares: [~"../vscode-authoring-probe-loop/wip.spw"]
+ shares: [~"../vscode-authoring-probe-loop/wip.spw", ~"../lukewarm-backlog/wip.spw"]
 }
 
 ^["roots"]{
@@ -132,10 +132,12 @@
  >>[2026-03-29 01:00] observe — vscode-lsp-integration archived. trialRunSpw() confirmed in HandlerDeps. SIGIL_SEMANTICS provides phase labels. SpwContext fields and EventBus for register.focused and register.phaseChanged already wired.
  >>[2026-03-29 01:01] decide — added Performance Considerations and Implementation Notes to PLAN.md: snapshots fetched on open/save not keystroke, 200ms timeout on trialRunSpw, stale badge after edits, phase trajectory lazy on expand, acoustic properties O(12²) negligible, resonance from telemetry payload not recomputed. Answered open ?[transport_shape]: file-scoped snapshot with lazy detail. Solo-ship shows 7 phase groups with values and write counts, placeholders for provenance and resonance.
  >>[2026-07-21 06:47] revise — runtime liminality bridge is an explicit S1 operation; explorer transport may expose liminality and a user-invoked promotion command, while clients must not infer a second liminality model
+ >>[2026-10-12 15:00] verify — spw/registerSnapshot is handled in stdio-server.ts and implemented in handlers/spw-probes.ts as heuristic register-like markers with a test, and extensions/vscode-spw/src/views holds only concepts-tree and workspace-tree, so no register tree exists yet; opened ?[heuristic_snapshot_enough]; routed from lukewarm-backlog ?[register_explorer_silence].
 }
 
 ^["open"]{
  ?[telemetry_depth]: "When runtime-telemetry-canon is available, how much of the substrate event stream should the snapshot transport send? Full events or just register-scoped summaries?"
+ ?[heuristic_snapshot_enough]: "Is the heuristic spw/registerSnapshot in spw-probes.ts (markers found in the document) honest enough to ship a tree on, or must a RegisterBank snapshot be earned first? Tracked at ~"../lukewarm-backlog/wip.spw" ?[register_explorer_silence]."
 }
 
 ^["resolved"]{
@@ -160,8 +162,8 @@
  ~#hygiene_split: "required-before-implementation; the current tree mixes form semantics, runtime bridge, documentation, and editor-plan changes, while extension.ts, context.ts, package.json, and stdio-server.ts remain shared hot files"
  ~#files_hot: ".agents/plans/vscode-register-explorer/PLAN.md, .agents/plans/vscode-register-explorer/wip.spw, .agents/plans/vscode-register-explorer/vscode-register-explorer.spw, .agents/plans/vscode-register-explorer/references/, extensions/vscode-spw/src/extension.ts, extensions/vscode-spw/src/context.ts, extensions/vscode-spw/package.json, packages/spw-lsp/src/stdio-server.ts"
  ~#next_commit: "1"
- ~#open_count: "1"
- ~#last_stream: "2026-07-21 06:47"
+ ~#open_count: "2"
+ ~#last_stream: "2026-10-12 15:00"
  ~#taste_debt: "Do not let the first explorer slice become a dump of every runtime field. Atlas context is an enrichment, not a prerequisite. Pipeline phase and spirit-sequence phase are orthogonal; show both when available, default to spirit-sequence for solo-ship."
 }
 

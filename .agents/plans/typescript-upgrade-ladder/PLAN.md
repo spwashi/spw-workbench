@@ -70,15 +70,17 @@ Each rung is a mergeable commit series. Do not skip A→C.
 
 ## Commits
 
-1. `.[plans] — stage typescript-upgrade-ladder planning artifacts`
-2. `#[tsconfig] — remove baseUrl; explicit types; align extension TS pin (rung A)`
+1. LANDED in a333db8d: `.[plans] — stage typescript-upgrade-ladder planning artifacts`
+2. `#[tsconfig] — remove baseUrl from tsconfig.base.json (rung A; probed green on 5.9.3)`
+10. `#[tsconfig] — set types to node in the root config (rung A; split from 2)`
+11. `#[tsconfig] — align extensions/vscode-spw typescript to the root pin and rewrite its own baseUrl paths (rung A; split from 2)`
 3. `![types] — verify 5.9 prep: build, fuzz:types, test:run`
 4. `#[toolchain] — adopt TypeScript 6.0 and clear bridge deprecations (rung B)`
 5. `![types] — verify TypeScript 6 green across packages and scripts`
 6. `#[toolchain] — dual-install TypeScript 7 native + typescript6 API (rung C)`
 7. `![types] — verify native tsc typecheck and eslint still resolve`
 8. `.[docs] — document version ladder, dual-install, and default policy`
-9. `#[toolchain]? — promote TypeScript 7 as primary default (rung D, optional)`
+9. `#[toolchain] — promote TypeScript 7 as primary default (rung D, optional)`
 
 Fuzz strategy:
 

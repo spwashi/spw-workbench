@@ -80,12 +80,14 @@ Dialects are **product surfaces** (ethos): b literacy · p memory · q/l address
 [NEW] .agents/plans/syntax-profile-stack/wip.spw
 ```
 
-## Commits (suggested)
+## Commits
 
-1. `vocab[seed] — dialect detect + surface profile stack`
-2. `![seed] — parse autoDialect + tests`
-3. `.[theory] — syntax-profile-stack + dialect-spec examples`
-4. `#[review] — expand syntax-review profiles and patterns`
+1. `vocab[seed] — dialect detect + surface profile stack` (landed, 08e2bc1c)
+2. `![seed] — parse autoDialect + tests` (landed, 08e2bc1c)
+3. `.[theory] — syntax-profile-stack + dialect-spec examples` (landed, 08e2bc1c)
+4. `#[review] — expand syntax-review profiles and patterns` (landed, 08e2bc1c)
+5. `^seed[products] — newlineAsSpace as a source-mapped gap projection`
+6. `&[cli] — mount capabilities and product provenance report resolved dialect and gap capability`
 
 ## Agentic Hygiene
 

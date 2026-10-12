@@ -1014,17 +1014,12 @@ Actors: human · static CI · LLM. Workbench as harness example + template (form
 
 ## Commits (planning → later implementation)
 
-1. `.[plans] — stage spw-garden-geometry doctrine and artifact`  
-2. `#[spw-lsp] — true deltaEnter in DocumentLineContext + tests`  
-3. `&[spw-lsp] — anti-echo hover builder (delta-first, whenInlays)`  
-4. `#[spw-lsp] — brace pair table + symmetry metrics (E0/E1)`  
-5. `#[spw-lsp] — pulse profiles + spw/pulseRun (scoped beats)`  
-6. `^seed[spw-lsp] =request[lens] — lensPreview then lensApplyTick`  
-7. `^seed[spw-lsp] =request[garden] — gardenStats/fileFeatures + grades`  
-8. `![garden] — light fixtures: delta, anti-echo, pulse isolation, lens preview`  
-9. `&[vscode] — hover/pulse/lens commands and settings`  
-10. `&[neovim] — portable wrappers for same requests`  
-11. `![garden] — mounted-consumer + E2 noodle session notes`
+1. landed (08e2bc1c, da5189bb) — `.[plans] — stage spw-garden-geometry doctrine and artifact`  
+2. `&[lsp] — true deltaEnter (local minus parent ambient) in DocumentLineContext, with fixtures`  
+3. `&[lsp] — anti-echo hover builder, delta-first (inlays already landed in 2ddc73c9)`  
+4. `&[lsp] — brace pair table and symmetry metrics (E0/E1)`  
+
+Deferred until the custom-request registry exists and profile_syntax and stats_home are answered: pulse profiles with `spw/pulseRun`, `lensPreview` then `lensApplyTick`, `gardenStats`/`fileFeatures`, the VS Code and Neovim wrappers, and the mounted-consumer notes. The old commit 8 (fixtures) rides with commits 2 to 4.
 
 ## Agentic Hygiene
 

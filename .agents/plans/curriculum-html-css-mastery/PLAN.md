@@ -10,7 +10,7 @@ This is the page-design rung in the current ecology. The labs should not just ac
 
 ## Scope
 
-- **In scope**: Designing a 5-part curriculum of markdown/spw artifacts and companion HTML/CSS sandbox files (`.agents/skills/spw-css-dom-lab/labs/`). Each lab will require reading specific W3C/MDN specs, writing raw HTML/CSS, writing a Spw reflection, extracting at least one reusable QA or stewardship heuristic for future public surfaces, naming at least one research question or experiment that could feed a live site or exhibit, reviewing at least one current repo pattern or surface alongside the external spec, and preserving at least one reusable snippet or selector idiom for future component/page/service work.
+- **In scope**: Designing a 5-part curriculum of markdown/spw artifacts and companion HTML/CSS sandbox files (`docs/learn/labs/html-css/`). Each lab will require reading specific W3C/MDN specs, writing raw HTML/CSS, writing a Spw reflection, extracting at least one reusable QA or stewardship heuristic for future public surfaces, naming at least one research question or experiment that could feed a live site or exhibit, reviewing at least one current repo pattern or surface alongside the external spec, and preserving at least one reusable snippet or selector idiom for future component/page/service work.
 - **Out of scope**: Building production features or acting as a hidden release gate. These are rigorous exercises for physiological skill building, conceptual mapping, and better future discussion.
 
 ## The Curriculum Sequence
@@ -42,7 +42,7 @@ This is the page-design rung in the current ecology. The labs should not just ac
 
 ## Agentic Hygiene
 
-- **Rebase target**: `main@3b1747c4` (updated 2026-03-27)
+- **Rebase target**: `main@551bb419` (updated 2026-10-12)
 - **Rebase cadence**: rebase before commit 1 and again before merge
 - **Hygiene split**: isolate unrelated out-of-scope drift into `feature/curriculum-html-css-mastery-agentic-hygiene` before implementation commits
 
@@ -50,11 +50,11 @@ This is the page-design rung in the current ecology. The labs should not just ac
 
 Predicted file scaffolding:
 ```
-[NEW] .agents/skills/spw-css-dom-lab/labs/01-semantics-ontology.md
-[NEW] .agents/skills/spw-css-dom-lab/labs/02-topology-containment.md
-[NEW] .agents/skills/spw-css-dom-lab/labs/03-calculus-valence.md
-[NEW] .agents/skills/spw-css-dom-lab/labs/04-query-introspection.md
-[NEW] .agents/skills/spw-css-dom-lab/labs/05-temporal-navigation.md
+[NEW] docs/learn/labs/html-css/01-semantics-ontology.md
+[NEW] docs/learn/labs/html-css/02-topology-containment.md
+[NEW] docs/learn/labs/html-css/03-calculus-valence.md
+[NEW] docs/learn/labs/html-css/04-query-introspection.md
+[NEW] docs/learn/labs/html-css/05-temporal-navigation.md
 [MOD] docs/design/md/dom-css-testing-harness.md
 [MOD] docs/design/spw/theme-progression.spw
 [MOD] .spw/workspace.spw
@@ -66,75 +66,14 @@ Preflight: `&[hygiene] — rebase onto origin/main and isolate unrelated drift b
 
 ```spw
 ^["commits"]{
-  # --- Phase 1: DOM Semantics vs. Spw Ontologies ---
-  ~[1..10]: {
-    ~[1]:  "^seed[curriculum] — scaffold Lab 1.01" ~#focus: "DOM Semantics (html and body roots)"
-    ~[2]:  "^seed[curriculum] — scaffold Lab 1.02" ~#focus: "DOM Semantics (Document metadata head, meta, link)"
-    ~[3]:  "^seed[curriculum] — scaffold Lab 1.03" ~#focus: "DOM Semantics (Sectioning roots article, nav, etc.)"
-    ~[4]:  "^seed[curriculum] — scaffold Lab 1.04" ~#focus: "DOM Semantics (Text content main, div, p, lists)"
-    ~[5]:  "^seed[curriculum] — scaffold Lab 1.05" ~#focus: "DOM Semantics (Inline text a, em, strong)"
-    ~[6]:  "^seed[curriculum] — scaffold Lab 1.06" ~#focus: "DOM Semantics (Advanced forms fieldset, input)"
-    ~[7]:  "^seed[curriculum] — scaffold Lab 1.07" ~#focus: "DOM Semantics (Interactive details, dialog)"
-    ~[8]:  "^seed[curriculum] — scaffold Lab 1.08" ~#focus: "DOM Semantics (Tabular data table, tbody)"
-    ~[9]:  "^seed[curriculum] — scaffold Lab 1.09" ~#focus: "DOM Semantics (Embedded content picture, video)"
-    ~[10]: "^seed[curriculum] — scaffold Lab 1.10" ~#focus: "Formulating Spw Ontologies from HTML5 semantics"
-  }
-
-  # --- Phase 2: CSS Topology vs. Spw Containment ---
-  ~[11..20]: {
-    ~[11]: "^seed[curriculum] — scaffold Lab 2.01" ~#focus: "CSS Topology (Normal flow & block formatting)"
-    ~[12]: "^seed[curriculum] — scaffold Lab 2.02" ~#focus: "CSS Topology (Flexbox 1D alignment)"
-    ~[13]: "^seed[curriculum] — scaffold Lab 2.03" ~#focus: "CSS Topology (Grid 2D coordinates)"
-    ~[14]: "^seed[curriculum] — scaffold Lab 2.04" ~#focus: "CSS Topology (display: contents & flattening)"
-    ~[15]: "^seed[curriculum] — scaffold Lab 2.05" ~#focus: "CSS Topology (Subgrid metric inheritance)"
-    ~[16]: "^seed[curriculum] — scaffold Lab 2.06" ~#focus: "CSS Topology (Absolute/Fixed strata)"
-    ~[17]: "^seed[curriculum] — scaffold Lab 2.07" ~#focus: "CSS Topology (Sticky positioning constraints)"
-    ~[18]: "^seed[curriculum] — scaffold Lab 2.08" ~#focus: "CSS Topology (Z-index stacking contexts)"
-    ~[19]: "^seed[curriculum] — scaffold Lab 2.09" ~#focus: "CSS Topology (Container Queries & intrinsic sizing)"
-    ~[20]: "^seed[curriculum] — scaffold Lab 2.10" ~#focus: "Formulating Spw Containment/Strata from CSS Topology"
-  }
-
-  # --- Phase 3: CSS Calculus vs. Spw Valence ---
-  ~[21..30]: {
-    ~[21]: "^seed[curriculum] — scaffold Lab 3.01" ~#focus: "CSS Calculus (Custom Properties --var)"
-    ~[22]: "^seed[curriculum] — scaffold Lab 3.02" ~#focus: "CSS Calculus (calc() responsive algebra)"
-    ~[23]: "^seed[curriculum] — scaffold Lab 3.03" ~#focus: "CSS Calculus (min(), max(), clamp())"
-    ~[24]: "^seed[curriculum] — scaffold Lab 3.04" ~#focus: "CSS Calculus (Trigonometry sin, cos, tan)"
-    ~[25]: "^seed[curriculum] — scaffold Lab 3.05" ~#focus: "CSS Calculus (Exponential & logarithmic)"
-    ~[26]: "^seed[curriculum] — scaffold Lab 3.06" ~#focus: "CSS Calculus (Color functions oklch, color-mix)"
-    ~[27]: "^seed[curriculum] — scaffold Lab 3.07" ~#focus: "CSS Calculus (Relative colors & palettes)"
-    ~[28]: "^seed[curriculum] — scaffold Lab 3.08" ~#focus: "CSS Calculus (attr() mapping DOM to CSS types)"
-    ~[29]: "^seed[curriculum] — scaffold Lab 3.09" ~#focus: "CSS Calculus (Environment variables env())"
-    ~[30]: "^seed[curriculum] — scaffold Lab 3.10" ~#focus: "Formulating Spw Valence via CSS Math Interpolation"
-  }
-
-  # --- Phase 4: CSS Queries vs. Spw Introspection ---
-  ~[31..40]: {
-    ~[31]: "^seed[curriculum] — scaffold Lab 4.01" ~#focus: "CSS Queries (The Cascade & @layer)"
-    ~[32]: "^seed[curriculum] — scaffold Lab 4.02" ~#focus: "CSS Queries (Attribute substring matching)"
-    ~[33]: "^seed[curriculum] — scaffold Lab 4.03" ~#focus: "CSS Queries (Structural pseudo-classes)"
-    ~[34]: "^seed[curriculum] — scaffold Lab 4.04" ~#focus: "CSS Queries (UI state pseudo-classes)"
-    ~[35]: "^seed[curriculum] — scaffold Lab 4.05" ~#focus: "CSS Queries (Relational :has() parent selection)"
-    ~[36]: "^seed[curriculum] — scaffold Lab 4.06" ~#focus: "CSS Queries (Logical combinators :is, :where, :not)"
-    ~[37]: "^seed[curriculum] — scaffold Lab 4.07" ~#focus: "CSS Queries (Media queries @media context)"
-    ~[38]: "^seed[curriculum] — scaffold Lab 4.08" ~#focus: "CSS Queries (Feature queries @supports)"
-    ~[39]: "^seed[curriculum] — scaffold Lab 4.09" ~#focus: "CSS Queries (Scope encapsulation @scope)"
-    ~[40]: "^seed[curriculum] — scaffold Lab 4.10" ~#focus: "Formulating Spw Introspection via CSS Selectors"
-  }
-
-  # --- Phase 5: CSS Time vs. Spw Navigation ---
-  ~[41..50]: {
-    ~[41]: "^seed[curriculum] — scaffold Lab 5.01" ~#focus: "CSS Time (Transitions, durations, delays)"
-    ~[42]: "^seed[curriculum] — scaffold Lab 5.02" ~#focus: "CSS Time (Cubic-bezier physics)"
-    ~[43]: "^seed[curriculum] — scaffold Lab 5.03" ~#focus: "CSS Time (Keyframe procedural loops)"
-    ~[44]: "^seed[curriculum] — scaffold Lab 5.04" ~#focus: "CSS Time (Animation additive blending)"
-    ~[45]: "^seed[curriculum] — scaffold Lab 5.05" ~#focus: "CSS Time (Scroll timelines scroll-timeline-name)"
-    ~[46]: "^seed[curriculum] — scaffold Lab 5.06" ~#focus: "CSS Time (View timelines for intersection)"
-    ~[47]: "^seed[curriculum] — scaffold Lab 5.07" ~#focus: "CSS Time (Scroll snapping alignments)"
-    ~[48]: "^seed[curriculum] — scaffold Lab 5.08" ~#focus: "CSS Time (View Transitions API morphing)"
-    ~[49]: "^seed[curriculum] — scaffold Lab 5.09" ~#focus: "CSS Time (State machines via :target & :checked)"
-    ~[50]: "^seed[curriculum] — scaffold Lab 5.10" ~#focus: "Formulating Spw Temporal Navigation via CSS Time"
-  }
+ # Collapsed from 50 lesson-stubs (one per lab lesson) to the real work units. No lab file exists yet; the lesson list now lives in ~#covers. Commit 1 is the hygiene preflight; labs are independent after it.
+ ~[1]: "&[hygiene] — rebase onto main and isolate unrelated drift before lab commits"
+ ~[2]: "^seed[curriculum] — scaffold labs/01-semantics-ontology.md (HTML/ARIA lab plus Spw reflection)" ~#covers: "html/body roots; head, meta, link; sectioning; text content; inline text; forms; details and dialog; tables; embedded media; ontology reflection"
+ ~[3]: "^seed[curriculum] — scaffold labs/02-topology-containment.md (layout lab plus containment reflection)" ~#covers: "normal flow and BFC; flexbox; grid; display:contents; subgrid; positioned strata; sticky; stacking contexts; container queries; strata reflection"
+ ~[4]: "^seed[curriculum] — scaffold labs/03-calculus-valence.md (values lab plus valence reflection)" ~#covers: "custom properties; calc; min, max, clamp; trig; exp and log; oklch and color-mix; relative colors; attr(); env(); valence-interpolation reflection"
+ ~[5]: "^seed[curriculum] — scaffold labs/04-query-introspection.md (selector lab plus introspection reflection)" ~#covers: "cascade and @layer; attribute substring; structural and UI-state pseudo-classes; :has(); :is, :where, :not; @media; @supports; @scope; introspection reflection"
+ ~[6]: "^seed[curriculum] — scaffold labs/05-temporal-navigation.md (time lab plus navigation reflection)" ~#covers: "transitions; cubic-bezier; keyframes; additive animation; scroll and view timelines; scroll snap; View Transitions; :target and :checked state machines; navigation reflection"
+ ~[7]: ".[design] — fold lab heuristics into dom-css-testing-harness.md and theme-progression.spw"
 }
 ```
 
@@ -167,3 +106,7 @@ Preflight: `&[hygiene] — rebase onto origin/main and isolate unrelated drift b
 - Stable syntax: every lab should preserve a small HTML/CSS snippet that can be reread without the surrounding writeup
 - Experimental syntax: new selector or animation idioms should be marked as experimental when browser support or repo relevance is still unsettled
 - Snippet routes: each lab should identify whether its result wants to stay a study note, become a component pattern, anchor a page exhibit, or inform a service walkthrough
+
+## Reheated 2026-10-12
+
+The live commit list, shared lab format, verification tiers and open questions are in wip.spw (the commits and lab_format frames); the shared format is owned by curriculum-html-css-mastery. Lab home: docs/learn/labs/html-css/. The commit list above predates the reheat where the two differ.

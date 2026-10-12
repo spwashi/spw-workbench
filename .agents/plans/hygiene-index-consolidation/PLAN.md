@@ -67,8 +67,8 @@ Taste note:
 [MOD] .agents/plans/apposition-cache-granules/wip.spw
 [MOD] .agents/plans/spw-beat-diff-precipitation/wip.spw
 [MOD] .agents/plans/geometric-analysis-tooling/wip.spw
-[MOD] .agents/plans/brand-core-ids/PLAN.md
-[MOD] .agents/plans/brand-core-ids/wip.spw
+[MOD] .agents/plans/_archive/brand-core-ids/PLAN.md
+[MOD] .agents/plans/_archive/brand-core-ids/wip.spw
 [MOD] .agents/plans/audit-css-tokens/wip.spw
 [MOD] .agents/plans/audit-data-attributes/wip.spw
 [MOD] .agents/plans/audit-ui-data-models/wip.spw
@@ -92,13 +92,12 @@ Taste note:
 
 ## Commits
 
-1. `.[plans] — file hygiene-index-consolidation`
-2. `#[hygiene] — stop declaration noise beside package sources; ignore .scratch`
-3. `.[plans] — refresh landed-ahead caches (directive-lattice and peers)`
-4. `.[plans] — consolidate stranded, needs-relocation, and schedule collisions`
-5. `.[plans] — publish plan ecology index and collision map`
+Landed: commit 1 and the .d.ts ignore of commit 2 in 08e2bc1c (the .scratch ignore is moot), commit 5 in da5189bb. Remaining:
+
+3. `.[plans] — align cache status with card phase for directive-lattice (planning vs landed) and form-geometry-editor (active vs landed)`
+4. `.[plans] — record the disposition of the five stranded plans and brand-core-ids once the disposition question is answered`
 6. `![docs] — harden path and writerside checks for fragments and archives; align fixtures with referentiality grades g1–g2 and g5`
-7. `&[cli] — ecology plan status/check on the spw binary; envelope-friendly --json; write-ceiling honesty in mass/refresh help`
+7. `&[cli] — ecology plan status/check on the spw binary with envelope-friendly --json (write-ceiling honesty in mass/refresh help is carried by cli-mode-overhaul commit 7)`
 8. `![hygiene] — ship gate: clean status, refresh fixpoint, lint:docs:strict, spw plan status --json smoke`
 
 Fuzz strategy:

@@ -37,8 +37,8 @@ Taste note: improve **truthfulness** of timing. Profiling explains a stall; it d
 ## Commits
 
 ```
-1. &[cli] — expose query stages and slow sources
-2. .[plans,cli] — distill query stage receipts
+1. &[cli] — expose query stages and slow sources (landed 9afc6dc8)
+2. .[plans,cli] — distill query stage receipts (landed e106b302)
 ```
 
 Fuzz strategy: explore by inspecting `fromSource` boundaries; stabilize with `packages/spw-cli/src/query-profile.test.ts`; ship with those tests plus parse-validation of the distilled artifact. No broad fuzz for diagnostic-only changes.

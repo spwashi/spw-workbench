@@ -120,7 +120,7 @@ A mounted consumer's review (pin `229aedcf`, asks named in backticks below; no c
 | `fact_store_with_readiness`, `manifest_scope_with_tiers`: facts by content hash, readiness, tiers, `.agents/plans` as a root | LSP | `vscode-plugin-performance` (store, readiness), `vscode-workspace-atlas` (roots) | open: `IGNORED_DIRS` unchanged (`server-index.ts:131`), no readiness state |
 | `references_that_navigate`: lenses open a peek; parser-found anchors | LSP | `citation-navigation` | open: lens `command: ''` (`display.ts:949-970`) |
 | `move_updates_citations`, `edits_from_facts`: `willRenameFiles` from a `path` refactor kind | LSP | `citation-navigation`, `refactor-experiment-lifecycle` (4e) | open: no `willRenameFiles` handler |
-| `file_navigation`: fragments, routes, hierarchical symbols | LSP | `citation-navigation` | **partly landed**: fragments (`861fa214`); routes, leading slash, flat outline open |
+| `file_navigation`: fragments, routes, hierarchical symbols | LSP | `citation-navigation` | **partly landed**: fragments (`861fa214`); routes and leading slash open; the outline already nests frames (`outline.ts`) but lists no facets or keys |
 | `symbol_resolution`: file-scoped alias binder | LSP | `citation-navigation` | open: no binder |
 | `hovers_that_answer`, `layered_presentation`: meaning, then evidence, then geometry | LSP content | `vscode-editor-contract` (layer rule), `vscode-cognitive-surface` (words) | open: first-match chain unchanged |
 | `gesture_semantics`: one operator per editor gesture | contract | `vscode-editor-contract` | proposal; table awaits the creator |

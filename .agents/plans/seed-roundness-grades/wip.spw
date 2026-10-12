@@ -144,28 +144,42 @@
  >>[2026-07-25 21:10] decide — resolved [epistemic-grade-name]: retire the ordinal grade model; spw-q-stabilization owns observed/derived/reported basis plus independent domain, role, and provenance.
  >>[2026-07-25 21:10] decide — resolved [plan-history-exclusion]: update living doctrine and active cross-references only; retained plan episodes keep their original vocabulary.
  >>[2026-07-27 13:12] observe — plan-ecology sweep: cache status and next_commit held prose where state tokens belong, so every ecology reader mis-parsed this plan. Recorded here instead — commit 1 is unaffected (pure docs rename); commits 2-5 are superseded by parallel work and need re-scoping with the user before resuming.
+ >>[2026-10-12 14:26] revise — commits re-scoped against code: ~[1] still open (S0-S3 remains in 7 docs/theory/spw files, goals.md, a UX audit); ~[2] dropped (applyEdits already rejects overlaps, tested in semantic-edit.test.ts); ~[3]/~[4] code landed (bbb14615, b7c5c7df, 08e2bc1c) so remaining work is tests (no test references range-transform.ts); ~[5] merged (IndexConfig wired in corpus-scan.ts). Closed ?[track-b-sequencing] (decided 07-22 16:15); sharpened the other seven open questions
+ >>[2026-10-12 14:31] revise — per convention change: resolved questions and landed commits moved into ^done as ~#resolved(label) and ~#shipped hash entries, nothing deleted; pointer comments left in ^commits
 }
 
 ^["open"]{
- # resolved: [epistemic-grade-name] — see stream 2026-07-25 21:10
- ?[membrane-body-shape]: "Should membrane become a modifier field on BodyNode (e.g. BodyNode.membrane?: MembraneSpec) or a distinct wrapping AST node? Blocks track B entirely."
- ?[operator-products-scope]: "'New operator products' — is this asking for new composition algebra in types/coupling.ts, or new concrete operator sigils? Needs a concrete example from the user."
- ?[temporal-subtree-depth]: "'Runtime architectural preparedness for temporal/subtree linguistics' — is this a docs-only readiness note in docs/runtime/, or actual scaffolding (new interfaces/types) in packages/spw-runtime with no behavior yet?"
- ?[track-b-sequencing]: "Confirm track B (named params, multi-arm select, stream fold, new operator products, membrane+body) is deferred to follow-up plans rather than attempted in this branch."
- # resolved: [plan-history-exclusion] — see stream 2026-07-25 21:10
- ?[prose-naming-collision]: "'Prose' currently means two different things: # lines (real isProseCommentLine treatment, tolerant reflow) vs. unquoted bareword values inside braces (raw token stream, breaks on arbitrary punctuation — root cause of the image.prompt.spw/song.prompt.spw lexer errors just fixed by quoting). Give bareword-value positions real prose semantics too, or keep the split and stop calling unquoted brace values 'prose' so future authors don't assume they're lexer-safe the way # comments are?"
- ?[tooling-value-broad-scope]: "User asked to 'enhance tooling value for script ecology, knowledgebase development, kinds of media, reasons for prompts, prep for dense learning material and expert-level density across domains' -- too broad/abstract to scope alone; needs a follow-up conversation to pick a concrete first slice (which domain, which command, what 'expert-level density' means operationally)."
- ?[song-contours-deferred]: "User picked 'combination wizard CLI first' over decomposing song.prompt.spw into prompts/song/ contours (the other concretely-scoped option from the .prompt architecture question). Still open: image/ is the only media type with procedural-dimension (contour) decomposition; song/website/design/experience/media/outreach remain monolithic."
- ?[longitudinal-analysis]: "User asked what would make Spw compositional analysis develop like geological (stratigraphy over time) or chemical (concentration + reaction pathways) analysis. DifferentialStratum and FORMULA_CATALOG/SPW_MATH_IDIOMS already do single-sample classification/assay; neither tracks accumulation across commit history or corpus snapshots over time. Exploratory only -- pick one axis (stratum-depth-over-history or idiom-co-occurrence) before building either."
+ ?[membrane-body-shape]: "Should membrane become a modifier field on BodyNode (e.g. BodyNode.membrane?: MembraneSpec) or a distinct wrapping AST node? Blocks track B (no MembraneNode exists; only ActPlacement 'membrane' in types/coupling.ts)."
+ ?[operator-products-scope]: "Is 'new operator products' more Act·Bound product labels like the `product` field normalize.ts now carries for '#[]' and '.{}', or new operator sigils? One concrete example from the user decides which."
+ ?[temporal-subtree-depth]: "Is 'runtime preparedness for temporal/subtree linguistics' a docs-only readiness note in docs/runtime/ (no file there mentions it yet) or new interfaces in packages/spw-runtime with no behavior?"
+ ?[prose-naming-collision]: "Should unquoted bareword values inside braces get real prose semantics (tolerant of punctuation like # comments are), or stay raw tokens and stop being called 'prose' in docs? Decides whether the lexer or the docs change."
+ ?[tooling-value-broad-scope]: "Which single slice of 'tooling value for script ecology / knowledgebase / media' goes first: one domain, one command, and what operational test counts as 'expert-level density'? Until answered this does not enter a commit."
+ ?[song-contours-deferred]: "After `spw emit packs` shipped, should song.prompt.spw be decomposed into prompts/song/ contours like prompts/image/ (7 contours), or do packs make that unnecessary? Same for website, design, experience, media, outreach."
+ ?[longitudinal-analysis]: "Which axis comes first for geological/chemical-style analysis: stratum depth over commit history, or idiom co-occurrence across corpus snapshots? One axis, then build."
 }
 
 ^["commits"]{
- ~[1]: ".[theory,prompts] =rename[effect-grade] — replace S0-S3 shorthand with effect.l0.measure..l3.external across LIVING docs only (docs/theory, docs/design, docs/audits, .spw/conventions, prompts, spw-semantics-rigor SKILL.md); .agents/plans/* historical artifacts untouched"
- ~[2]: "^seed[differential] =harden[labels] — explicit label/ruleId conflict handling for overlapping SourceEdit differentials; tests"
- ~[3]: "^seed[range-transform] =implement[range-address] — real range-address + span-transform module per docs/theory/spw/range-transform.spw; tests"
- ~[4]: "^seed[n-range] =round[nrange] — close NRangeNode parser/grammar gaps (empty n-range, source spans); tests"
- ~[5]: "#[query] =expose[indexing-handles] — configurable index strategy on query/selector-expr.ts (eager vs lazy) with documented perf tradeoff"
- ~[6]: ".[plans] =close[seed-roundness-grades] — retrospective, note track B follow-up plan slugs"
+ ~[1]: ".[theory,prompts] =rename[effect-grade] — replace S0-S3 shorthand with effect.l0.measure..l3.external in the living docs still using it (7 docs/theory/spw files, docs/design/md/goals.md, docs/audits/md/ux-dimensions-audit-2026-02-15.md; check .spw/conventions/file-physics.spw 'S0 notes' first, it may be a different S0); .agents/plans/* untouched"
+ # ~[2]: "DROPPED — applyEdits in differential.ts already rejects overlapping and out-of-range edits naming both ruleIds, and semantic-edit.test.ts covers it; no further label-conflict spec exists"
+ # ~[3] code landed (range-transform.ts via b7c5c7df/08e2bc1c, compile fixes in bbb14615, exports in 12b54eb7); tests are the remainder, see ~[3]
+ ~[3]: "![seed] =cover[range-transform] — no test file references range-transform.ts today; pin plan (effect.l0), apply (effect.l2) with contentHash gate, and the stale-hash refusal named in docs/theory/spw/range-transform.spw"
+ ~[4]: "![seed] =cover[n-range] — empty n-range '(())' preview fix landed in bbb14615 without a test; add parser and describeNRange cases"
+ # ~[5]: "MERGED — IndexConfig is wired into corpus-scan.ts (--depth minimal|standard|full) via the 07-22 17:30 pass; wiring it into query/selector-expr.ts remains unrequested, open it only with a consumer"
+ ~[6]: ".[plans] =close[seed-roundness-grades] — retrospective; name the track B follow-up plans once the membrane/products/temporal questions are answered"
+}
+
+^["done"]{
+ ~#shipped: [
+  "bbb14615 &[seed] =reconcile[n-range,products,range-transform] — close compile errors from parallel work",
+  "12b54eb7 &[seed] =expose[range-transform,index-config,idioms,epistemic-grade] — package export discoverability",
+ ]
+ ~#dropped: [
+  "~[2] applyEdits in differential.ts already rejects overlapping and out-of-range edits naming both ruleIds (semantic-edit.test.ts); no further label-conflict spec exists",
+  "~[5] merged: IndexConfig wired into corpus-scan.ts via --depth; query/selector-expr.ts wiring awaits a consumer",
+ ]
+ ~#resolved(epistemic-grade-name): "What name should the epistemic grade (E0-E2) take? — retired as an ordinal model; spw-q-stabilization owns observed/derived/reported basis; evidence: stream 2026-07-25 21:10"
+ ~#resolved(plan-history-exclusion): "Do historical plan artifacts get the vocabulary rename? — no, only living doctrine and active cross-references; evidence: stream 2026-07-25 21:10"
+ ~#resolved(track-b-sequencing): "Is track B (named params, multi-arm select, stream fold, operator products, membrane+body) deferred to follow-up plans? — yes; evidence: stream 2026-07-22 16:15"
 }
 
 ^["cache"]{
@@ -175,10 +189,8 @@
  ~#hygiene_split: "none — staged directly on main per recent plan convention (see bab81e15 form-geometry-editor)"
  ~#files_hot: "packages/spw-seed/src/canonical/differential.ts,packages/spw-seed/src/canonical/range-transform.ts,packages/spw-seed/src/canonical/index-config.ts,packages/spw-seed/src/normalize.ts"
  ~#next_commit: "1"
- ~#open_count: "8"
- ~#last_stream: "2026-07-27 13:12"
+ ~#open_count: "7"
+ ~#last_stream: "2026-10-12 14:31"
  ~#taste_debt: "track B (named params, multi-arm select, stream fold, new operator products, membrane+body AST promotion) remains deferred pending open questions; do not stub AST nodes prematurely."
 }
 
-^["done"]{
-}

@@ -145,11 +145,13 @@
  >>[2026-08-24 11:11] revise — the earlier spacing-soft decision governs raw width and layout evidence. Under a declared syntax.gap-affinity/1 capability, presence and newline gap classes may be semantic; crossing classes is a migration, not formatting.
  >>[2026-08-24 11:12] decide — semantic and plan identity use the declared association/gap projection, while surface and layout identity retain raw trivia. Both identities are required and neither substitutes for the other.
  >>[2026-09-05] observe — proposed focus_record facet: revision-addressed selection for inspect/cite/follow. Details in docs/research/spw/navigable-focus.spw; not an implementation commit.
+ >>[2026-10-12 14:32] revise — commits reconciled: engine, scanner, contours and theory landed (hashes in done); ~[7] editor projection moved to form-geometry-editor per 07-21 decision; added ~[9] pair-label population (the card next); rotation_algebra sharpened with the measured 10-of-23 inverse count; pair_labels_ast sharpened (fields exist in nodes.ts, nothing sets them); generic wonder replaced
+ >>[2026-10-12 14:32] observe — MOBILITY_RULES: 23 rules, 10 with an inverse, no dangling or asymmetric pairs, all 23 have apply
 }
 
 ^["open"]{
- ?[rotation_algebra]: "Which view transforms are actually invertible rotations, and which are lossy projections or semantic rewrites?"
- ?[pair_labels_ast]: "When can Frame/Body/Scope retain open/close labels in the AST instead of desugar surfaces only?"
+ ?[rotation_algebra]: "MOBILITY_RULES holds 23 rules and only 10 declare an inverse; which of the other 13 are lossy projections that must say so in their receipt, and which are merely unpaired?"
+ ?[pair_labels_ast]: "Should the container grammar populate openLabel/closeLabel on Frame, Body and Scope now (the fields exist in types/ast/nodes.ts, nothing sets them), or wait for parser-to-ONF goldens of pair identity?"
 }
 
 ^["resolved"]{
@@ -157,14 +159,28 @@
 }
 
 ^["commits"]{
- ~[1]: ".[plans] =scope[operational-topography] — establish trajectory and plan contract"
- ~[2]: ".[theory] =formalize[operational-topography] — distinguish orientation, layout, and effects"
- ~[3]: ".[skills] =instrument[topographic-samples] — make probes revision-aware and agent-portable"
- ~[4]: "vocab[seed,lsp] =model[selection-transect] — add typed topography and observation envelopes"
- ~[5]: "^seed[lsp,query] =sample[topographic-evidence] — implement exact-first read-only evidence packets"
- ~[6]: "&[runtime,cli] =plan[hydration] — compile abstract sequences into previewable effect plans"
- ~[7]: "&[vscode,neovim] =project[topography] — render one server-owned contract in thin clients"
- ~[8]: "![topography] *verify[semantics,portability,cost] — prove invariants and negative controls"
+ # ~[1]..~[4] landed — see ^["done"]
+ ~[5]: "^seed[lsp,query] =sample[topographic-evidence] — exact-first read-only evidence packets over the existing topography-probe.ts scanner (confirm first what spw-probes.ts already returns)"
+ ~[6]: "&[runtime,cli] =plan[hydration] — compile abstract sequences into previewable effect plans; no hydration planner exists yet (spw emit hydrates templates only)"
+ # ~[7] moved — editor projection is owned by ~"../form-geometry-editor/wip.spw" (stream 2026-07-21)
+ ~[8]: "![topography] *verify[semantics,portability,cost] — invariants and negative controls, including the unpaired MOBILITY_RULES of ?[rotation_algebra]"
+ ~[9]: "^seed[grammar] =populate[pair-labels] — set openLabel/closeLabel on Frame, Body and Scope with a parser-to-ONF golden (the card's next move; blocked on ?[pair_labels_ast])"
+}
+
+^["done"]{
+ ~#shipped: [
+  "a333db8d &[seed,cli,lsp,docs] =integrate[operational-topography] — land coupling/topography engine and plan sync",
+  "86d433b4 ^seed[workspace,coupling,topography] =stabilize[kernels] — restore portable kernels and repair structural invariants",
+  "55190299 ^seed[topography] =repair[parse-health] — count escaped delimiter parity once",
+  "f96015fc &[analyzers] =measure[topography] — delegate parse health to Seed evidence",
+  "7471a4fd ^seed[contours] =project[evidence] — preserve honest density receipts",
+  "a4d21953 &[runtime] =integrate[coupling-events] — restore runtime interpretation and relation evidence",
+  "129a2d20 .[theory] =contour[form-geometry] — ladders, swap grace, range transform",
+ ]
+ ~#dropped: [
+  "~[7] editor projection of topography moved to form-geometry-editor (stream 2026-07-21)",
+ ]
+ # planned ~[1]-~[4] (plan contract, theory, instruments, tagged coupling model) landed through a333db8d and 86d433b4; ~[5] is unverified so it stays open
 }
 
 ^["cache"]{
@@ -173,18 +189,16 @@
  ~#rebased_at: "2026-08-24"
  ~#hygiene_split: "kernel-landed-editor-open"
  ~#files_hot: "packages/spw-seed/src/canonical/form-geometry.ts, packages/spw-seed/src/types/coupling.ts, packages/spw-cli/src/pulse.ts, docs/theory/spw/form-geometry.spw, .agents/plans/form-geometry-editor/PLAN.md"
- ~#next_commit: "editor-projection"
+ ~#next_commit: "5"
  ~#open_count: "2"
- ~#last_stream: "2026-09-05"
+ ~#last_stream: "2026-10-12 14:32"
  ~#taste_debt: "Pair labels still desugar-surface and the editor does not yet project formContext. Gap-class semantics and format-policy migrations are delegated to gap-affinity-tooling."
 }
 
-^["done"]{
-}
-
 #>wonder_operational_topography_1
-?["When does a dense sample become nutritious rather than merely large?"]{
+?["Which form-mobility rules are rotations, and which are one-way projections?"]{
  #:depth #!computational
- ~#answer_shape: [#addressable, #diverse, #counterfactual, #reproducible, #actionable]
- !probe{ "remove each field in turn; a nutritious field changes ranking, explanation, falsification, or the next safe move." }
+ ~#hypothesis: "the 13 rules with no declared inverse are the lossy projections, and a receipt for them cannot report restoration exact"
+ !probe{ "load MOBILITY_RULES from packages/spw-seed/src/canonical/form-geometry.ts and count rules with inverse set, dangling inverse ids and asymmetric pairs; on 2026-10-12 this gave 23 rules, 10 with an inverse, 0 dangling, 0 asymmetric, all 23 with apply" }
+ $%[mobility.rule_count, mobility.inverse_count]
 }

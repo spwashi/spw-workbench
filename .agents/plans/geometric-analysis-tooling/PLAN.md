@@ -82,18 +82,18 @@ Every one of these derives from a corpus quantile after commit 7; none stays han
 
 ## Commits
 
-1. `.[plans] — refresh geometric-analysis-tooling scope around AST-census findings`
-2. `^seed[spw-seed] — stamp actPlacement/fixity from parser position; carry container depth in lexer state`
-3. `^seed[geometry] — move operator census and nesting onto the AST; bump report to spw.geometry/2`
-4. `^seed[geometry] — add operator n-grams and depth profile so rhythm carries order`
-5. `vocab[geometry] — settle shape fingerprint vs content hash across onf.ts and the garden plan`
-6. `^seed[geometry] — implement the ONF shape fingerprint and anti-unified templates`
-7. `&[spw-cli] — corpus mode for spw geometry: scanCorpus baseline, z-scored deviation, derived thresholds`
-8. `#[spw-lsp] — surface Register Geometry coordinates and non-commutative diagnostics from the /2 report`
-9. `&[spw-cli] — spectral graph metrics over the reference graph (Laplacian / Fiedler)`
-10. `![tests] — fixity, census parity, fingerprint stability, and corpus baseline suites`
+Dormant by the 2026-09-30 decision. Only commit 3 is live; the others are deferred until a human reheats the plan.
 
-Dependency order: commit 2 supplies the fixity metadata commit 3 keys on; 4 and 6 both read the commit-3 census; 5 lands before 6 so the naming never has to be walked back through an implementation; 7 makes 4 and 6 interpretable; 8 and 9 are consumers and can run in parallel after 7.
+1. landed (da5189bb, 08e2bc1c) — `.[plans] — refresh geometric-analysis-tooling scope around AST-census findings`
+2. deferred — `^seed[spw-seed] — stamp actPlacement/fixity from parser position; carry container depth in lexer state`
+3. live — `^seed[geometry] — operator census and nesting from the AST so sigils inside strings are not counted; bump report to spw.geometry/2; pin the stdin repro as a regression test`
+4. deferred — `^seed[geometry] — add operator n-grams and depth profile so rhythm carries order`
+5. deferred — `vocab[geometry] — settle shapeFingerprint against FormFingerprint (spw.fingerprint/1, landed 5f181249) and the declared ONF shape hash`
+6. deferred — `^seed[geometry] — implement the ONF shape fingerprint and anti-unified templates`
+7. deferred — `&[spw-cli] — corpus mode for spw geometry: scanCorpus baseline, z-scored deviation`
+8. deferred — `#[spw-lsp] — surface Register Geometry coordinates from the /2 report`
+9. deferred — `&[spw-cli] — spectral graph metrics over the reference graph`
+10. merged into 3 — the regression test rides with the census fix
 
 Fuzz strategy:
 - Explore (commits 2–6): `npm run fuzz:types` after each, plus `npm run test:seed`.
@@ -104,7 +104,7 @@ Fuzz strategy:
 
 - Rebase target: `main@d9da60ad`
 - Rebase cadence: before commit 1, before merge
-- Hygiene split: required. The working tree currently carries unrelated modifications in `packages/spw-lsp/` (`navigation.ts`, `server-index.ts`, `stdio-server.ts`, `types.ts`, `handlers/spw-probes.ts`), `extensions/neovim-spw/`, and `scripts/lsp/smoke-navigation.ts`, plus untracked generated `.d.ts` files across `packages/spw-cli/src/`. `handlers/spw-probes.ts` is a shared hot file between that drift and commit 8 of this plan. Isolate the LSP/neovim drift onto its own branch before commit 2, or explicitly defer this plan's LSP commits until it lands.
+- Hygiene split: was required when written; as of 2026-10-12 the working tree no longer carries that LSP/neovim drift. Historical note: The working tree currently carries unrelated modifications in `packages/spw-lsp/` (`navigation.ts`, `server-index.ts`, `stdio-server.ts`, `types.ts`, `handlers/spw-probes.ts`), `extensions/neovim-spw/`, and `scripts/lsp/smoke-navigation.ts`, plus untracked generated `.d.ts` files across `packages/spw-cli/src/`. `handlers/spw-probes.ts` is a shared hot file between that drift and commit 8 of this plan. Isolate the LSP/neovim drift onto its own branch before commit 2, or explicitly defer this plan's LSP commits until it lands.
 
 ## Dependencies
 

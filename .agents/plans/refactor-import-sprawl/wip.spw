@@ -1,17 +1,19 @@
 # wip — refactor-import-sprawl
 # Branch: feature/refactor-import-sprawl
 # Started: 2026-02-20
+# Rescoped: 2026-10-12 from the lost src/platform/bootstrap layout onto the package DAG and the 12-import craft guard
 
 #>plan_refactor_import_sprawl
-#:plan #!rewrite_recovery
+#:plan #!principal_engineering
 #:layer #!pragmatics
 
-.["card"]{
- phase: #stranded
- gist: "src/platform/bootstrap splits into boot init, app layout, and feature wiring under a layer DAG."
- touches: [~"src"]
+^["card"]{
+ phase: #planning
+ gist: "The package DAG and the 12-import craft guard are checked by a script instead of only written down."
+ touches: [~"packages", ~"scripts/analyzers", ~"scripts/pre-commit"]
+ will_touch: [~"scripts/analyzers/package-dag-check.ts"]
  entry: ~"./PLAN.md"
- next: "Human disposition: src/platform never existed in this repo (touch is nearest ancestor src/); relocate to a site repo, re-scope to packages/, or archive."
+ next: "Answer ?[gate_home], then land ~[1]: the package-dag-check analyzer that fails on a reverse package import."
 }
 
 ^["roots"]{
@@ -22,32 +24,32 @@
 }
 
 ^["intent"]{
- ~#goal: "Consolidate file and folder sprawl in src/platform/bootstrap by turning a simple file-move operation into a rigorous masterclass on Module Topologies, Layer Boundaries, and Dependency Injection."
- ~#taste: "layering, naming, and clarity by actively developing taste for the mathematical constraints of scalable codebase topology."
+ ~#goal: "Make the package DAG (seed, then runtime, then cli and lsp) and the 12-import craft guard mechanically checked, so CLAUDE.md layer rules describe something a script enforces."
+ ~#taste: "layering and clarity: a boundary that is stated in prose gets a failing case, and a size guard reports its outliers instead of relying on memory."
 }
 
 ^["development"]{
- lane: #rewrite_recovery
+ lane: #principal_engineering
  ladder: #service
- develops: [#architecture_taste, #layering_judgment, #module_topology, #recovery_scope]
- review_surfaces: [@cluster, @plan, @workspace, @pattern]
- snippet_routes: [#topology_rule, #boundary_note, #dependency_excerpt, #di_example]
+ develops: [#architecture_taste, #layering_judgment, #module_topology]
+ review_surfaces: [@cluster, @plan, @workspace]
+ snippet_routes: [#topology_rule, #dependency_excerpt]
 }
 
 ^["concept_index"]{
- primary: [#imports, #topology, #boundaries, #dependency_injection, #bootstrap]
- surfaces: [#app, #platform, #features, #docs]
- tensions: [#legacy_scope, #architecture_fantasy, #layer_drift, #overplanning]
- transfers: [#component, #service]
+ primary: [#imports, #package_dag, #craft_guard, #boundaries]
+ surfaces: [#packages, #scripts, #docs]
+ tensions: [#unenforced_doc_rule, #dispatcher_fan_in, #type_only_cycles]
+ transfers: [#service]
 }
 
 ^["recursive_improvement"]{
  loop: [
-  "? reread current topology and dependency boundaries before reviving the refactor",
-  "< ship one boundary clarification or topology proof before widening moves",
-  "$ record which architectural rule became more local, teachable, or enforceable",
-  "^ feed the surviving rule into docs, diagrams, or lint boundaries",
-  "% keep recovery work tied to current repo truth rather than lore-era sprawl",
+  "? reread the measured fan-in and DAG edges before writing a rule",
+  "< ship the check warn-only before it can fail a commit",
+  "$ record which rule became enforceable",
+  "^ feed the surviving rule into CLAUDE.md Layer Boundaries",
+  "% keep the analyzer fast enough for pre-commit",
  ]
  gates: [#current_scope, #boundary_truth, #teaching_value]
 }
@@ -58,62 +60,50 @@
  >>[2026-02-20 01:43] decide — Group initialization into `platform/bootstrap/init/`, extract panel/UI layout wiring to `app/layout/` or `app/panels/`, and move feature-specific logic to `features/`.
  >>[2026-02-20 05:35] revise — Expanded plan to 26 commits to emphasize taste development through strict dependency graph visualization, DI linting, and formal architectural boundary enforcement.
  >>[2026-07-27 13:15] observe — plan-ecology sweep: every predicted path targets src/platform/, src/app/, src/ui/, which no longer exists in this repo. src/ now holds only runtime, seed, and testing shims. This plan is stranded on a deleted layout, not in progress — disposition (relocate to a site repo, re-scope against packages/, or archive as superseded) is a user call.
+ >>[2026-10-12 14:33] observe — re-ground on packages/: workspace imports run seed <- runtime <- cli and lsp (spw-seed has no @spwashi import of another package; runtime imports seed 21 times; cli imports seed 61 and runtime 4; lsp imports seed 20 and runtime 5). The Infra <- Platform <- App <- UI layering named in the plan has no package counterpart, and scripts/pre-commit holds no import-boundary check. Outside barrels the largest import fan-ins by line count are packages/spw-cli/src/commands.ts (43), stdio-server.ts (23), and hot-session.ts (22).
+ >>[2026-10-12 14:33] revise — commits trimmed from the copied 26 to ~[1]..~[4] and ~[26], aimed at the package DAG and the 12-import craft guard; ~[5]..~[25] extract bootstrap, dock-overlay, wiring, and init files under src/platform, src/app, and features, none of which exist, and are marked DROPPED. Disposition stays a human call, tracked in hygiene-index-consolidation ?[stranded_fate].
+ >>[2026-10-12 14:57] decide — User decided on 2026-10-12 to rescope this plan rather than archive it
+ >>[2026-10-12 14:57] observe — Re-measured: nine non-test non-index files exceed 12 import lines, not only commands.ts. No package.json declares an @spwashi dependency, scripts/pre-commit has no import check, and lib/spw named in CLAUDE.md does not exist. A regex scan finds 8 intra-package cycles of which 7 are type-only; the remaining one is the seed grammar group.
+ >>[2026-10-12 14:57] revise — Rescoped to planning on the package DAG and the import guard: lane moved to principal engineering. Commits are now 1 to 6 (DAG analyzer, failing fixture, npm wiring, warn-only fan-in table, optional commands split, CLAUDE.md text). Three questions open. Old 1 to 26 moved to done as dropped.
 }
 
 ^["open"]{
+ # Unresolved questions. Remove when resolved (log resolution in stream first).
+ ?[gate_home]: "Should the DAG check join npm run lint, the pre-commit hook, or only run on demand, given CLAUDE.md says layer boundaries are pre-commit enforced and scripts/pre-commit has no import check? Unblocks ~[3]."
+ ?[dispatcher_exempt]: "Is commands.ts (43 imports, a printXHelp and runSpwXCli pair per subcommand) exempt from the 12-import guard as a dispatcher, or should it split by command group? Unblocks ~[5] and the allowlist in ~[4]."
+ ?[claude_md_layers]: "Does the CLAUDE.md Layer Boundaries text (lib/spw must not import @/, infra <- platform <- app <- ui) still describe anything, now that lib/spw and src/app are gone? Unblocks ~[6]."
 }
 
 ^["commits"]{
- ~[1]: "&[arch] — baseline: generate initial dependency graph visualization of bootstrap sprawl"
- ~[2]: "^seed[arch] — explicitly define the topological DAG (Infra ← Platform ← App ← UI)"
- ~[3]: "![arch] — introduce strict dependency linting rules (eslint-plugin-boundaries) to enforce DAG"
- ~[4]: "&[arch] — audit: fix existing import violations breaking the new topological rules"
- ~[5]: "&[arch] — audit: resolve any circular dependency warning loops originating in bootstrap"
- ~[6]: "vocab[app] — define the Spw structural nomenclature for Application vs Platform boundaries"
- ~[7]: "&[app/layout] — extract 'dock-overlay' and 'drawer' out of platform and into the app layer"
- ~[8]: "&[app/layout] — extract 'panel-layout' and 'panel-docking' out of platform and into the app layer"
- ~[9]: "&[app/state] — extract 'theme-manager' and 'mode-manager' into application orchestrators"
- ~[10]: "&[app] — extract application 'stage-gates' lifecycle controller"
- ~[11]: "![app] — resolve resulting dependency breakages and document the new App orchestration graph"
- ~[12]: "vocab[features] — define the standard for Feature 'wiring' abstractions"
- ~[13]: "&[features/editor] — extract 'editor-wiring' and 'authoring-wiring' out of bootstrap"
- ~[14]: "&[features/settings] — extract 'settings-wiring' and 'settings-actions' out of bootstrap"
- ~[15]: "&[features/audio] — extract 'audio-wiring' out of bootstrap"
- ~[16]: "&[features] — extract remaining 'inspector' and 'onboarding' peripheral wirings"
- ~[17]: "vocab[platform] — define the strict deterministic lifecycle of the boot sequence"
- ~[18]: "&[bootstrap] — restructure remaining flat initialization scripts into platform/bootstrap/init/"
- ~[19]: "&[bootstrap] — enforce strict phase-ordering (e.g. init-worker before init-prism)"
- ~[20]: "&[bootstrap] — refactor the central init.ts file to reflect the new phased boot sequence"
- ~[21]: "&[di] — audit: review where global singletons are used vs injected dependencies"
- ~[22]: "&[di] — refactor critical boot sequence params to utilize explicit dependency injection"
- ~[23]: "![bootstrap] — execute rigorous headless boot tests to ensure timing invariants aren't broken"
- ~[24]: "&[arch] — delete the legacy flat bootstrap folder entirely"
- ~[25]: ".[docs] — construct the interactive Module Topology visualization for the workbench"
- ~[26]: ".[docs] — write the curriculum: 'Developing Taste in Spw Architectural Topologies'"
+ # Old ~[1]..~[4] are replaced by the commits below (same intent, now with measured targets); old ~[5]..~[26] are in ^["done"] ~#dropped.
+ ~[1]: "^seed[arch] — add scripts/analyzers/package-dag-check.ts: read imports in packages/*/src and fail on any edge outside seed to runtime to cli and lsp"
+ ~[2]: "![arch] — fixture the failing case in scripts/analyzers/__tests__: a temp tree where seed imports runtime exits 1, and the live tree exits 0"
+ ~[3]: "#[arch] — wire the check as npm run lint:arch, and into lint or the pre-commit hook per ?[gate_home]"
+ ~[4]: "![arch] — extend the analyzer with a warn-only table of non-test, non-barrel files over 12 imports, with a dispatcher allowlist per ?[dispatcher_exempt]"
+ ~[5]: "&[cli] — split commands.ts by command group, only if ?[dispatcher_exempt] answers split"
+ ~[6]: ".[docs] — restate CLAUDE.md Layer Boundaries as the package DAG once ~[3] lands, per ?[claude_md_layers]"
 }
 
 ^["cache"]{
- ~#status: "stranded"
+ ~#status: "planning"
+ ~#base_ref: "main@551bb419"
+ ~#rebased_at: "2026-10-12"
  ~#files_hot: ""
  ~#next_commit: "1"
- ~#open_count: "0"
- ~#last_stream: "2026-07-27 13:15"
+ ~#open_count: "3"
+ ~#last_stream: "2026-10-12 14:57"
  ~#taste_debt: ""
 }
 
-#>wonder_agents_plans_refactorimportsprawl_wip_1
-?["How would a biology portfolio express refactor-import-sprawl/wip?"]{
-  #:depth #!stylistic // lens: living system
-  ~#translation_target: "biology"
-  ~#source_concept: "intent"
-  !probe{ "rewrite the root frame in biology vocabulary; where the translation breaks reveals Spw's untranslatable concepts." }
-  $%[plan.commit_count, plan.phase_progress]
-}
-
-#>wonder_agents_plans_refactorimportsprawl_wip_2
-?["How does this file's voice differ from refactor-import-sprawl/wip (refactor-import-sprawl/wip)?"]{
-  #:depth #!educational // lens: curated collection
-  ~<@biome> // nearest neighbor
-  $%[op.distribution]@here vs $%[op.distribution]@biome
-  !probe{ "compare operator frequencies; files with similar content but different operator ratios have different voices." }
+^["done"]{
+ # Written at merge time, and incrementally while the plan runs.
+ ~#dropped: [
+  "~[5]..~[25] (original) — bootstrap, dock-overlay, panel, wiring, and init extractions targeted src/platform, src/app, and features, which no longer exist (logged in stream 2026-10-12)",
+  "~[1]..~[4] (original) — baseline count, DAG script, npm wiring, commands.ts split; superseded by the new ~[1]..~[5] after the baseline was measured below",
+  "~[26] (original) — curriculum prose 'Developing Taste in Spw Architectural Topologies'; reopen as a .[docs] note after ~[3] lands if wanted",
+ ]
+ ~#resolved(fan_in): "Is commands.ts the only non-barrel file over the 12-import guard? — no: nine non-test, non-index files exceed 12 lines of import (commands.ts 43, stdio-server.ts 23, hot-session.ts 22, cli inspect.ts 21, lsp display.ts 14, cli pulse.ts 14, seed products.ts 13, seed expressions.ts 13, runtime hot-session-types.ts 13); evidence: grep -cE '^import |^} from ' over packages/*/src, 2026-10-12. commands.ts is a dispatcher with a printXHelp and runSpwXCli pair per subcommand, which is why ?[dispatcher_exempt] is open"
+ ~#resolved(dag_edges): "What package edges exist? — seed imports no other package; runtime imports seed (21); cli imports seed (61) and runtime (4); lsp imports seed (20) and runtime (5); no import runs cli to lsp, lsp to cli, or runtime to either; no package.json declares an @spwashi dependency, so the DAG is written nowhere a tool can read; evidence: grep of from '@spwashi/spw-*' and of package.json, 2026-10-12"
+ ~#resolved(enforcement): "Does scripts/pre-commit enforce the CLAUDE.md layer boundaries? — no: it holds no import or @/ check, and lib/spw does not exist; evidence: grep of scripts/pre-commit and ls lib/spw, 2026-10-12"
+ ~#resolved(intra_cycles): "Do modules cycle inside a package? — by a regex scan of relative imports, 8 strongly connected components of size above 1 (seed 3, runtime 1, cli 2, lsp 2); excluding import type, one remains: the six-file seed grammar group (bullets, match, expressions, parameters, containers, patterns), a plausible parser mutual recursion; the other seven are type-only. Regex, not a parser, so the count is a lower bound on rigor; evidence: one-off scan script, 2026-10-12"
 }

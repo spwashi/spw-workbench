@@ -45,11 +45,10 @@ The desired end state is an audit surface whose command names, coverage, and out
 
 ## Commits
 
-1. `.[plans] — add audit-fuzz-truthfulness plan artifacts`
-2. `#[audit] — define truthful audit/fuzz contract and package script map`
-3. `&[audit] — add aggregated local audit runner with structured outputs`
-4. `&[fuzz] — replace placeholder fuzz profiles with scoped local runners`
-5. `.[docs] — align skills and contributor docs to the truthful audit surface`
+Landed: commit 1 in b28ffcb8, commit 2 in 0921e6f7, commit 3 in 234aa5c5. Remaining:
+
+4. `&[fuzz] — rename or retire fuzz:complexity, fuzz:dead, fuzz:naming (aliases of audit:markers:md) and fuzz:async, fuzz:boonhonk (aliases of test:runtime); add scripts/analyzers/fuzz-profile-runner.ts only if a stage needs more than an npm script`
+5. `.[docs] — align spw-craft-quality and spw-fix-planning skills to the surviving fuzz and lint names`
 
 ## Agentic Hygiene
 

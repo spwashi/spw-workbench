@@ -193,7 +193,7 @@ Every related plan should include a short **`## Imagination / play`** block:
 [MOD] .agents/plans/vscode-authoring-probe-loop/wip.spw
 [MOD] .agents/plans/vscode-cognitive-surface/PLAN.md
 [MOD] .agents/plans/vscode-cognitive-surface/wip.spw
-[MOD] .agents/plans/spw-syntax-warning-cleanup/PLAN.md
+[MOD] .agents/plans/_archive/spw-syntax-warning-cleanup/PLAN.md
 [MOD] docs/runtime/md/spacing-and-progressive-inspection.md
 [MOD?] docs/theory/spw/syntax-profile-stack.spw
 [MOD?] docs/theory/spw/mutation-flow-automata.spw
@@ -202,11 +202,13 @@ Every related plan should include a short **`## Imagination / play`** block:
 
 ## Commits
 
-1. `.[plans] — stage shape-syntax-ecology + cross-link related plans`
-2. `vocab[seed] — experimental syntax-catalog reference ids` (follow-on)
-3. `![seed] — catalog tests + parse optional exp refs` (follow-on)
-4. `#[lsp] — hover stack + exp refs` (follow-on, after capability honesty)
-5. `.[plans,docs] — distinguish operational syntax, notation exhibits, and prose`
+1. `.[plans] — stage shape-syntax-ecology + cross-link related plans` (landed in 08e2bc1c)
+2. `vocab[seed] — experimental syntax-catalog reference ids` (landed in 08e2bc1c)
+3. `![seed] — catalog tests + parse optional exp refs` (landed in 08e2bc1c)
+4. `#[lsp] — hover stack + exp refs` (landed in 08e2bc1c)
+5. `.[plans,docs] — distinguish operational syntax, notation exhibits, and prose` (landed in 6582f392)
+6. `^seed[experimental] — notation.exhibit catalog entry, status proposed, runtimeHook none`
+7. `![seed] — every cited =exp id resolves in the catalog or is a listed gap`
 
 ## Agentic Hygiene
 

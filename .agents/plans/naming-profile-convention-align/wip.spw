@@ -165,56 +165,64 @@
  >>[2026-07-27 16:49] decide — Plan naming-profile-convention-align. Docs/help qualify profiles first; code renames optional later. Co-development rule: public names update alignment map in same series. surface-identity method generalizes to all head-noun families.
  >>[2026-07-27 16:50] decide — CLI mode is not a profile family; register as mode under language/CLI features. Constants: public effect.l* only.
  >>[2026-07-27 16:50] taste — Prefer qualified phrases in help over renaming every TypeScript symbol in one PR.
+ >>[2026-10-12 14:30] revise — closed ?[code_rename_depth] (decided 07-27); sharpened the other three questions with the numbers found (24 aliases resolve, 3 help lines name profile); ~[1] landed in 08e2bc1c, cli.spw public_commands already refreshed, CLI already speaks effect.l*, so ~[6] now shares the S0-S3 doc rename with seed-roundness-grades; replaced both wonders' probes with runnable commands
+ >>[2026-10-12 14:30] observe — npm run spw -- help names profile on 3 lines; all 24 aliases in cli.spw command_aliases exit 0 on --help while an unknown verb exits 2; .spw/conventions/index.spw still lacks file-physics, hash-resonance and styles
+ >>[2026-10-12 14:30] note — plan check fixes: base_ref moved to current main (nothing implemented yet, so the baseline is main), and the not-yet-written naming-alignment.spw pattern dropped from files_hot until ~[2] creates it
+ >>[2026-10-12 14:31] revise — per convention change: resolved questions and landed commits moved into ^done as ~#resolved(label) and ~#shipped hash entries, nothing deleted; pointer comments left in ^commits
 }
 
 ^["open"]{
- ?[code_rename_depth]: "Stop at help/docs qualification, or also FormatProfileId → keep id strings but rename exported type docs?"
- ?[naming_stability_vs_cli_rename]: "How to amend naming.spw invariant public command names stay stable given cli-mode free-rename?"
- ?[taste_gate]: "Wire forbidden bare-profile in public help as automated check, or checklist only?"
- ?[hot_location]: "Cross-link hot.spw from conventions index, or move a cli-effect convention under conventions/?"
+ ?[naming_stability_vs_cli_rename]: "Do we amend naming.spw line 33 to 'public names stay stable through aliases; only unused verbs rename freely', given all 24 current command aliases resolve (wonder 2)?"
+ ?[taste_gate]: "Should a bare 'profile' in public help fail an automated check (3 help lines mention it today: stack, mutate, profile), or stay a checklist item?"
+ ?[hot_location]: "Link .spw/hot.spw from .spw/conventions/index.spw as it is, or move its cli-effect convention under .spw/conventions/?"
 }
 
 ^["commits"]{
- ~[1]: ".[plans] — file naming-profile-convention-align with naming census"
- ~[2]: ".[spw] — naming-alignment pattern: families, head-noun bans, co-development rule"
- ~[3]: "![spw] — freeze census: profiles, features, constants, convention gaps"
- ~[4]: "vocab[conventions] — index missing conventions; refresh naming + cli"
- ~[5]: "vocab[profile] — qualify profile families in help and public docs"
- ~[6]: "vocab[constants] — public effect.l* only; historical grade map"
+ # ~[1] landed inside 08e2bc1c (plan files); cli.spw public_commands has since been refreshed to the live registry
+ ~[2]: ".[spw] — .spw/patterns/naming-alignment.spw: families, head-noun bans, co-development rule"
+ ~[3]: "![spw] — freeze census: profile families, language features, convention coverage gaps"
+ ~[4]: "vocab[conventions] — index file-physics, hash-resonance and styles in .spw/conventions/index.spw (none of the three is listed today); amend naming.spw stability line per ?[naming_stability_vs_cli_rename]"
+ ~[5]: "vocab[profile] — qualify profile families in help and public docs (format vs mutation vs dialect vs emit); `spw profile` already routes to stack"
+ ~[6]: "vocab[constants] — effect.l* only in living docs (shares the S0-S3 rename with ~\"../seed-roundness-grades/wip.spw\" ~[1]; CLI help already speaks effect.l* and marks beat as off-ladder)"
  ~[7]: "vocab[identity] — cross-link surface-identity, modes, derived kinds"
  ~[8]: "![hygiene] — alignment checklist gate for new public names"
- ~[9]: ".[plans] — point related plans at alignment map"
- ~[10]: "![docs] — co-read smoke dialect, hot, naming, pulse-mutate-beat"
+ ~[9]: ".[plans] — point seed-roundness-grades, cli-mode-overhaul, hygiene-index-consolidation at the alignment map"
+ ~[10]: "![docs] — co-read smoke: dialect-spec, hot, naming, pulse-mutate-beat"
+}
+
+^["done"]{
+ ~#shipped: [
+  "08e2bc1c &[canon-rewrite-v2] — land tip capability on upstream; phase 0 field clocks",
+ ]
+ ~#resolved(code_rename_depth): "Stop at help/docs qualification, or also rename FormatProfileId? — help and docs qualify first, code renames optional later; evidence: stream 2026-07-27 16:49"
 }
 
 ^["cache"]{
  ~#status: "planning"
- ~#base_ref: "main@0c7cdfb7"
- ~#rebased_at: ""
+ ~#base_ref: "main@551bb419"
+ ~#rebased_at: "2026-10-12"
  ~#hygiene_split: "none for vocab-first; coordinate with cli-mode-overhaul rename wave"
- ~#files_hot: ".spw/conventions/index.spw, .spw/patterns/naming-alignment.spw, packages/spw-cli/src/format.ts, packages/spw-cli/src/pulse.ts"
- ~#next_commit: "1"
- ~#open_count: "4"
- ~#last_stream: "2026-07-27 16:50"
+ ~#files_hot: ".spw/conventions/index.spw, packages/spw-cli/src/format.ts, packages/spw-cli/src/pulse.ts"
+ ~#next_commit: "2"
+ ~#open_count: "3"
+ ~#last_stream: "2026-10-12 14:31"
  ~#taste_debt: "naming.spw stability invariant conflicts with cli free-rename — must resolve in commit 4 without blocking dialect stability"
-}
-
-^["done"]{
 }
 
 #>wonder_naming_profile_convention_align_1
 ?["How many profiles are in this sentence: run pulse with profile layout_canonical under Spw.b after format profile pretty?"]{
   #:depth #!computational
-  !probe{ "three families: mutation, dialect, format — if the reader cannot tell, help text failed." }
+  ~#hypothesis: "a reader cannot tell three families (mutation, dialect, format) apart when the head noun is bare"
+  !probe{ "npm run -s spw -- help | grep -ci profile; on 2026-10-12 this printed 3 (stack, mutate, profile), and the stack line already qualifies it as 'dialect, review, and format profile stack'" }
   $%[naming.family_count, naming.bare_profile_hits]
 }
 
 #>wonder_naming_profile_convention_align_2
-?["What should stay stable when CLI verbs may freely rename?"]{
+?["Is 'public names stay stable' already true of the CLI because every renamed verb keeps an alias?"]{
   #:depth #!educational
-  ~#stable: [#dialect_markers, #effect_l_slugs, #identity_head_nouns, #particle_aims]
-  ~#fluid: [#unused_cli_verbs, #internal_aliases]
-  !probe{ "write the amended naming.spw invariant in one sentence." }
+  ~#hypothesis: "stability means alias retention, so the amended invariant is one sentence and renames of unused verbs stay free"
+  !probe{ "run `npm run -s spw -- <alias> --help` for each name in command_aliases of .spw/conventions/cli.spw and `notacmd` as control; on 2026-10-12 all 24 aliases exited 0 and the control exited 2" }
+  $%[cli.alias_count, cli.alias_resolving]
   @naming
   @cli_mode_plan
 }

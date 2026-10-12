@@ -56,34 +56,10 @@ Predicted file changes:
 
 ## Commits
 
-Preflight: `&[hygiene] — rebase onto origin/main and isolate unrelated drift before implementation commits`
+The original 26-commit marathon targeted src/core and src/ui, which no longer exist. The plan is stranded pending a disposition:
 
-1. `&[core] — establish the central CommandBus and action registry`
-2. `vocab[core] — define rigorous CommandIntent and ActionContext branded types`
-3. `&[platform] — wire the CommandBus to global keyboard shortcuts and the REPL`
-4. `&[ui/command] — scaffold the visual CommandPalette overlay component`
-5. `&[ui/command] — implement fuzzy-matching and command history in the palette`
-6. `^seed[reference] — design the ConceptReference data topology for Spw ontologies`
-7. `vocab[reference] — type the Definition, Sigil, and Valence reference nodes`
-8. `&[platform] — build the ConceptLookupService to query the reference topology`
-9. `&[ui/elements] — implement the ConceptHoverCard for inline Spw documentation`
-10. `&[editor] — wire editor tooltips to the ConceptLookupService`
-11. `&[ui/command] — integrate concept lookup directly into the Command Palette search`
-12. `&[editor] — scaffold the ASTObjectSelector for semantic code selection`
-13. `vocab[editor] — define SelectionBoundary and GeometricTarget types`
-14. `&[editor] — implement structural expansion (select parent/child/sibling node)`
-15. `&[ui/tools] — scaffold the ObjectInspector panel for selected AST nodes`
-16. `&[ui/tools] — implement ValenceManipulator UI (dialing boon/bane on nodes)`
-17. `&[platform] — wire ValenceManipulator to emit AST transformation intents`
-18. `&[ui/tools] — implement StrataShifter UI (moving objects between semantic layers)`
-19. `&[platform] — wire StrataShifter to emit structural modification intents`
-20. `&[ui/command] — map object manipulation intents back into the globally accessible CommandBus`
-21. `&[core] — implement the AST transformation engine listening to the CommandBus`
-22. `![core] — write integration tests for visual-to-AST command flow`
-23. `&[ui/elements] — polish the animations and transitions for the Command Palette opening/closing`
-24. `&[ui/elements] — polish the visual feedback mapping (color flashes) when objects are manipulated`
-25. `.[docs] — write the Command Experience and Object Manipulation user guides`
-26. `.[docs] — update the Spw linguistic architectural diagrams covering the new command flow`
+1. `.[plans] — record the disposition: archive command-experience-tools, or name which vscode plan inherits each of the palette, concept lookup, and AST manipulation intents`
+2. `&[vscode] — only if re-homed: register manipulation intents as commands in extensions/vscode-spw/src/commands.ts over the semantic-edit patches, previewable before accept`
 
 ## Dependencies
 
@@ -119,6 +95,6 @@ Preflight: `&[hygiene] — rebase onto origin/main and isolate unrelated drift b
 ## Spw Artifact
 
 ```
-.agents/plans/command-experience-tools/command-topology.spw
+.agents/plans/_archive/command-experience-tools/command-topology.spw
 ```
 A formal Spw record documenting the relationship between human intent (UI/Keystroke), logical representation (`CommandIntent`), and physical mutation (AST Transformation).

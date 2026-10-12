@@ -7,15 +7,18 @@
 #:layer #!pragmatics
 
 ~["card"]{
- phase: #dormant
- gist: "TTY, Prolog, Haskell, and GQL labs sharpen Spw CLI and query design with classical precedent."
- touches: [~".spw/conventions/selection.spw", ~"packages/spw-seed/src/query/selector-expr.ts", ~"packages/spw-cli/src/query.ts"]
+ phase: #planning
+ gist: "Five TTY, Prolog, Haskell and GQL labs under docs/learn/labs/logic-terminal feed the spw query and CLI."
+ touches: [~".spw/conventions/selection.spw", ~"packages/spw-seed/src/query/selector-expr.ts", ~"packages/spw-cli/src/query.ts", ~"src/testing/cli-harness.ts"]
+ will_touch: [~"docs/learn/labs/logic-terminal"]
  entry: ~"./PLAN.md"
- next: "Reheat with a stream entry, then scaffold Lab 1 (TTY buffers and ANSI escapes) in a new .agents/skills/spw-logic-terminal-lab/labs/."
+ next: "After html-css commit 1 creates docs/learn/labs, ship Lab 1.01 (TTY buffers and ANSI escapes) as logic-terminal/01-terminal-tty.md plus a node-environment check."
 }
 
 ^["edges"]{
+ needs: [~"../curriculum-html-css-mastery/wip.spw"]
  feeds: [~"../absorb-spwq-cli/wip.spw", ~"../register-phase-evolution/wip.spw", ~"../runtime-dx-foundation/wip.spw"]
+ shares: [~"../curriculum-html-svg-mastery/wip.spw"]
 }
 
 ^["roots"]{
@@ -56,75 +59,49 @@
  gates: [#precedent_quality, #transfer, #service_relevance]
 }
 
+^["lab_format"]{
+ # Format is owned by ../curriculum-html-css-mastery/wip.spw (see its lab_format frame). This frame records only what is logic-terminal specific.
+ ~#home: "docs/learn/labs/logic-terminal/, created by this plan only after html-css commit 1 lands the shared home, README and runner"
+ ~#environment: "checks start with the vitest environment node docblock; CLI claims go through runHeadlessCli in src/testing/cli-harness.ts, which returns exitCode, outText and errText in process"
+ ~#tiers_here: "pure (toy unifier, toy lazy evaluator and toy graph matcher written in TypeScript in the lab directory), structural (spw CLI output via runHeadlessCli), attested (anything needing a real swipl or ghc)"
+ ~#known_gap: "swipl and ghc were not found on PATH on 2026-10-12, so Prolog and Haskell labs cannot call the real tools"
+}
+
 ^["stream"]{
  >>[2026-02-20 02:51] observe — The user is expanding the Mastery Curriculum from visual (HTML/CSS/SVG) to logical, functional, and terminal-based paradigms.
  >>[2026-02-20 02:51] decide — Synthesize a 13-step plan that bridges ancient terminal wisdom and robust mathematical typings with Spw's experimental syntax, creating a learning path for 'compiler as a collaborator'.
  >>[2026-02-20 05:55] revise — Expanded plan to 26 commits to ensure a fully nuanced deep dive into ANSI buffers, Unification, Monads, and Cypher before attempting the final CLI synthesis phase.
+ >>[2026-10-12 14:25] revise — Collapsed 26 lesson-stub commits (20 labs, 5 reflections, a guide) to 7 work units: preflight, one file per phase, a Rosetta-stone artifact; no spw-logic-terminal-lab directory exists. Earlier stream said a 13-step plan; the card goal says 26 steps, now 5 phase files. Replaced two template wonders with a check of the selector-expr open-gaps list against Prolog and GQL labs.
+ >>[2026-10-12 14:54] decide — reheat these curricula, 2026-10-12
+ >>[2026-10-12 14:54] revise — Reheated to planning. Lab home docs/learn/labs/logic-terminal replaces the proposed skill directory; format owned by curriculum-html-css-mastery. Lab 1.01 is commit 1, blocked on the css home commit. swipl and ghc not found on PATH so Prolog and Haskell labs assume toy TypeScript implementations pending an open question. Selector gaps audit resolved.
 }
 
 ^["open"]{
-}
-
-^["commits"]{
- # --- Phase 1: The Terminal & TTY Mechanics ---
- ~[1]: "^seed[curriculum] — scaffold Lab 1: TTY Buffers and ANSI Escape Codes"
- ~[2]: "^seed[curriculum] — scaffold Lab 2: Standard Streams and POSIX Pipelines"
- ~[3]: "^seed[curriculum] — scaffold Lab 3: The Architecture of REPL Evaluation Loops"
- ~[4]: "^seed[curriculum] — scaffold Lab 4: Terminal UI Constraints (Curses/Blessed mechanics)"
- ~[5]: "![curriculum] — establish Spw Reflection: The Terminal as a continuous spatial compiler"
-
- # --- Phase 2: Logical Inference & Prolog ---
- ~[6]: "^seed[curriculum] — scaffold Lab 5: Prolog Horn Clauses and Declarative Facts"
- ~[7]: "^seed[curriculum] — scaffold Lab 6: Unification Algorithms and Substitution"
- ~[8]: "^seed[curriculum] — scaffold Lab 7: Resolution, Backtracking, and the Cut Operator (!)"
- ~[9]: "^seed[curriculum] — scaffold Lab 8: Homoiconicity and Logic as Data"
- ~[10]: "![curriculum] — establish Spw Reflection: Unification vs Semantic Pattern Matching"
-
- # --- Phase 3: Functional Purity & Haskell ---
- ~[11]: "^seed[curriculum] — scaffold Lab 9: Haskell Absolute Purity and the IO Monad"
- ~[12]: "^seed[curriculum] — scaffold Lab 10: Lazy Evaluation and Infinite Thunks"
- ~[13]: "^seed[curriculum] — scaffold Lab 11: Algebraic Data Types (Sum and Product Types)"
- ~[14]: "^seed[curriculum] — scaffold Lab 12: Typeclasses and Parametric Polymorphism"
- ~[15]: "![curriculum] — establish Spw Reflection: Mapping Purity to Spw Valences (Bones vs Boons)"
-
- # --- Phase 4: Graph Topologies & GQL ---
- ~[16]: "^seed[curriculum] — scaffold Lab 13: Property Graph Models (Nodes, Edges, Properties)"
- ~[17]: "^seed[curriculum] — scaffold Lab 14: Cypher and GQL Pattern Matching Syntax"
- ~[18]: "^seed[curriculum] — scaffold Lab 15: Recursive Traversals and Transitive Closures"
- ~[19]: "^seed[curriculum] — scaffold Lab 16: Subgraph Projections and Isomorphisms"
- ~[20]: "![curriculum] — establish Spw Reflection: Mapping Graph Traversals to Semantic Resonance"
-
- # --- Phase 5: The Spw CLI Synthesis ---
- ~[21]: "^seed[curriculum] — scaffold Lab 17: Synthesis: The Polyglot AST Interface"
- ~[22]: "^seed[curriculum] — scaffold Lab 18: Synthesis: Piped AST Streams in Bash"
- ~[23]: "^seed[curriculum] — scaffold Lab 19: Synthesis: Visualizing AST Graphs in raw TTY"
- ~[24]: "^seed[curriculum] — scaffold Lab 20: Synthesis: Designing the Conversational Prompt"
- ~[25]: "![curriculum] — establish Spw Reflection: The CLI as a Metacognitive Collaborator"
- ~[26]: ".[docs] — write the definitive curriculum guide for 'Logic Terminal Mastery'"
+ ?[toy_or_real]: "Do Prolog and Haskell labs use toy TypeScript implementations in the lab directory, or require swipl and ghc on the author machine? Neither was found on PATH on 2026-10-12. Unblocks commits 3 and 4 (the pure tier assumes toys)."
+ ?[synthesis_surface]: "Which spw subcommand does Lab 5 drive through runHeadlessCli: query, select, or skim? Answer by reading the output of each on one prompts file at commit 6; unblocks the synthesis check."
 }
 
 ^["cache"]{
  ~#status: "planning"
- ~#files_hot: ""
+ ~#base_ref: "main@551bb419"
+ ~#rebased_at: "2026-10-12"
+ ~#files_hot: ".agents/plans/curriculum-logic-terminal-mastery/"
  ~#next_commit: "1"
- ~#open_count: "0"
- ~#last_stream: "2026-02-20 05:55"
- ~#taste_debt: ""
+ ~#open_count: "2"
+ ~#last_stream: "2026-10-12 14:54"
+ ~#taste_debt: "keep the five phases tied to a usable query or CLI surface rather than a tour of paradigms"
 }
 
-#>wonder_agents_plans_curriculumlogicterminalmast_1
-?["How does this file's voice differ from curriculum-logic-terminal-mastery/wip (curriculum-logic-terminal-mastery/wip)?"]{
-  #:depth #!educational // lens: curated collection
-  ~<@biome> // nearest neighbor
-  $%[op.distribution]@here vs $%[op.distribution]@biome
-  !probe{ "compare operator frequencies; files with similar content but different operator ratios have different voices." }
+^["done"]{
+ ~#dropped: "commit 1 hygiene preflight (rebase and isolate drift) — replaced by base_ref main@551bb419 and a new directory; dropped 2026-10-12"
+ ~#dropped: "creating a spw-logic-terminal-lab skill directory — labs live under docs/learn/labs/logic-terminal with the shared format; decided 2026-10-12"
+ ~#resolved(selector_gaps): "Which Prolog and GQL ideas does the Spw.q selector surface already express and which are its declared open gaps? — the header of selector-expr.ts lists six open gaps: captures, comma sequences, composite marks, valence-only modifiers, child combinator, caret diagnostics; hypothesis half right (captures, comma sequences and child combinator are three of six); mapping: captures and comma sequences to the Prolog lab, child combinator to the GQL lab, valence-only modifiers possibly to the Haskell valence reflection, composite marks and caret diagnostics touched by no lab; evidence: read of packages/spw-seed/src/query/selector-expr.ts on 2026-10-12; consequence: two of six gaps have no lab, so the plan feeds the query surface only partly and the labs say so"
 }
 
 #>wonder_agents_plans_curriculumlogicterminalmast_2
-?["What invariant holds across every frame in wip — curriculum-logic-terminal-mastery?"]{
-  #:depth #!experiential // lens: living system
-  $^["_"]@here => %[shared.property]
-  ~#hypothesis: "all frames in this file share ____"
-  !probe{ "extract the property common to every frame in this file; if none exists, the file may lack cohesion or may be a deliberate collection." }
-  $%[runtime.stage, runtime.queue_depth]
+?["Does a spw subcommand run through runHeadlessCli emit ANSI escape sequences into outText, so Lab 1 can assert real CLI escapes?"]{
+  #:depth #!computational // lens: capture probe
+  ~#hypothesis: "only the init command writes escape sequences directly (init.ts defines green, bold and dim helpers); query, select and skim output is plain text"
+  !probe{ "run runHeadlessCli for init --help, skim and query on one prompts file and count occurrences of the escape character in each outText; the result decides whether Lab 1 asserts on real CLI output or on a literal string" }
+  $%[plan.commit_count, plan.phase_progress]
 }

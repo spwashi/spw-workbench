@@ -18,7 +18,7 @@
 ^["edges"]{
  needs: [~"../operational-topography/wip.spw", ~"../syntax-profile-stack/wip.spw"]
  feeds: [~"../cli-benchmarking-infra/wip.spw", ~"../package-iteration-radius/wip.spw"]
- shares: [~"../cli-sense-reorientation/wip.spw", ~"../mounted-consumer-tooling/wip.spw"]
+ shares: [~"../cli-sense-reorientation/wip.spw", ~"../mounted-consumer-tooling/wip.spw", ~"../lukewarm-backlog/wip.spw"]
 }
 
 ^["roots"]{
@@ -166,45 +166,36 @@
  >>[2026-08-24 13:09] verify — 1e95d17b makes sample visible in the human source projection through bounded token/trace tables, explicit value_visible normalization, omission counts, and sample-preserving recommendations; exact machine products remain unchanged.
  >>[2026-08-24 15:54] observe — the syntax-warning census distinguishes four affinity-adjacent but unresolved products: notation exhibits, explicit relations, signed numerics, and collection/choice migration.
  >>[2026-08-24 15:55] decide — gap affinity may determine association, but it cannot silently assign semantic kind; formatter proposals for these forms require typed targets, previews, and reparse receipts.
+ >>[2026-10-12 14:27] revise — Reconciled commits against git: planned 1, 2, 3, 5 and the CLI half of 7 landed (c46558ff, cdd0b40a, 8d454ad6, deb9e226, 211d7653); moved to done. Remaining six are ordered; commit 4 notes that the PLAN.md corpus probe names scripts/analyzers/spw-gap-census.ts, which does not exist. Dropped the bundle_entrypoints question because package-iteration-radius owns it as entrypoint_matrix (decision 12:58); sharpened the other ten to name the decision each unblocks; open_count was 12 but only 11 were listed.
+ >>[2026-10-12 14:27] observe — spw inspect spacing --text on a.b, a. b, a .b, a . b reports gaps 0, 2, 2, 2 and qualifiedIdentifiers 1, 0, 0, 0; all four parse with 0 errors, so half-spaced dots are silently accepted today and rejecting them in half_spaced_dot would be a behavior change.
+ >>[2026-10-12 15:00] note — scripts/analyzers/spw-gap-census.ts is a planned NEW file in PLAN.md, so only the corpus probe ordering is off; opened ?[probe_order]; routed from lukewarm-backlog ?[gap_probe_order].
 }
 
 ^["open"]{
- ?[half_spaced_dot]: "Should the first capability reject a. b and a .b, or ship operator-specific prefix/postfix dot meanings immediately?"
+ ?[half_spaced_dot]: "Should `a. b` and `a .b` be diagnostics in the first AssociationIR capability, or carry prefix/postfix dot meanings from day one? Decides whether ~[4] can ship without operator-dot semantics."
  # resolved: [qualified_token] — keep IDENTIFIER plus segment metadata; see stream 2026-08-24 11:47
- ?[newline_scope]: "Which dialects distinguish cadence from episode semantically, and which explicitly project both to open?"
- ?[product_boundary]: "Should index be a parser product or a workspace-owned derivation over structure products?"
- ?[policy_surface]: "Should format policy live in one workspace registry, compose scoped registries, or allow source-local overrides that cannot alter semantic affinity?"
- ?[spread_resolution]: "Which independent profiles should control corpus extent and developed signal resolution once benchmark evidence can replace the coupled index presets?"
- ?[alias_retirement_boundary]: "Which release boundary can remove CLI aliases together after notices and first-party migration land?"
- ?[block_cache_identity]: "Which normalized block identity survives nearby edits while remaining cheap enough for editor-local warming?"
- ?[bundle_entrypoints]: "Which independently tested Seed entry points should ship lex, parse, and progressive products without duplicating semantic kernels or promising tree-shaking from a runtime horizon?"
- ?[notation_exhibit]: "Should a notation product preserve lexed tokens and dialect identity while explicitly withholding runtime interpretation?"
- ?[relation_vocabulary]: "Which typed relation nodes, if any, should own recurring >, =>, and == surfaces?"
- ?[signed_numeric]: "Under which gap and fixity rules does a leading sign become part of a number rather than an operator application?"
- ?[collection_choice]: "What migration distinguishes legacy lists, explicit #[...] collections, and a | b | c choice notation?"
+ # moved: [bundle_entrypoints] — public entry points are owned by ~"../package-iteration-radius/wip.spw" ?[entrypoint_matrix]; see stream 2026-08-24 12:58
+ ?[newline_scope]: "Which dialects treat cadence (one line break) and episode (blank line) as semantically different, and which project both to open? Decides the per-dialect table AssociationIR needs in ~[4]."
+ ?[product_boundary]: "Is the `index` depth a parser product or a workspace-owned derivation over structure products? Decides whether progressive-product/1 advertises an index stage."
+ ?[policy_surface]: "May a file carry a local format override that cannot change semantic affinity, given the decision for one workspace policy with deterministic layers? Decides the layering in ~[6]."
+ ?[spread_resolution]: "Should signal resolution stay hidden behind --spread until benchmarks exist, or become its own declared profile? Decides whether the coupled minimal|standard|full index presets are split."
+ ?[alias_retirement_boundary]: "Which release removes --product, --event-policy, --limit, and the --depth corpus form together? Decides the alias retirement notice date."
+ ?[block_cache_identity]: "Which normalized block identity survives nearby edits yet stays cheap enough for editor-local warming? Decides the key shape for block-level cache reuse."
+ ?[notation_exhibit]: "Should a notation node preserve lexed tokens and dialect identity while withholding runtime interpretation? Carried from the closed spw-syntax-warning-cleanup plan, whose file-level exhibit separation did not add a node."
+ ?[relation_vocabulary]: "Which typed relation nodes, if any, should own recurring >, =>, and == surfaces? Decides whether AssociationIR needs a relation kind."
+ ?[signed_numeric]: "Under which gap and fixity rules does a leading sign belong to the number instead of being an operator? Decides the numeric case in ~[4]."
+ ?[collection_choice]: "Which migration keeps legacy lists, explicit #[...] collections, and `a | b | c` choice from becoming silently equivalent? Decides whether formatter proposals for collections can be typed."
+ ?[probe_order]: "Should the PLAN.md corpus probe naming scripts/analyzers/spw-gap-census.ts be marked as running only after ~[8] creates that [NEW] file? Tracked at ~"../lukewarm-backlog/wip.spw" ?[gap_probe_order]."
 }
 
 ^["commits"]{
- ~[1]: ".[plans] — define gap-affinity, formatting, product, and migration contracts"
- ~[2]: "vocab[seed] — add gap, affinity, parse-product, and event-policy types"
- ~[3]: "^seed[lexer] — preserve token gaps and segment dot identifiers without source loss"
- ~[4]: "^seed[parser] — resolve declared affinity and normalize qualified, edge, common, and ordinal products"
- ~[5]: "&[seed] — add question-oriented products and measured instrumentation policies"
- ~[6]: "&[format] — emit association-aware spacing differentials and identity receipts"
- ~[7]: "&[cli,lsp] — share spacing inspection and parser-context formatting surfaces"
- ~[8]: "#[measure] — census compatibility and benchmark product/event policy costs"
- ~[9]: "![seed,format,lsp] — prove round-trip, profile, migration, and negative-control invariants"
- ~[10]: ".[theory] — publish capability, formatter, and projection handoff guidance"
- ~[11]: ".[plans] — bound progressive source-product protocol and CLI slice"
- ~[12]: "vocab[ir]+&[seed,cli] — expose tokens, structure, and trace intermediates"
- ~[13]: ".[docs,plans] — teach product depth, omissions, and progressive projection"
- ~[14]: ".[plans] — separate work, retention, and display handles"
- ~[15]: ".[plans] — tune corpus work as near, standard, and far spread"
- ~[16]: "vocab[cli]+&[inspect,corpus] — extract typed arguments and teach canonical handles"
- ~[17]: ".[plans] — separate parser horizon, profile, and bundle contracts"
- ~[18]: "vocab[api]+&[cli] — align through and defer compiler loading"
- ~[19]: "&[cli] — make source samples visibly bounded"
- ~[20]: ".[docs,plans] — document handle cost boundaries and compatibility aliases"
+ # ~[1]..~[3], ~[5], ~[11]..~[20] landed (~[7] in part, CLI half 211d7653) — see ^["done"]
+ ~[4]: "^seed[parser] — resolve declared affinity into an AssociationIR with semantic-hash fixtures for tight versus open dot" ~#gate: "?[half_spaced_dot]"
+ ~[6]: "&[format] — emit association-aware spacing differentials and identity receipts" ~#needs: "~[4]"
+ ~[7]: "&[lsp] — share spacing inspection with parser-context formatting; the CLI half landed in 211d7653" ~#needs: "~[4]"
+ ~[8]: "#[measure] — add the gap census script and benchmark product and event policy costs" ~#note: "the PLAN.md corpus probe names scripts/analyzers/spw-gap-census.ts, which does not exist"
+ ~[9]: "![seed,format,lsp] — prove round-trip, profile, migration, and negative-control invariants" ~#needs: "~[6]"
+ ~[10]: ".[theory] — publish capability, formatter, and projection handoff guidance" ~#needs: "~[9]"
 }
 
 ^["cache"]{
@@ -215,17 +206,36 @@
  ~#files_hot: "packages/spw-cli/src/inspect.ts, packages/spw-cli/src/inspect-source.ts, packages/spw-cli/src/analyze.ts, packages/spw-cli/src/inventory.ts, packages/spw-cli/src/map.ts, packages/spw-cli/src/formula.ts, packages/spw-cli/src/taste.ts, packages/spw-cli/src/lattice.ts, docs/runtime/md/spacing-and-progressive-inspection.md, .spw/conventions/cli.spw, .agents/plans/gap-affinity-tooling/wip.spw"
  ~#next_commit: "association_semantics"
  ~#open_count: "12"
- ~#last_stream: "2026-08-24 15:55"
+ ~#last_stream: "2026-10-12 15:00"
  ~#taste_debt: "Half-spaced dot meaning, semantic AssociationIR, notation products, typed relations, signed numerics, collection/choice migration, sparse-index ownership, generator-cost suppression, workspace format-policy authority, protocol adoption beyond source inspection, spread/resolution separation, block-local cache identity, bundle entry points, alias retirement, and multi-run performance budgets remain deliberately unresolved until corpus and benchmark evidence exist."
 }
 
 ^["done"]{
+ ~#shipped: [
+  "c46558ff .[plans] =orient[affinity,iteration-radius] — refresh consumer tooling direction",
+  "cdd0b40a ^seed[gap,event] — expose spacing and disclosure products",
+  "8d454ad6 &[runtime,packages] — tune trace depth and cache identity",
+  "211d7653 &[cli]+.[docs] — project spacing for readers and agents",
+  "43b8443e .[plans] — bound progressive source-product slice",
+  "deb9e226 vocab[ir]+&[seed,cli] — expose progressive source products",
+  "9cb5646b .[docs,plans] — teach progressive source depth",
+  "dc3846b2 .[plans] — separate CLI work and disclosure handles",
+  "8b4d2cdc .[plans] — tune corpus work as near, standard, and far spread",
+  "40c03d20 vocab[cli]+&[inspect,corpus] — teach through, events, sample, and spread",
+  "80a3ca9b .[plans] — separate parser horizon, profile, and bundle contracts",
+  "f3ab94eb vocab[api]+&[cli] — align through and defer compiler loading",
+  "1e95d17b &[cli] — make source samples visibly bounded",
+  "0fb37533 .[docs,plans] — teach recoverable progressive controls",
+ ]
+ ~#resolved(qualified_token): "Should a.b.c be a second qualified-path token? — no; keep IDENTIFIER plus segment metadata for this compatibility slice; evidence: stream 2026-08-24 11:47"
+ ~#resolved(bundle_entrypoints): "Which Seed entry points ship lex, parse, and progressive products? — owned by package-iteration-radius as entrypoint_matrix, not this plan; evidence: stream 2026-08-24 12:58"
 }
 
 #>wonder_gap_affinity_tooling_1
 ?["When does a space become language rather than layout?"]{
   ~#answer_shape: [#declared_profile, #gap_class, #association_delta, #counterexample]
-  !probe{ "remove or insert one gap, compare AssociationIR, and refuse a layout-only label when the semantic hash changes." }
+  ~#baseline: "spw inspect spacing --text on a.b, a. b, a .b, a . b: gaps 0, 2, 2, 2; qualifiedIdentifiers 1, 0, 0, 0; all four parse with 0 errors under Spw.b, so half-spaced dots are silently accepted today"
+  !probe{ "remove or insert one gap, compare AssociationIR, and refuse a layout-only label when the semantic hash changes. Until ~[4] lands there is no AssociationIR, so rerun the baseline: npm run -s spw -- inspect spacing --text 'a. b' --json and check whether the diagnostics change." }
   $%[gap.class, association.hash, differential.stratum]
 }
 

@@ -72,8 +72,8 @@ Maintenance disposition:
 [MOD] .agents/plans/vscode-plugin-performance/PLAN.md
 [MOD] .agents/plans/vscode-plugin-performance/wip.spw
 [MOD] .agents/plans/vscode-workspace-atlas/wip.spw
-[MOD] .agents/plans/intellij-plugin-integration/PLAN.md
-[MOD] .agents/plans/intellij-plugin-integration/wip.spw
+[MOD] .agents/plans/_archive/intellij-plugin-integration/PLAN.md
+[MOD] .agents/plans/_archive/intellij-plugin-integration/wip.spw
 [MOD] .agents/plans/intellij-lsp4ij/PLAN.md
 [MOD] .agents/plans/intellij-lsp4ij/wip.spw
 [MOD] .agents/plans/neovim-spw-surfaces/PLAN.md
@@ -96,13 +96,12 @@ Maintenance disposition:
 
 ## Commits
 
-1. `.[plans] =scope[mounted-consumer-tooling] — define portable audit and planning boundary`
-2. `.[surfaces] =abstract[archetypes] — retire specific domains while preserving reusable surface qualities`
-3. `.[mount,tooling] =contract[consumer-repository] — abstract mount language and editor audit axes`
-4. `.[plans,cli] =prioritize[portable-observability] — align root discovery, doctor, capabilities, and review orchestration`
-5. `.[plans,lsp,editors] =audit[evidence] — align LSP, VS Code, IntelliJ, and NeoVim review plans`
-6. `.[skills] =review[mounted-consumer] — add portable authority and provenance workflow`
-7. `![docs,plans,skills] *verify[portability] — validate identifier removal, syntax, references, plan caches, and skill metadata`
+Landed (see wip.spw ^["done"]): a89010ae, bca875c7, 85554442, ccea9c97, aae308a9. The original commits 4 to 7 have no one-to-one hash; their work landed inside these.
+
+Remaining:
+
+11. `&[cli] — skim --json carries the exact source line beside the display snippet`
+12. `![cli] — pin the exact-versus-display split with a skim json test`
 
 Fuzz strategy:
 - Explore: `rg` for named-consumer and machine-local path leakage in changed operational surfaces.

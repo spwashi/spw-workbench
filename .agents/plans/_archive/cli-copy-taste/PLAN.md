@@ -30,8 +30,8 @@ Taste note: improve **clarity**, **recognizability**, **naming**, and **expressi
 ## Files
 
 ```text
-[NEW] .agents/plans/cli-copy-taste/PLAN.md
-[NEW] .agents/plans/cli-copy-taste/wip.spw
+[NEW] .agents/plans/_archive/cli-copy-taste/PLAN.md
+[NEW] .agents/plans/_archive/cli-copy-taste/wip.spw
 [MOD] packages/spw-cli/src/commands.ts
 [MOD] packages/spw-cli/src/commands.test.ts
 [MOD] packages/spw-cli/src/corpus-spread.ts
@@ -76,10 +76,10 @@ Taste note: improve **clarity**, **recognizability**, **naming**, and **expressi
 
 ## Commits
 
-1. `.[plans] — bound CLI copy and taste audit`
-2. `vocab[cli] — clarify outcomes, controls, and recommendations`
-3. `.[conventions] — codify CLI voice and metaphor boundaries`
-4. `.[changelog] — publish unreleased workbench changes`
+1. `.[plans] — bound CLI copy and taste audit` (landed cb84c040)
+2. `vocab[cli] — clarify outcomes, controls, and recommendations` (landed 3b5b5d90)
+3. `.[conventions] — codify CLI voice and metaphor boundaries` (landed 350fda27)
+4. `.[changelog] — publish unreleased workbench changes` (landed a84348c5)
 
 ## Agentic Hygiene
 

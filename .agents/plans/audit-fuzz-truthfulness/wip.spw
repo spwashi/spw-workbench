@@ -11,7 +11,7 @@
  gist: "audit:* and fuzz:* names state what they scan and verify, with JSON output to rank and diff."
  touches: [~"package.json", ~"scripts/analyzers", ~"docs/contributing/md/common-tasks.md"]
  entry: ~"./PLAN.md"
- next: "Commit 4: add scripts/analyzers/fuzz-profile-runner.ts and retire fuzz:complexity/dead/naming/boonhonk aliases that overclaim."
+ next: "Commit 4: retire or rename fuzz:complexity, fuzz:dead, and fuzz:naming (aliases of audit:markers:md) and fuzz:async/boonhonk (aliases of test:runtime) so each name states what it runs."
 }
 
 ^["edges"]{
@@ -72,52 +72,48 @@
  >> [2026-03-05 23:03] observe — nested `npm run audit:spw:syntax -- --match ...` forwarding is awkward because the inner `lint:spw` script already carries `--`; direct validator invocation is safer for filtered checks until commit 3 revisits the audit shell.
  >> [2026-03-06 05:18] build — added `scripts/analyzers/audit-full.ts` as a small local orchestrator over marker, UI, and `.spw` syntax audits with plain and JSON output.
  >> [2026-03-06 05:18] build — promoted structured JSON entrypoints for UI and `.spw` syntax audits, and normalized `audit:spw:syntax` to invoke the validator directly so filter flags forward cleanly.
+ >>[2026-10-12 14:33] observe — reconciled against main: ~[1] landed in b28ffcb8, ~[2] in 0921e6f7 (the audit:markers:*, audit:ui:*, audit:spw:* names and fuzz:explore, stabilize, ship), ~[3] in 234aa5c5 (scripts/analyzers/audit-full.ts). ~[4] has not: scripts/analyzers/fuzz-profile-runner.ts does not exist and fuzz:complexity, fuzz:dead, fuzz:naming still alias audit:markers:md while fuzz:boonhonk and fuzz:async alias test:runtime. ~[5] is partial: common-tasks.md is aligned, but spw-craft-quality still lists fuzz:complexity, fuzz:dead, fuzz:naming, fuzz:boonhonk as a groove detector, and 'npm run lint # ESLint', and spw-fix-planning still routes axis-collapse to fuzz:boonhonk.
+ >>[2026-10-12 14:33] observe — two earlier observations are stale: the marker audit now scans packages, src, docs, lib, scripts, extensions, and .agents/skills (SCAN_ROOTS in spw-marker-audit.ts; packages added in 1f17c86e), and eslint is a devDependency (eslint ^9.39.4, @typescript-eslint/parser) although no script or config invokes it. audit-full runs only the marker, ui-selectors, and context-panel scans plus spw syntax; it never builds extensions.
+ >>[2026-10-12 14:33] revise — open questions renamed and sharpened: ?[full_extensions] asks whether any stage should build extensions (audit-full runs none today), ?[json_shape] asks whether the three audit scripts should emit audit-full's entry shape natively, ?[ui_baseline] notes ui-contract-audit --update only acknowledges and persists nothing. Commits ~[1]..~[3] marked landed; ~[4] and ~[5] rewritten to the aliases and skill lines that remain.
 }
 
 ^["open"]{
- ?["should `audit:full` include extension builds by default or behind an opt-in flag?"]
- ?["what minimal JSON schema should every audit mode share?"]
- ?["how much baseline state should the UI audit persist versus derive live?"]
+ ?[full_extensions]: "Should any stage (audit:full or fuzz:ship) build the extensions, or stay read-only scans with builds left to bundle:extensions? Decides whether commit 4 adds an extension stage."
+ ?[json_shape]: "Should spw-marker-audit, ui-contract-audit, and spw-syntax-validate emit audit-full's entry shape (id, label, status, severity, summary, counts) themselves, or stay wrapped only by audit-full? Decides whether a single audit's JSON can be diffed without audit-full."
+ ?[ui_baseline]: "ui-contract-audit --update only prints that a refresh was acknowledged and persists nothing; should it write a diffable baseline file, or be removed until a consumer wants diffs? Decides commit 4's treatment of audit:ui:selectors:update."
 }
 
 ^["commits"]{
- ~[1]: ".[plans] — add audit-fuzz-truthfulness plan artifacts"
- ~[2]: "#[audit] — define truthful audit/fuzz contract and package script map"
- ~[3]: "&[audit] — add aggregated local audit runner with structured outputs"
- ~[4]: "&[fuzz] — replace placeholder fuzz profiles with scoped local runners"
- ~[5]: ".[docs] — align skills and contributor docs to the truthful audit surface"
+ # ~[1]..~[3] landed — see ^["done"]
+ ~[4]: "&[fuzz] — rename or retire fuzz:complexity, fuzz:dead, fuzz:naming (aliases of audit:markers:md) and fuzz:async, fuzz:boonhonk (aliases of test:runtime); add scripts/analyzers/fuzz-profile-runner.ts only if a stage needs more than an npm script"
+ ~[5]: ".[docs] — align spw-craft-quality and spw-fix-planning skills to the surviving fuzz and lint names (they still cite fuzz:complexity, fuzz:boonhonk, and 'npm run lint # ESLint')"
 }
 
 ^["cache"]{
- ~#status: "active"
- ~#base_ref: "historical@07ffc5a17a55340c3f7000313df68cf0453a7b10"
- ~#rebased_at: ""
+ ~#status: "landed"
+ ~#base_ref: "main@551bb419"
+ ~#rebased_at: "2026-10-12"
  ~#hygiene_split: "exclude untracked `src/runtime/state/register-helpers.ts` from this branch"
  ~#files_hot: "scripts/analyzers/audit-full.ts, scripts/analyzers/ui-contract-audit.ts, package.json"
- ~#next_commit: "3"
+ ~#next_commit: "4"
  ~#open_count: "3"
- ~#last_stream: "2026-03-06 05:18"
+ ~#last_stream: "2026-10-12 14:33"
  ~#taste_debt: "avoid turning audit orchestration into another monolithic analyzer"
 }
 
 ^["done"]{
  # Written at merge time.
+ ~#shipped: [
+  "b28ffcb8 .[plans] =align[audit-marker-roadmap] — refresh planning surfaces",
+  "0921e6f7 #[audit] =align[truthful-script-surface] — publish audit and fuzz command contract",
+  "234aa5c5 &[audit] =add[local-full-runner] — aggregate marker, ui, and spw audits",
+ ]
 }
 
-#>wonder_agents_plans_auditfuzztruthfulness_wip_1
-?["What is the algebraic closure of stream (audit-fuzz-truthfulness)?"]{
-  #:depth #!computational // lens: formal structure
-  $^["intent"]@biome => %[formula.measure]
-  ~<.agents/plans/audit-fuzz-truthfulness/wip.spw> // introspect
-  !probe{ "measure: how many distinct concepts does this frame bind? what is the ratio of structural operators to content — and what does that density reveal?" }
+#>wonder_audit_fuzz_truthfulness_skill_claims
+?["Which audit, fuzz, and lint commands do the agent skills still promise that the scripts do not run?"]{
+  #:depth #!computational // lens: claim versus guarantee
+  ~#hypothesis: "spw-craft-quality and spw-fix-planning are the only skills that cite names whose package.json body does not do what the line says"
+  !probe{ "grep -rhoE 'npm run (fuzz|audit|lint)[a-z:-]*' .agents/skills | sort -u; resolve each against package.json scripts; compare the body to the comment next to it in the skill" }
   $%[plan.commit_count, plan.phase_progress]
-}
-
-#>wonder_agents_plans_auditfuzztruthfulness_wip_2
-?["What is the felt rhythm of reading wip — audit-fuzz-truthfulness?"]{
-  #:depth #!mathematical // lens: material grain
-  $%[line.operator_density, brace.nesting_rhythm] => ~#reading_feel
-  ~#structure: "roots → intent → development → concept_index → recursive_improvement → stream → open"
-  !probe{ "read aloud for 30 seconds; where do you pause? pauses mark grain boundaries." }
-  ~<.agents/plans/_schema/wip.spw>  // nearest neighbor
 }

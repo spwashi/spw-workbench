@@ -78,7 +78,7 @@ Host note fields (optional, best-effort): node version, CPU count, platform. Nev
 
 ## Commits
 
-1. `.[plans] — stage typescript-perf-audit-infra planning artifacts`
+1. LANDED in a333db8d: `.[plans] — stage typescript-perf-audit-infra planning artifacts`
 2. `#[audit] — add typescript-perf single-run profiler with JSON identity schema`
 3. `#[audit] — add version/config matrix runner and compare mode`
 4. `#[audit] — wire package scripts audit:ts:perf(+json/matrix)`

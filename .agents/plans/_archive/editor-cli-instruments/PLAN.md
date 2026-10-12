@@ -18,10 +18,10 @@ Taste note: improve recognizability, reversibility, performance legibility, and 
 ## Files
 
 ```text
-[NEW] .agents/plans/editor-cli-instruments/PLAN.md
-[NEW] .agents/plans/editor-cli-instruments/wip.spw
-[NEW] .agents/plans/editor-cli-instruments/editor-cli-instruments.spw
-[NEW] .agents/plans/editor-cli-instruments/references/index.spw
+[NEW] .agents/plans/_archive/editor-cli-instruments/PLAN.md
+[NEW] .agents/plans/_archive/editor-cli-instruments/wip.spw
+[NEW] .agents/plans/_archive/editor-cli-instruments/editor-cli-instruments.spw
+[NEW] .agents/plans/_archive/editor-cli-instruments/references/index.spw
 
 [NEW] .spw/tooling/editor-instruments.spw
 [MOD] .spw/tooling/editor-surface-audit.spw
@@ -65,12 +65,12 @@ Taste note: improve recognizability, reversibility, performance legibility, and 
 
 ## Commits
 
-1. `.[plans] — define cross-editor CLI instrument contract`
-2. `&[editor-instruments] — add parameterized CLI launch models and focused tests`
-3. `&[intellij] — expose form, stack, cache, rename, and refactor-plan actions`
-4. `&[vscode,neovim] — align live probes and corpus refactor planning`
-5. `![editors] *verify[instruments] — prove mounted roots, cache receipts, builds, and copy`
-6. `.[tooling] — publish editor instrument and recovery guidance`
+1. `.[plans] — define cross-editor CLI instrument contract` (landed a3e54329)
+2. `&[editor-instruments] — add parameterized CLI launch models and focused tests` (landed 8f5d58df)
+3. `&[intellij] — expose form, stack, cache, rename, and refactor-plan actions` (landed bd0f09e3)
+4. `&[vscode,neovim] — align live probes and corpus refactor planning` (landed a71d066c)
+5. `![editors] *verify[instruments] — prove mounted roots, cache receipts, builds, and copy` (landed 10d3dbde)
+6. `.[tooling] — publish editor instrument and recovery guidance` (landed f01a1d4c)
 
 ## Fuzz Strategy
 
@@ -107,4 +107,4 @@ Taste note: improve recognizability, reversibility, performance legibility, and 
 
 ## Spw Artifact
 
-`.agents/plans/editor-cli-instruments/editor-cli-instruments.spw` records the portable cross-editor contract. The earned canon projection will live at `.spw/tooling/editor-instruments.spw`.
+`.agents/plans/_archive/editor-cli-instruments/editor-cli-instruments.spw` records the portable cross-editor contract. The earned canon projection will live at `.spw/tooling/editor-instruments.spw`.

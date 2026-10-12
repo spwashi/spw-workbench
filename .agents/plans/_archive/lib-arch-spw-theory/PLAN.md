@@ -14,9 +14,9 @@ Taste note: improve **expressiveness**, **clarity**, and **correctness**.
 
 ## Files
 
-[NEW] .agents/plans/lib-arch-spw-theory/PLAN.md  
-[NEW] .agents/plans/lib-arch-spw-theory/wip.spw  
-[NEW] .agents/plans/lib-arch-spw-theory/lib-arch-spw-theory.spw  
+[NEW] .agents/plans/_archive/lib-arch-spw-theory/PLAN.md  
+[NEW] .agents/plans/_archive/lib-arch-spw-theory/wip.spw  
+[NEW] .agents/plans/_archive/lib-arch-spw-theory/lib-arch-spw-theory.spw  
 [NEW] lib/spw-v0.2.0-alpha/ARCHITECTURE.md  
 [NEW] lib/spw-v0.2.0-alpha/LAYOUT.md  
 [NEW] lib/spw-v0.2.0-alpha/architecture/index.spw  
@@ -36,9 +36,9 @@ Craft guard:
 
 ## Commits
 
-1. `.[plans] — scaffold lib-arch-spw-theory planning artifacts`
-2. `.[lib-architecture] — add architecture/layout markdown and .spw support surfaces`
-3. `#[lib-architecture] — add architecture theory-check lint and wire package script`
+1. `.[plans] — scaffold lib-arch-spw-theory planning artifacts` (landed `46a2d573`)
+2. `.[lib-architecture] — add architecture/layout markdown and .spw support surfaces` (landed `a8d61a06`)
+3. `#[lib-architecture] — add architecture theory-check lint and wire package script` (landed `a8d61a06`)
 
 Fuzz strategy:
 - Explore: `FUZZ=boonhonk npx eslint scripts/analyzers/v020-lib-architecture-check.ts`
@@ -58,6 +58,6 @@ none
 ## Spw Artifact
 
 Create a distilled bridge at:
-- `.agents/plans/lib-arch-spw-theory/lib-arch-spw-theory.spw`
+- `.agents/plans/_archive/lib-arch-spw-theory/lib-arch-spw-theory.spw`
 
 This artifact captures the plane-axis model and falsifiability hooks for release reviewers.

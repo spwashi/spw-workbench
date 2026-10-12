@@ -66,17 +66,16 @@ Today, performance across the CLI's command and toolchain surfaces is measured a
 
 ## Commits
 
-1. `.[plans] — stage cli-benchmarking-infra planning artifacts`
-2. `#[bench] — add retained-sample statistics, outcome classes, and data models`
+1. `.[plans] — stage cli-benchmarking-infra planning artifacts` (landed, planning surfaces on main)
+2. `#[bench] — add retained-sample statistics, outcome classes, and data models under scripts/bench`
 3. `#[bench] — add synthetic, workbench, and identity-free consumer-shape workloads`
 4. `#[bench] — implement in-process and subprocess harness with first-event and profiling hooks`
-5. `#[bench] — add comprehensive benchmark suite across all 5 CLI command groups`
-6. `#[bench] — add TypeScript toolchain profiler and TS7 readiness matrix`
-7. `#[bench] — implement differential comparison, instrumented phase spans, and outcome-aware regression gate`
-8. `#[bench] — add multi-dimensional efficiency report generator (Markdown, Terminal, JSON, Spw)`
-9. `#[bench] — create unified runner CLI and wire package scripts`
-10. `![bench] — add test suite for stats math, harness, attribution, and reporters`
-11. `.[bench] — document benchmarking protocol, efficiency lattice, and runbook`
+5. `#[bench] — benchmark the first slice only: cold root help, one light command, and inspect source stage cadence with loaded-module receipts`
+6. `#[bench] — implement differential comparison, instrumented spans, and outcome-aware regression gate`
+7. `#[bench] — add efficiency report generator (Markdown, Terminal, JSON, Spw) and wire package scripts`
+8. `![bench] — add test suite for stats math, harness, attribution, and reporters`
+9. `#[bench] — widen to the remaining CLI command groups, then the TypeScript toolchain profiler and TS7 readiness matrix`
+10. `.[bench] — document benchmarking protocol, efficiency lattice, and runbook`
 
 Fuzz strategy:
 - Explore: `npm run bench:quick`

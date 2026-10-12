@@ -4,27 +4,27 @@ Create a visual 'Symmetry Explorer' instrument to visualize and validate D4/Z4 s
 
 ## Goal
 
-The user is exploring symmetry applications in `.spw` files (e.g., `symmetry-applications.spw`). To move beyond static text and "wonder blocks," this plan proposes a visual **instrument** using the `spw-css-dom-lab` skill. The instrument will allow real-time visualization of D4 transformations (rotations, reflections) applied to a 2x2 grid, bridging the gap between mathematical theory and visual experience.
+Rescoped 2026-10-12 (user decision: do not archive). The five surfaces under `.spw/applications/symmetry/` (shipped by `spw mount`) use `.{sym:D4}` and `.{sym:Z4}` facets as prose, but no code in `packages/spw-seed`, `spw-cli` or `spw-runtime` defines the group. The live slice is a pure, tested D4/Z4 module; a visual instrument is a later consumer, not the first deliverable.
 
 ## Scope
 
-- **In scope**: Create `src/ui/viz/symmetry-explorer.ts` (DOM/instrument logic); add `src/styles/viz/symmetry-explorer.css` (CSS transformations and animators); register the component as `[data-spw-component="symmetry-explorer"]`; integrate a basic D4 controller (buttons for R90, MX, MY).
-- **Out of scope**: Full integration with the Spw runtime bytecode, complex WebGL shaders, or multiplayer synchronization. This is a local "exhibit" for conceptual validation.
+- **In scope**: a pure D4/Z4 module (eight actions E, R90, R180, R270, MX, MY, MD1, MD2 acting on a 2x2 tile; composition table; inverses; Z4 as the rotation subgroup) under `packages/spw-seed/src/math/`, with vitest coverage; pointing the symmetry surfaces at it.
+- **Out of scope**: DOM/CSS instrument (home undecided, see `?[home]`), bytecode integration, WebGL, multiplayer.
 
 ## Files
 
-[NEW] `src/ui/viz/symmetry-explorer.ts`
-[NEW] `src/styles/viz/symmetry-explorer.css`
-[MOD] `src/ui/index.ts` (exporting the new instrument)
-[MOD] `src/styles/index.css` (importing the new styles)
-[NEW] `.agents/plans/symmetry-explorer-instrument/PLAN.md`
-[NEW] `.agents/plans/symmetry-explorer-instrument/wip.spw`
+[NEW] `packages/spw-seed/src/math/symmetry.ts` and `symmetry.test.ts` (name provisional)
+[MOD] `packages/spw-seed/src/math/index.ts`
+[MOD] `.spw/applications/symmetry/symmetry-applications.spw`
+[MOD] `.agents/plans/symmetry-explorer-instrument/wip.spw`
 
 ## Commits
 
-1. `viz[ui] — implement Symmetry Explorer DOM instrument and D4 state`
-2. `styles[ui] — add CSS transformation layer for D4 symmetry group`
-3. `exhibit[docs] — embed symmetry-explorer instrument in documentation context`
+1. `![seed] — failing tests for a D4/Z4 group: eight actions on a 2x2 tile, closure, inverses, Z4 as the rotation subgroup`
+2. `^seed[math] — add the pure D4/Z4 module under packages/spw-seed/src/math and export it`
+3. `.[symmetry] — point the five symmetry application surfaces at the module`
+
+The original three commits (viz[ui], styles[ui], exhibit[docs]) are dropped: their targets never existed in this history.
 
 ## Agentic Hygiene
 

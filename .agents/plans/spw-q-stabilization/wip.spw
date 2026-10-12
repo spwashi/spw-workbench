@@ -16,6 +16,7 @@
 
 ^["edges"]{
  needs: [~"../spw-cli-overhaul/wip.spw"]
+ shares: [~"../lukewarm-backlog/wip.spw"]
 }
 
 ^["roots"]{
@@ -86,18 +87,22 @@
  >>[2026-07-25 21:10] decide — replace ordinal E0/E1/E2 with observed, derived, and reported bases plus independent domains.
  >>[2026-07-25 21:10] scope — defer grammar, rewrite, REPL, and LSP implementation until the candidate contract is testable.
  >>[2026-07-25 22:00] verify — candidate contract, evidence types, seed tests, workspace build, docs lint, Spw validation, and diff hygiene pass; three explicit syntax decisions remain open before implementation.
+ >>[2026-10-12 14:28] revise — reconciled with git: commits 1-3 landed in b7c5c7df (differential.ts evidence has observed/derived basis plus provenance). A product pattern field exists in query/types.ts and match.ts (c33e81d3) but selector-expr.ts has no text spelling, so O1 narrowed to spelling only. Added commits 4-5 for the O1 spelling and its collision fixture. Spec section 10 also lists O4 and O5 that this plan does not track.
+ >>[2026-10-12 15:00] observe — spec section 10 lists O4 (bounded set of 0.x dialect versions) and O5 (JSONL header-record versus self-contained-record); opened ?[o4_dialect_versions] and ?[o5_jsonl_header]; routed from lukewarm-backlog ?[spwq_open_decisions].
 }
 
 ^["open"]{
- ?[O1]: "Choose an explicit product-predicate spelling that cannot collide with an operation label."
- ?[O2]: "Define child against semantic participants or literal AST wrappers before assigning its text spelling."
- ?[O3]: "Choose the persisted query-file declaration syntax for an exact Spw.q dialect version."
+ ?[O1]: "A product pattern field already exists in query/types.ts and match.ts, but selector-expr.ts has no text spelling for it: which spelling cannot collide with an operation label? Decides the first remaining commit."
+ ?[O2]: "Is `A > B` child defined over semantic participants or literal AST wrappers? Decides how selector-expr.ts parses the child combinator its header still lists as missing."
+ ?[O3]: "What is the persisted query-file declaration that pins an exact Spw.q dialect version? Decides what a stored query carries before any v1 promise."
+ ?[o4_dialect_versions]: "O4 (spec section 10): how many 0.x dialect versions must a single Spw.q parser accept, and where is the bound written? Tracked at ~"../lukewarm-backlog/wip.spw" ?[spwq_open_decisions]."
+ ?[o5_jsonl_header]: "O5 (spec section 10): does a JSONL stream open with a header record or is every record self-contained? Decides the exporter commit."
 }
 
 ^["commits"]{
- ~[1]: ".[spw-q] — reframe v1 proposal as a versioned experimental candidate"
- ~[2]: "vocab[seed] — replace ordinal epistemic grades with evidence provenance"
- ~[3]: "![spw-q] — verify evidence invariants and candidate cross-references"
+ # ~[1]..~[3] landed — see ^["done"]
+ ~[4]: "^seed[query] — spell the product predicate in selector-expr.ts once O1 is chosen"
+ ~[5]: "![spw-q] — fixture proving the product spelling cannot collide with an operation label"
 }
 
 ^["cache"]{
@@ -106,11 +111,14 @@
  ~#rebased_at: "not_rebased_dirty_main"
  ~#hygiene_split: "required_before_commit"
  ~#files_hot: "docs/design/spw-q-candidate-spec.md,packages/spw-seed/src/canonical/differential.ts,packages/spw-seed/src/query/selector-expr.ts"
- ~#next_commit: "1"
- ~#open_count: "3"
- ~#last_stream: "2026-07-25 22:00"
+ ~#next_commit: "4"
+ ~#open_count: "5"
+ ~#last_stream: "2026-10-12 15:00"
  ~#taste_debt: "Historical plan episodes retain E0/E1/E2; living doctrine migration remains bounded to directly affected surfaces."
 }
 
 ^["done"]{
+ ~#shipped: [
+  "b7c5c7df &[workbench] — integrate CLI and query contract foundations (~[1] candidate reframe, ~[2] evidence provenance, ~[3] verify)",
+ ]
 }

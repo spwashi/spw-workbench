@@ -92,20 +92,18 @@
  >>[2026-04-04 12:10] implement — added local-context provenance resolution with heuristic fallback and surfaced actor/source/confidence in both commit-gate and poll-review outputs.
  >>[2026-04-04 12:12] implement — added explicit `set-agent-context.sh` and `clear-agent-context.sh` helpers so wrappers and humans can author provenance directly instead of relying on env guesses.
  >>[2026-04-04 12:13] verify — shell parse checks passed for the new context helpers; in this sandbox the writer cannot persist hidden-path state, but resolver output stays clean and falls back to heuristic provenance as designed.
+ >>[2026-10-12 14:27] revise — Resolved ?[agent_source]: c4be2f46 added set-agent-context.sh and clear-agent-context.sh with a TTL-bound context file and a heuristic fallback, so SPW_AGENT alone is no longer the only source.
+ >>[2026-10-12 14:27] revise — Commits 1 to 4 reconciled to five landed hashes in done; commit 5 (docs) remains because the workflow doc still covers only the Touch ID prompt. Two open questions sharpened.
 }
 
 ^["open"]{
- ?[json_surface]: "Should the shared review runner emit JSON as a first-class artifact now, or only after the shell refactor lands?"
- ?[inspect_mode]: "Should inspect-before-authorize open `git diff --cached --stat`, full diff, or a focused risk summary first?"
- ?[agent_source]: "Is explicit `SPW_AGENT` enough for agent attribution, or should the wrapper persist a small context file for stronger provenance?"
+ ?[json_surface]: "Does any consumer need run-review to emit JSON, given poll-review already prints a spw-form card (source commit-review.poll), or is JSON dropped?"
+ ?[inspect_mode]: "Beyond the diffstat render-review.sh prints before authorization, should the gate offer an inspect step that opens the full staged diff, or is the diffstat the whole ceremony?"
 }
 
 ^["commits"]{
- ~[1]: ".[plans] — add commit-gate redesign plan surfaces"
- ~[2]: "&[commit-review] — extract shared review runner and commit-message validation"
- ~[3]: "&[commit-review] — add summary renderer and informed authorization flow"
- ~[4]: "&[commit-review] — unify poll-review with shared engine and harden agent attribution"
- ~[5]: ".[docs] — update commit-review skill and workflow documentation"
+ # ~[1]..~[4] landed — see ^["done"]
+ ~[5]: ".[docs] — document the run, render, authorize ceremony and the set-agent-context helpers in .agents/workflows/commit-review.md (it still describes only the Touch ID prompt) and in the skill"
 }
 
 ^["cache"]{
@@ -115,10 +113,12 @@
  ~#hygiene_split: "none"
  ~#files_hot: "scripts/pre-commit, scripts/commit-msg, scripts/commit-review/run-review.sh, scripts/commit-review/validate-commit-message.sh, scripts/commit-review/lib/agent-context.sh"
  ~#next_commit: "5"
- ~#open_count: "3"
- ~#last_stream: "2026-04-04 12:13"
+ ~#open_count: "2"
+ ~#last_stream: "2026-10-12 14:27"
  ~#taste_debt: "poll-review still has duplicated staged review logic, and inspect-before-authorize branching remains unimplemented"
 }
 
 ^["done"]{
+ ~#shipped: ["f9c73daf .[plans] — add commit-gate redesign plan surfaces", "03983755 &[commit-review] — extract shared review runner and commit-message validation", "76160302 &[commit-review] — add summary renderer and informed authorization flow", "c4be2f46 &[commit-review] — add local context provenance with heuristic fallback", "37b6f42b &[commit-review] — unify staged poll-review and refresh hook runtime"]
+ ~#resolved(agent_source): "Is explicit SPW_AGENT enough for agent attribution, or should the wrapper persist a context file? — a context file with TTL via set-agent-context.sh plus heuristic fallback; evidence: c4be2f46"
 }

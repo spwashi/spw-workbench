@@ -15,19 +15,19 @@
 }
 
 ^["edges"]{
- needs: [~"../query-profile/wip.spw"]
- feeds: [~"../construction-onf/wip.spw", ~"../operational-topography/wip.spw"]
+ needs: [~"../../query-profile/wip.spw"]
+ feeds: [~"../construction-onf/wip.spw", ~"../../operational-topography/wip.spw"]
  shares: [~"../noun-postfix-containers/wip.spw"]
 }
 
 ^["roots"]{
  @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
- @plan: ~".agents/plans/construction-worlds/PLAN.md"
+ @plan: ~".agents/plans/_archive/construction-worlds/PLAN.md"
  @worlds: ~"docs/research/spw/construction-worlds.spw"
  @focus: ~"docs/research/spw/navigable-focus.spw"
  @query_profile: ~".agents/plans/query-profile/query-profile.spw"
  @topography: ~".agents/plans/operational-topography/operational-topography.spw"
- @noun: ~".agents/plans/noun-postfix-containers/PLAN.md"
+ @noun: ~".agents/plans/_archive/noun-postfix-containers/PLAN.md"
  @normalize: ~"packages/spw-seed/src/normalize.ts"
  @cite: ~"packages/spw-cli/src/cite.ts"
  @inspect: ~"packages/spw-cli/src/inspect.ts"
@@ -100,15 +100,15 @@
 ^["stream"]{
  >>[2026-09-05 14:10] decide — "Split from query-profile. This branch records construction-worlds and navigable-focus only."
  >>[2026-09-05 14:10] observe — "AST postfix attachments survive parse; ONF still projects x[a]{b} to identifier x."
+ >>[2026-10-12 14:29] revise — Planned commit 1 landed as 9bcf96f5; moved to done. Closed onf_attachments: ONF now retains head, source-ordered attachments and AST spans (55c16e3b via construction-onf), and construction-worlds.spw already marks construction_onf implemented. The validation hypothesis that x[a]{b} normalizes to x holds only as a historical measurement at f2e5b61b. focus_record stays open: first_patch in navigable-focus.spw lists its tests but no code ships it.
 }
 
 ^["open"]{
- ?[onf_attachments]: "When should ONF retain Expression.frame, body, scope, and capsule?"
  ?[focus_record]: "What is the smallest inspect/cite/follow round-trip for a revision-addressed selection?"
 }
 
 ^["commits"]{
- ~[1]: ".[research,plans] — record construction worlds and navigable focus"
+ # ~[1] landed — see ^["done"]
 }
 
 ^["cache"]{
@@ -117,11 +117,15 @@
  ~#rebased_at: "2026-09-05"
  ~#hygiene_split: "query-profile"
  ~#files_hot: ""
- ~#next_commit: "1"
- ~#open_count: "2"
- ~#last_stream: "2026-09-05 14:10"
+ ~#next_commit: "none"
+ ~#open_count: "1"
+ ~#last_stream: "2026-10-12 14:29"
  ~#taste_debt: ""
 }
 
 ^["done"]{
+ ~#shipped: [
+  "9bcf96f5 .[research,plans] — record construction worlds and navigable focus",
+ ]
+ ~#resolved(onf_attachments): "When should ONF retain Expression.frame, body, scope, and capsule? — now, as structural ONF with source-ordered attachments and AST spans; evidence: 55c16e3b (plan construction-onf), stream 2026-10-12"
 }

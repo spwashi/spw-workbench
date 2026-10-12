@@ -11,7 +11,7 @@
  gist: "Runtime constants and stages carry @spw:axis traces that reviewers read back to design axes."
  touches: [~"packages/spw-runtime/src/state", ~"packages/spw-runtime/src/pipeline", ~"scripts/analyzers/spw-marker-audit.ts"]
  entry: ~"./runtime-axis-traceability.spw"
- next: "Commit 3: add packages/ to spw-marker-audit SCAN_ROOTS so the landed @spw:axis markers surface (today --tag=axis finds 0)."
+ next: "Commit 3: make spw-marker-audit report which of the six axes have zero @spw:axis markers; today the 9 markers name only timing and stability among them."
 }
 
 ^["edges"]{
@@ -67,52 +67,44 @@
  >>[2026-03-27 14:34] revise — broaden the branch from simple marker insertion to traceability as a review surface: runtime choices should be readable by DX and governance work, not only runtime maintainers.
  >>[2026-03-27 14:35] implement — rewrote branch memory around roots, concept indexing, and recursive improvement; added a branch-local artifact so axis language can be reviewed as a system rather than scattered comments.
  >>[2026-03-27 14:36] taste — a good axis trace should help a future reviewer ask a better question, not merely reassure them that the author had one.
+ >>[2026-10-12 14:25] revise — reconciled with git: ~[1] and ~[2] landed together in 82da41d4; the scan-roots half of ~[3] landed in 1f17c86e and the audit now reports 9 axis markers. Remaining ~[3] narrowed to a six-axis coverage report. Open question marker_format resolved: code uses inline @spw:axis[key=value] - prose in doc comments (paired form). Added axis_vocabulary.
+ >>[2026-10-12 14:25] observe — the 9 landed markers use keys timing, stability, layer, representation and quality; none names disclosure, affect, resolution or noise although the plan intent lists six axes. Wonders rewritten to one coverage question.
+ >>[2026-10-12 14:31] revise — convention: resolved questions and landed commits are kept in ^["done"] (resolved(label) and shipped) rather than deleted; ^["commits"] keeps a pointer comment.
 }
 
 ^["open"]{
- ?[marker_format]: "Should axis traces prefer inline `@spw:axis(...)` markers, adjacent prose comments, or a paired form with both machine and human readability?"
+ ?[axis_vocabulary]: "Do the layer=, representation= and quality= keys on the landed markers count as the six axes (timing, stability, disclosure, affect, resolution, noise), or should the audit flag them as foreign keys?"
  ?[granularity]: "Do we trace the individual constant, the surrounding block, or the public behavior that the block protects?"
 }
 
 ^["commits"]{
- ~[1]: ".[runtime] — trace RegisterBank logic to stability and timing axes"
- ~[2]: ".[runtime] — trace Substrate and stages to disclosure, noise, and resolution axes"
- ~[3]: "![infra] — enhance marker audit to recognize axis traces and review drift"
+ # ~[1]..~[2] landed — see ^["done"]
+ ~[3]: "![audit] — spw-marker-audit lists the six axes with marker counts and flags unknown axis keys"
 }
 
 ^["cache"]{
- ~#status: "planning"
+ ~#status: "landed"
  ~#base_ref: "main@3b1747c4"
  ~#rebased_at: "2026-03-27"
  ~#hygiene_split: "none"
  ~#files_hot: "packages/spw-runtime/src/state/register-bank.ts, packages/spw-runtime/src/pipeline/substrate.ts, packages/spw-runtime/src/pipeline/stages.ts, scripts/analyzers/spw-marker-audit.ts"
- ~#next_commit: "1"
+ ~#next_commit: "3"
  ~#open_count: "2"
- ~#last_stream: "2026-03-27 14:36"
+ ~#last_stream: "2026-10-12 14:31"
  ~#taste_debt: "axis markers should earn their keep by reducing explanation effort during review"
 }
 
 ^["done"]{
- # Written at merge time.
- # ~#shipped: []
- # ~#dropped: []
- # ~#surprised: ""
- # ~#duration: ""
- # ~#taste: ""
+ ~#shipped: ["82da41d4 docs[runtime] — trace core logic to design axes with @spw:axis markers", "1f17c86e ![audit] — scan packages in the marker audit; describe boonhonk truthfully"]
+ ~#resolved(marker_format): "Should axis traces prefer inline @spw:axis markers, adjacent prose comments, or a paired form? — the code uses inline @spw:axis[key=value] - prose in doc comments, a paired form; evidence: stream 2026-10-12 revise, packages/spw-runtime/src/state/register-bank.ts"
+ ~#dropped: []
 }
 
 #>wonder_agents_plans_runtimeaxistraceability_wip_1
-?["Which runtime behavior becomes most discussable once its axis is named?"]{
-  #:depth #!educational // lens: literature transfer
-  $^["concept_index"]@here => $^["recursive_improvement"]@here
-  !probe{ "pick one constant or guard and ask what question a reviewer can finally ask once the axis is visible." }
-  $%[runtime.stage, runtime.queue_depth]
-}
-
-#>wonder_agents_plans_runtimeaxistraceability_wip_2
-?["How do markers avoid becoming decorative in this branch?"]{
-  #:depth #!computational // lens: audit discipline
-  $^["development"]@here => $^["commits"]@here
-  !probe{ "if a marker disappeared, what explanation burden would return? if none, the marker was ornamental." }
-  ~<.agents/plans/runtime-axis-traceability/runtime-axis-traceability.spw>
+?["Which of disclosure, affect, resolution and noise has a runtime constant that deserves a marker, given that none of the 9 landed markers names them?"]{
+  #:depth #!computational // lens: audit coverage
+  $^["open"]@here => $^["commits"]@here
+  ~#hypothesis: "at most one of the four has a real constant behind it; the rest would be ornamental if added now."
+  !probe{ "npm run audit:markers -- --tag=axis lists the 9 markers; then grep the runtime for thresholds, clamps and caps in packages/spw-runtime/src/state and pipeline and ask for each whether disclosure, affect, resolution or noise explains why it exists." }
+  $%[axis.marker_count, axis.unmarked_constants]
 }

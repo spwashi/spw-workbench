@@ -86,19 +86,15 @@
  >>[2026-07-25 22:15] verify — producer provenance is pinned to the CLI package version by test; final CLI suite passes 143/143 and workspace typecheck passes.
  >>[2026-07-25 23:41] fix — aligned runtime integration assertions with the routed pulse, mutate, beat, select, and semantic-frame contracts; resolved 4 failures.
  >>[2026-07-25 23:42] verify — fuzz:ship passes: build plus 763 seed, runtime, CLI, harness, and DOM tests.
+ >>[2026-10-12 14:28] revise — reconciled commits with git: all six landed together in b7c5c7df; moved to done. Envelope is used by inventory, map, and inspect-source only; sharpened json_migration to name the cli-mode-overhaul handoff decision. Phase is landed so no wonders added.
 }
 
 ^["open"]{
- ?[json_migration]: "Plan the all-command envelope migration after the v1 wire schema is validated on invent and map."
+ ?[json_migration]: "Does cli-mode-overhaul commit 4 (envelope v1 mode and ceiling fields) also carry the all-command migration, given only inventory, map, and inspect-source use the envelope today, or does it get its own plan? Decides whether this plan archives now."
 }
 
 ^["commits"]{
- ~[1]: "#[cli] — add standardized JSON response envelope and CLI error builder"
- ~[2]: "vocab[cli] — unify flag parsing helpers and unknown flag validation in args.ts"
- ~[3]: "&[cli] — refactor subcommands to use standard envelope and unified flag parser"
- ~[4]: "&[cli] — remove legacy scripts and shims, clean package.json scripts"
- ~[5]: ".[cli] — add caching architecture plan for corpus scanning and queries"
- ~[6]: "![cli] — verify full test suite across CLI package and workspace"
+ # ~[1]..~[6] landed — see ^["done"]
 }
 
 ^["cache"]{
@@ -109,9 +105,12 @@
  ~#files_hot: "packages/spw-cli/src/args.ts,packages/spw-cli/src/envelope.ts,package.json,docs/design/spw-cli-cache-plan.md,.spw/harness/evals/baseline-evals.spw"
  ~#next_commit: "6"
  ~#open_count: "1"
- ~#last_stream: "2026-07-25 23:42"
+ ~#last_stream: "2026-10-12 14:28"
  ~#taste_debt: "Remaining JSON commands still emit legacy shapes; migrate them as a separate atomic protocol change."
 }
 
 ^["done"]{
+ ~#shipped: [
+  "b7c5c7df &[workbench] — integrate CLI and query contract foundations (~[1] envelope, ~[2] flag parsing, ~[3] invent/map migration, ~[4] legacy script removal, ~[5] cache plan, ~[6] full verify)",
+ ]
 }

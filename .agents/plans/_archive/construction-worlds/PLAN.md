@@ -16,15 +16,15 @@ Taste note: improve **claim discipline** — probes and first patches are named;
 ## Files
 
 ```
-[NEW] .agents/plans/construction-worlds/PLAN.md
-[NEW] .agents/plans/construction-worlds/wip.spw
+[NEW] .agents/plans/_archive/construction-worlds/PLAN.md
+[NEW] .agents/plans/_archive/construction-worlds/wip.spw
 [NEW] docs/research/spw/construction-worlds.spw
 [NEW] docs/research/spw/navigable-focus.spw
 [MOD] docs/research/index.spw
 [MOD] docs/toc.spw
 [MOD] .agents/plans/operational-topography/operational-topography.spw
 [MOD] .agents/plans/operational-topography/wip.spw
-[MOD] .agents/plans/noun-postfix-containers/wip.spw
+[MOD] .agents/plans/_archive/noun-postfix-containers/wip.spw
 [MOD] .agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw
 ```
 
@@ -35,7 +35,7 @@ Research surfaces stay claim-sized. No parser, runtime, or CLI source edits.
 ## Commits
 
 ```
-1. .[research,plans] — record construction worlds and navigable focus
+1. .[research,plans] — record construction worlds and navigable focus (landed as `9bcf96f5`)
 ```
 
 Fuzz strategy: parse-validate the new research and plan surfaces. No runtime test run; this branch does not change executables.

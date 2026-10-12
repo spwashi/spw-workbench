@@ -7,11 +7,11 @@
 #:layer #!pragmatics
 
 !["card"]{
- phase: #stranded
- gist: "workspace.spw configures beat TTLs and diff precipitation; hot write beats reload registers live."
- touches: [~"packages/spw-lsp/src/server-index.ts", ~"packages/spw-lsp/src/workspace-authority.ts", ~".spw/workspace.spw", ~"extensions/neovim-spw/lua/spw"]
+ phase: #planning
+ gist: "LSP cache-tier TTLs are read from the cache.spw tiers authority instead of constants in server-index.ts."
+ touches: [~"packages/spw-lsp/src/server-index.ts", ~"packages/spw-lsp/src/workspace-authority.ts", ~".spw/biome/ocean/algos/cache.spw"]
  entry: ~"./PLAN.md"
- next: "Human disposition: re-scope onto request-epoch retention in the shared cache block plus ChangeReport, or archive as superseded."
+ next: "Pin the drift in a failing test: server-index WARM_TTL and COLD_TTL must equal ttlBeats of warm and cold in cache.spw ^\"tiers\"."
 }
 
 ^["edges"]{
@@ -27,7 +27,7 @@
 }
 
 ^["intent"]{
- ~#goal: "Implement configurable beat mechanics, multi-layered diff analysis (object/property/line), state precipitation, and live hot-reloading loop."
+ ~#goal: "Make the LSP retention tiers obey their declared authority (cache.spw ^\"tiers\"), consume ChangeReport for any diff-driven invalidation, and keep stateReload and the Neovim listener dormant until a consumer asks."
  ~#taste: "Self-describing workspace authority, zero un-indexed I/O, deterministic state diffing."
 }
 
@@ -80,29 +80,42 @@
  >>[2026-07-26 20:18] observe — Designed workspace.spw organelle schema for beat_config, diff_analysis, and precipitation.
  >>[2026-07-26 20:19] decide — Feature plan initialized for configurable beat, diff engine, state precipitation, and hot reload.
  >>[2026-07-27 13:10] observe — plan-ecology sweep: this plan and apposition-cache-granules both edit server-index.ts and both add a workspace config block. surface-identity.spw rules one shared ^"cache"{} block rather than a beat block and a cache block; reconcile before commit 1.
+ >>[2026-10-12 14:32] revise — reconciled commits with the tree: none of ~[1] to ~[4] landed (beat_config, diff_analysis and stateReload appear nowhere; TTLs are constants in server-index.ts). ~[3] superseded by ChangeReport, which pulse.ts, delta.ts and workspace-cache.ts already use. Added disposition question and a ~[5] disposition commit; cache status set to stranded.
+ >>[2026-10-12 14:52] decide — User decision 2026-10-12: rescope, do not archive. Live slice is making LSP tier TTLs obey cache.spw tiers authority (8/64/256 declared, 64/256 hardcoded in server-index.ts). Diff layer stays with ChangeReport; stateReload and Neovim listener go dormant.
 }
 
 ^["open"]{
+ ?[tier_authority]: "Should TTLs be read at server start from cache.spw ^\"tiers\" ttlBeats (hot 8, warm 64, cold 256), or should the constants stay and a test only assert they match the authority?"
+ ?[hot_ttl]: "cache.spw declares hot ttlBeats 8 but server-index.ts only mentions hot in a comment and never expires hot documents (open docs stay hot); is the hot TTL meant to demote closed-but-recent documents, or is the authority line aspirational?"
+ ?[invalidate_by_changereport]: "Would invalidating a document tier on a ChangeReport that is not layoutOnly beat today's recompute-on-didChange, and where is the measurement that says so?"
+ ?[precipitates_vs_beats]: "Runtime precipitates (spw-runtime pipeline/stages.ts) are per-stage artifacts of one run, not beat-driven state; is the name state precipitation still wanted for the LSP, or should this plan stop using it?"
 }
 
 ^["commits"]{
- ~[1]: ".[spw,workspace] =beat[configuration] — add beat_config and diff_analysis organelles to workspace schema"
- ~[2]: "&[spw-lsp] *beat[telemetry-ttl] — make beat TTLs configurable and emit $spw/stateReload on hot write beats"
- ~[3]: "![spw-lsp] *diff[precipitation] — implement object/property/line diffing and state precipitation pipeline"
- ~[4]: "&[neovim] =surface[hot-reload] — add $spw/stateReload listener and live register overlay statusline"
+ # Landed nothing yet. Rescoped 2026-10-12 (user decision: do not archive). Old commits are recorded in ^["done"] ~#dropped and ~#resolved.
+ # ~[1]: DROPPED — beat_config and diff_analysis organelles in workspace.spw; surface-identity.spw wants one cache block and cache.spw ^"tiers" already holds the TTLs
+ # ~[2]: REPLACED by ~[2] below — configurable TTLs now come from cache.spw, no $spw/stateReload
+ # ~[3]: SUPERSEDED — ChangeReport in the seed covers lex and nest-path diffs
+ # ~[4]: DORMANT — Neovim stateReload listener; reheat only if a consumer needs push reload
+ # ~[5]: SHIPPED-AS-SUPERSEDED — disposition record, answered by this rescope
+ ~[1]: "![lsp] — failing test: server-index WARM_TTL and COLD_TTL equal ttlBeats in cache.spw ^\"tiers\""
+ ~[2]: "&[lsp] — read tier TTLs from the cache.spw authority via workspace-authority; keep 64 and 256 as the fallback"
+ ~[3]: ".[plans] — reconcile with apposition-cache-granules so granule policy and tier TTLs share one authority"
 }
 
 ^["cache"]{
  ~#status: "planning"
- ~#base_ref: "main@d9da60ad0bbfd90ebaa5742709f162b61f041bae"
- ~#rebased_at: ""
+ ~#base_ref: "main@551bb419"
+ ~#rebased_at: "2026-10-12"
  ~#hygiene_split: "none"
- ~#files_hot: "packages/spw-lsp/src/server-index.ts,packages/spw-lsp/src/types.ts"
+ ~#files_hot: "packages/spw-lsp/src/server-index.ts,.spw/biome/ocean/algos/cache.spw"
  ~#next_commit: "1"
- ~#open_count: "0"
- ~#last_stream: "2026-07-27 13:10"
+ ~#open_count: "4"
+ ~#last_stream: "2026-10-12 14:52"
  ~#taste_debt: ""
 }
 
 ^["done"]{
+ ~#resolved(disposition): "Re-scope onto the shared cache block plus ChangeReport, or archive? — re-scoped by the user on 2026-10-12; evidence: cache.spw ^\"tiers\" declares ttlBeats 8/64/256 while server-index.ts hardcodes WARM_TTL 64 and COLD_TTL 256, so the drift is live"
+ ~#dropped: ["beat_config and diff_analysis organelles in workspace.spw", "multi-layer object/property/line diff engine in the LSP (ChangeReport already exists in spw-seed canonical/change-report.ts)", "$spw/stateReload broadcast and Neovim :SpwStateReload (dormant, reheat on a push-reload consumer)"]
 }

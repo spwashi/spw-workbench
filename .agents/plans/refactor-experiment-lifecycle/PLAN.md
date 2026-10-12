@@ -127,15 +127,15 @@ select → plan → materialize intermediate → review → apply → verify →
 
 ## Commits
 
-1. `.[refactor] — plan refactor-experiment-lifecycle artifacts`
-2. `vocab[seed] — spw.refactor.plan/1 types, hash, check`
-3. `![seed] — refactor-plan tests (stale hash, conflict, compose)`
-4. `#[cli] — selection corpus + plan/check from semantic rules`
-5. `&[cli] — hash-gated apply workspace + receipt envelope`
-6. `^[cli] — worktree apply (l1) + episode commit helper`
-7. `#[cli] — bias/experiment surface → plan compile`
-8. `.[docs] — refactor-experiment + pulse-mutate matrix`
-9. `#[lsp]? — WorkspaceEdit from plan (optional follow-on)`
+1. landed (da5189bb) — `.[refactor] — plan refactor-experiment-lifecycle artifacts`
+2. `vocab[seed] — selection contentHash and a stale-refusing check on spw.refactor.plan/1` (the plan card landed in 75d8f9d2 without hashes)
+3. `![seed] — refactor-plan tests for stale hash, conflict and compose`
+4. `#[cli] — selection corpus and plan/check from semantic rules`
+5. `&[cli] — hash-gated workspace apply and receipt envelope`
+6. `&[cli] — worktree apply (l1) and episode commit helper`
+7. `#[cli] — bias/experiment surface compiles to a plan`
+8. `.[docs] — refactor-experiment and pulse-mutate matrix`
+9. `#[lsp] — WorkspaceEdit from plan (optional follow-on)`
 
 ## Fuzz strategy
 

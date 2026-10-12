@@ -7,15 +7,16 @@
 #:layer #!pragmatics
 
 ~["card"]{
- phase: #dormant
- gist: "Five HTML/CSS spec labs turn web-platform precedents into reusable Spw page heuristics."
- touches: [~".agents/skills/spw-css-dom-lab", ~"docs/design/md/dom-css-testing-harness.md", ~"docs/design/spw/theme-progression.spw"]
+ phase: #planning
+ gist: "Five HTML/CSS labs under docs/learn/labs, each paired with a jsdom check, own the shared lab format."
+ touches: [~"docs/learn", ~"docs/design/md/dom-css-testing-harness.md", ~"docs/design/spw/theme-progression.spw", ~"src/testing/dom-css-harness.ts"]
+ will_touch: [~"docs/learn/labs/html-css"]
  entry: ~"./PLAN.md"
- next: "Reheat with a stream entry, then scaffold Lab 1.01 (html and body roots) in a new .agents/skills/spw-css-dom-lab/labs/."
+ next: "Commit 1: create docs/learn/labs with the format README, a format-lint test, vitest.labs.config.ts and npm run test:labs; then Lab 1.01 as commit 2."
 }
 
 ^["edges"]{
- feeds: [~"../audit-css-tokens/wip.spw", ~"../audit-data-attributes/wip.spw", ~"../ecosystem-surface-governance/wip.spw"]
+ feeds: [~"../audit-css-tokens/wip.spw", ~"../audit-data-attributes/wip.spw", ~"../ecosystem-surface-governance/wip.spw", ~"../curriculum-html-svg-mastery/wip.spw", ~"../curriculum-logic-terminal-mastery/wip.spw"]
 }
 
 ^["roots"]{
@@ -77,112 +78,54 @@
  qualities: [#rigor, #transfer, #page_judgment]
 }
 
+^["lab_format"]{
+ # Shared by all three curricula. This plan owns it; the svg and logic-terminal plans link here and may not fork it without a revise entry here.
+ ~#owner: "curriculum-html-css-mastery"
+ ~#home: "docs/learn/labs/<curriculum>/ with <curriculum> one of html-css, html-svg, logic-terminal; docs/learn already holds path.md, cheat-sheet.md, worked-cli.md and index.spw, so labs join the learnability spine"
+ ~#pair: "each lab is NN-slug.md plus NN-slug.check.test.ts in the same directory; a lab without its check does not ship"
+ ~#sections: "Precedent, Spw reflection, Repo pattern reviewed, Experiment, Check (the five headings a format-lint test asserts, matching the PLAN.md scope rule of precedent plus reflection plus repo review plus one heuristic)"
+ ~#protocol: "hypothesis, switch, probe, instrumentation follow .agents/skills/spw-css-dom-lab/references/experiment-protocol.md; that skill stays a protocol and is not the lab directory"
+ ~#tiers: "a Check names its tier per claim: structural (jsdom DOM and selector facts), pure (plain TypeScript math or parsing), or browser (stated in prose and attested by hand, never auto-passed)"
+ ~#runner: "npm run test:labs, a new vitest.labs.config.ts including docs/learn/labs/**/*.test.ts, jsdom by default with a per-file node environment override"
+ ~#order: "html-css commits 1 and 2 first (they create the home and prove the pair); svg commit 2 and logic-terminal commit 2 may then run in parallel; later labs are independent inside each curriculum"
+}
+
 ^["stream"]{
  >>[2026-02-20 02:22] observe — The user wants an incremental deep dive into HTML and CSS language specs to build web mastery, acting as a springboard for novel Spw relationships.
  >>[2026-02-20 02:22] decide — Structuring the plan into 5 focused 'Labs'. Each lab contrasts a raw web standard (the precedent) with a Spw paradigm (the innovation).
  >>[2026-03-28 09:47] implement — added references/index.spw and richer development frames so HTML, ARIA, CSS layout/query/value/time sources become topical anchors, source-map carriers, and reusable discussion subjects rather than implicit reading homework.
+ >>[2026-10-12 14:25] revise — Collapsed 50 lesson-stub commits to 7 work units (hygiene preflight, five lab files, one design fold-in); git history shows no labs/ directory ever landed under spw-css-dom-lab, so none of the 50 had shipped. Lesson list kept as ~#covers. Replaced two template wonders with a precedent audit of the repo's CSS.
+ >>[2026-10-12 14:54] decide — reheat these curricula, 2026-10-12
+ >>[2026-10-12 14:54] revise — Reheated to planning. Lab home docs/learn/labs/html-css; this plan owns the shared lab format (md plus colocated check test, test:labs runner, three verification tiers). Commits revised to 8 with Lab 1.01 as commit 2; hygiene preflight dropped; precedent audit and jsdom capability probe re-run and recorded.
 }
 
 ^["open"]{
-}
-
-^["commits"]{
- # --- Phase 1: DOM Semantics vs. Spw Ontologies ---
- ~[1..10]: {
- ~[1]: "^seed[curriculum] — scaffold Lab 1.01" ~#focus: "DOM Semantics (html and body roots)"
- ~[2]: "^seed[curriculum] — scaffold Lab 1.02" ~#focus: "DOM Semantics (Document metadata head, meta, link)"
- ~[3]: "^seed[curriculum] — scaffold Lab 1.03" ~#focus: "DOM Semantics (Sectioning roots article, nav, etc.)"
- ~[4]: "^seed[curriculum] — scaffold Lab 1.04" ~#focus: "DOM Semantics (Text content main, div, p, lists)"
- ~[5]: "^seed[curriculum] — scaffold Lab 1.05" ~#focus: "DOM Semantics (Inline text a, em, strong)"
- ~[6]: "^seed[curriculum] — scaffold Lab 1.06" ~#focus: "DOM Semantics (Advanced forms fieldset, input)"
- ~[7]: "^seed[curriculum] — scaffold Lab 1.07" ~#focus: "DOM Semantics (Interactive details, dialog)"
- ~[8]: "^seed[curriculum] — scaffold Lab 1.08" ~#focus: "DOM Semantics (Tabular data table, tbody)"
- ~[9]: "^seed[curriculum] — scaffold Lab 1.09" ~#focus: "DOM Semantics (Embedded content picture, video)"
- ~[10]: "^seed[curriculum] — scaffold Lab 1.10" ~#focus: "Formulating Spw Ontologies from HTML5 semantics"
- }
-
- # --- Phase 2: CSS Topology vs. Spw Containment ---
- ~[11..20]: {
- ~[11]: "^seed[curriculum] — scaffold Lab 2.01" ~#focus: "CSS Topology (Normal flow & block formatting)"
- ~[12]: "^seed[curriculum] — scaffold Lab 2.02" ~#focus: "CSS Topology (Flexbox 1D alignment)"
- ~[13]: "^seed[curriculum] — scaffold Lab 2.03" ~#focus: "CSS Topology (Grid 2D coordinates)"
- ~[14]: "^seed[curriculum] — scaffold Lab 2.04" ~#focus: "CSS Topology (display: contents & flattening)"
- ~[15]: "^seed[curriculum] — scaffold Lab 2.05" ~#focus: "CSS Topology (Subgrid metric inheritance)"
- ~[16]: "^seed[curriculum] — scaffold Lab 2.06" ~#focus: "CSS Topology (Absolute/Fixed strata)"
- ~[17]: "^seed[curriculum] — scaffold Lab 2.07" ~#focus: "CSS Topology (Sticky positioning constraints)"
- ~[18]: "^seed[curriculum] — scaffold Lab 2.08" ~#focus: "CSS Topology (Z-index stacking contexts)"
- ~[19]: "^seed[curriculum] — scaffold Lab 2.09" ~#focus: "CSS Topology (Container Queries & intrinsic sizing)"
- ~[20]: "^seed[curriculum] — scaffold Lab 2.10" ~#focus: "Formulating Spw Containment/Strata from CSS Topology"
- }
-
- # --- Phase 3: CSS Calculus vs. Spw Valence ---
- ~[21..30]: {
- ~[21]: "^seed[curriculum] — scaffold Lab 3.01" ~#focus: "CSS Calculus (Custom Properties --var)"
- ~[22]: "^seed[curriculum] — scaffold Lab 3.02" ~#focus: "CSS Calculus (calc() responsive algebra)"
- ~[23]: "^seed[curriculum] — scaffold Lab 3.03" ~#focus: "CSS Calculus (min(), max(), clamp())"
- ~[24]: "^seed[curriculum] — scaffold Lab 3.04" ~#focus: "CSS Calculus (Trigonometry sin, cos, tan)"
- ~[25]: "^seed[curriculum] — scaffold Lab 3.05" ~#focus: "CSS Calculus (Exponential & logarithmic)"
- ~[26]: "^seed[curriculum] — scaffold Lab 3.06" ~#focus: "CSS Calculus (Color functions oklch, color-mix)"
- ~[27]: "^seed[curriculum] — scaffold Lab 3.07" ~#focus: "CSS Calculus (Relative colors & palettes)"
- ~[28]: "^seed[curriculum] — scaffold Lab 3.08" ~#focus: "CSS Calculus (attr() mapping DOM to CSS types)"
- ~[29]: "^seed[curriculum] — scaffold Lab 3.09" ~#focus: "CSS Calculus (Environment variables env())"
- ~[30]: "^seed[curriculum] — scaffold Lab 3.10" ~#focus: "Formulating Spw Valence via CSS Math Interpolation"
- }
-
- # --- Phase 4: CSS Queries vs. Spw Introspection ---
- ~[31..40]: {
- ~[31]: "^seed[curriculum] — scaffold Lab 4.01" ~#focus: "CSS Queries (The Cascade & @layer)"
- ~[32]: "^seed[curriculum] — scaffold Lab 4.02" ~#focus: "CSS Queries (Attribute substring matching)"
- ~[33]: "^seed[curriculum] — scaffold Lab 4.03" ~#focus: "CSS Queries (Structural pseudo-classes)"
- ~[34]: "^seed[curriculum] — scaffold Lab 4.04" ~#focus: "CSS Queries (UI state pseudo-classes)"
- ~[35]: "^seed[curriculum] — scaffold Lab 4.05" ~#focus: "CSS Queries (Relational :has() parent selection)"
- ~[36]: "^seed[curriculum] — scaffold Lab 4.06" ~#focus: "CSS Queries (Logical combinators :is, :where, :not)"
- ~[37]: "^seed[curriculum] — scaffold Lab 4.07" ~#focus: "CSS Queries (Media queries @media context)"
- ~[38]: "^seed[curriculum] — scaffold Lab 4.08" ~#focus: "CSS Queries (Feature queries @supports)"
- ~[39]: "^seed[curriculum] — scaffold Lab 4.09" ~#focus: "CSS Queries (Scope encapsulation @scope)"
- ~[40]: "^seed[curriculum] — scaffold Lab 4.10" ~#focus: "Formulating Spw Introspection via CSS Selectors"
- }
-
- # --- Phase 5: CSS Time vs. Spw Navigation ---
- ~[41..50]: {
- ~[41]: "^seed[curriculum] — scaffold Lab 5.01" ~#focus: "CSS Time (Transitions, durations, delays)"
- ~[42]: "^seed[curriculum] — scaffold Lab 5.02" ~#focus: "CSS Time (Cubic-bezier physics)"
- ~[43]: "^seed[curriculum] — scaffold Lab 5.03" ~#focus: "CSS Time (Keyframe procedural loops)"
- ~[44]: "^seed[curriculum] — scaffold Lab 5.04" ~#focus: "CSS Time (Animation additive blending)"
- ~[45]: "^seed[curriculum] — scaffold Lab 5.05" ~#focus: "CSS Time (Scroll timelines scroll-timeline-name)"
- ~[46]: "^seed[curriculum] — scaffold Lab 5.06" ~#focus: "CSS Time (View timelines for intersection)"
- ~[47]: "^seed[curriculum] — scaffold Lab 5.07" ~#focus: "CSS Time (Scroll snapping alignments)"
- ~[48]: "^seed[curriculum] — scaffold Lab 5.08" ~#focus: "CSS Time (View Transitions API morphing)"
- ~[49]: "^seed[curriculum] — scaffold Lab 5.09" ~#focus: "CSS Time (State machines via :target & :checked)"
- ~[50]: "^seed[curriculum] — scaffold Lab 5.10" ~#focus: "Formulating Spw Temporal Navigation via CSS Time"
- }
+ ?[writerside_scope]: "Does npm run lint:docs (writerside-check) accept new .md files under docs/learn/labs without a Writerside topic entry? Answer by running it after commit 1; unblocks the home choice staying at docs/learn/labs."
+ ?[browser_only]: "Are browser-tier claims (calc, oklch, layout, scroll timelines) attested by a hand-written line in the lab, or does the toolchain gain a real browser? No browser package was found in node_modules on 2026-10-12. Unblocks commits 4 to 7 and the same tier in the svg plan."
 }
 
 ^["cache"]{
  ~#status: "planning"
- ~#base_ref: "main@b41caa6b"
- ~#rebased_at: "2026-03-28"
- ~#files_hot: ".agents/plans/curriculum-html-css-mastery/, .agents/plans/curriculum-html-css-mastery/references/, .agents/skills/spw-css-dom-lab/labs/"
+ ~#base_ref: "main@551bb419"
+ ~#rebased_at: "2026-10-12"
+ ~#files_hot: ".agents/plans/curriculum-html-css-mastery/"
  ~#next_commit: "1"
- ~#open_count: "0"
- ~#last_stream: "2026-03-28 09:47"
+ ~#open_count: "2"
+ ~#last_stream: "2026-10-12 14:54"
  ~#taste_debt: "keep each lab braided around page muscles and transfer questions rather than turning the plan into a standards catalog"
 }
 
-#>wonder_agents_plans_curriculumhtmlcssmastery_wi_1
-?["What concept is conspicuously absent from wip — curriculum-html-css-mastery?"]{
-  #:depth #!stylistic // lens: curated collection
-  ~#present: [#experiential, #computational]
-  ~#expected_but_missing: "?" // the reader fills this gap
-  !probe{ "list what IS annotated; list what sibling files annotate; the difference is this file's blind spot or intentional boundary." }
-  $%[plan.commit_count, plan.phase_progress]
+^["done"]{
+ ~#dropped: "commit 1 hygiene preflight (rebase and isolate drift) — replaced by base_ref main@551bb419 and by commit 1 creating a new directory that no other work touches; dropped 2026-10-12"
+ ~#resolved(precedent_audit): "Does the repo own CSS already use the precedents behind Labs 2, 4, 5? — no; re-run 2026-10-12 of the grep over docs packages extensions src for @container, :has(, animation-timeline, scroll-timeline, view-transition, subgrid in css, html, ts, tsx listed zero files; color-mix or oklch matched 4 files (installable-book season.css, style.css, substrate.css, and atlas-html.ts), so only Lab 3 has repo precedent; evidence: stream 2026-10-12; consequence: Labs 2, 4, 5 review a repo pattern by contrast, naming the absence, and that scope rule is stated in the lab Repo pattern reviewed section"
+ ~#resolved(format_owner): "Which plan owns the shared lab format? — this one, because it has the existing DOM harness and the critical path; evidence: decision 2026-10-12, the lab_format frame"
 }
 
 #>wonder_agents_plans_curriculumhtmlcssmastery_wi_2
-?["How does intent teach stream — curriculum-html-css-mastery/wip?"]{
-  #:depth #!educational // lens: living system
-  $^["intent"] => $^["stream"] // trace the edge
-  &[@layer, @media] // confluence of references
-  !probe{ "draw the relationship: is it containment, reference, or emergent? does reversing the direction change meaning?" }
+?["Which of the five labs' lesson families can jsdom 26 check structurally, and which return only the authored text?"]{
+  #:depth #!computational // lens: capability probe
+  ~#hypothesis: "selectors and custom-property reads check structurally; calc, var, oklch, layout and timelines do not resolve"
+  ~#observed: "one scratch run on 2026-10-12 with the repo jsdom: width set by calc(var(--a)*10px) read back as the unresolved calc text, color oklch(0.7 0.1 200) read back as the authored text, a :has(>p) rule applied its margin, and a custom property read as 2; @layer and @container were not exercised"
+  !probe{ "for one fixture per lesson family in Labs 2 to 5, call createDomCssFixture and cssValue, and record whether the value is resolved, authored text, or empty; the result fixes each Check tier before commits 4 to 7" }
   $%[plan.commit_count, plan.phase_progress]
 }

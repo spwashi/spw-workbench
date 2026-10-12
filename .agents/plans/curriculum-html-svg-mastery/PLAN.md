@@ -10,7 +10,7 @@ This is a page-design rung in the current ecology. The labs should leave behind 
 
 ## Scope
 
-- **In scope**: Designing a 50-commit curriculum grouped into 5 distinct phases of 10 commits each (`.agents/skills/spw-css-dom-lab/labs-svg/`). Each phase requires reading specific W3C/MDN specs (SVG2, Paths, Filter Effects, SMIL), writing raw SVG directly in the DOM tree, establishing Spw reflections, reviewing at least one current repo pattern or visual surface alongside the external spec, and naming at least one experiment or heuristic worth carrying into a future exhibit or editor surface.
+- **In scope**: Designing a 50-commit curriculum grouped into 5 distinct phases of 10 commits each (`docs/learn/labs/html-svg/`). Each phase requires reading specific W3C/MDN specs (SVG2, Paths, Filter Effects, SMIL), writing raw SVG directly in the DOM tree, establishing Spw reflections, reviewing at least one current repo pattern or visual surface alongside the external spec, and naming at least one experiment or heuristic worth carrying into a future exhibit or editor surface.
 - **Out of scope**: Building production Spw application features, writing Canvas/WebGL wrappers, or acting as a hidden launch dependency. These exercises remain declarative DOM/SVG research and formation work.
 
 ## The Curriculum Sequence
@@ -32,7 +32,7 @@ Deep dive into the `<foreignObject>` spec, nesting the HTML renderer back inside
 
 ## Agentic Hygiene
 
-- **Rebase target**: `main@3b1747c4` (updated 2026-03-27)
+- **Rebase target**: `main@551bb419` (updated 2026-10-12)
 - **Rebase cadence**: rebase before commit 1 and again before merge
 - **Hygiene split**: isolate unrelated out-of-scope drift into `feature/curriculum-html-svg-mastery-agentic-hygiene` before implementation commits
 
@@ -40,11 +40,11 @@ Deep dive into the `<foreignObject>` spec, nesting the HTML renderer back inside
 
 Predicted file scaffolding:
 ```
-[NEW] .agents/skills/spw-css-dom-lab/labs-svg/01-coordinates-strata.md
-[NEW] .agents/skills/spw-css-dom-lab/labs-svg/02-paths-geometry.md
-[NEW] .agents/skills/spw-css-dom-lab/labs-svg/03-filters-valence.md
-[NEW] .agents/skills/spw-css-dom-lab/labs-svg/04-smil-temporal.md
-[NEW] .agents/skills/spw-css-dom-lab/labs-svg/05-foreignobject-containment.md
+[NEW] docs/learn/labs/html-svg/01-coordinates-strata.md
+[NEW] docs/learn/labs/html-svg/02-paths-geometry.md
+[NEW] docs/learn/labs/html-svg/03-filters-valence.md
+[NEW] docs/learn/labs/html-svg/04-smil-temporal.md
+[NEW] docs/learn/labs/html-svg/05-foreignobject-containment.md
 [MOD] docs/design/spw/theme-stage-0-snapshots.spw
 [MOD] .spw/patterns/literate-ui.spw
 ```
@@ -53,12 +53,15 @@ Predicted file scaffolding:
 
 Preflight: `&[hygiene] — rebase onto origin/main and isolate unrelated drift before implementation commits`
 
-1. `^seed[curriculum] — scaffold Lab 1.01` (DOM Structure properties)
-2. `^seed[curriculum] — scaffold Lab 1.02` (Viewport and User Space)
-3. `^seed[curriculum] — scaffold Lab 1.03` (viewBox aspect ratios)
-... (Extrapolated sequentially through Lab 5.10)
+1. `&[hygiene] — rebase onto main and isolate unrelated drift before lab commits`
+2. `^seed[curriculum] — scaffold labs-svg/01-coordinates-strata.md (coordinate lab plus strata reflection)` (svg context dimensions; user space vs viewport; viewBox; preserveAspectRatio; group transforms and matrices; nested svg; absolute vs relative positioning; use; defs and shadow trees; viewBox-to-strata reflection)
+3. `^seed[curriculum] — scaffold labs-svg/02-paths-geometry.md (path lab plus AST-to-bezier reflection)` (path d foundation; M L H V; relative commands; cubic C S; quadratic Q T; arcs A; stroke properties; fill rules; markers; logical-AST-to-continuous-bezier reflection)
+4. `^seed[curriculum] — scaffold labs-svg/03-filters-valence.md (filter lab plus shader reflection)` (filter regions; feGaussianBlur; feColorMatrix; feBlend and feComposite; feTurbulence; displacement maps; lighting; morphology; feComponentTransfer; filters-as-WebGL-free-shaders reflection)
+5. `^seed[curriculum] — scaffold labs-svg/04-smil-temporal.md (SMIL lab plus temporal-flow reflection)` (animate; animateMotion; animateTransform; path morphing; keyTimes and keySplines; event-synchronized begin; repeat and fill; additive and accumulate; CSS animation interop; state-machines-to-temporal-flow reflection)
+6. `^seed[curriculum] — scaffold labs-svg/05-foreignobject-containment.md (foreignObject lab plus containment reflection)` (foreignObject spec; HTML inside SVG; stacking contexts; pointer events; text wrapping; filters on HTML; scroll contexts; form controls in spatial nodes; masking and clipping; text-editors-in-skewed-nodes reflection)
+7. `.[design] — record reusable geometry snippets in theme-stage-0-snapshots.spw and literate-ui.spw`
 
-*(See `wip.spw` for the fully unrolled 50-commit syllabus)*
+Collapsed from 50 lesson-stubs to the real work units. No labs-svg file exists yet; the lesson list now lives in ~#covers. Commit 1 is the hygiene preflight.
 
 ## Dependencies
 
@@ -92,3 +95,7 @@ Preflight: `&[hygiene] — rebase onto origin/main and isolate unrelated drift b
 ## Spw Artifact
 
 A formal `.spw` artifact mapping raw W3C SVG specifications to corresponding architectural concepts within the Spw compilation pipeline.
+
+## Reheated 2026-10-12
+
+The live commit list, shared lab format, verification tiers and open questions are in wip.spw (the commits and lab_format frames); the shared format is owned by curriculum-html-css-mastery. Lab home: docs/learn/labs/html-svg/. The commit list above predates the reheat where the two differ.

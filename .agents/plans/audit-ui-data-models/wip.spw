@@ -1,124 +1,114 @@
 # wip — audit-ui-data-models
 # Branch: feature/audit-ui-data-models
 # Started: 2026-02-20
+# Rescoped: 2026-10-12 from the lost src/core/models layout onto the sigil semantics table in the LSP and VS Code extension
 
 #>plan_audit_ui_data_models
-#:plan #!curriculum_formation
+#:plan #!projection_feedback
 #:layer #!pragmatics
 
-~["card"]{
- phase: #stranded
- gist: "Implicit UI state becomes typed algebras in which illegal states are unrepresentable."
- touches: [~"packages/spw-seed/src/query/types.ts", ~"extensions/vscode-spw/src/semantics.ts", ~"docs/theory/spw/register-geometry.spw"]
+@["card"]{
+ phase: #planning
+ gist: "The sigil semantics table is keyed by the closed OperatorKind union, with one owner and a coverage test."
+ touches: [~"packages/spw-lsp/src/server-index.ts", ~"extensions/vscode-spw/src/semantics.ts", ~"packages/spw-seed/src/types/token.ts"]
  entry: ~"./PLAN.md"
- next: "Human disposition: src/core/models and src/ui/elements never existed here (touches keep only surviving MOD targets); re-scope to seed query types, relocate to a site repo, or archive."
-}
-
-^["edges"]{
- feeds: [~"../audit-data-attributes/wip.spw"]
- shares: [~"../audit-css-tokens/wip.spw"]
+ next: "Answer ?[ext_table_reader], then land ~[1]: a test that the LSP SIGIL_SEMANTICS covers every OperatorKind."
 }
 
 ^["roots"]{
  @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
  @plan: ~".agents/plans/audit-ui-data-models/PLAN.md"
+ @code: ~"packages/spw-lsp/src/server-index.ts"
  @pattern: ~".spw/patterns/literate-ui.spw"
- @workspace: ~".spw/workspace.spw"
 }
 
 ^["intent"]{
- ~#goal: "Elevate UI component interactions by turning implicit developer logic into a 26-commit curriculum on mathematical data models. Actively develop taste in modeling 'Valence', 'Topology', and 'State Machines'."
- ~#taste: "correctness, clarity, and expressiveness through the rigorous application of Algebraic Data Types and pure modeling."
+ ~#goal: "Make the sigil semantics table a typed algebra: keyed by OperatorKind, phase a closed union, one owner imported by every host, and a test that proves the coverage the code comment already claims."
+ ~#taste: "correctness and clarity: unknown sigils and phases become unrepresentable, and a comment that says 'validated' is backed by a check."
 }
 
 ^["development"]{
- lane: #curriculum_formation
- ladder: #component
- develops: [#state_modeling, #naming_judgment, #boundary_taste, #transfer]
- review_surfaces: [@cluster, @plan, @pattern, @workspace]
- snippet_routes: [#model_note, #state_example, #audit_excerpt, #boundary_rule]
+ lane: #projection_feedback
+ ladder: #language
+ develops: [#state_modeling, #naming_judgment, #boundary_taste]
+ review_surfaces: [@cluster, @plan, @code, @pattern]
+ snippet_routes: [#model_note, #boundary_rule]
 }
 
 ^["concept_index"]{
- primary: [#ui, #data_models, #state, #projections, #cache, #contracts]
- surfaces: [#ui, #runtime, #docs, #audit]
- tensions: [#model_overlap, #terminology_drift, #state_leakage, #concept_density]
- transfers: [#component, #page, #service]
+ primary: [#sigil, #operator_kind, #semantics_table, #hover, #phase]
+ surfaces: [#lsp, #vscode, #seed]
+ tensions: [#duplicated_table, #terminology_drift, #stale_comment]
+ transfers: [#component, #service]
 }
 
 ^["recursive_improvement"]{
  loop: [
-  "? reread current state and projection surfaces before adding more model categories",
-  "< ship one clearer model distinction or naming boundary",
-  "$ record which UI or runtime surface became easier to discuss",
-  "^ feed the stable vocabulary into later components, pages, and service plans",
-  "% keep audits grounded in real state behavior rather than ontology fantasy",
+  "? reread both tables and their readers before changing a key",
+  "< ship one type or one deletion per commit",
+  "$ record which hover or probe lookup became total",
+  "^ feed the closed union back to the seed token types",
+  "% keep the hover text identical across the change",
  ]
- gates: [#model_truth, #naming_clarity, #transfer]
+ gates: [#model_truth, #naming_clarity, #host_parity]
 }
 
 ^["stream"]{
+ # Append entries chronologically. Never edit prior entries.
+ # >>[YYYY-MM-DD HH:MM] <type> — <content>
  >>[2026-02-20 03:09] observe — The codebase contains implicit "developer knowledge"—rules about how UI states interact that exist only in component logic rather than explicit type systems or data models.
  >>[2026-02-20 03:09] decide — We need to audit specific UI *clusters* (e.g., the keyboard, settings panels, shaders) to extract this knowledge into formalized Spw-centric data structures.
  >>[2026-02-20 05:40] revise — Expanded plan to 26 commits, restructuring the UI audits into a masterclass on 'Valence Algebras', 'Topological Intents', and 'Visual Calculus'.
  >>[2026-07-27 13:15] observe — plan-ecology sweep: every predicted path targets src/core/models/, which no longer exists in this repo. src/ now holds only runtime, seed, and testing shims. This plan is stranded on a deleted layout, not in progress — disposition (relocate to a site repo, re-scope against packages/, or archive as superseded) is a user call.
+ >>[2026-10-12 14:32] observe — re-ground: the typed-algebra surface that survives is the sigil semantics tables. extensions/vscode-spw/src/semantics.ts and packages/spw-lsp/src/server-index.ts each export SIGIL_SEMANTICS as Record<string, SigilSemantic> with free-string role, physics, and phase. Run against both: extension 25 keys, LSP 14; extension-only are 14 math symbols, LSP-only are $, <>, and _; all 11 shared ASCII sigils differ in at least one field. OperatorKind in the seed token types has 13 members, so neither table is keyed by it.
+ >>[2026-10-12 14:32] revise — commits trimmed from the copied 26 to ~[1]..~[3] and ~[26], re-aimed at the two SIGIL_SEMANTICS tables; ~[4]..~[25] target src/core/models and src/ui/elements (settings panel, keyboard, shader inspector, editor), none of which exist, and are marked DROPPED. Disposition stays a human call, tracked in hygiene-index-consolidation ?[stranded_fate].
+ >>[2026-10-12 14:57] decide — User decided on 2026-10-12 to rescope this plan rather than archive it
+ >>[2026-10-12 14:57] observe — Correction to the 14:32 note: ran a tsx script importing both SIGIL_SEMANTICS tables. The 11 shared ASCII keys have identical role, physics, and phase; only key sets differ and the LSP adds phaseIndex and tuning. The LSP table covers all 13 OperatorKind members plus the underscore key, but its comment claiming satisfies ensures full coverage is wrong because satisfies checks only Record of string. A grep finds no reader of the extension copy beyond its definition and wiring.
+ >>[2026-10-12 14:57] revise — Rescoped to planning on the sigil table: goal is a table keyed by OperatorKind with a coverage test. The pinning-differences commit and shared-owner commit are replaced by 4 new commits; the old edges to the two audit plans are removed since no files overlap. Three questions open, one wonder on the unreachable two-character key.
 }
 
 ^["open"]{
+ # Unresolved questions. Remove when resolved (log resolution in stream first).
+ ?[ext_table_reader]: "Does anything in extensions/vscode-spw read ctx.SIGIL_SEMANTICS (a grep finds only its type, its context field, and the extension.ts wiring), so the extension copy can be deleted? Unblocks ~[4]."
+ ?[math_symbols]: "Are the 14 math-symbol entries (arrows, quantifiers, set operators) wanted for a future hover, so they move into the shared table, or are they dead? Unblocks the key set of ~[2] and ~[3]."
+ ?[underscore_kind]: "Should the LSP-only sigil _ join OperatorKind in the seed token types, or stay an LSP-local key? Unblocks the key type in ~[2]."
 }
 
 ^["commits"]{
- ~[1]: "&[models] — baseline: establish the directory for pure algebraic UI models"
- ~[2]: "vocab[models] — define rigorous Valence and InteractionMode branded unions"
- ~[3]: "vocab[models] — define the standard Spw StateMachine interface signature"
- ~[4]: "&[ui/settings] — audit: extract implicit 'Atmosphere' and 'Mode' strings from Settings Panel"
- ~[5]: "&[models] — define the AtmosphereAlgebra for theme and mode transitions"
- ~[6]: "&[ui/settings] — refactor Settings Panel to consume formal Atmosphere models"
- ~[7]: "![ui/settings] — write exhaustive unit tests for Atmosphere state transitions"
- ~[8]: "&[ui/kbd] — audit: extract geometric and traversal intents from Keyboard mappings"
- ~[9]: "vocab[models] — define GeologyIntent for spatial AST movement (Up, Down, Enter, Exit)"
- ~[10]: "&[ui/kbd] — refactor Keyboard event translators to emit pure GeologyIntents"
- ~[11]: "&[ui/kbd] — audit: extract Vim-style composed actions (Operator + Motion)"
- ~[12]: "vocab[models] — define the ComposedActionAlgebra for keyboard chords"
- ~[13]: "&[ui/kbd] — refactor Vim helper functions to use the new ComposedActionAlgebra"
- ~[14]: "![ui/kbd] — verify structural pattern matching for all spatial keyboard inputs"
- ~[15]: "&[ui/shaders] — audit: extract visual parameters from Shader Inspector"
- ~[16]: "vocab[models] — define rigorous ShaderParameterAST models (Bloom, Grain, Displacement)"
- ~[17]: "&[ui/shaders] — refactor Shader Inspector UI controls to dispatch AST updates"
- ~[18]: "&[models] — map ShaderParameterAST explicitly back to the CSS/Valence token systems"
- ~[19]: "![ui/shaders] — verify uniform generation from pure AST structures"
- ~[20]: "&[ui/editor] — audit: extract Workspace state (Idle, Editing, Command Palette) into pure models"
- ~[21]: "vocab[models] — define the WorkspaceStateMachine discriminated union"
- ~[22]: "&[ui/editor] — refactor workspace controllers to transition via explicit state machine ticks"
- ~[23]: "&[models] — build the integration tying WorkspaceMode to Atmosphere and Keyboard contexts"
- ~[24]: "![ui/editor] — verify illegal UI states are mathematically unrepresentable at compile time"
- ~[25]: ".[docs] — construct the UI Algebra Visualizer panel for the workbench"
- ~[26]: ".[docs] — write the curriculum: 'Developing Taste in UI Data Algebras'"
+ # Old ~[1]..~[3] are replaced (the premise that the shared fields disagree was wrong, see ^["done"]); old ~[4]..~[26] are in ^["done"] ~#dropped.
+ ~[1]: "![lsp] — add a test that SIGIL_SEMANTICS has an entry for every OperatorKind (a Record<OperatorKind, true> fixture makes the compiler check the list)"
+ ~[2]: "vocab[lsp] — export a closed SigilKey union and an isSigil guard, and key SIGIL_SEMANTICS by it; correct the satisfies comment, which names a coverage check the code does not perform"
+ ~[3]: "vocab[lsp] — type phase as a closed union of the 7 spirit phases plus the six named non-phase strings (binding, observe, meta, access, query, identity), so an unknown phase is unrepresentable"
+ ~[4]: "&[vscode-spw] — delete the extension copy of SIGIL_SEMANTICS, its SigilSemantic interface, and the context field, if ?[ext_table_reader] finds no reader"
 }
 
 ^["cache"]{
- ~#status: "stranded"
+ ~#status: "planning"
+ ~#base_ref: "main@551bb419"
+ ~#rebased_at: "2026-10-12"
  ~#files_hot: ""
  ~#next_commit: "1"
- ~#open_count: "0"
- ~#last_stream: "2026-07-27 13:15"
+ ~#open_count: "3"
+ ~#last_stream: "2026-10-12 14:57"
  ~#taste_debt: ""
 }
 
-#>wonder_agents_plans_audituidatamodels_wip_1
-?["What invariant holds across every frame in wip — audit-ui-data-models?"]{
-  #:depth #!computational // lens: living system
-  $^["_"]@here => %[shared.property]
-  ~#hypothesis: "all frames in this file share ____"
-  !probe{ "extract the property common to every frame in this file; if none exists, the file may lack cohesion or may be a deliberate collection." }
-  $%[plan.commit_count, plan.phase_progress]
+^["done"]{
+ # Written at merge time, and incrementally while the plan runs.
+ ~#dropped: [
+  "~[4]..~[25] (original) — Atmosphere, GeologyIntent, ShaderParameterAST, and workspace state machines targeted src/core/models and src/ui/elements, which no longer exist (logged in stream 2026-10-12)",
+  "~[1]..~[3] (original) — a test pinning field differences between the two tables, a closed-union retype, and a shared owner; the 14:32 premise of differing fields was wrong, so the pinning test and shared-owner commit are replaced by the new ~[1]..~[4]",
+  "~[26] (original) — curriculum prose 'Developing Taste in UI Data Algebras'; reopen as a .[docs] note after ~[3] lands if wanted",
+ ]
+ ~#resolved(sigil_tables): "Which sigil facts does the extension's SIGIL_SEMANTICS state differently from the LSP's? — none of the shared ones: the 11 shared ASCII keys (^ ! ? ~ @ & * = % # .) carry identical role, physics, and phase strings; the 14:32 claim that all 11 differ is wrong. The real differences are key sets (extension 25 keys with 14 math symbols the LSP lacks; LSP 14 keys with $, <>, _ the extension lacks) and that the LSP entries add phaseIndex and tuning; evidence: tsx script importing both tables and diffing per field, 2026-10-12"
+ ~#resolved(operator_coverage): "Does either table cover every OperatorKind? — the LSP table covers all 13 members (! ^ ~ ? * = @ # . & $ % <>) plus _; the extension table lacks $ and <>; the LSP comment says 'satisfies ensures full coverage' but its satisfies clause is Record<string, SigilSemantic>, which checks no coverage; evidence: same tsx script and packages/spw-lsp/src/server-index.ts lines 143-160, 2026-10-12"
+ ~#resolved(ext_table_use): "Is the extension copy the source of hover text? — hover reads the LSP table (display.ts line 633); a grep of extensions/vscode-spw/src finds the extension SIGIL_SEMANTICS only at its definition, the SigilSemantic type, the context.ts field, and the extension.ts wiring; whether any dynamic read exists is still ?[ext_table_reader]; evidence: grep, 2026-10-12"
 }
 
-#>wonder_agents_plans_audituidatamodels_wip_2
-?["What was wip — audit-ui-data-models before it was this, and what could it become?"]{
-  #:depth #!mathematical // lens: curated collection
-  ~#past: "git log --oneline -- .agents/plans/audit-ui-data-models/wip.spw | head -3"
-  ~#future: "what frame would you add next?"
-  !probe{ "the file's git history IS its evolutionary record; the next natural frame reveals the author's trajectory." }
+#>wonder_audit_ui_data_models_two_char_key
+?["Can the LSP's <> entry ever be reached, given that the lookups at display.ts lines 463 and 633 index SIGIL_SEMANTICS by a single source character?"]{
+  #:depth #!computational // lens: key reachability
+  ~#hypothesis: "no: both call sites use source[i] or charAtPos, one character wide, so the two-character <> key is dead and only getSigilSemantic callers can reach it"
+  !probe{ "list keys of length greater than one in SIGIL_SEMANTICS (packages/spw-lsp/src/server-index.ts), then grep every SIGIL_SEMANTICS[ and getSigilSemantic( call site in packages/spw-lsp/src and check what string each passes; a call site that can pass '<>' falsifies the hypothesis" }
   $%[plan.commit_count, plan.phase_progress]
 }

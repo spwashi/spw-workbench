@@ -15,8 +15,8 @@ The desired end state is a prompt surface that can be read in three passes: imag
 
 ```text
 [MOD] prompts/image.prompt.spw
-[NEW] .agents/plans/image-prompt-split/PLAN.md
-[NEW] .agents/plans/image-prompt-split/wip.spw
+[NEW] .agents/plans/_archive/image-prompt-split/PLAN.md
+[NEW] .agents/plans/_archive/image-prompt-split/wip.spw
 [DEL] (none)
 ```
 
@@ -26,9 +26,9 @@ The desired end state is a prompt surface that can be read in three passes: imag
 
 ## Commits
 
-1. `.[prompts] — plan image prompt surface split into brief, renderer profile, and emit`
-2. `&[prompts] — restructure image prompt into semantic and renderer layers`
-3. `.[prompts] — tighten emitted prompt guidance and model notes`
+1. `.[prompts] — plan image prompt surface split into brief, renderer profile, and emit` (landed `73775143`)
+2. `&[prompts] — restructure image prompt into semantic and renderer layers` (landed `73775143`)
+3. `.[prompts] — tighten emitted prompt guidance and model notes` (landed `73775143`)
 
 Fuzz strategy:
 - Explore loop: `fuzz:explore --target=prompts`

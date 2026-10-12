@@ -7,11 +7,11 @@
 #:layer #!pragmatics
 
 @["card"]{
- phase: #dormant
+ phase: #planning
  gist: "Cursor probe sites (%mass, !probe, wonder, $%) get LSP actions that VS Code and Neovim both project."
  touches: [~"packages/spw-lsp/src/handlers", ~"extensions/vscode-spw/src", ~"extensions/neovim-spw/lua/spw/commands.lua"]
  entry: ~"./vscode-authoring-probe-loop.spw"
- next: "Re-scope against landed formContext actions (a999a24f) and Form/Stack/Cache probes (a71d066c) before new commands."
+ next: "First slice: >>[ stamp completion served by spw-lsp from the manifest clock, failing fixture first; re-scope commands 2 to 6 against landed formContext actions (a999a24f) and Form/Stack/Cache probes (a71d066c) before building them."
 }
 
 ^["edges"]{
@@ -146,12 +146,25 @@
  >>[2026-07-21] observe — form-geometry mobility/HOF and pulse CLI land; authoring should consume form-geometry-editor actions rather than invent client geometry.
  >>[2026-07-21] decide — prioritize formContext + mobility code actions over phantom phaseContext/operatorFrequency until those methods are earned for a hard surface need.
  >>[2026-10-12 12:47] observe — Consumer review (pin 229aedcf): stream entries need a manifest-clock stamp, entry hover and order diagnostics; plan folders need status, gate and the wonder question in hover; triggers should act at typing, creating, saving and index-ready, never on a timer. Re-checked on main: the stream snippet still asks for a typed timestamp. Added as PLAN.md slices; the card stays dormant until re-scoped against a999a24f.
+ >>[2026-10-12 14:53] note — Received rehomed intents from command-experience-tools: rehomed_intents frame, two open questions, commits 7 and 8.
+ >>[2026-10-12 14:55] decide — User decided 2026-10-12 to reheat this plan from dormant to planning. First slice is stamp completion after the stream marker, served by spw-lsp from the manifest clock.
+}
+
+^["rehomed_intents"]{
+ # Received 2026-10-12 from command-experience-tools (phase #done there); its src/core and src/ui targets no longer exist, so only intents that map to extensions/vscode-spw and packages/spw-lsp are kept.
+ source: ~"../_archive/command-experience-tools/wip.spw"
+ ~#kept(palette_routing): "Each command says whether it lives in the palette, a code lens, hover, atlas, or the CLI; the extension already contributes about 20 spw.* and spwConcepts.* commands in package.json, so no custom CommandBus is needed — the routing decision is the real remainder and joins ?[command_budget]"
+ ~#kept(concept_lookup): "Concept lookup is a gap check, not a new service: extensions/vscode-spw/src/views/concepts-tree.ts already groups annotations by concept, kind, file and phase; the open point is whether Definition, Sigil and Valence readings are reachable by tree node or hover (see ?[concept_lookup_gap])"
+ ~#kept(previewable_manipulation): "Manipulation intents are semantic-edit patches (packages/spw-seed/src/canonical/semantic-edit.ts, selector-addressed) previewed before accept; spw.planCorpusRefactor and spw.renameSymbol in extensions/vscode-spw/src/instruments/commands.ts are the existing precedents, and the preview shape is owned by vscode-editor-contract"
+ ~#dropped: ["CommandBus and command-intents models in src/core", "command-palette and concept-reference DOM elements in src/ui", "object-inspector and visual AST manipulation (speculative; no preview or undo story)", "the 26-commit marathon"]
 }
 
 ^["open"]{
  ?[command_budget]: "Which run/probe commands deserve first-class status-bar presence versus command-palette-only exposure?"
  ?[regex_fallback_fidelity]: "How reliable is regex look-back for spirit-sequence phase detection in practice? Should the authoring loop block on seed phase-context extraction or ship with regex and upgrade later?"
  ?[commit_trigger]: "Should a commit trigger listing plans whose files_hot the commit touched exist at all, or is a stream entry always a deliberate act?"
+ ?[concept_lookup_gap]: "Which of Definition, Sigil and Valence readings have no concepts-tree node or hover today? (from command-experience-tools)"
+ ?[manipulation_commands]: "Should semantic-edit patches become palette commands that open a differential preview before accept, or stay behind spw.planCorpusRefactor until the preview payload is contract-owned? (from command-experience-tools)"
  ?[files_hot_lens]: "Should a plan's files_hot drive a lens at line 1 of every file it names, or is a plan-per-file lens too much on camera?"
 }
 
@@ -162,6 +175,8 @@
  ~[4]: "&[vscode-authoring] — add probe/run commands, operator-frequency heat, and editor status surfaces"
  ~[5]: "&[vscode-authoring] — wire cross-surface events and SpwContext fields"
  ~[6]: "![vscode-authoring] — verify compile and authoring-loop interaction paths"
+ ~[7]: "!probe[vscode] — list concepts-tree node kinds and hover coverage against Definition, Sigil and Valence readings; record uncovered kinds (from command-experience-tools)"
+ ~[8]: "&[vscode-authoring] — only after the vscode-editor-contract preview payload exists: register semantic-edit manipulation commands that show a differential preview before accept (from command-experience-tools)"
 }
 
 ^["cache"]{
@@ -171,8 +186,8 @@
  ~#hygiene_split: "required-before-implementation"
  ~#files_hot: ".agents/plans/vscode-authoring-probe-loop/, .agents/plans/form-geometry-editor/, extensions/vscode-spw/src/extension.ts, packages/spw-lsp/src/handlers/editing.ts, packages/spw-seed/src/canonical/form-geometry.ts"
  ~#next_commit: "1"
- ~#open_count: "4"
- ~#last_stream: "2026-10-12 12:47"
+ ~#open_count: "6"
+ ~#last_stream: "2026-10-12 14:55"
  ~#taste_debt: "phase/probe copy must disclose grades; geometry actions must use seed apply() not client regex"
 }
 

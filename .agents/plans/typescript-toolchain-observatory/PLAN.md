@@ -54,9 +54,9 @@ Craft guard:
 
 ## Commits
 
-1. `.[plans] — stage typescript-toolchain-observatory planning artifacts`
-2. `#[toolchain] — add local TypeScript profile and configuration-matrix runners`
-3. `#[versions] — add stable vs preview/native TypeScript version-matrix support and result capture`
+1. LANDED in b41caa6b: `.[plans] — stage typescript-toolchain-observatory planning artifacts`
+2. MOVED to typescript-perf-audit-infra commit 2 (profile and configuration runner)
+3. MOVED to typescript-perf-audit-infra commit 3 (version matrix)
 4. `#[projection] — emit JSON, Markdown, and .spw projections from toolchain experiments`
 5. `&[release] — inspect jsdist, declaration outputs, and pack surfaces across toolchain variants`
 6. `.[docs] — publish observatory protocol, interpretation guide, and release-implication notes`

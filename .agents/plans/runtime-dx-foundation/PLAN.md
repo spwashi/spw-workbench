@@ -60,42 +60,16 @@ Taste note: improve **clarity** and **correctness** with explicit contracts, str
 
 ## Commits
 
-Each commit produces an externally-visible artifact (error code, CLI flag, status indicator, documentation section). More granular commits create more contact surfaces for external developers.
-Commit 1 is the serialization point for naming and station contracts. After that lands, seed, LSP, CLI, and editor slices can advance in parallel while runtime instrumentation trails as the deeper debugging lane.
+Dormant. The original twenty station-by-station commits were a template; only slices with a concrete code target today are kept. Commit 11 (`spw doctor`) landed in 0d3d82cc.
 
-### Station: Diagnostic Registry
-1. `#[dx-diagnostics] — define diagnostic ID registry and station attribution contract (SPW-SEED-*, SPW-RT-*, SPW-LSP-*, SPW-CLI-*)`
+1. `#[dx-diagnostics] — station registry: station ids and the SPW-<STATION>-<NNN> shape, with doctor's check ids as the first entries`
+3. `&[seed] — a stable code per grammar rule on parse errors`
+4. `![seed] — malformed .spw fixtures show the code in parse error output`
+8. `&[lsp] — set Diagnostic.code and a next-action message from the station code in handlers/analysis.ts`
+13. `&[cli] — spw doctor gains a check for LSP launch, with a test case`
+14. `&[vscode] — Spw output channel carrying station-attributed diagnostics`
 
-### Station: Seed (parser/lexer)
-2. `&[seed] — add parse timing hooks to spw-seed parser entry points`
-3. `&[seed] — add structured error codes to lexer and grammar failures`
-4. `![seed] — verify diagnostic codes appear in parse error output for malformed .spw files`
-
-### Station: Runtime (pipeline/substrate/resonance)
-5. `&[runtime] — wire diagnostic station hooks through pipeline and substrate`
-6. `&[runtime] — add resonance cycle instrumentation with opt-in timing`
-7. `![runtime] — verify diagnostic propagation through substrate event chain`
-
-### Station: LSP (server diagnostics + telemetry)
-8. `&[lsp] — propagate structured diagnostics from seed/runtime to LSP responses`
-9. `&[lsp] — add performance telemetry to LSP context (parse duration, response latency)`
-10. `![lsp] — smoke test: LSP diagnostic payloads carry station codes and timing`
-
-### Station: CLI (installation troubleshooting)
-11. `&[cli] — add spw doctor subcommand for installation health check`
-12. `&[cli] — add --diagnostics flag to existing commands for verbose station output`
-13. `![cli] — verify spw doctor reports: parser loaded, LSP reachable, extension connectable`
-
-### Station: Editor (VS Code integration)
-14. `&[vscode] — add Spw output channel with structured diagnostic log`
-15. `&[vscode] — add status bar indicator for LSP connection health and parse performance`
-16. `&[vscode] — add settings validation with actionable error messages`
-17. `![vscode] — verify output channel shows station-attributed diagnostics during editing`
-
-### Station: Documentation
-18. `.[docs] — write DX playbook: installation, health check, troubleshooting flowchart`
-19. `.[docs] — write instrumentation guide: how to read diagnostic codes, where each station lives`
-20. `.[plans] — write runtime-dx-foundation.spw artifact formalizing the station model`
+Deferred until commit 1 settles the code shape: 2, 5 to 7, 9, 10, 12, 15 to 20.
 
 Fuzz strategy:
 - Explore: `npm run fuzz:runtime` (catch diagnostic hook regressions)

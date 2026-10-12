@@ -108,7 +108,10 @@ and resolution (fragments dial reference granularity from file to node).
 8.  ![seed] — corpus roundtrip gate + particle + fragment coverage
 9.  ^seed[census] — particle-stack pattern discovery across the corpus
 10. .[canon] — particle-lattice registry; naming conventions; pattern refactors (user-gated)
+11. ^seed[census] — comment-filtered noise lint (orphan deixis, unbound case, boundary-less # marks)
 ```
+
+Landed: 1-7 and 9 as their own commits (1 272f5bd8, 2 8cdaf2a9, 3 25ca2e29, 4 dcddb4a5, 5 7fc7ebb9, 6 cf629afb, 7 2b9216c7, 9 2573f763); 8 landed as test coverage inside 3 and 6. Open: 10, 11.
 
 ### Fuzz strategy
 

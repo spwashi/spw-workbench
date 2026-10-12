@@ -66,13 +66,7 @@ Taste note: improve **correctness**, **portability**, **recoverability**, and **
 
 ## Commits
 
-1. `.[plans] — define WebStorm compatibility and editor startup gates`
-2. `#[intellij] — align Java, Gradle, Kotlin, and WebStorm verification coordinates`
-3. `&[intellij,lsp] — resolve mounted workbench launchers with tested diagnostics`
-4. `.[intellij,editors] — publish support matrix and release verification path`
-5. `.[writerside] — frame Spw value, internals, and syntax experiments`
-6. `![vscode,release] — align archive smoke with the public command surface`
-7. `![intellij] *verify[webstorm] — retain compatibility and build evidence`
+All on main: 1864c0d9, 74df9b59, 56cc81c5, 6f6278b7, 22aa8fcb, 0002a80d. Planned commit 7 (retain evidence) has no one-to-one hash; its evidence lives in the wip.spw verify entries.
 
 Fuzz strategy:
 
@@ -122,6 +116,6 @@ Fuzz strategy:
 
 ## Spw Artifact
 
-`.agents/plans/webstorm-compatibility/webstorm-compatibility.spw`
+`.agents/plans/_archive/webstorm-compatibility/webstorm-compatibility.spw`
 
 The artifact records the build, host, compatibility, and launcher coordinates independently so later releases can extend one axis without implying all others moved.

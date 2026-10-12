@@ -17,7 +17,7 @@
 
 ^["edges"]{
  feeds: [~"../cli-benchmarking-infra/wip.spw"]
- shares: [~"../canon-rewrite-v2/wip.spw", ~"../runtime-dx-foundation/wip.spw", ~"../typescript-upgrade-ladder/wip.spw", ~"../gap-affinity-tooling/wip.spw", ~"../spw-site-install/wip.spw", ~"../mounted-workbench-organelle/wip.spw"]
+ shares: [~"../canon-rewrite-v2/wip.spw", ~"../runtime-dx-foundation/wip.spw", ~"../typescript-upgrade-ladder/wip.spw", ~"../gap-affinity-tooling/wip.spw", ~"../spw-site-install/wip.spw", ~"../_archive/mounted-workbench-organelle/wip.spw"]
 }
 
 ^["roots"]{
@@ -82,17 +82,19 @@
  >>[2026-08-24 12:57] observe — the eager CLI graph pulls about 3.57 MB of TypeScript through authority extraction into every command route; defer the compiler module now, then audit lazy command chunks and public subpaths as package products.
  >>[2026-08-24 12:58] decide — distinguish source export, runtime-load boundary, tree-shakable entry, split chunk, and published artifact in the package audit; a runtime through handle is not a bundle guarantee.
  >>[2026-08-24 13:02] verify — f3ab94eb defers authority extraction until needed; fresh command-registry imports measured 211–324 ms after one earlier 969 ms observation, and a split probe isolates the compiler in its own 3.4 MB chunk.
+ >>[2026-10-12 14:34] observe — reconciled against main: ~[1] landed in c46558ff (plan artifacts); outside the list, f3ab94eb (defer compiler loading) and 8d454ad6 (spw-cli tsconfig now references spw-runtime) are on main. ~[2] has not landed: scripts/analyzers has no package-contract audit. Facts for the open questions: all four packages/*/package.json are private at 0.3.0; scripts/release/build-js-dist.ts already bundles bin/spw plus seed (index, parser, lite) and runtime (index, pipeline, substrate, resonance) entries and none for the LSP; extensions/vscode-spw declares esbuild ^0.19.0 and typescript ^5.2.0 against the root's esbuild ^0.27.3 and typescript ~5.9.3.
+ >>[2026-10-12 14:34] revise — ?[publication], ?[toolchain_ranges], and ?[entrypoint_matrix] rewritten against those facts so each names the decision it unblocks; ?[task_graph] unchanged. ~[1] pointed at ^[done].
 }
 
 ^["open"]{
- ?[publication]: "Which packages are intended to become independently consumable first, and which should remain private implementation boundaries?"
- ?[toolchain_ranges]: "Should extension compiler/bundler ranges converge with root tools or remain a tested compatibility matrix?"
+ ?[publication]: "All four workspace packages are private and jsdist ships no LSP entry; should the LSP ever ship as a package, or only inside the VS Code extension? Decides whether commit 7's matrix includes an LSP pack-and-import smoke."
+ ?[toolchain_ranges]: "extensions/vscode-spw pins esbuild ^0.19.0 and typescript ^5.2.0 while the root uses ^0.27.3 and ~5.9.3; converge the extension to the root or keep a tested compatibility matrix? Decides commit 7's extension row and typescript-upgrade-ladder rung A."
  ?[task_graph]: "Can npm workspace scripts meet the measured radius target before a task-graph or cache framework is justified?"
- ?[entrypoint_matrix]: "Which Seed, CLI, runtime, and LSP entry points are public products, and which remain private source routes until clean generated-consumer smokes prove their dependency and size contracts?"
+ ?[entrypoint_matrix]: "Should the entries build-js-dist.ts already bundles (bin/spw; seed index, parser, lite; runtime index, pipeline, substrate, resonance) be declared the public set, with every other export private until a clean-consumer smoke proves it? Decides commit 5's export smoke list."
 }
 
 ^["commits"]{
- ~[1]: ".[plans] — define package contracts, environment receipts, and iteration-radius measures"
+ # ~[1] landed — see ^["done"]
  ~[2]: "#[packages] — audit declared and imported workspace boundaries"
  ~[3]: "vocab[tooling] — add redacted environment and failure-locality receipts"
  ~[4]: "&[doctor] — explain runtime, lockfile, ABI, native, platform, and cache mismatches"
@@ -110,11 +112,17 @@
  ~#files_hot: "packages/spw-seed/package.json, packages/spw-cli/package.json, packages/spw-cli/src/commands.ts, packages/spw-cli/src/authority.ts, packages/spw-cli/tsconfig.json, .agents/plans/package-iteration-radius/PLAN.md, .agents/plans/package-iteration-radius/wip.spw"
  ~#next_commit: "2"
  ~#open_count: "4"
- ~#last_stream: "2026-08-24 13:02"
+ ~#last_stream: "2026-10-12 14:34"
  ~#taste_debt: "Public package and entry-point intent, extension toolchain convergence, and the threshold for build orchestration remain unresolved until audit, clean-consumer, and radius evidence exist."
 }
 
 ^["done"]{
+ # Written at merge time.
+ ~#shipped: [
+  "c46558ff .[plans] =orient[affinity,iteration-radius] — refresh consumer tooling direction",
+  "f3ab94eb vocab[api]+&[cli] — align through and defer compiler loading (outside the commit list)",
+  "8d454ad6 &[runtime,packages] — tune trace depth and cache identity (adds the spw-runtime reference to spw-cli tsconfig; outside the commit list)",
+ ]
 }
 
 #>wonder_package_iteration_radius_1

@@ -312,6 +312,9 @@ A design change is **out** if it:
 7. `.[theory] — measure schemes + operator metaphor ledger (status-tagged)`
 8. `.[spw] — claim-protocol and tooling hooks for clone experience`
 9. `#[lsp] — mass/authority diagnostics + exact-only code actions` (Phase E; unblocks VS Code + Neovim)
+10. `#[canon] — declare one real @self + %mass facet so spw measure has a subject`
+
+Landed in 08e2bc1c: 1, 2, 6, 7. Open: 3, 4, 5 (CLI is now spw measure), 8, 9, 10.
 
 ## Editor projection contract
 

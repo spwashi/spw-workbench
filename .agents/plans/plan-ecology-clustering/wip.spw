@@ -102,17 +102,20 @@
  >>[2026-08-24 18:20] revise — hold depth and parity together. Hosts owe comparable truth density and respect question/evidence parity; native form may differ. Chrome mimicry is false parity; one deep host and shallow peers is false depth. Completeness is still not assumed.
  >>[2026-09-28 17:08] revise — ecology_temperature is superseded by .agents/plans/index.spw: phase frames derive from cards, cooling and status lag live in its drift frame. Card operators carry the cluster_operator_map glyphs; 44 of 75 cards appear in plan_map.
  >>[2026-09-30 16:54] decide — primed order is scrutiny then tooling. syntax-hardware-alignment and typescript-perf-audit-infra join planning. cli-benchmarking-infra leads measurement. cli-mode-overhaul, citation journeys, the spw/* matrix, Neovim wrappers, and LSP4IJ hold product work. vscode-plugin-performance and geometric-analysis-tooling stay dormant until a sample or the ops=3 repro makes them true.
+ >>[2026-10-12 14:35] observe — reconciled against main: the doctrine commits ~[1]..~[4] landed together in 9c1ebc10 (2026-03-27 ecology propagation) and the lane-glyph cards plus derived index in da5189bb; they were never committed one per item. Measured now: plan_map in plan-ecology-clustering.spw has 44 rows against 78 plan directories holding a wip.spw, 34 without a row and none orphaned. ~[5] (verify) is open as ongoing maintenance, and spw:plan:index --check currently reports the index stale.
+ >>[2026-10-12 14:35] revise — ~[1]..~[4] moved to ^[done]; ~[5] rewritten to concrete checks; ~[6] added to settle plan_map coverage; ?[plan_map_scope] opened because the card's next promises plan_map stays a reading, which needs a scope.
+ >>[2026-10-12 14:48] observe — Dogfood pass 2026-10-12, spw pulse parse health over 70 edited wip.spw files against HEAD: complete_structured 6 to 6, recovered 49 to 44, invalid 15 to 20. Five flipped recovered to invalid (audit-fuzz-truthfulness, curriculum-html-css-mastery, naming-profile-convention-align, spw-garden-geometry, syntax-hardware-alignment). Cause is the stream: lines of the form arrow-stamp type dash prose carry unquoted hyphens, em dashes and apostrophes that tokenize as errors, and spw:plan:stream appends them unquoted. HEAD already had 9 to 119 recoverable errors per file from the same cause. Health is count-sensitive, not a validity verdict. Derived fields were consistent after the pass: open_count and last_stream drift 0 of 70, checked by script, not by a mutation verb.
+ >>[2026-10-12 14:56] revise — Corrects the 2026-10-12 dogfood entry. The stream lexer rule already exists (readPlanStreamEntry, c855e832, dialect Spw.p). The health probe snapshotTopography in topography-probe.ts calls parse on the source with no path, so plan files without a dialect header are read as Spw.b and prose in stream lines tokenizes as errors. The writer is not at fault. Fix is tracked in plan-stream-parse-health. The recovered to invalid flips were an artifact of the pathless probe plus longer stream lines, not of the format.
 }
 
 ^["open"]{
+ ?[plan_map_scope]: "plan_map has 44 rows for 78 carded plans; should it cover every carded plan, or only active and landed ones (the index already lists the rest)? Decides whether ~[6] backfills 34 rows or prunes the claim."
 }
 
 ^["commits"]{
- ~[1]: ".[plans] — stage plan-ecology-clustering artifacts"
- ~[2]: ".[plans] — define cluster taxonomy, commit bar, and per-plan learning/research map"
- ~[3]: ".[plans] — align governance and release plans to clustered urgency and discussion value"
- ~[4]: ".[plans] — reframe curriculum plans as contributor-formation and research lanes"
- ~[5]: "![plans] — verify clustering language stays coherent across active planning surfaces"
+ # ~[1]..~[4] landed — see ^["done"]
+ ~[5]: "![plans] — verify: spw:plan:index --check clean, spw:plan:check across every slug, and lint:spw on plan-ecology-clustering.spw"
+ ~[6]: ".[plans] — settle plan_map coverage per ?[plan_map_scope]: backfill the missing rows or state the covered phases in the frame header"
 }
 
 ^["cache"]{
@@ -120,14 +123,19 @@
  ~#base_ref: "main@c46558ffbb29a10abb1fee11dbec8aa522cbc8b3"
  ~#rebased_at: "2026-08-24"
  ~#hygiene_split: "required-before-implementation"
- ~#files_hot: ".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw, .spw/tooling/editor-instruments.spw, .agents/plans/editor-cli-instruments/PLAN.md"
- ~#next_commit: "maintenance"
- ~#open_count: "0"
- ~#last_stream: "2026-09-30 16:54"
+ ~#files_hot: ".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw, .spw/tooling/editor-instruments.spw, .agents/plans/_archive/editor-cli-instruments/PLAN.md"
+ ~#next_commit: "5"
+ ~#open_count: "1"
+ ~#last_stream: "2026-10-12 14:56"
  ~#taste_debt: "The directional spine is intentionally narrower than the full plan corpus. Archive or re-scope stranded site-era plans before treating them as executable, and keep scalar release labels from implying synchronized language, runtime, package, and consumer-profile compatibility."
 }
 
 ^["done"]{
+ # Written at merge time.
+ ~#shipped: [
+  "9c1ebc10 .[plans] =ecology[recursive-improvement] — align active plan surfaces (covers ~[1]..~[4])",
+  "da5189bb .[plans] — card every live plan; derive the index; route readers to it",
+ ]
 }
 
 #>wonder_agents_plans_planecologyclustering_1
@@ -142,4 +150,12 @@
   #:depth #!computational // lens: formal structure
   ~#hypothesis: "a commit is justified when it increases truth, learning, or probe quality without pretending to solve all three at once"
   !probe{ "which active plans can survive this bar, and which ones need a rewrite before they should move again?" }
+}
+
+#>wonder_plan_ecology_clustering_map_gap
+?["Do the 34 carded plans missing from plan_map share a lane or phase, or are they scattered?"]{
+  #:depth #!computational // lens: coverage
+  ~#hypothesis: "the missing rows are mostly #stranded, #dormant, and #landed plans, so the 44 rows already track the live spine"
+  !probe{ "list slugs with a wip.spw, subtract the row keys of plan_map in plan-ecology-clustering.spw (dashes to underscores), then read each missing plan's card phase and lane glyph" }
+  $%[plan.commit_count, plan.phase_progress]
 }
