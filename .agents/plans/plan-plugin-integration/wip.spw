@@ -1,0 +1,136 @@
+# wip — plan-plugin-integration
+# Branch: feature/plan-plugin-integration
+# Started: 2026-10-12
+
+#>plan_plan_plugin_integration
+#:plan #!projection_feedback
+#:layer #!pragmatics
+
+@["card"]{
+ phase: #planning
+ gist: "Editor plugins read and act on wip.spw plan facts through standard LSP products, one fact model."
+ touches: [~"packages/spw-lsp/src/handlers/outline.ts", ~"scripts/plans/plan-index.ts", ~".agents/scripts/agent-lib.sh"]
+ entry: ~"./PLAN.md"
+ next: "Write references/plan-facts.spw (commit 2): the plan-fact table with source frame, LSP product and owner plan, then answer ?[extractor_home]."
+}
+
+^["edges"]{
+ needs: [~"../plan-stream-parse-health/wip.spw"]
+ shares: [~"../vscode-lsp-roadmap/wip.spw", ~"../vscode-authoring-probe-loop/wip.spw", ~"../vscode-workspace-atlas/wip.spw", ~"../vscode-plugin-performance/wip.spw", ~"../vscode-editor-contract/wip.spw", ~"../vscode-cognitive-surface/wip.spw", ~"../citation-navigation/wip.spw", ~"../intellij-lsp4ij/wip.spw", ~"../neovim-spw-surfaces/wip.spw"]
+}
+
+^["roots"]{
+ @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
+ @plan: ~".agents/plans/plan-plugin-integration/PLAN.md"
+ @schema: ~".agents/plans/_schema/wip.spw"
+ @roadmap: ~".agents/plans/vscode-lsp-roadmap/PLAN.md"
+ @authoring: ~".agents/plans/vscode-authoring-probe-loop/PLAN.md"
+ @outline: ~"packages/spw-lsp/src/handlers/outline.ts"
+ @plan_index: ~"scripts/plans/plan-index.ts"
+ @agent_lib: ~".agents/scripts/agent-lib.sh"
+}
+
+^["intent"]{
+ ~#goal: "Make the plan files themselves a first-class editor surface: cache facts, stream stamps, the done history and open questions arrive in every plugin as standard LSP products, computed once, not once per client and once more in bash."
+ ~#taste: "one fact model; coordination over duplication; honest ownership"
+}
+
+^["development"]{
+ lane: #projection_feedback
+ ladder: #bridge
+ develops: [#claim_discipline, #design_transfer, #taste]
+ review_surfaces: [@roadmap, @authoring, @outline]
+ snippet_routes: [#query, #example, #status_copy]
+}
+
+^["concept_index"]{
+ primary: [#plan_facts, #fact_model, #standard_lsp_product, #drift_diagnostic]
+ surfaces: [#editor, #lsp, #cli, #docs]
+ tensions: [#three_extractors, #client_chrome_vs_lsp, #hand_edited_cache]
+ transfers: [#service, #bridge]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? reread the live outline output and plan:check before widening a claim",
+  "< land one plan fact as one standard LSP product",
+  "$ record which client received it without client code",
+  "^ fold the fact into the plan-fact table so the next client reads one list",
+  "% keep plan files read-only to the editor: drift is reported, never repaired",
+ ]
+ gates: [#claim_discipline, #capability_honesty]
+}
+
+^["parallel_work"]{
+ critical_path: [#plan_facts_table, #shared_extractor, #lsp_products]
+ parallelizable: [#neovim_projection, #intellij_projection]
+ shared_hot_files: ["packages/spw-lsp/src/handlers/outline.ts", "packages/spw-lsp/src/stdio-server.ts"]
+ merge_risks: [#hot_file, #naming_drift, #fact_ownership]
+ handoff_artifacts: [@plan, @plan_index]
+}
+
+^["supporting_documents"]{
+ must_ship: [@plan]
+ helpful: [@schema, @roadmap]
+ carries: [#source_map, #external_contracts]
+}
+
+^["interaction_depth"]{
+ subjects: [#navigation, #feedback, #trust, #legibility]
+ questions: [#what_is_primary, #what_is_reversible, #what_is_visible]
+ qualities: [#clarity, #containment]
+}
+
+^["risk_model"]{
+ hard_failures: ["editor and plan:check disagree on open_count, so the editor reports drift the CLI does not", "plugin writes a cache field the CLI also writes, racing plan:stream"]
+ soft_failures: ["plan files indexed before the manifest names .agents/plans as a root, so facts appear only for open documents"]
+ recoveries: ["drift diagnostics are information severity and never carry a write fix; the fix stays plan:stream or the human"]
+ non_negotiables: ["the editor never edits ~#last_stream or any cache fact", "Neovim and IntelliJ get plan facts from standard LSP methods, not client chrome"]
+}
+
+^["validation"]{
+ hypotheses: ["one extractor over the seed parser reproduces plan:check open_count and last_stream results on every wip.spw"]
+ negative_controls: ["outline output for non-plan .spw files is unchanged", "plan:check results are unchanged"]
+ demo_path: ["open a wip.spw in VS Code, Neovim and IntelliJ", "see ^cache keys in the outline", "hover ~#open_count", "edit a ?[ line and see a drift diagnostic"]
+}
+
+^["stream"]{
+ >>[2026-10-12 14:55] observe — outlineFromSource on a real wip.spw lists the section frames (card, edges, roots, stream, open, commits, done, cache), the ?[label] lines under ^open as children, and wonder blocks with their !probe; it lists no ~[N] commit rows, no ^cache keys, no ^stream entries and no ^done keys.
+ >>[2026-10-12 14:55] observe — across the wip.spw of all 80 plan folders the count of ?-children under ^open in that outline equals ~#open_count in every file, so open_count drift can be computed from document symbols alone.
+ >>[2026-10-12 14:55] observe — three code paths read plan facts: agent-lib.sh counts open questions by line grep, scripts/plans/plan-index.ts uses lex and parse from the seed, and packages/spw-lsp has no handler that names open_count, last_stream or next_commit.
+ >>[2026-10-12 14:55] observe — no field named clock, timezone or tz appears in workspace-protocol.ts, workspace-authority.ts or workspace-roots.ts, while the authoring plan asks for a stamp from the manifest declared clock; plan:stream builds its stamp in agent-lib.sh.
+}
+
+^["open"]{
+ ?[extractor_home]: "Where does the one plan-fact extractor live: packages/spw-seed (portable, parse-based, LSP and CLI both import it), or scripts/plans/plan-index.ts exported to the LSP? Decides ~[3] and whether agent-lib.sh keeps its line grep."
+ ?[clock_field]: "Which workspace manifest field declares the stream clock (no field is named clock today), and is it a timezone, a source command, or a fixed offset? Decides whether the stamp completion in vscode-authoring-probe-loop can be standard LSP."
+ ?[drift_severity]: "Should open_count and last_stream drift be information or warning, given plan:stream and spw refresh also write them and a stale cache is already reported by plan:check?"
+ ?[done_in_outline]: "Do ^done entries (~#shipped, ~#resolved(label)) appear as outline children, as hover on ?[label] mentions, or both? Decides ~[5] and what Neovim sees."
+}
+
+^["commits"]{
+ ~[1]: ".[plans] — stage plan-plugin-integration and route its edges"
+ ~[2]: ".[plans] — write references/plan-facts.spw: each plan fact with source frame, LSP product and owner plan"
+ ~[3]: "&[seed] — one plan-fact extractor; plan-index.ts calls it, with a test that it matches plan:check on every wip.spw"
+ ~[4]: "&[lsp] — outline lists ^cache keys, ~[N] commit rows and ^done keys as children of their frames"
+ ~[5]: "&[lsp] — hover on ^cache and card fields and on ~#resolved(label) shows the value, its derivation and the stream stamp"
+ ~[6]: "&[lsp] — drift diagnostics for open_count, last_stream and next_commit against the file, information severity, no write fix"
+ ~[7]: "![plans] — Neovim and IntelliJ receive ~[4] to ~[6] with no client code; record what each shows"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@551bb419"
+ ~#rebased_at: "2026-10-12"
+ ~#hygiene_split: "none"
+ ~#files_hot: ".agents/plans/plan-plugin-integration/PLAN.md, .agents/plans/plan-plugin-integration/wip.spw"
+ ~#next_commit: "1"
+ ~#open_count: "4"
+ ~#last_stream: "2026-10-12 14:55"
+ ~#taste_debt: ""
+}
+
+^["done"]{
+ # ~#shipped: []
+ # ~#resolved(label): "<question> — <answer>; evidence: <stream stamp | commit | path>"
+}

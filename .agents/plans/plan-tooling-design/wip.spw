@@ -1,0 +1,151 @@
+# wip — plan-tooling-design
+# Branch: feature/plan-tooling-design
+# Started: 2026-10-12
+
+#>plan_plan_tooling_design
+#:plan #!principal_engineering
+#:layer #!pragmatics
+
+^["card"]{
+ phase: #planning
+ gist: "Plan upkeep moves that are derivable become verbs with a plan-only delta, and the probes report why and where."
+ touches: [~"scripts/plans", ~".agents/scripts/agent-lib.sh", ~"packages/spw-cli/src/mem.ts", ~"packages/spw-cli/src/pulse.ts"]
+ entry: ~"./PLAN.md"
+ next: "Commit 1: add a failing fixture for plan:settle, a wip.spw where one resolved question and one landed commit must move into done and open_count must follow."
+}
+
+^["edges"]{
+ needs: [~"../plan-stream-parse-health/wip.spw"]
+ shares: [~"../curiosity-mutation-ergonomics/wip.spw", ~"../runtime-dx-foundation/wip.spw", ~"../plan-ecology-clustering/wip.spw"]
+}
+
+^["roots"]{
+ @plan: ~".agents/plans/plan-tooling-design/PLAN.md"
+ @writer: ~".agents/scripts/agent-lib.sh"
+ @index: ~"scripts/plans/plan-index.ts"
+ @mem: ~"packages/spw-cli/src/mem.ts"
+ @pulse: ~"packages/spw-cli/src/pulse.ts"
+ @health: ~"packages/spw-seed/src/canonical/topography-probe.ts"
+ @contract: ~"docs/runtime/md/pulse-mutate-beat.md"
+ @schema: ~".agents/plans/_schema/wip.spw"
+}
+
+^["intent"]{
+ ~#goal: "Dogfooding spw mem, spw pulse and spw:plan:* in one session showed that the moves a plan needs after every landing are all derivable, yet only humans or ad hoc scripts perform them, and the probes that would check the work hide their cause. Order the fixes by value and give each a first slice."
+ ~#taste: "a tool that can name the next move should offer it as a delta, not leave it as a convention in a comment"
+}
+
+^["development"]{
+ lane: #principal_engineering
+ ladder: #service
+ develops: [#taste, #design_transfer]
+ review_surfaces: [@writer, @pulse, @mem, @contract]
+ snippet_routes: [#query, #status_copy]
+}
+
+^["concept_index"]{
+ primary: [#plan_upkeep, #plan_only_delta, #probe_parity, #snapshot_reach]
+ surfaces: [#cli, #plans, #seed]
+ tensions: [#automation_vs_append_only_stream, #route_vs_duplicate, #hot_file]
+ transfers: [#service]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? repeat a bulk plan pass and note which move was done by hand",
+  "< turn that move into a plan-only delta with a fixture",
+  "$ log in the stream how many hand moves a pass needed",
+  "^ fold the verb into the wip schema comments and the plan-maintenance skill",
+  "% keep the stream and the done frame append-only",
+ ]
+ gates: [#claim_discipline, #negative_controls]
+}
+
+^["parallel_work"]{
+ critical_path: [#settle_fixture, #settle_verb]
+ parallelizable: [#check_fix_hints, #mem_roots, #stream_validator]
+ shared_hot_files: ["packages/spw-cli/src/pulse.ts", ".agents/scripts/agent-lib.sh"]
+ merge_risks: [#hot_file, #duplicated_work_with_routed_plans]
+ handoff_artifacts: [@plan]
+}
+
+^["risk_model"]{
+ hard_failures: ["settle rewrites a stream entry or drops a question without recording it in done", "mem dump of extra roots overwrites a live surface on load"]
+ soft_failures: ["settle proposes a move for a commit it cannot match to a hash", "check hints go stale when conventions change"]
+ recoveries: ["plan-only is the default and --write is explicit; the delta prints before any write", "mem load restores extra roots only with --restore-extra"]
+ non_negotiables: ["stream entries are never edited or deleted by any tool", "open_count equals live question lines after any write", "no tool hand-edits last_stream except by recomputing it from the actual last entry"]
+}
+
+^["validation"]{
+ hypotheses: [
+  "H1 a settle verb that takes a label, an answer and an evidence pointer reproduces by itself the hand moves done in shape-syntax-ecology on 2026-10-12",
+  "H2 pulse stdin and file reports can carry the same health fields from one shared builder",
+  "H3 an invalid verdict can name its reason and first error span from data parse already returns",
+ ]
+ negative_controls: [
+  "plan-index --check stays clean after every settle write",
+  "plan:check on every slug reports no new issue class after settle writes",
+ ]
+ demo_path: [
+  "run plan:settle plan-only on a copy and read the delta",
+  "run it with --write and see open_count drift disappear in plan:check",
+ ]
+}
+
+^["stream"]{
+ # Append entries chronologically. Never edit prior entries.
+ # >>[YYYY-MM-DD HH:MM] <type> — <content>
+ >>[2026-10-12 14:55] decide — user decision 2026-10-12: improve tool design for the plan and mutation tooling; slices owned by existing plans are routed by edge
+ >>[2026-10-12 14:55] observe — verified: pulse refuses paths outside the consumer root; pulse stdin report omits beforeHealth and plannedDelta that file reports carry; mem dump extra roots are a fixed list of three files
+}
+
+^["open"]{
+ ?[settle_home]: "Should plan:settle live beside plan-index.ts as a TypeScript script under scripts/plans, or as a plan-only mutate profile in spw-cli so it shares the pulse delta report?"
+ ?[settle_authority]: "May settle --write run without a human gate, given that it only moves lines between frames and never touches the stream?"
+ ?[plan_profile_guard]: "Should pulse refuse or warn when a mutation profile that would change every plan file (layout_full) meets the plan_surface review profile that detectReviewProfile already assigns?"
+ ?[mem_surfaces]: "Is extending mem dump with caller-chosen roots the right way to snapshot surfaces a bulk pass edits, or is a git stash or patch the better snapshot?"
+ ?[baseline_ref]: "Should a HEAD baseline come from a pulse flag that reads a git ref, or from permitting read-only paths outside the consumer root?"
+}
+
+^["commits"]{
+ ~[1]: "![plans] — failing fixture for plan:settle: a copied wip.spw with one resolved question and one landed commit; expected delta moves them into done, leaves a pointer comment, and recomputes open_count"
+ ~[2]: "#[plans] — plan:settle verb: plan-only delta by default, --write explicit; flags --resolve label with --answer and --evidence, --ship N with --hash, and --refresh-derived for open_count and last_stream"
+ ~[3]: "&[plans] — plan:check prints a fix line per issue it can name (drift issues point at settle --refresh-derived; stale_base_ref lists the merge-base candidate); case in test-agent-tools.sh"
+ ~[4]: "&[cli] — spw mem dump accepts repeatable root paths stored under the dump extra folder, restored only by load --restore-extra; fixture dumps a temp surface and restores it"
+ ~[5]: "&[plans] — plan:stream --dry-run also reports whether the resulting line keeps the file at its current parse health (needs plan-stream-parse-health commits 2 and 3)"
+ ~[6]: ".[plans] — record in the wip schema comments and the plan-maintenance skill that settle replaces the hand moves"
+}
+
+^["routed"]{
+ // slices that belong to existing plans; linked by edge, not duplicated here
+ pulse_parity: "curiosity-mutation-ergonomics owns pulse.ts and mutate.ts: one health builder shared by file and stdin reports (parseHealthBefore, parseHealthAfter), fixture feeds identical bytes through both paths"
+ invalid_cause: "runtime-dx-foundation commits 3 and 4: parse errors already carry rule and position; surface the first error span and a reason code in pulse output when the verdict is invalid"
+ profile_guard: "curiosity-mutation-ergonomics commit 6 (profile surface): decide ?[plan_profile_guard]"
+ baseline_ref: "curiosity-mutation-ergonomics: decide ?[baseline_ref] with the pulse flag surface"
+ plan_ecology: "plan-ecology-clustering consumes settle and check hints for its sweep; no duplicate commit"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@551bb419"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: ""
+ ~#next_commit: "1"
+ ~#open_count: "5"
+ ~#last_stream: "2026-10-12 14:55"
+ ~#taste_debt: ""
+}
+
+^["done"]{
+ # ~#shipped: []
+ # ~#resolved(label): "<question> — <answer>; evidence: <stream stamp | commit | path>"
+}
+
+#>wonder_plan_tooling_design_1
+?["Which health fields does a pulse file report carry that the stdin report omits?"]{
+ #:depth #!computational // lens: parity check
+ ~#hypothesis: "file reports expose beforeHealth, afterHealth and plannedDelta.parseHealthBefore; stdin exposes only delta.healthRegressed, structureMoved and layoutOnlyCandidate"
+ !probe{ "run: F=.agents/plans/audit-css-tokens/wip.spw; cat $F | npm run -s spw:pulse -- --stdin --as $F --json | node -e 'const j=JSON.parse(require(`fs`).readFileSync(0,`utf8`));console.log(Object.keys(j.delta))'  then  npm run -s spw:pulse -- $F --json | node -e 'const r=JSON.parse(require(`fs`).readFileSync(0,`utf8`)).reports[0];console.log(r.beforeHealth,Object.keys(r.plannedDelta))'" }
+ $%[plan.commit_count, plan.phase_progress]
+}

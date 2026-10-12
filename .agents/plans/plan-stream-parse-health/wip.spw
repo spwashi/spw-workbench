@@ -1,0 +1,146 @@
+# wip — plan-stream-parse-health
+# Branch: feature/plan-stream-parse-health
+# Started: 2026-10-12
+
+#>plan_plan_stream_parse_health
+#:plan #!execution_truth
+#:layer #!pragmatics
+
+!["card"]{
+ phase: #planning
+ gist: "Plan files measure their true parse health because stream prose is read as prose, wherever the file is parsed."
+ touches: [~"packages/spw-seed/src/canonical/topography-probe.ts", ~"packages/spw-seed/src/lexer/plan-stream.ts", ~"packages/spw-cli/src/pulse.ts", ~".agents/plans/_schema/wip-template.spw"]
+ entry: ~"./PLAN.md"
+ next: "Commit 1: add a failing snapshotTopography fixture for a >>[stamp] line with a hyphen, an apostrophe and an unbalanced quote, parsed without a path."
+}
+
+^["edges"]{
+ shares: [~"../plan-tooling-design/wip.spw", ~"../syntax-profile-stack/wip.spw", ~"../shape-syntax-ecology/wip.spw"]
+ feeds: [~"../plan-tooling-design/wip.spw"]
+}
+
+^["roots"]{
+ @plan: ~".agents/plans/plan-stream-parse-health/PLAN.md"
+ @lexer_rule: ~"packages/spw-seed/src/lexer/plan-stream.ts"
+ @lexer_test: ~"packages/spw-seed/src/parser/plan-stream.test.ts"
+ @health: ~"packages/spw-seed/src/canonical/topography-probe.ts"
+ @dialect: ~"packages/spw-seed/src/dialect/syntax-stack.ts"
+ @detect: ~"packages/spw-seed/src/dialect/detect.ts"
+ @pulse: ~"packages/spw-cli/src/pulse.ts"
+ @writer: ~".agents/scripts/agent-lib.sh"
+ @schema: ~".agents/plans/_schema/wip.spw"
+}
+
+^["intent"]{
+ ~#goal: "Parse health on plan files should report real structural problems, not the prose of the stream. The lexer already owns the rest of a >>[ line, but the health probe parses without the plan path, so most plans are read as Spw.b and every hyphen, em dash or apostrophe becomes an error."
+ ~#taste: "measure the thing, not the lens: a health verdict must not depend on whether the caller remembered to pass a path"
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #service
+ develops: [#taste, #linguistics]
+ review_surfaces: [@lexer_test, @health, @dialect]
+ snippet_routes: [#query, #example]
+}
+
+^["concept_index"]{
+ primary: [#plan_stream, #parse_health, #dialect_detection]
+ surfaces: [#seed, #cli, #plans]
+ tensions: [#count_sensitive_metric, #path_vs_content_detection, #do_not_change_other_constructs]
+ transfers: [#service]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? recount parse health over every wip.spw before and after each commit",
+  "< ship one failing-then-passing fixture per commit",
+  "$ record the tally in the stream so the metric is a time series",
+  "^ fold the settled option into the wip template and the plan:init scaffold",
+  "% keep parse of every non-stream construct byte-identical",
+ ]
+ gates: [#claim_discipline, #negative_controls]
+}
+
+^["parallel_work"]{
+ critical_path: [#fixture, #snapshot_options, #pulse_callsites]
+ parallelizable: [#lexer_space_tolerance, #template_pragma]
+ shared_hot_files: ["packages/spw-cli/src/pulse.ts", "packages/spw-seed/src/dialect/syntax-stack.ts"]
+ merge_risks: [#hot_file, #dialect_precedence]
+ handoff_artifacts: [@plan, @lexer_test]
+}
+
+^["risk_model"]{
+ hard_failures: ["a dialect or lexer change alters the tokens of a non-plan file", "plan files start reporting complete_structured while real brace errors are masked"]
+ soft_failures: ["content detection misfires on a doc that quotes a >>[ example", "the three files with spaced >> [ lines stay recovered until commit 4 or a line migration"]
+ recoveries: ["revert the detection commit and keep the path threading, which is independent", "keep the metric commit so a regression is visible"]
+ non_negotiables: ["the existing plan-stream.test.ts cases stay green unchanged", "stream entries are never rewritten by a tool, only appended", "parse health stays a count-sensitive signal, not a validity verdict"]
+}
+
+^["validation"]{
+ hypotheses: [
+  "H1 parse(source, {path}) reports zero errors on 75 of 78 wip.spw files while parse(source) reports tens to 160 errors on the same files",
+  "H2 the residual errors in audit-fuzz-truthfulness, register-phase-evolution and typescript-toolchain-observatory come from entries spelled >> [ with a space",
+  "H3 once health is measured with the plan lens, pulse tallies on plan files stop moving when stream prose changes",
+ ]
+ negative_controls: [
+  "plan-stream.test.ts cases for << >> stream bounds, inline >>[, strings and comments stay identical",
+  "tokens of every non-wip .spw under docs and .spw are unchanged before and after commits 2 and 3",
+ ]
+ demo_path: [
+  "append a stream line containing a hyphen, an apostrophe and an unbalanced quote with plan:stream",
+  "run the pulse tally and see beforeHealth unchanged for that file",
+ ]
+}
+
+^["stream"]{
+ # Append entries chronologically. Never edit prior entries.
+ # >>[YYYY-MM-DD HH:MM] <type> — <content>
+ >>[2026-10-12 14:55] observe — snapshotTopography parses without a path so most wip.spw files are read as Spw.b; with the path 75 of 78 files have 0 errors; baseline over 78 pre-existing files is 6 complete_structured, 46 recovered, 26 invalid
+ >>[2026-10-12 14:55] observe — the lexer rule for >>[ entries already exists (c855e832, Spw.p planStream); the 3 residual files use a spaced >> [ spelling that the rule does not match
+ >>[2026-10-12 14:55] decide — user decision 2026-10-12: plan the parser fixes for plan files; scope narrowed by evidence to path threading first, then content detection and spaced-entry tolerance on evidence
+}
+
+^["open"]{
+ ?[detect_vs_thread]: "Should health lens come from threading the path into snapshotTopography, from content detection of a plan stream, or both? Path covers pulse files; content covers stdin and LSP buffers."
+ ?[detect_rule]: "If content detection, what is the narrowest signature: a ^[stream] frame header followed by a >>[ line at line start, or a #:plan marker? Which one misfires on docs that quote an example entry?"
+ ?[space_tolerance]: "Should the lexer accept >> [ with a space, or should the three files with that spelling be migrated line by line? Stream entries are append-only by schema."
+ ?[template_pragma]: "Should wip-template.spw and plan:init stamp an at-dialect Spw.p pragma so new plans are right with no code change? Six of 78 wip.spw files already carry it."
+ ?[old_quoted_entries]: "Older entries of the form >>[date] with a quoted string already parse; do they stay as they are, given the append-only rule?"
+}
+
+^["commits"]{
+ ~[1]: "![seed] — failing fixture: snapshotTopography of a ^[stream] frame holding >>[stamp] lines with hyphen, em dash, apostrophe and unbalanced quote is not invalid when given the plan path (topography-probe.test.ts)"
+ ~[2]: "vocab[seed] — snapshotTopography accepts optional path and dialect; resolves the same stack parse already resolves; default call is unchanged"
+ ~[3]: "&[cli] — pulse.ts passes the repo-relative path at its snapshotTopography call sites (before and after), and form-geometry.ts likewise; fixture: pulse tally on a copied wip fixture is stable under a prose edit"
+ ~[4]: "^seed[dialect] — conditional on ?[detect_vs_thread]: detectDialect reads a plan-stream signature so pathless parse (stdin, LSP) picks Spw.p; negative control over docs that quote an entry"
+ ~[5]: "^seed[lexer] — conditional on ?[space_tolerance]: readPlanStreamEntry accepts a >> [ spelling, with a case in plan-stream.test.ts"
+ ~[6]: ".[plans] — conditional on ?[template_pragma]: stamp the dialect pragma in wip-template.spw and the plan:init scaffold; a plan:stream round-trip case in test-agent-tools.sh"
+ ~[7]: "![plans] — record the post-fix health tally over every wip.spw in the stream and compare with the baseline in this plan"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@551bb419"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: ""
+ ~#next_commit: "1"
+ ~#open_count: "5"
+ ~#last_stream: "2026-10-12 14:55"
+ ~#taste_debt: ""
+}
+
+^["done"]{
+ # ~#shipped: []
+ # ~#resolved(label): "<question> — <answer>; evidence: <stream stamp | commit | path>"
+}
+
+#>wonder_plan_stream_parse_health_1
+?["Does the plan lens alone, with no lexer change, account for the whole parse-health drop on plan files?"]{
+ #:depth #!computational // lens: controlled comparison
+ ~#hypothesis: "for each wip.spw, parse(source) errors minus parse(source, {path}) errors is nearly all of the error count, so the lexer rule needs no change"
+ !probe{ "run: node --import tsx -e 'const fs=require(`fs`);import(`./packages/spw-seed/src/parser/parse.ts`).then(m=>{for(const d of fs.readdirSync(`.agents/plans`)){const f=`.agents/plans/${d}/wip.spw`;if(!fs.existsSync(f))continue;const s=fs.readFileSync(f,`utf8`);console.log(d,m.parse(s).errors.length,m.parse(s,{path:f}).errors.length)}})'  then compare the two columns" }
+ !probe{ "baseline tally: npm run -s spw:pulse -- .agents/plans/*/wip.spw --json, then count reports[].beforeHealth by value (complete_structured, recovered, invalid)" }
+ $%[plan.commit_count, plan.phase_progress]
+}

@@ -1,0 +1,90 @@
+# Plan: plan-stream-parse-health
+
+Make parse health on plan files measure structure instead of stream prose. (Card, phase, and next move: [wip.spw](./wip.spw) · index: [../index.spw](../index.spw))
+
+## Goal
+
+`>>[YYYY-MM-DD HH:MM] type — prose` lines in `^["stream"]` should never count as syntax errors, and a plan file's parse health should not depend on whether the caller passed the file path.
+The lexer already owns the rest of such a line (`readPlanStreamEntry`, landed in c855e832 behind the `planStream` metasyntax flag of dialect `Spw.p`), and `parse(source, { path })` on a `.agents/plans/*/wip.spw` file resolves to `Spw.p`.
+The gap is upstream of the lexer: `snapshotTopography(source)` in `topography-probe.ts` calls `parse(source)` with no path, so a plan without an `@dialect:Spw.p` pragma is read as `Spw.b`, where hyphens, em dashes, apostrophes and unbalanced quotes tokenize as errors.
+
+Taste note:
+- correctness / naming: a health verdict is a measurement; it must not change with the caller's lens.
+
+## Evidence (re-measured in this planning pass, working tree at main@551bb419 plus the session edits)
+
+- Throwaway probe over the 78 pre-existing `wip.spw` files: `snapshotTopography` gives 6 complete_structured, 46 recovered, 26 invalid. (The user's earlier figure over the 70 edited files was 6 / 44 / 20; the 78-file universe differs, so compare like with like.)
+- `parse(source)` reports dialect `Spw.b` for every file except the six with an `@dialect:Spw.p` pragma; `parse(source, { path })` reports `Spw.p` for all 78.
+- With the path, 75 of 78 files have 0 errors. The residual three have 45, 51 and 29: audit-fuzz-truthfulness, register-phase-evolution, typescript-toolchain-observatory. Their first errors are on lines spelled `>> [2026-...]` with a space, which `readPlanStreamEntry` does not match (it requires `>>[`).
+- Every `invalid` verdict in the pathless run carries the reason `unterminated_lexeme`; every `recovered` carries `recoverable_errors` (two also `prose_fallback`).
+- Writer: `agent_plan_stream_build_line` in `.agents/scripts/agent-lib.sh` emits ` >>[stamp] type — msg` unquoted. Under `Spw.p` that is correct, so quoting in the writer is not needed.
+- Call sites that parse without a path: `pulse.ts` (stdin plan around line 1245, file plan around lines 1523-1524), `form-geometry.ts` (around line 757), `topography-probe.ts` (around lines 403-410).
+
+## Option space
+
+- (a) Lexer rule for `>>[` as one entry token with prose payload: already exists. Remaining slice is only the `>> [` spelling.
+- (b) Quote in the writer: unnecessary under `Spw.p`, and it would split the stream into two spellings. Rejected unless the lens cannot be fixed.
+- (c) Both: dropped with (b).
+- (d) Thread path and dialect into `snapshotTopography` and its callers: smallest change, fixes pulse on files, does not help stdin or LSP buffers.
+- (e) Content detection in `detectDialect`: a plan-stream signature selects `Spw.p` with no path. Fixes stdin and LSP, but risks misfiring on docs that quote an entry.
+- (f) Stamp `@dialect:Spw.p` in the wip template and scaffold: fixes new plans with no code, does not fix existing ones without a migration that touches 70+ files.
+
+Recommended order: (d) first, then decide (e) and the `>> [` tolerance on evidence, then (f) for new plans.
+
+## Scope
+
+- In scope: topography-probe options, pulse and form-geometry call sites, optional dialect detection, optional `>> [` lexing, template pragma, health tally.
+- Out of scope: any change to how constructs outside a line-start `>>[` are lexed; rewriting existing stream lines; changing the health taxonomy (complete_structured / recovered / invalid).
+
+## Files
+
+[MOD] packages/spw-seed/src/canonical/topography-probe.ts
+[MOD] packages/spw-cli/src/pulse.ts (call sites only; the file is already over the 600-line guard, so no new logic goes there)
+[MOD] packages/spw-seed/src/canonical/form-geometry.ts (call sites only)
+[MOD] packages/spw-seed/src/dialect/detect.ts (conditional, commit 4)
+[MOD] packages/spw-seed/src/lexer/plan-stream.ts (conditional, commit 5)
+[MOD] .agents/plans/_schema/wip-template.spw, .agents/scripts/agent-lib.sh (conditional, commit 6)
+[NEW] a topography-probe test file for the fixture
+[DEL] (none)
+
+Craft guard:
+- pulse.ts is 1800+ lines; the diff there must be two or three argument additions.
+
+## Commits
+
+1. ![seed] — failing fixture: snapshotTopography on a stream frame with hostile prose, given the plan path.
+2. vocab[seed] — snapshotTopography accepts optional path and dialect; fixture now passes; default call unchanged.
+3. &[cli] — pulse and form-geometry pass the path; prose-edit stability fixture.
+4. ^seed[dialect] — conditional content detection, with negative controls.
+5. ^seed[lexer] — conditional `>> [` tolerance, with a plan-stream.test.ts case.
+6. .[plans] — conditional template and scaffold pragma, with a plan:stream round-trip case.
+7. ![plans] — record the post-fix tally against the baseline.
+
+Each commit has a failing-then-passing check: the fixture of commit 1 fails on the unchanged call until commit 2; commit 3 fails the stability fixture until the call sites pass the path; commit 4 fails a stdin-without-path fixture; commit 5 fails a spaced-entry fixture; commit 6 fails a template round-trip case.
+
+## Agentic Hygiene
+
+- Rebase target: `main`
+- Rebase cadence: before commit 1, before merge
+- Hygiene split: none
+
+## Dependencies
+
+none. Feeds plan-tooling-design (pulse report parity, plan:stream validator) and shares the dialect stack with syntax-profile-stack.
+
+## Failure Modes
+
+- Hard: a dialect or lexer change alters tokens of non-plan files; masked real brace errors.
+- Soft: content detection misfires on a doc quoting an entry; three files stay recovered until commit 5.
+- Non-negotiable: existing plan-stream.test.ts cases unchanged; stream lines are append-only; health stays count-sensitive and is not read as a validity verdict.
+
+## Validation
+
+- Hypotheses: H1, H2, H3 in wip.spw.
+- Negative controls: token equality on non-plan sources before and after commits 2 to 4.
+- Demo sequence: append a hostile stream line with plan:stream, tally health, see no change for that file.
+- Metric: `npm run -s spw:pulse -- .agents/plans/*/wip.spw --json`, then count `reports[].beforeHealth` by value. Baseline (probe over 78 pre-existing files): 6 / 46 / 26 for complete_structured / recovered / invalid. Expected after commit 3: the 75 path-clean files stop depending on prose; after commit 5: all 78 have 0 stream-line errors. Whether a file reaches complete_structured also depends on its non-stream content, which is not promised here.
+
+## Spw Artifact
+
+None beyond `wip.spw`.
