@@ -7,6 +7,7 @@ Progressive paths for humans and agents. Prefer **small runnable commands** over
 | Time | Path | Outcome |
 |------|------|---------|
 | **First** | [Quest](quest.spw) — `npm run spw -- quest` | Seven lines, each read back by the parser; the last one checks your `.spw` |
+| **Then** | `spw init --preset quest` | A `.spw/quest/` folder to play in: forks, experiments, shelves, wonders and asks for the workbench |
 | **15 min** | [Path §15](path.md#15-minutes) + [cheat sheet](cheat-sheet.md) | Read a surface, open a ref, list CLI |
 | **1 hour** | [Path §1h](path.md#1-hour) + [worked CLI](worked-cli.md) | Sense-loop a tree; form wrap; dry pulse |
 | **1 day** | [Path §1d](path.md#1-day) + [examples](../examples/) | Theory + editors + one small change |

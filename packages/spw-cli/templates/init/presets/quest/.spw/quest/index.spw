@@ -1,0 +1,42 @@
+# Quest — a .spw you play in
+#
+# This folder is yours. Every file here asks you to change something and
+# says how to check what changed. One open question runs through all of it:
+# should a mark written after a word bind to that word, the way a mark
+# written before it does? The workbench has not decided. You can help.
+#
+# Run every command from the repository root. Nothing here commits.
+
+#>quest
+#:quest #!play
+#:layer #!pragmatics
+
+^["roots"]{
+ @forks: ~"./forks.spw"
+ @experiments: ~"./experiments.spw"
+ @shelves: ~"./shelves.spw"
+ @wonders: ~"./wonders.spw"
+ @asks: ~"./asks.spw"
+ @home: ~"../index.spw"
+}
+
+^["moves"]{
+ // Four kinds of play. Each one changes a file and runs a tool.
+ fork = "write a line another way in forks.spw, fingerprint both, and compare what the parser read"
+ probe = "run a probe from wonders.spw and copy what it printed onto a shelf"
+ shelve = "move a claim along shelves.spw: felt, then proposed with a probe, then measured with what the probe printed"
+ ask = "when a tool could not do what you wanted, write it in asks.spw for the workbench"
+}
+
+^["thread"]{
+ // The question the files share. Start anywhere; it is the same question.
+ question = "should door~ bind to door the way ~door does?"
+ where = #[ `forks.spw: fixity`, `experiments.spw: fixity_dual`, `shelves.spw: all three shelves`, `wonders.spw: wonder_postfix`, `asks.spw: postfix_binding` ]
+}
+
+^["verify"]{
+ lint = "npm --prefix .spw/_workbench run spw -- lint .spw"
+ resolve = "npm --prefix .spw/_workbench run spw -- resolve --from .spw"
+ measure = "npm --prefix .spw/_workbench run spw -- measure .spw/quest"
+ fingerprint = "npm --prefix .spw/_workbench run spw -- fingerprint --expr 'door~'"
+}

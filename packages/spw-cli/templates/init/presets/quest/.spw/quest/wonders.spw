@@ -1,0 +1,29 @@
+# Wonders — questions that carry the act that would answer them
+#
+# Each wonder has a probe you can run and the measurements it prints. Run
+# one, then copy what it printed onto the measured shelf in shelves.spw.
+
+#>quest_wonders
+#:quest #!wonder
+#:layer #!pragmatics
+
+#>wonder_postfix
+?["Should a mark after a word bind to it?"]{
+  ~#felt: "door~ reads like a thought arriving after the door"
+  !probe{ "npm --prefix .spw/_workbench run spw -- fingerprint --expr 'door~'" }
+  $%[Expression, Operation, Sequence]
+}
+
+#>wonder_separators
+?["Can a projection tell company from schedule?"]{
+  ~#felt: "a comma and a semicolon do not mean the same thing to me"
+  !probe{ "npm --prefix .spw/_workbench run spw -- fingerprint --expr 'door{hinge; frame; key}' --json" }
+  $%[Body, Expression, Identifier, Sequence]
+}
+
+#>wonder_growth
+?["How much did forks.spw grow while you played?"]{
+  ~#felt: "it feels bigger than when I started"
+  !probe{ "npm --prefix .spw/_workbench run spw -- measure .spw/quest" }
+  $%[lines, bytes]
+}

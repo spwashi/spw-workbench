@@ -1,0 +1,52 @@
+# Shelves — where a claim sits, from felt to measured
+#
+# Three shelves, one gradient. A claim starts felt: how a form reads to you,
+# and nothing on that shelf can be wrong. Give it the act that would check it
+# and it is proposed. Run that act, keep what it printed beside the command,
+# and it is measured. A claim moves toward measured only when a tool says
+# so; a felt claim never has to move to count.
+
+#>quest_shelves
+#:quest #!shelf
+#:layer #!pragmatics
+
+^["felt"]{
+ // Subjective. No probe needed.
+ postfix_reads_naturally = "door~ reads to me like a thought arriving after the door"
+ commas_and_semicolons = "a comma and a semicolon do not mean the same thing to me"
+}
+
+^["proposed"]{
+ // A claim with the act that would check it.
+ postfix_binds: .{
+  claim = "door~ should bind to door, as ~door does"
+  probe = "npm --prefix .spw/_workbench run spw -- fingerprint --expr 'door~'"
+  would_print = "Expression=1 Operation=1"
+ }[reg=facet]
+}
+
+^["measured"]{
+ // Objective. A tool printed this; the command stays beside it.
+ postfix_today: .{
+  claim = "door~ parses as a door beside a mark with nothing to hold"
+  probe = "npm --prefix .spw/_workbench run spw -- fingerprint --expr 'door~'"
+  printed = "Expression=2 Identifier=1 Operation=1 Sequence=1"
+ }[reg=facet]
+ separators_unseen: .{
+  claim = "a comma list and a semicolon list print the same projection"
+  probe = "npm --prefix .spw/_workbench run spw -- fingerprint --expr 'door{hinge; frame; key}'"
+  printed = "Body=1 Expression=4 Identifier=4 Sequence=1"
+ }[reg=facet]
+}
+
+^["forks_size"]{
+ // spw measure reads this: forks.spw's size when the quest was written. Edit forks.spw and measure reports the drift.
+ @self: ~"./forks.spw"
+ %mass{ lines: 99, bytes: 3460 }
+}
+
+^["gradient"]{
+ order = #[ `felt`, `proposed`, `measured` ]
+ status = "the workbench marks the same gradient as interpretive, proposed and measured"
+ move = "copy a claim to the next shelf when you have its probe, then again when you have what it printed; keep the felt line where it was"
+}

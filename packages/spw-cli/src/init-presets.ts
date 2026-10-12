@@ -1,7 +1,7 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 
-export type InitPreset = 'default' | 'show' | 'installable-book'
+export type InitPreset = 'default' | 'show' | 'installable-book' | 'quest'
 
 type CopyDirOptions = {
   overwrite?: boolean
@@ -15,6 +15,8 @@ export function parseInitPreset(value: string): InitPreset {
       return 'show'
     case 'installable-book':
       return 'installable-book'
+    case 'quest':
+      return 'quest'
     default:
       throw new Error(`unknown init preset "${value}"`)
   }

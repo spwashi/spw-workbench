@@ -54,6 +54,20 @@ npm --prefix .spw/_workbench run spw -- lint .spw
 npm --prefix .spw/_workbench run spw -- resolve --from .spw
 ```
 
+## Then: play
+
+```bash
+npm --prefix .spw/_workbench run spw:init -- ../.. --preset quest
+```
+
+The quest preset adds `.spw/quest/`, a folder to play in. One open question runs through it: should `door~` bind to `door` the way `~door` does?
+
+- `forks.spw` writes one thought several ways, each with what the parser read, and a `felt` line for you.
+- `experiments.spw` cites syntax the workbench is still deciding, by catalog id and status.
+- `shelves.spw` moves a claim from felt to proposed to measured; `spw measure .spw/quest` checks the size it declares.
+- `wonders.spw` asks questions that carry a probe you can run.
+- `asks.spw` keeps requests for the workbench in one shape, ready to send upstream.
+
 Nothing here commits. Read the diff, then commit it yourself.
 
 Continue with the [mounted-workbench contract](mounted-workbench.md) or run `npm --prefix .spw/_workbench run spw -- help`.

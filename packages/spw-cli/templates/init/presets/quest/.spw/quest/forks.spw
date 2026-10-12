@@ -1,0 +1,99 @@
+# Forks — one thought, written more than one way
+#
+# Each fork holds the same thought in several forms. Beside each form is its
+# projection: what the parser read, as node counts printed by spw fingerprint
+# when this file was written. The projection is the parser's half; felt is
+# yours, so fill it with how the form reads to you. Then add a form of your
+# own, fingerprint it, and write down what came back.
+
+#>quest_forks
+#:quest #!fork
+#:layer #!semantics
+
+^["fixity"]{
+ // Where the mark sits: before the word, or after it.
+ prefix: .{
+  form = `~door`
+  projection = "Expression=1 Operation=1"
+  reads = "one act on one word: the mark holds door"
+  felt = ""
+ }[reg=facet]
+ postfix: .{
+  form = `door~`
+  projection = "Expression=2 Identifier=1 Operation=1 Sequence=1"
+  reads = "two neighbours: a door, then a mark with nothing to hold"
+  felt = ""
+ }[reg=facet]
+ chain: .{
+  form = `door~!`
+  projection = "Expression=3 Identifier=1 Operation=2 Sequence=1"
+  reads = "three neighbours; nothing binds yet"
+  felt = ""
+ }[reg=facet]
+ probe = "npm --prefix .spw/_workbench run spw -- fingerprint --expr 'door~'"
+}
+
+^["parts"]{
+ // What the braces hold, and what the mark between the parts says.
+ company: .{
+  form = `door{hinge, frame, key}`
+  projection = "Body=1 Expression=4 Identifier=4 Sequence=1"
+  reads = "three parts kept together; a comma holds company"
+  felt = ""
+ }[reg=facet]
+ schedule: .{
+  form = `door{hinge; frame; key}`
+  projection = "Body=1 Expression=4 Identifier=4 Sequence=1"
+  reads = "three parts in order; a semicolon counts a schedule"
+  felt = ""
+ }[reg=facet]
+ one_name: .{
+  form = `door{hinge.frame.key}`
+  projection = "Body=1 Expression=2 Identifier=2 Sequence=1"
+  reads = "one long name; tight dots never split a word"
+  felt = ""
+ }[reg=facet]
+ crawl: .{
+  form = `{hinge}.{frame}.{key}`
+  projection = "Body=3 Expression=6 Identifier=3 Operation=2 Sequence=4"
+  reads = "three whole holds, and the dots walk from one to the next"
+  felt = ""
+ }[reg=facet]
+ notice = "company and schedule print the same projection. Node counts cannot see which mark sat between the parts, though the parser kept it. That is an ask in asks.spw."
+}
+
+^["order"]{
+ // The brace sentence: < > what it is about, ( ) where, [ ] how you see it, { } what belongs.
+ noun_first: .{
+  form = `door[closed](hallway){hinge, key}<threshold>`
+  projection = "Body=1 Capsule=1 Expression=5 Frame=1 Identifier=6 Parameter=1 Scope=1 Sequence=2"
+  reads = "the door, seen closed, in the hallway, holding hinge and key, about a threshold"
+  felt = ""
+ }[reg=facet]
+ braces_first: .{
+  form = `<threshold>(hallway)[closed]{hinge, key}`
+  projection = "Body=1 Capsule=1 Expression=5 Frame=1 Identifier=5 Parameter=1 Scope=1 Sequence=2"
+  reads = "the same holds with no word in front; still one expression"
+  felt = ""
+ }[reg=facet]
+}
+
+^["voice"]{
+ // Who speaks, and how a word gets its bubble.
+ speaker: .{
+  form = `@door: \`the same door\``
+  projection = "Binding=1 Expression=2 Literal=1 Reference=1"
+  reads = "the door says it: @ names whose view, the colon gives the line"
+  felt = ""
+ }[reg=facet]
+ aside: .{
+  form = `door ~#says(\`again\`)`
+  projection = "Annotation=1 Expression=2 Identifier=1 Sequence=1"
+  reads = "a small reading pinned beside the word; the parse keeps them as neighbours"
+  felt = ""
+ }[reg=facet]
+}
+
+^["yours"]{
+ // Fork something of your own: write two forms of one thought, fingerprint both, and keep the counts.
+}

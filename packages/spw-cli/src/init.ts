@@ -100,6 +100,7 @@ export function printInitUsage(): void {
           '--bootstrap          initialize git, add .spw/_workbench, and install dependencies when possible',
           '--preset show               show scaffold with studio awareness and season layers',
           '--preset installable-book   alias for show',
+          '--preset quest             add .spw/quest: forks, experiments, shelves, wonders and asks to play in',
         ],
       },
       {
