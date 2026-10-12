@@ -29,11 +29,20 @@
 # Enables fast agent context loading (~5 lines).
 #
 # cold ^["done"]
-# Written once at merge. Becomes CHANGELOG source.
+# Local history. Written at merge, and incrementally while the plan runs.
+# Holds landed commits (~#shipped) and closed questions (~#resolved(label)).
+# Becomes CHANGELOG source.
 #
 # Eviction rules:
 # - Stream entries are never deleted, only annotated.
-# - Open questions are removed when resolved — resolution logged in stream first.
+# - Open questions leave ^["open"] when resolved — resolution logged in stream first,
+#   then kept in ^["done"] as ~#resolved(label), never deleted.
+# - Commits are named, not numbered. Planned is ~[name], landed is .[name] (potential
+#   grounds into the same line): .[name]: "<hash> <subject>". Order is block position.
+#   A name is never reused; a rescope gets new names. No range comments, ever.
+#   Landed together: each name keeps its own line, .[b]: "<hash> <subject> (with a)".
+#   Dropped: ~#dropped(name): "<reason>" in ^["done"], one line each, beside ~#resolved(label).
+#   ~#next_commit in the cache names the next ~[name].
 # - Cache is recomputed — never hand-edited.
 
 # ──────────────────────────────────────────────
@@ -328,8 +337,9 @@
 #
 # Written at merge time. Source for CHANGELOG craft entries.
 #
-# ~#shipped: [list of ~[N] that landed]
-# ~#dropped: [list of ~[N] that were cut, with reasons]
+# ~#shipped: not maintained while the plan runs; the .[name] lines in ^["commits"] are the record
+# ~#dropped(name): "<reason>" — one line per dropped or merged commit
+# ~#resolved(label): "<question> — <answer>; evidence: <stream stamp | commit | path>"
 # ~#surprised: "narrative of what changed the approach"
 # ~#duration: "wall-clock time from first >> to merge"
 # ~#taste: "what craft quality improved — naming, layering, containment, etc."

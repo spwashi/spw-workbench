@@ -114,14 +114,15 @@
 }
 
 ^["open"]{
- # Unresolved questions. Remove when resolved (log resolution in stream first).
+ # Unresolved questions. When resolved: log in stream, then move to ^["done"] as ~#resolved(label).
  # ?[label]: "question"
 }
 
 ^["commits"]{
- # Planned commits in order. Use project sigil conventions.
- # ~[N]: "sigil[scope] — description"
- ~[1]: "<sigil>[<scope>] — <description>"
+ # Named, in order. Planned ~[name]; landed .[name] with its hash. Names are never reused.
+ # ~[name]: "sigil[scope] — description"
+ # .[name]: "<hash> sigil[scope] — description"
+ ~[first_slice]: "<sigil>[<scope>] — <description>"
 }
 
 ^["cache"]{
@@ -132,16 +133,17 @@
  ~#rebased_at: ""
  ~#hygiene_split: "none"
  ~#files_hot: ""
- ~#next_commit: "1"
+ ~#next_commit: "first_slice"
  ~#open_count: "0"
  ~#last_stream: ""
  ~#taste_debt: ""
 }
 
 ^["done"]{
- # Written at merge time.
+ # Local history: written incrementally, finalized at merge.
  # ~#shipped: []
- # ~#dropped: []
+ # ~#resolved(label): "<question> — <answer>; evidence: <stream stamp | commit | path>"
+ # ~#dropped(name): "<reason>"
  # ~#surprised: ""
  # ~#duration: ""
  # ~#taste: ""
