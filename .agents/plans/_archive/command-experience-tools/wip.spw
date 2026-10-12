@@ -61,6 +61,7 @@
  >>[2026-02-20 03:17] decide — Structuring a 26-commit marathon plan to build out: the core command bus, the visual palette, the concept lookup engine, specific object manipulators, and finalizing with documentation.
  >>[2026-10-12 14:27] revise — src/core and src/ui do not exist; the vscode extension already ships a concepts tree view and registerCommand entries. Replaced the 26 speculative commits with a disposition commit plus one conditional re-home commit, added open question disposition, and swapped two template wonders for one grounded in concepts-tree.ts.
  >>[2026-10-12 14:53] note — User decision 2026-10-12: rehomed, not archived here. Palette routing and concept lookup and manipulation commands moved to vscode-authoring-probe-loop; the intent target preview payload moved to vscode-editor-contract. CommandBus and src ui elements dropped. Phase set to done for the coordinator to archive.
+ >>[2026-10-12 15:39] revise — Commits named per the convention in 90c58bbc: 1 landed, 0 planned, 9 dropped.
 }
 
 ^["open"]{
@@ -68,28 +69,29 @@
 }
 
 ^["commits"]{
- # ~[1]: DONE — disposition recorded; see ^["done"] ~#resolved(disposition)
- # ~[2]: DROPPED — manipulation commands now live as commits 7 and 8 in vscode-authoring-probe-loop
+ .[record_disposition]: "937b53e9 .[plans] — reconcile every live plan with history, rescope the stranded, reheat the curricula, and archive the done (records the disposition and rehomes the intents)"
 }
 
 ^["done"]{
  ~#resolved(disposition): "Archive, or re-home the palette, concept lookup and AST manipulation intents in the vscode-* plans? — re-homed by the user decision of 2026-10-12; evidence: the extension already contributes about 20 spw.* commands and a concepts tree, and src/core and src/ui do not exist"
- ~#shipped: [
-  "palette routing: each command names its surface (palette, lens, hover, atlas, CLI) -> vscode-authoring-probe-loop ^\"rehomed_intents\" and ?[command_budget]",
-  "concept lookup gap check -> vscode-authoring-probe-loop ?[concept_lookup_gap] and commit 7",
-  "previewable semantic-edit manipulation commands -> vscode-authoring-probe-loop ?[manipulation_commands] and commit 8",
-  "intent/target/preview payload and the no-direct-mutation guard -> vscode-editor-contract ?[command_intent_shape]",
- ]
- ~#dropped: ["CommandBus and command-intents models (src/core)", "command-palette and concept-reference elements (src/ui); VS Code provides the palette", "object-inspector and visual AST manipulation (speculative, no preview or undo story)", "the original 26-commit marathon", "ConceptLookupService; the question the wonder asked is carried by ?[concept_lookup_gap]"]
+ ~#dropped(palette_routing): "rehomed to vscode-authoring-probe-loop as its rehomed_intents frame and ?[command_budget]: each command names its surface (palette, lens, hover, atlas, CLI)"
+ ~#dropped(concept_lookup_check): "rehomed to vscode-authoring-probe-loop as ?[concept_lookup_gap] and its concept_coverage_probe commit"
+ ~#dropped(register_manipulation_commands): "the planned commit registering previewable semantic-edit manipulation commands; rehomed to vscode-authoring-probe-loop as ?[manipulation_commands] and its manipulation_preview_commands commit"
+ ~#dropped(command_intent_payload): "rehomed to vscode-editor-contract as ?[command_intent_shape]: the intent, target and preview payload and the no-direct-mutation guard"
+ ~#dropped(command_bus_models): "CommandBus and command-intents models under src/core, which does not exist"
+ ~#dropped(palette_elements): "command-palette and concept-reference elements under src/ui; VS Code provides the palette"
+ ~#dropped(visual_ast_manipulation): "object-inspector and visual AST manipulation; speculative, no preview or undo story"
+ ~#dropped(original_marathon): "the original 26-commit marathon over src/core and src/ui, which no longer exist"
+ ~#dropped(concept_lookup_service): "ConceptLookupService; the question the wonder asked is carried by vscode-authoring-probe-loop ?[concept_lookup_gap]"
 }
 
 ^["cache"]{
  ~#status: "done"
  ~#base_ref: "main@551bb419"
  ~#files_hot: ""
- ~#next_commit: ""
+ ~#next_commit: "none"
  ~#open_count: "0"
- ~#last_stream: "2026-10-12 14:53"
+ ~#last_stream: "2026-10-12 15:39"
  ~#taste_debt: ""
 }
 

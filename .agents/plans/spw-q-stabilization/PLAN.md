@@ -50,16 +50,12 @@ Turn the current v1-shaped proposal into a testable pre-v1 candidate whose synta
 
 ## Commits
 
-1. `.[spw-q] — reframe v1 proposal as a versioned experimental candidate` (landed in b7c5c7df)
-2. `vocab[seed] — replace ordinal epistemic grades with evidence provenance` (landed in b7c5c7df)
-3. `![spw-q] — verify evidence invariants and candidate cross-references` (landed in b7c5c7df)
-4. `^seed[query] — spell the product predicate in selector-expr.ts once O1 is chosen`
-5. `![spw-q] — fixture proving the product spelling cannot collide with an operation label`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 
 - Rebase target: `main@949e7ed3e5e1`
-- Rebase cadence: before commit 1 and before merge
+- Rebase cadence: before candidate_reframe and before merge
 - Hygiene split: required; the current dirty `main` also contains `spw-cli-overhaul` changes and temporary artifacts, so this plan must be isolated before commit.
 
 ## Dependencies

@@ -82,13 +82,7 @@ Craft guard:
 
 ## Commits
 
-1. .[plans] — initialize syntax-hardware-alignment plan surfaces (landed inside 5acc5545)
-2. ^seed[particles] — lexer spike: #~ evidential aim with #!route(...) payload
-3. ![cut-gate] — S0 probe verb lint, scoped to the !probe[S0] form
-4. ![cut-gate] — $%[… = …] latch diffing
-5. ![cut-gate] — #~derived staleness check (needs 2)
-
-Dropped: the former commit 4 pointed at src/lang/seeds/probes/, which does not exist.
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy:
 - Explore loop: `fuzz:explore --target=seed` while the aim-union spike is open
@@ -98,7 +92,7 @@ Fuzz strategy:
 ## Agentic Hygiene
 
 - Rebase target: `main` (base `main@da5189bb`)
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before init_plan_surfaces, before merge
 - Hygiene split: none — but note the untracked `.spw/caches/` surface predates this plan; its `#:cache` / `^"dispatch"` vocabulary is the tension this plan resolves, not drift introduced here.
 
 ## Dependencies

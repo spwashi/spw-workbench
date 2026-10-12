@@ -24,14 +24,12 @@ The `spw-workbench` uses an instrumentation-first philosophy where design decisi
 
 ## Commits
 
-1. landed in 82da41d4 — `.[runtime] — trace RegisterBank logic to stability and timing axes`
-2. landed in 82da41d4 — `.[runtime] — trace Substrate and stages to disclosure, noise, and resolution axes` (the markers use layer, representation and quality keys; see the open question axis_vocabulary in wip.spw)
-3. `![audit] — spw-marker-audit lists the six axes with marker counts and flags unknown axis keys` (the scan-roots half landed in 1f17c86e)
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 
 - Rebase target: `main@3b1747c4` (updated 2026-03-27)
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before `trace_register_bank`, before merge
 - Hygiene split: none recorded in the original branch memory; verify worktree drift before implementation.
 
 ## Dependencies

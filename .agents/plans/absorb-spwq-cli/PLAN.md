@@ -37,14 +37,9 @@ The desired end state is a single package-owned CLI surface where selector behav
 
 ## Commits
 
-Commits 2-3 establish selector truth and package ownership. Commit 4 hardens the public vocabulary so site-install, DX, and release docs can speak about one CLI surface.
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
-1. .[selector-dogfood] — plan and document the selector normalization slice (landed)
-2. &[selector-dogfood] — repair AST traversal and add corpus-level selector coverage (landed, 508f7c37)
-3. &[spwq-cli] — absorb spwq into the package-owned CLI with compatibility wrappers (landed, 6a89cfff)
-4. .[cli-conventions] — normalize alias/docs language and record future bin DX direction (landed, 99958883)
-5. &[cli] =observe[capabilities] — add `spw capabilities` as a relative, scriptable snapshot beside the shipped roots and doctor verbs; shape agreed with cli-mode-overhaul commit 8 before either lands
-6. ![cli] *verify[portable-evidence] — exercise roots, doctor, and capabilities JSON/Spw output against identity-free fixtures
+repair_selector_traversal and absorb_spwq establish selector truth and package ownership. normalize_cli_canon hardens the public vocabulary so site-install, DX, and release docs can speak about one CLI surface.
 
 Fuzz strategy:
 - Explore loop: `npm run test:seed -- spwq-corpus`
@@ -54,7 +49,7 @@ Fuzz strategy:
 ## Agentic Hygiene
 
 - Rebase target: `main@3b1747c4` (updated 2026-03-27)
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before plan_selector_slice, before merge
 - Hygiene split: none
 
 ## Dependencies

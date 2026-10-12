@@ -66,7 +66,7 @@ Taste note: improve **correctness**, **portability**, **recoverability**, and **
 
 ## Commits
 
-All on main: 1864c0d9, 74df9b59, 56cc81c5, 6f6278b7, 22aa8fcb, 0002a80d. Planned commit 7 (retain evidence) has no one-to-one hash; its evidence lives in the wip.spw verify entries.
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy:
 
@@ -77,7 +77,7 @@ Fuzz strategy:
 ## Agentic Hygiene
 
 - Rebase target: `main@ba40cea95bc2fa87ff83bd35337c1b3edf39b4fb`
-- Rebase cadence: before commit 1 and before merge
+- Rebase cadence: before define_startup_gates and before merge
 - Hygiene split: isolated in `codex/webstorm-compatibility`; the main checkout was clean and no unrelated feature drift exists
 
 ## Dependencies

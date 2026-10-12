@@ -11,7 +11,7 @@
  gist: "A consumer mounts the workbench at .spw/_workbench and keeps its own .spw canon and review evidence"
  touches: [~"packages/spw-cli/src/doctor.ts", ~"packages/spw-cli/templates/init", ~"packages/spw-runtime/src/site-install.ts", ~".spw/conventions/submodule.spw"]
  entry: ~"./spw-site-install.spw"
- next: "Commit 25: add spw capabilities --json emitting the compatibility vector (both revisions, schemas, per-capability status)."
+ next: "capabilities_json: add spw capabilities --json emitting the compatibility vector (both revisions, schemas, per-capability status)."
 }
 
 ^["edges"]{
@@ -103,6 +103,7 @@
  >>[2026-08-24 10:17] decide — resolved [review-retention]: generated caches are ephemeral, explicit consumer claims are durable by local policy, and upstream exchange is always a deliberate human-gated distillation.
  >>[2026-10-12 14:26] revise — Reconciled the 26 planned commits against history: seven landed hashes recorded in done, four concrete commits remain (spw capabilities, mount vector fields, doctor comparison, fixtures); three open questions sharpened to one-sentence decisions.
  >>[2026-10-12 14:26] observe — No spw capabilities command exists in packages/spw-cli/src; doctor reports pin drift against checkout head but has no compatibility vector; the init template scaffolds neither workspace paths nor tsconfig paths.
+ >>[2026-10-12 15:29] revise — Commits named per the convention in 90c58bbc: 24 landed, 4 planned, 1 dropped.
 }
 
 ^["open"]{
@@ -114,11 +115,34 @@
 }
 
 ^["commits"]{
- # ~[1]..~[24] landed — see ^["done"]
- ~[25]: "&[cli] — add spw capabilities --json emitting the compatibility vector (both revisions, schemas, per-capability status); spw capabilities does not exist yet"
- ~[26]: "#[mount] — add the compatibility-vector fields to the mount.spw init template and .spw/conventions/submodule.spw"
- ~[27]: "&[cli,doctor] — doctor compares the mount.spw declared vector with the spw capabilities output, beside the existing pin drift check"
- ~[28]: "![cli,consumer] — verify relative-path output and distinct failure states for the vector in generated identity-free fixtures"
+ .[consumer_canon_templates]: "6b565223 &[init-runtime-bias] — make spw init portable across source and dist runtimes (predates the plan: the index.spw and workspace.spw templates already existed)"
+ .[spw_init]: "0d3d82cc &[cli] =site[doctor-install] — tighten external site bootstrap ergonomics (with mount_template, spw_doctor, verify_doctor_failures)"
+ .[mount_template]: "0d3d82cc &[cli] =site[doctor-install] — tighten external site bootstrap ergonomics (with spw_init)"
+ .[spw_doctor]: "0d3d82cc &[cli] =site[doctor-install] — tighten external site bootstrap ergonomics (with spw_init)"
+ .[verify_doctor_failures]: "0d3d82cc &[cli] =site[doctor-install] — tighten external site bootstrap ergonomics (with spw_init)"
+ .[submodule_convention]: "c5f4dcb3 &[install,release,plans] =ground[submodule-truth] — canonize _workbench boundary and refresh release telemetry memory (with conventions_doc, engagement_protocol, exchange_protocol, site_install_artifact)"
+ .[conventions_doc]: "c5f4dcb3 &[install,release,plans] =ground[submodule-truth] — canonize _workbench boundary and refresh release telemetry memory (with submodule_convention)"
+ .[engagement_protocol]: "c5f4dcb3 &[install,release,plans] =ground[submodule-truth] — canonize _workbench boundary and refresh release telemetry memory (with submodule_convention)"
+ .[exchange_protocol]: "c5f4dcb3 &[install,release,plans] =ground[submodule-truth] — canonize _workbench boundary and refresh release telemetry memory (with submodule_convention)"
+ .[site_install_artifact]: "c5f4dcb3 &[install,release,plans] =ground[submodule-truth] — canonize _workbench boundary and refresh release telemetry memory (with submodule_convention)"
+ .[mount_protocol]: "45c6b7f3 &[site-install,mount] =ground[shared-resolution] — derive mounted workbench roots from .spw/mount.spw (with mount_resolution, verify_mount_resolution, verify_init_structure)"
+ .[mount_resolution]: "45c6b7f3 &[site-install,mount] =ground[shared-resolution] — derive mounted workbench roots from .spw/mount.spw (with mount_protocol)"
+ .[verify_mount_resolution]: "45c6b7f3 &[site-install,mount] =ground[shared-resolution] — derive mounted workbench roots from .spw/mount.spw (with mount_protocol)"
+ .[verify_init_structure]: "45c6b7f3 &[site-install,mount] =ground[shared-resolution] — derive mounted workbench roots from .spw/mount.spw (with mount_protocol)"
+ .[install_guide]: "a7622c94 .[docs] =story[site-install-release-shape] — explain why _workbench is the truthful v0.3.0 boundary"
+ .[vscode_workbench_detection]: "e49cacef &[vscode,lsp] =surface[cognitive-exercise] — workspace atlas, concept tree cognitive features, and LSP workspace handlers"
+ .[site_review_contract]: "bca875c7 &[canon,tooling] =abstract[mounted-consumers] — retire domain-specific assumptions"
+ .[cli_mount_resolution]: "eb45f240 &[cli,workspace] =orient[mounted-consumers] — anchor navigation in consumer authority (with verify_consumer_commands)"
+ .[verify_consumer_commands]: "eb45f240 &[cli,workspace] =orient[mounted-consumers] — anchor navigation in consumer authority (with cli_mount_resolution)"
+ .[relative_doctor_paths]: "ccea9c97 .[cli,doctor] =disclose[portable-state] — default paths to relative"
+ .[claude_fragment_template]: "unverified &[templates] — create CLAUDE.md fragment for .spw-enabled consumer repositories; evidence: no CLAUDE.md fragment exists under packages/spw-cli/templates/init; the nearest is templates/init/base/.spw/README.md, added in eb45f240"
+ .[verify_extension_activation]: "unverified ![vscode] — verify extension activates in a consumer repository with only .spw/_workbench; evidence: e49cacef added _workbench server resolution without an activation test, and 47f4015c replaced it with a bundled server plus an extracted-archive smoke"
+ .[mount_protocol_reference]: "unverified .[docs] — write mount protocol reference; evidence: no standalone reference exists; the role of mount.spw is described in docs/runtime/md/site-install-release-story.md (a7622c94) and .spw/conventions/submodule.spw (c5f4dcb3)"
+ .[verify_identity_free_reviews]: "unverified ![consumer-review] — verify identity-free reviews remain consumer-owned and revision-aware; evidence: stream 2026-07-20 14:34 chose generated identity-free fixtures, but no test names them, and vector_fixtures still plans them"
+ ~[capabilities_json]: "&[cli] — add spw capabilities --json emitting the compatibility vector (both revisions, schemas, per-capability status); spw capabilities does not exist yet"
+ ~[mount_vector_fields]: "#[mount] — add the compatibility-vector fields to the mount.spw init template and .spw/conventions/submodule.spw"
+ ~[doctor_vector_check]: "&[cli,doctor] — doctor compares the mount.spw declared vector with the spw capabilities output, beside the existing pin drift check"
+ ~[vector_fixtures]: "![cli,consumer] — verify relative-path output and distinct failure states for the vector in generated identity-free fixtures"
 }
 
 ^["cache"]{
@@ -127,18 +151,17 @@
  ~#rebased_at: "2026-08-24"
  ~#hygiene_split: "none"
  ~#files_hot: "packages/spw-runtime/src/site-install.ts, packages/spw-runtime/src/index.ts, packages/spw-lsp/src/helpers.ts, packages/spw-lsp/src/server-index.ts, packages/spw-cli/src/init.ts, packages/spw-cli/src/doctor.ts, packages/spw-cli/templates/init/base/.spw/mount.spw, .agents/plans/spw-site-install/PLAN.md, .agents/plans/spw-site-install/wip.spw"
- ~#next_commit: "25"
+ ~#next_commit: "capabilities_json"
  ~#open_count: "3"
- ~#last_stream: "2026-10-12 14:26"
+ ~#last_stream: "2026-10-12 15:29"
  ~#taste_debt: "Mount metadata still needs a tested compatibility-vector schema and doctor currently checks less than its convention promises. Keep review output consumer-owned, revision-aware, and human-gated before exchange; `_workbench` must never become an excuse to absorb consumer canon."
 }
 
 ^["done"]{
- ~#shipped: ["c5f4dcb3 &[install,release,plans] =ground[submodule-truth] — submodule convention, _workbench boundary", "45c6b7f3 &[site-install,mount] =ground[shared-resolution] — mount resolution from .spw/mount.spw", "0d3d82cc &[cli] =site[doctor-install] — doctor and init bootstrap", "eb45f240 &[cli,workspace] =orient[mounted-consumers] — CLI resolution anchored in consumer authority", "bca875c7 &[canon,tooling] =abstract[mounted-consumers] — site-review boundary and authority", "ccea9c97 .[cli,doctor] =disclose[portable-state] — relative paths and pin status", "a7622c94 .[docs] =story[site-install-release-shape] — install story"]
- ~#unmatched: "original commits 7 to 10, 13, 14, 17 to 20 and 22 to 24 have no one-to-one hash; init templates, the install story, and site-review rules landed under the commits above"
- # Written at merge time.
- # ~#shipped: []
- # ~#dropped: []
+ ~#dropped(review_entrypoint): "resolved by [review-entrypoint] (stream 2026-08-24 10:16): the mounted review skill from site_review_contract owns the procedure and CLI roots, doctor, capabilities and probes stay composable; no monolithic entrypoint command"
+ # Local history: written incrementally, finalized at merge.
+ # ~#resolved(label): "<question> — <answer>; evidence: <stream stamp | commit | path>"
+ # ~#dropped(name): "<reason>"
  # ~#surprised: ""
  # ~#duration: ""
  # ~#taste: ""

@@ -8,7 +8,7 @@ Move geometric analysis off character counting and onto the AST, then build shap
 
 The shape half of this plan is not a new idea — it is an unredeemed one. `types/ast/onf.ts` already states as an ONF invariant that "momentum frames are excluded from semantic hash," and `spw-garden-geometry/formula-variant-geometry-utility.spw` already names "structural: op/brace/frame skeleton — ONF shape hash" as a formula kind. Neither exists: `semanticHash`, `shapeHash`, and `structuralHash` have zero implementations in the tree. ONF is already the normalized positional form (`{ sigil, args[], frames }`) and `'_'` is already its hole sigil, so a label-erased Merkle reduction over ONF needs no new normalization and anti-unified templates are themselves ONF terms rather than a new datatype. This plan puts the census on the AST, adds order and shape as first-class measurements, and gives every number a corpus prior to be surprising against.
 
-Naming: the implementation is the **ONF shape fingerprint** (`shapeFingerprint`), not a hash. `hashString` already means content identity in this codebase — `inputHash` / `outputHash` in `mutation-automata.ts`, `beforeHash` / `afterHash` in `form-geometry.ts`, the source id in `range-transform.ts` — where a collision is a failure. A shape fingerprint is many-to-one *by design*: collision is the finding. Two inverted collision semantics should not share a head noun. The "ONF shape" qualifier is retained so this is recognizably the thing `onf.ts` calls a semantic hash and the garden plan calls an ONF shape hash; commit 5 updates both to the settled term.
+Naming: the implementation is the **ONF shape fingerprint** (`shapeFingerprint`), not a hash. `hashString` already means content identity in this codebase — `inputHash` / `outputHash` in `mutation-automata.ts`, `beforeHash` / `afterHash` in `form-geometry.ts`, the source id in `range-transform.ts` — where a collision is a failure. A shape fingerprint is many-to-one *by design*: collision is the finding. Two inverted collision semantics should not share a head noun. The "ONF shape" qualifier is retained so this is recognizably the thing `onf.ts` calls a semantic hash and the garden plan calls an ONF shape hash; settle_shape_fingerprint updates both to the settled term.
 
 Taste note:
 - correctness: one epistemology per report — parse, don't scan. A geometry report must not contradict itself.
@@ -78,62 +78,53 @@ Axis attribution:
 - **noise** — recurrence threshold separating idiom from accident; z-score cut for "surprising".
 - **stability** — fingerprints must be invariant under layout-only rewrites (ties to the existing `pair_preservation` claim in `brace-projection.ts`).
 
-Every one of these derives from a corpus quantile after commit 7; none stays hand-picked.
+Every one of these derives from a corpus quantile after geometry_corpus_mode; none stays hand-picked.
 
 ## Commits
 
-Dormant by the 2026-09-30 decision. Only commit 3 is live; the others are deferred until a human reheats the plan.
+Dormant by the 2026-09-30 decision. Only ast_operator_census is live; the others are deferred until a human reheats the plan.
 
-1. landed (da5189bb, 08e2bc1c) — `.[plans] — refresh geometric-analysis-tooling scope around AST-census findings`
-2. deferred — `^seed[spw-seed] — stamp actPlacement/fixity from parser position; carry container depth in lexer state`
-3. live — `^seed[geometry] — operator census and nesting from the AST so sigils inside strings are not counted; bump report to spw.geometry/2; pin the stdin repro as a regression test`
-4. deferred — `^seed[geometry] — add operator n-grams and depth profile so rhythm carries order`
-5. deferred — `vocab[geometry] — settle shapeFingerprint against FormFingerprint (spw.fingerprint/1, landed 5f181249) and the declared ONF shape hash`
-6. deferred — `^seed[geometry] — implement the ONF shape fingerprint and anti-unified templates`
-7. deferred — `&[spw-cli] — corpus mode for spw geometry: scanCorpus baseline, z-scored deviation`
-8. deferred — `#[spw-lsp] — surface Register Geometry coordinates from the /2 report`
-9. deferred — `&[spw-cli] — spectral graph metrics over the reference graph`
-10. merged into 3 — the regression test rides with the census fix
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy:
-- Explore (commits 2–6): `npm run fuzz:types` after each, plus `npm run test:seed`.
-- Stabilize (commit 7): `npm run fuzz:stabilize` — types + runtime, since the export surface changes.
-- Ship (commits 8–10): `npm run fuzz:ship` — build + full suite, plus `npm run lint:spw` for surfaces touched by the demo sequence.
+- Explore (ast_operator_census, parser_fixity_stamps, operator_ngrams, settle_shape_fingerprint, onf_shape_fingerprint): `npm run fuzz:types` after each, plus `npm run test:seed`.
+- Stabilize (geometry_corpus_mode): `npm run fuzz:stabilize` — types + runtime, since the export surface changes.
+- Ship (lsp_geometry_coordinates, spectral_graph_metrics): `npm run fuzz:ship` — build + full suite, plus `npm run lint:spw` for surfaces touched by the demo sequence.
 
 ## Agentic Hygiene
 
 - Rebase target: `main@d9da60ad`
-- Rebase cadence: before commit 1, before merge
-- Hygiene split: was required when written; as of 2026-10-12 the working tree no longer carries that LSP/neovim drift. Historical note: The working tree currently carries unrelated modifications in `packages/spw-lsp/` (`navigation.ts`, `server-index.ts`, `stdio-server.ts`, `types.ts`, `handlers/spw-probes.ts`), `extensions/neovim-spw/`, and `scripts/lsp/smoke-navigation.ts`, plus untracked generated `.d.ts` files across `packages/spw-cli/src/`. `handlers/spw-probes.ts` is a shared hot file between that drift and commit 8 of this plan. Isolate the LSP/neovim drift onto its own branch before commit 2, or explicitly defer this plan's LSP commits until it lands.
+- Rebase cadence: before refresh_geometry_scope, before merge
+- Hygiene split: was required when written; as of 2026-10-12 the working tree no longer carries that LSP/neovim drift. Historical note: The working tree currently carries unrelated modifications in `packages/spw-lsp/` (`navigation.ts`, `server-index.ts`, `stdio-server.ts`, `types.ts`, `handlers/spw-probes.ts`), `extensions/neovim-spw/`, and `scripts/lsp/smoke-navigation.ts`, plus untracked generated `.d.ts` files across `packages/spw-cli/src/`. `handlers/spw-probes.ts` is a shared hot file between that drift and lsp_geometry_coordinates of this plan. Isolate the LSP/neovim drift onto its own branch before parser_fixity_stamps, or explicitly defer this plan's LSP commits until it lands.
 
 ## Dependencies
 
-- `spw-beat-diff-precipitation` — untracked plan directory present in the tree; check for overlap on `packages/spw-cli/src/beat.ts` before commit 7.
-- `spw-garden-geometry` — read; vocabulary question resolved. Its `formula-variant-geometry-utility.spw` already names this "ONF shape hash" under `~#kinds.structural`, and `onf.ts` calls it a semantic hash. Commit 5 settles all three on `shapeFingerprint`, reserving `hash` for content identity; commit 6 supplies the missing machine for a formula kind that plan already assumes exists. Notify it when the fingerprint lands.
-- `operational-topography` — `topography-probe.ts` already owns parse-health and depth snapshots; commit 3 must reuse `ParseHealth` rather than introduce a parallel notion.
+- `spw-beat-diff-precipitation` — untracked plan directory present in the tree; check for overlap on `packages/spw-cli/src/beat.ts` before geometry_corpus_mode.
+- `spw-garden-geometry` — read; vocabulary question resolved. Its `formula-variant-geometry-utility.spw` already names this "ONF shape hash" under `~#kinds.structural`, and `onf.ts` calls it a semantic hash. settle_shape_fingerprint settles all three on `shapeFingerprint`, reserving `hash` for content identity; onf_shape_fingerprint supplies the missing machine for a formula kind that plan already assumes exists. Notify it when the fingerprint lands.
+- `operational-topography` — `topography-probe.ts` already owns parse-health and depth snapshots; ast_operator_census must reuse `ParseHealth` rather than introduce a parallel notion.
 
 ## Failure Modes
 
 - **Hard**: lexer fixity tagging breaks existing prefix-only parser recovery.
 - **Hard**: the AST census silently drops operators on surfaces that fail to parse (prose-heavy `.spw`), making the report look clean where the char scan was merely noisy. Mitigation: keep the char census as an explicit `fallback: true` path, and a parity test asserting the two agree on well-formed input.
 - **Soft**: fingerprinting cost on the full corpus; hover latency on large documents.
-- **Soft**: no shape recurs at k=2 across the corpus — the resonance thesis is simply false for this codebase. That is a real outcome; commit 6 should report it rather than lower the threshold until something appears.
+- **Soft**: no shape recurs at k=2 across the corpus — the resonance thesis is simply false for this codebase. That is a real outcome; onf_shape_fingerprint should report it rather than lower the threshold until something appears.
 - **Non-negotiable**: existing `packages/spw-seed/` tests keep passing; the two `spw.geometry/1` consumers (`packages/spw-cli/src/geometry.ts`, `packages/spw-lsp/src/handlers/spw-probes.ts:403`) migrate in the same commit that bumps the version — no window where a consumer reads a shape that no longer exists.
 
 ## Validation
 
 - **Hypotheses**:
-  - AST-level operator scoring ranks operators differently than the character census on at least one real surface (falsifiable: if the rankings never differ, the defect is cosmetic and commit 3 is not worth its cost).
+  - AST-level operator scoring ranks operators differently than the character census on at least one real surface (falsifiable: if the rankings never differ, the defect is cosmetic and ast_operator_census is not worth its cost).
   - ONF shape hashes at k=2 recur across ≥3 files in `docs/theory/spw/`.
   - Anti-unified templates from near-miss shapes correspond to rungs a human recognizes as form-ladder material.
-  - Fixity is recoverable for a majority of operator nodes from parser position — `onf.ts` says it is "often unset", and if it stays unset after commit 2, the census degrades to sigil × site and commit 6's arity keying loses resolution.
+  - Fixity is recoverable for a majority of operator nodes from parser position — `onf.ts` says it is "often unset", and if it stays unset after parser_fixity_stamps, the census degrades to sigil × site and onf_shape_fingerprint's arity keying loses resolution.
 - **Negative controls**:
   - The repro `printf '^[demo]{ "a string with ! and ~ and { unbalanced" }' | spw geometry --stdin` must report `ops=1` and no unbalanced-brace lesson.
   - Whitespace and line-comment tokenization unchanged (assert token stream equality on a fixture corpus).
   - Layout-only rewrites must leave every shape hash unchanged — the same invariant `brace-projection.ts` already claims for pair preservation.
-  - Mutating `frames.momentum` must not change any shape fingerprint. This is the exact invariant `onf.ts` already declares; commit 6 is the first code that can be held to it.
+  - Mutating `frames.momentum` must not change any shape fingerprint. This is the exact invariant `onf.ts` already declares; onf_shape_fingerprint is the first code that can be held to it.
 - **Demo sequence**:
-  1. The repro above, before and after commit 3.
+  1. The repro above, before and after ast_operator_census.
   2. `spw geometry docs/theory/spw/form-ladders.spw --ngrams`
   3. `spw geometry --corpus docs/theory --baseline` — deviation, not raw counts.
   4. `spw geometry --shapes --min-recur 3` — recurring skeletons across files.

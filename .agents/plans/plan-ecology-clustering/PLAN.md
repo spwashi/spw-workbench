@@ -56,10 +56,7 @@ Current execution should strengthen this spine in roughly that order. The gap-af
 
 ## Commits
 
-Landed in 9c1ebc10: commits 1 to 4. Remaining:
-
-5. `![plans] — verify: spw:plan:index --check clean, spw:plan:check across every slug, and lint:spw on plan-ecology-clustering.spw`
-6. `.[plans] — settle plan_map coverage: backfill the missing rows or state the covered phases in the frame header`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy:
 - Explore: `npm run lint:spw`
@@ -69,7 +66,7 @@ Fuzz strategy:
 ## Agentic Hygiene
 
 - Rebase target: `main@66ed9a2e`
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before `stage_cluster_artifacts`, before merge
 - Hygiene split: none
 
 ## Dependencies

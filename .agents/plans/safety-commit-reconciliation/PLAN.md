@@ -55,14 +55,7 @@ The authoritative initial manifest is `git show --name-status a333db8d`. Partiti
 
 ## Commits
 
-Landed: 86d433b4 (2), 55190299 (3), 51d36684 (5), f96015fc (6), eb45f240 (7), 86e0469e (8), 5f1dff99 (9), 28906c5d (10), 0a8adfe2 (11), 47f4015c (12), 90b05f53 (13), 7471a4fd (18), 1128e3f0 (19); ba436e40 merged the series into main without rewriting history. Commits 1 and 4 have no one-to-one hash found.
-
-Remaining, each handed to its owning plan or closed:
-
-14. `&[cli,query] =quote[shell-examples] — preserve selector sigils at the argv boundary`
-15. `&[lsp,vscode] =distinguish[couple,capsule] — present angle boundaries without relabeling <>`
-16. `.[canon,skills] =align[operational-theory] — restore exhibits after executable behavior exists`
-17. `.[plans] =rebase[checkpoint-ecology] — restore plan surfaces and refresh dependency truth`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Each commit must pass the smallest relevant build/test/lint gate and contain exactly one `#[episode]{ ... }` block.
 

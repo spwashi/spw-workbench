@@ -59,6 +59,7 @@
  >>[2026-10-12 14:26] revise — withdrew the three fictional commits (paths never existed in this history; sigils viz[, styles[, exhibit[ are outside the convention) and kept one disposition commit. Replaced grid_size and substrate_hook with a single disposition question: grid_size is answered by symmetry-applications.spw (2x2 tile for spatial.grid), and substrate_hook only matters once a home exists.
  >>[2026-10-12 14:31] revise — convention: resolved questions and landed commits are kept in ^["done"] (resolved(label) and shipped) rather than deleted; ^["commits"] keeps a pointer comment.
  >>[2026-10-12 14:51] decide — User decision 2026-10-12: rescope, do not archive. Live slice is a pure D4/Z4 group module in the seed; the DOM exhibit waits on a home. grep of seed, cli and runtime finds no group code though spw mount ships five .{sym:D4} surfaces.
+ >>[2026-10-12 15:29] revise — Commits named per the convention in 90c58bbc: 0 landed, 3 planned, 4 dropped.
 }
 
 ^["open"]{
@@ -68,24 +69,26 @@
 }
 
 ^["commits"]{
- # Withdrawn earlier: three commits naming src/ui/viz and src/styles/viz (never existed in this history; viz[, styles[, exhibit[ sigils outside the convention). See ^["done"] ~#dropped.
- # ~[1]: SUPERSEDED — disposition record; answered by the rescope in the 2026-10-12 decide entry. Replaced by the three commits below.
- ~[1]: "![seed] — failing tests for a D4/Z4 group: eight actions on a 2x2 tile, closure, inverses, Z4 as the rotation subgroup"
- ~[2]: "^seed[math] — add the pure D4/Z4 module under packages/spw-seed/src/math and export it; no DOM, no runtime dependency"
- ~[3]: ".[symmetry] — point the five symmetry application surfaces at the module and record the 8 actions as the canonical order"
+ # The first three commits named src/ui/viz and src/styles/viz (never existed in this history; viz[, styles[, exhibit[ sigils outside the convention) and a later disposition commit was answered by the rescope; all four sit in ^["done"] as ~#dropped(name).
+ ~[d4_failing_tests]: "![seed] — failing tests for a D4/Z4 group: eight actions on a 2x2 tile, closure, inverses, Z4 as the rotation subgroup"
+ ~[d4_z4_module]: "^seed[math] — add the pure D4/Z4 module under packages/spw-seed/src/math and export it; no DOM, no runtime dependency"
+ ~[point_symmetry_surfaces]: ".[symmetry] — point the five symmetry application surfaces at the module and record the 8 actions as the canonical order"
 }
 
 ^["done"]{
  ~#resolved(grid_size): "Stick to the 2x2 tile grid, or allow N x N? — symmetry-applications.spw defines spatial.grid as a 2x2 tile; evidence: .spw/applications/symmetry/symmetry-applications.spw line 12"
  ~#resolved(disposition): "Relocate, re-scope, or archive? — re-scoped by the user on 2026-10-12; the DOM/CSS exhibit is deferred behind a pure seed module; evidence: grep of packages/spw-seed, spw-cli, spw-runtime finds no D4, dihedral or rotate/reflect group code, while mount.ts still ships five symmetry surfaces"
- ~#dropped: ["viz[ui] implement Symmetry Explorer DOM instrument (src/ui/viz does not exist)", "styles[ui] CSS transformation layer (src/styles/viz does not exist)", "exhibit[docs] embed instrument in documentation (depended on the first)"]
+ ~#dropped(dom_symmetry_explorer): "viz[ui] — implement Symmetry Explorer DOM instrument and D4 state; src/ui/viz does not exist in this history"
+ ~#dropped(css_transform_layer): "styles[ui] — CSS transformation layer for the D4 group; src/styles/viz does not exist in this history"
+ ~#dropped(docs_exhibit_embed): "exhibit[docs] — embed the instrument in documentation; depended on dom_symmetry_explorer"
+ ~#dropped(disposition_record): "superseded: the disposition was answered by the 2026-10-12 rescope and kept as ~#resolved(disposition)"
 }
 
 ^["cache"]{
  ~#status: "planning"
  ~#base_ref: "main@551bb419"
  ~#files_hot: ".spw/applications/symmetry/symmetry-applications.spw,packages/spw-seed/src/math/index.ts"
- ~#next_commit: "1"
+ ~#next_commit: "d4_failing_tests"
  ~#open_count: "3"
- ~#last_stream: "2026-10-12 14:51"
+ ~#last_stream: "2026-10-12 15:29"
 }

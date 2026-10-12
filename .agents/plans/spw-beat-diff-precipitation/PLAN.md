@@ -34,11 +34,7 @@ User decision: rescope, do not archive. The configurable-TTL idea survives, but 
 
 ## Commits
 
-1. `![lsp] — failing test: WARM_TTL and COLD_TTL equal ttlBeats in cache.spw ^"tiers"`
-2. `&[lsp] — read tier TTLs from the cache.spw authority via workspace-authority; keep 64 and 256 as fallback`
-3. `.[plans] — reconcile with apposition-cache-granules so granule policy and tier TTLs share one authority`
-
-Dropped: beat_config/diff_analysis organelles, the LSP diff engine, stateReload, the Neovim listener.
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ---
 

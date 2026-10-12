@@ -80,18 +80,7 @@ A mounted consumer must not need a repository name, private migration story, or 
 
 ## Commits
 
-Commits 1-3 establish the shared boundary and mount contract. After that, CLI init, CLI resolution, editor detection, health checks, and documentation can run as parallel lanes against the same submodule model.
-
-The submodule convention, mount resolver, portable init/doctor surfaces, and plan artifact have landed on `main`, though not always under the original commit numbering. The next coherent implementation slice is the repo-local review contract; remaining CLI/editor/docs items should be reconciled against that contract rather than replayed mechanically.
-
-Landed (see wip.spw ^["done"]): c5f4dcb3, 45c6b7f3, 0d3d82cc, eb45f240, bca875c7, ccea9c97, a7622c94. The original commits 1 to 24 have no one-to-one hash for several items (init templates, site-review rules); they landed inside these.
-
-Remaining:
-
-25. `&[cli] — add spw capabilities --json emitting the compatibility vector (both revisions, schemas, per-capability status)`
-26. `#[mount] — add the compatibility-vector fields to the mount.spw init template and submodule convention`
-27. `&[cli,doctor] — doctor compares the declared vector with the spw capabilities output, beside the pin drift check`
-28. `![cli,consumer] — verify relative-path output and distinct failure states for the vector in generated fixtures`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy:
 - Explore: `npm run test:seed` (ensure templates parse)
@@ -101,7 +90,7 @@ Fuzz strategy:
 ## Agentic Hygiene
 
 - Rebase target: `main@5ed7abce` (2026-03-28)
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before submodule_convention, before merge
 - Hygiene split: none
 
 ## Dependencies

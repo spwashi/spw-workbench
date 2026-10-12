@@ -18,7 +18,7 @@ The original plan (a 26-commit bootstrap extraction over `src/platform`, `src/ap
 ## Agentic Hygiene
 
 - **Rebase target**: `main@551bb419` (2026-10-12)
-- **Rebase cadence**: rebase before commit 1 and again before merge
+- **Rebase cadence**: rebase before `package_dag_check` and again before merge
 - **Hygiene split**: isolate unrelated drift into `feature/refactor-import-sprawl-agentic-hygiene` before implementation commits
 
 ## Files
@@ -28,7 +28,7 @@ The original plan (a 26-commit bootstrap extraction over `src/platform`, `src/ap
 [NEW] scripts/analyzers/__tests__/package-dag-check.test.ts
 [MOD] package.json                      (lint:arch)
 [MOD] scripts/pre-commit                (only if ?[gate_home] says so)
-[MOD] CLAUDE.md                         (Layer Boundaries, commit 6)
+[MOD] CLAUDE.md                         (Layer Boundaries, `restate_layer_boundaries`)
 [MOD] packages/spw-cli/src/commands.ts  (only if ?[dispatcher_exempt] says split)
 ```
 
@@ -39,12 +39,7 @@ The original plan (a 26-commit bootstrap extraction over `src/platform`, `src/ap
 
 ## Commits
 
-1. `^seed[arch] — add scripts/analyzers/package-dag-check.ts: read imports in packages/*/src and fail on any edge outside seed to runtime to cli and lsp`
-2. `![arch] — fixture the failing case in scripts/analyzers/__tests__: a temp tree where seed imports runtime exits 1, and the live tree exits 0`
-3. `#[arch] — wire the check as npm run lint:arch, and into lint or the pre-commit hook per ?[gate_home]`
-4. `![arch] — extend the analyzer with a warn-only table of non-test, non-barrel files over 12 imports, with a dispatcher allowlist per ?[dispatcher_exempt]`
-5. `&[cli] — split commands.ts by command group, only if ?[dispatcher_exempt] answers split`
-6. `.[docs] — restate CLAUDE.md Layer Boundaries as the package DAG once ~[3] lands, per ?[claude_md_layers]`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Dependencies
 

@@ -11,7 +11,7 @@
  gist: "Living docs say effect.l0..l3 as differential.ts does; n-range and range-transform are round."
  touches: [~"docs/theory/spw", ~"packages/spw-seed/src/canonical/differential.ts", ~"packages/spw-seed/src/canonical/range-transform.ts", ~"packages/spw-seed/src/canonical/index-config.ts"]
  entry: ~"./seed-roundness-grades.spw"
- next: "Commit 1: replace S0-S3 with effect.l0..l3 in the 7 docs/theory/spw files still using it; re-scope commits 2-5 with the user."
+ next: "effect_grade_rename: replace S0-S3 with effect.l0..l3 in the 7 docs/theory/spw files still using it; then cover_range_transform and cover_n_range."
 }
 
 ^["edges"]{
@@ -146,6 +146,7 @@
  >>[2026-07-27 13:12] observe — plan-ecology sweep: cache status and next_commit held prose where state tokens belong, so every ecology reader mis-parsed this plan. Recorded here instead — commit 1 is unaffected (pure docs rename); commits 2-5 are superseded by parallel work and need re-scoping with the user before resuming.
  >>[2026-10-12 14:26] revise — commits re-scoped against code: ~[1] still open (S0-S3 remains in 7 docs/theory/spw files, goals.md, a UX audit); ~[2] dropped (applyEdits already rejects overlaps, tested in semantic-edit.test.ts); ~[3]/~[4] code landed (bbb14615, b7c5c7df, 08e2bc1c) so remaining work is tests (no test references range-transform.ts); ~[5] merged (IndexConfig wired in corpus-scan.ts). Closed ?[track-b-sequencing] (decided 07-22 16:15); sharpened the other seven open questions
  >>[2026-10-12 14:31] revise — per convention change: resolved questions and landed commits moved into ^done as ~#resolved(label) and ~#shipped hash entries, nothing deleted; pointer comments left in ^commits
+ >>[2026-10-12 15:22] revise — Commits named per the convention in 90c58bbc: 5 landed, 4 planned, 2 dropped.
 }
 
 ^["open"]{
@@ -159,24 +160,20 @@
 }
 
 ^["commits"]{
- ~[1]: ".[theory,prompts] =rename[effect-grade] — replace S0-S3 shorthand with effect.l0.measure..l3.external in the living docs still using it (7 docs/theory/spw files, docs/design/md/goals.md, docs/audits/md/ux-dimensions-audit-2026-02-15.md; check .spw/conventions/file-physics.spw 'S0 notes' first, it may be a different S0); .agents/plans/* untouched"
- # ~[2]: "DROPPED — applyEdits in differential.ts already rejects overlapping and out-of-range edits naming both ruleIds, and semantic-edit.test.ts covers it; no further label-conflict spec exists"
- # ~[3] code landed (range-transform.ts via b7c5c7df/08e2bc1c, compile fixes in bbb14615, exports in 12b54eb7); tests are the remainder, see ~[3]
- ~[3]: "![seed] =cover[range-transform] — no test file references range-transform.ts today; pin plan (effect.l0), apply (effect.l2) with contentHash gate, and the stale-hash refusal named in docs/theory/spw/range-transform.spw"
- ~[4]: "![seed] =cover[n-range] — empty n-range '(())' preview fix landed in bbb14615 without a test; add parser and describeNRange cases"
- # ~[5]: "MERGED — IndexConfig is wired into corpus-scan.ts (--depth minimal|standard|full) via the 07-22 17:30 pass; wiring it into query/selector-expr.ts remains unrequested, open it only with a consumer"
- ~[6]: ".[plans] =close[seed-roundness-grades] — retrospective; name the track B follow-up plans once the membrane/products/temporal questions are answered"
+ .[reconcile_compile_errors]: "bbb14615 &[seed] =reconcile[n-range,products,range-transform] — close compile errors from parallel work"
+ .[expose_seed_exports]: "12b54eb7 &[seed] =expose[range-transform,index-config,idioms,epistemic-grade] — package export discoverability"
+ .[quote_prompt_barewords]: "56209670 .[prompts] =clean[image,song] — quote bareword values, ASCII arrows for lexer-safe fixtures"
+ .[wire_index_config]: "0bec26ef &[cli] =wire[index-config,math-idioms] — put unused seed architecture to work in the sense loop"
+ .[pack_wizard]: "508fe549 &[cli] =wire[pack-wizard] — combination wizard: seed template expand from curated packs"
+ ~[effect_grade_rename]: ".[theory,prompts] =rename[effect-grade] — replace S0-S3 shorthand with effect.l0.measure..l3.external in the living docs still using it (7 docs/theory/spw files, docs/design/md/goals.md, docs/audits/md/ux-dimensions-audit-2026-02-15.md; check .spw/conventions/file-physics.spw 'S0 notes' first, it may be a different S0); .agents/plans/* untouched"
+ ~[cover_range_transform]: "![seed] =cover[range-transform] — the module landed (bbb14615, exports in 12b54eb7, later touched by b7c5c7df and 08e2bc1c) but no test file references range-transform.ts today; pin plan (effect.l0), apply (effect.l2) with contentHash gate, and the stale-hash refusal named in docs/theory/spw/range-transform.spw"
+ ~[cover_n_range]: "![seed] =cover[n-range] — empty n-range '(())' preview fix landed in bbb14615 without a test; add parser and describeNRange cases"
+ ~[close_retrospective]: ".[plans] =close[seed-roundness-grades] — retrospective; name the track B follow-up plans once the membrane/products/temporal questions are answered"
 }
 
 ^["done"]{
- ~#shipped: [
-  "bbb14615 &[seed] =reconcile[n-range,products,range-transform] — close compile errors from parallel work",
-  "12b54eb7 &[seed] =expose[range-transform,index-config,idioms,epistemic-grade] — package export discoverability",
- ]
- ~#dropped: [
-  "~[2] applyEdits in differential.ts already rejects overlapping and out-of-range edits naming both ruleIds (semantic-edit.test.ts); no further label-conflict spec exists",
-  "~[5] merged: IndexConfig wired into corpus-scan.ts via --depth; query/selector-expr.ts wiring awaits a consumer",
- ]
+ ~#dropped(harden_label_conflicts): "applyEdits in differential.ts already rejects overlapping and out-of-range edits naming both ruleIds (semantic-edit.test.ts); no further label-conflict spec exists"
+ ~#dropped(query_index_handles): "merged: IndexConfig wired into corpus-scan.ts via --depth in wire_index_config (0bec26ef); query/selector-expr.ts wiring awaits a consumer"
  ~#resolved(epistemic-grade-name): "What name should the epistemic grade (E0-E2) take? — retired as an ordinal model; spw-q-stabilization owns observed/derived/reported basis; evidence: stream 2026-07-25 21:10"
  ~#resolved(plan-history-exclusion): "Do historical plan artifacts get the vocabulary rename? — no, only living doctrine and active cross-references; evidence: stream 2026-07-25 21:10"
  ~#resolved(track-b-sequencing): "Is track B (named params, multi-arm select, stream fold, operator products, membrane+body) deferred to follow-up plans? — yes; evidence: stream 2026-07-22 16:15"
@@ -188,9 +185,9 @@
  ~#rebased_at: "n/a — no rebase needed, working tree clean at plan time"
  ~#hygiene_split: "none — staged directly on main per recent plan convention (see bab81e15 form-geometry-editor)"
  ~#files_hot: "packages/spw-seed/src/canonical/differential.ts,packages/spw-seed/src/canonical/range-transform.ts,packages/spw-seed/src/canonical/index-config.ts,packages/spw-seed/src/normalize.ts"
- ~#next_commit: "1"
+ ~#next_commit: "effect_grade_rename"
  ~#open_count: "7"
- ~#last_stream: "2026-10-12 14:31"
+ ~#last_stream: "2026-10-12 15:22"
  ~#taste_debt: "track B (named params, multi-arm select, stream fold, new operator products, membrane+body AST promotion) remains deferred pending open questions; do not stub AST nodes prematurely."
 }
 

@@ -11,7 +11,7 @@
  gist: "Runtime constants and stages carry @spw:axis traces that reviewers read back to design axes."
  touches: [~"packages/spw-runtime/src/state", ~"packages/spw-runtime/src/pipeline", ~"scripts/analyzers/spw-marker-audit.ts"]
  entry: ~"./runtime-axis-traceability.spw"
- next: "Commit 3: make spw-marker-audit report which of the six axes have zero @spw:axis markers; today the 9 markers name only timing and stability among them."
+ next: "~[axis_coverage_report]: make spw-marker-audit report which of the six axes have zero @spw:axis markers; today the 9 markers name only timing and stability among them."
 }
 
 ^["edges"]{
@@ -70,6 +70,7 @@
  >>[2026-10-12 14:25] revise — reconciled with git: ~[1] and ~[2] landed together in 82da41d4; the scan-roots half of ~[3] landed in 1f17c86e and the audit now reports 9 axis markers. Remaining ~[3] narrowed to a six-axis coverage report. Open question marker_format resolved: code uses inline @spw:axis[key=value] - prose in doc comments (paired form). Added axis_vocabulary.
  >>[2026-10-12 14:25] observe — the 9 landed markers use keys timing, stability, layer, representation and quality; none names disclosure, affect, resolution or noise although the plan intent lists six axes. Wonders rewritten to one coverage question.
  >>[2026-10-12 14:31] revise — convention: resolved questions and landed commits are kept in ^["done"] (resolved(label) and shipped) rather than deleted; ^["commits"] keeps a pointer comment.
+ >>[2026-10-12 15:20] revise — Commits named per the convention in 90c58bbc: 3 landed, 1 planned, 0 dropped.
 }
 
 ^["open"]{
@@ -78,8 +79,10 @@
 }
 
 ^["commits"]{
- # ~[1]..~[2] landed — see ^["done"]
- ~[3]: "![audit] — spw-marker-audit lists the six axes with marker counts and flags unknown axis keys"
+ .[trace_register_bank]: "82da41d4 docs[runtime] — trace core logic to design axes with @spw:axis markers"
+ .[trace_substrate_stages]: "82da41d4 docs[runtime] — trace core logic to design axes with @spw:axis markers (with trace_register_bank)"
+ .[scan_package_markers]: "1f17c86e ![audit] — scan packages in the marker audit; describe boonhonk truthfully"
+ ~[axis_coverage_report]: "![audit] — spw-marker-audit lists the six axes with marker counts and flags unknown axis keys"
 }
 
 ^["cache"]{
@@ -88,16 +91,14 @@
  ~#rebased_at: "2026-03-27"
  ~#hygiene_split: "none"
  ~#files_hot: "packages/spw-runtime/src/state/register-bank.ts, packages/spw-runtime/src/pipeline/substrate.ts, packages/spw-runtime/src/pipeline/stages.ts, scripts/analyzers/spw-marker-audit.ts"
- ~#next_commit: "3"
+ ~#next_commit: "axis_coverage_report"
  ~#open_count: "2"
- ~#last_stream: "2026-10-12 14:31"
+ ~#last_stream: "2026-10-12 15:20"
  ~#taste_debt: "axis markers should earn their keep by reducing explanation effort during review"
 }
 
 ^["done"]{
- ~#shipped: ["82da41d4 docs[runtime] — trace core logic to design axes with @spw:axis markers", "1f17c86e ![audit] — scan packages in the marker audit; describe boonhonk truthfully"]
  ~#resolved(marker_format): "Should axis traces prefer inline @spw:axis markers, adjacent prose comments, or a paired form? — the code uses inline @spw:axis[key=value] - prose in doc comments, a paired form; evidence: stream 2026-10-12 revise, packages/spw-runtime/src/state/register-bank.ts"
- ~#dropped: []
 }
 
 #>wonder_agents_plans_runtimeaxistraceability_wip_1

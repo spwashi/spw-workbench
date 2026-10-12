@@ -11,7 +11,7 @@
  gist: "Editor plugins read and act on wip.spw plan facts through standard LSP products, one fact model."
  touches: [~"packages/spw-lsp/src/handlers/outline.ts", ~"scripts/plans/plan-index.ts", ~".agents/scripts/agent-lib.sh"]
  entry: ~"./PLAN.md"
- next: "Write references/plan-facts.spw (commit 2): the plan-fact table with source frame, LSP product and owner plan, then answer ?[extractor_home]."
+ next: "Write references/plan-facts.spw (~[plan_facts_table]): the plan-fact table with source frame, LSP product and owner plan, then answer ?[extractor_home]."
 }
 
 ^["edges"]{
@@ -99,23 +99,26 @@
  >>[2026-10-12 14:55] observe — across the wip.spw of all 80 plan folders the count of ?-children under ^open in that outline equals ~#open_count in every file, so open_count drift can be computed from document symbols alone.
  >>[2026-10-12 14:55] observe — three code paths read plan facts: agent-lib.sh counts open questions by line grep, scripts/plans/plan-index.ts uses lex and parse from the seed, and packages/spw-lsp has no handler that names open_count, last_stream or next_commit.
  >>[2026-10-12 14:55] observe — no field named clock, timezone or tz appears in workspace-protocol.ts, workspace-authority.ts or workspace-roots.ts, while the authoring plan asks for a stamp from the manifest declared clock; plan:stream builds its stamp in agent-lib.sh.
+ >>[2026-10-12 15:24] revise — Commits named per the convention in 90c58bbc: 1 landed, 6 planned, 0 dropped.
+ >>[2026-10-12 17:02] decide — Creator decided 2026-10-12: the hash syntax .[name](hash): "subject" is the next slice, after release. The plan-only lexer rule comes first (plan-stream-parse-health), then the one-pass conversion (plan-tooling-design), then editor affordances (plan-plugin-integration).
 }
 
 ^["open"]{
- ?[extractor_home]: "Where does the one plan-fact extractor live: packages/spw-seed (portable, parse-based, LSP and CLI both import it), or scripts/plans/plan-index.ts exported to the LSP? Decides ~[3] and whether agent-lib.sh keeps its line grep."
+ ?[extractor_home]: "Where does the one plan-fact extractor live: packages/spw-seed (portable, parse-based, LSP and CLI both import it), or scripts/plans/plan-index.ts exported to the LSP? Decides ~[shared_extractor] and whether agent-lib.sh keeps its line grep."
  ?[clock_field]: "Which workspace manifest field declares the stream clock (no field is named clock today), and is it a timezone, a source command, or a fixed offset? Decides whether the stamp completion in vscode-authoring-probe-loop can be standard LSP."
  ?[drift_severity]: "Should open_count and last_stream drift be information or warning, given plan:stream and spw refresh also write them and a stale cache is already reported by plan:check?"
- ?[done_in_outline]: "Do ^done entries (~#shipped, ~#resolved(label)) appear as outline children, as hover on ?[label] mentions, or both? Decides ~[5] and what Neovim sees."
+ ?[done_in_outline]: "Do ^done entries (~#resolved(label), ~#dropped(name)) appear as outline children, as hover on ?[label] mentions, or both? Decides ~[plan_fact_hover] and what Neovim sees."
 }
 
 ^["commits"]{
- ~[1]: ".[plans] — stage plan-plugin-integration and route its edges"
- ~[2]: ".[plans] — write references/plan-facts.spw: each plan fact with source frame, LSP product and owner plan"
- ~[3]: "&[seed] — one plan-fact extractor; plan-index.ts calls it, with a test that it matches plan:check on every wip.spw"
- ~[4]: "&[lsp] — outline lists ^cache keys, ~[N] commit rows and ^done keys as children of their frames"
- ~[5]: "&[lsp] — hover on ^cache and card fields and on ~#resolved(label) shows the value, its derivation and the stream stamp"
- ~[6]: "&[lsp] — drift diagnostics for open_count, last_stream and next_commit against the file, information severity, no write fix"
- ~[7]: "![plans] — Neovim and IntelliJ receive ~[4] to ~[6] with no client code; record what each shows"
+ .[stage_plan]: "7b4d7b5d .[plans] — open four plans: stream parse health, plan tooling, plan plugin integration, and a lukewarm backlog"
+ ~[plan_facts_table]: ".[plans] — write references/plan-facts.spw: each plan fact with source frame, LSP product and owner plan"
+ ~[shared_extractor]: "&[seed] — one plan-fact extractor; plan-index.ts calls it, with a test that it matches plan:check on every wip.spw"
+ ~[outline_plan_facts]: "&[lsp] — outline lists ^cache keys, ~[name] and .[name] commit rows and ^done keys as children of their frames"
+ ~[plan_fact_hover]: "&[lsp] — hover on ^cache and card fields and on ~#resolved(label) shows the value, its derivation and the stream stamp"
+ ~[drift_diagnostics]: "&[lsp] — drift diagnostics for open_count, last_stream and next_commit against the file, information severity, no write fix"
+ ~[commit_ref_affordances]: "&[lsp] — the commit-ref token gets hover (git show --stat), a document link to the commit, a diagnostic when the hash is not in the repository, completion of recent hashes after ](, and a semantic token type of its own"
+ ~[cross_editor_check]: "![plans] — Neovim and IntelliJ receive ~[outline_plan_facts], ~[plan_fact_hover] and ~[drift_diagnostics] with no client code; record what each shows"
 }
 
 ^["cache"]{
@@ -124,9 +127,9 @@
  ~#rebased_at: "2026-10-12"
  ~#hygiene_split: "none"
  ~#files_hot: ".agents/plans/plan-plugin-integration/PLAN.md, .agents/plans/plan-plugin-integration/wip.spw"
- ~#next_commit: "1"
+ ~#next_commit: "plan_facts_table"
  ~#open_count: "4"
- ~#last_stream: "2026-10-12 14:55"
+ ~#last_stream: "2026-10-12 17:02"
  ~#taste_debt: ""
 }
 

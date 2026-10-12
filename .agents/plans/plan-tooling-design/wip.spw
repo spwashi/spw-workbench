@@ -11,7 +11,7 @@
  gist: "Plan upkeep moves that are derivable become verbs with a plan-only delta, and the probes report why and where."
  touches: [~"scripts/plans", ~".agents/scripts/agent-lib.sh", ~"packages/spw-cli/src/mem.ts", ~"packages/spw-cli/src/pulse.ts"]
  entry: ~"./PLAN.md"
- next: "Commit 1: add a failing fixture for plan:settle, a wip.spw where one resolved question and one landed commit must move into done and open_count must follow."
+ next: "~[hash_scene_format]: once the commit-ref token lands, convert landed lines to .[name](hash): \"subject\" in one pass and teach the check to read the scene; then the settle work."
 }
 
 ^["edges"]{
@@ -97,6 +97,8 @@
  # >>[YYYY-MM-DD HH:MM] <type> — <content>
  >>[2026-10-12 14:55] decide — user decision 2026-10-12: improve tool design for the plan and mutation tooling; slices owned by existing plans are routed by edge
  >>[2026-10-12 14:55] observe — verified: pulse refuses paths outside the consumer root; pulse stdin report omits beforeHealth and plannedDelta that file reports carry; mem dump extra roots are a fixed list of three files
+ >>[2026-10-12 15:26] revise — Commits named per the convention in 90c58bbc: 0 landed, 6 planned, 0 dropped.
+ >>[2026-10-12 17:02] decide — Creator decided 2026-10-12: the hash syntax .[name](hash): "subject" is the next slice, after release. The plan-only lexer rule comes first (plan-stream-parse-health), then the one-pass conversion (plan-tooling-design), then editor affordances (plan-plugin-integration).
 }
 
 ^["open"]{
@@ -108,19 +110,20 @@
 }
 
 ^["commits"]{
- ~[1]: "![plans] — failing fixture for plan:settle: a copied wip.spw with one resolved question and one landed commit; expected delta moves them into done, leaves a pointer comment, and recomputes open_count"
- ~[2]: "#[plans] — plan:settle verb: plan-only delta by default, --write explicit; flags --resolve label with --answer and --evidence, --ship N with --hash, and --refresh-derived for open_count and last_stream"
- ~[3]: "&[plans] — plan:check prints a fix line per issue it can name (drift issues point at settle --refresh-derived; stale_base_ref lists the merge-base candidate); case in test-agent-tools.sh"
- ~[4]: "&[cli] — spw mem dump accepts repeatable root paths stored under the dump extra folder, restored only by load --restore-extra; fixture dumps a temp surface and restores it"
- ~[5]: "&[plans] — plan:stream --dry-run also reports whether the resulting line keeps the file at its current parse health (needs plan-stream-parse-health commits 2 and 3)"
- ~[6]: ".[plans] — record in the wip schema comments and the plan-maintenance skill that settle replaces the hand moves"
+ ~[hash_scene_format]: "&[plans] — after plan-stream-parse-health ~[commit_ref_token]: the schema and every plan move landed lines from .[name]: \"<hash> <subject>\" to .[name](<hash>): \"<subject>\" in one mechanical pass, and the named-commit check reads the hash from the scene"
+ ~[settle_fixture]: "![plans] — failing fixture for plan:settle: a copied wip.spw with one resolved question and one landed commit; expected delta moves them into done, leaves a pointer comment, and recomputes open_count"
+ ~[settle_verb]: "#[plans] — plan:settle verb: plan-only delta by default, --write explicit; flags --resolve label with --answer and --evidence, --ship N with --hash, and --refresh-derived for open_count and last_stream"
+ ~[check_fix_hints]: "&[plans] — plan:check prints a fix line per issue it can name (drift issues point at settle --refresh-derived; stale_base_ref lists the merge-base candidate); case in test-agent-tools.sh"
+ ~[mem_dump_roots]: "&[cli] — spw mem dump accepts repeatable root paths stored under the dump extra folder, restored only by load --restore-extra; fixture dumps a temp surface and restores it"
+ ~[stream_dry_run_health]: "&[plans] — plan:stream --dry-run also reports whether the resulting line keeps the file at its current parse health (needs plan-stream-parse-health ~[topography_path_option] and ~[thread_path_callsites])"
+ ~[record_settle_convention]: ".[plans] — record in the wip schema comments and the plan-maintenance skill that settle replaces the hand moves"
 }
 
 ^["routed"]{
  // slices that belong to existing plans; linked by edge, not duplicated here
  pulse_parity: "curiosity-mutation-ergonomics owns pulse.ts and mutate.ts: one health builder shared by file and stdin reports (parseHealthBefore, parseHealthAfter), fixture feeds identical bytes through both paths"
- invalid_cause: "runtime-dx-foundation commits 3 and 4: parse errors already carry rule and position; surface the first error span and a reason code in pulse output when the verdict is invalid"
- profile_guard: "curiosity-mutation-ergonomics commit 6 (profile surface): decide ?[plan_profile_guard]"
+ invalid_cause: "runtime-dx-foundation ~[seed_rule_codes] and ~[seed_code_fixtures]: parse errors already carry rule and position; surface the first error span and a reason code in pulse output when the verdict is invalid"
+ profile_guard: "curiosity-mutation-ergonomics ~[wire_profile_surface] (profile surface): decide ?[plan_profile_guard]"
  baseline_ref: "curiosity-mutation-ergonomics: decide ?[baseline_ref] with the pulse flag surface"
  plan_ecology: "plan-ecology-clustering consumes settle and check hints for its sweep; no duplicate commit"
 }
@@ -131,9 +134,9 @@
  ~#rebased_at: ""
  ~#hygiene_split: "none"
  ~#files_hot: ""
- ~#next_commit: "1"
+ ~#next_commit: "hash_scene_format"
  ~#open_count: "5"
- ~#last_stream: "2026-10-12 14:55"
+ ~#last_stream: "2026-10-12 17:02"
  ~#taste_debt: ""
 }
 

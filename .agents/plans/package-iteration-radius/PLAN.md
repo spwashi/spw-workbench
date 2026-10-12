@@ -86,14 +86,7 @@ These are implementation facts, not a claim that the current layout is broken. T
 
 ## Commits
 
-1. LANDED in c46558ff: `.[plans] — define package contracts, environment receipts, and iteration-radius measures`
-2. `#[packages] — audit declared and imported workspace boundaries`
-3. `vocab[tooling] — add redacted environment and failure-locality receipts`
-4. `&[doctor] — explain runtime, lockfile, ABI, native, platform, and cache mismatches`
-5. `&[packages] — add truthful leaf verification and package export smoke paths`
-6. `#[bench] — measure dependency cones, invalidation, and first actionable feedback`
-7. `![packages] — verify clean install, pack, import, CLI, LSP, and extension matrices`
-8. `.[docs] — publish onboarding, package reference, and migration decisions`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy:
 

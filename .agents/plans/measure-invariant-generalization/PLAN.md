@@ -303,18 +303,7 @@ A design change is **out** if it:
 
 ## Commits
 
-1. `.[measure] — plan measure-invariant-generalization artifacts`
-2. `vocab[seed] — EvalScheme types and pure reconcile helpers`
-3. `![seed] — scheme-aware self-mass verdicts and tests`
-4. `vocab[seed] — invariant template loader for approx assertions`
-5. `&[cli] — mass reports schemes; refuse unsafe --write`
-6. `#[cli] — contract-agnostic authority extract plug points`
-7. `.[theory] — measure schemes + operator metaphor ledger (status-tagged)`
-8. `.[spw] — claim-protocol and tooling hooks for clone experience`
-9. `#[lsp] — mass/authority diagnostics + exact-only code actions` (Phase E; unblocks VS Code + Neovim)
-10. `#[canon] — declare one real @self + %mass facet so spw measure has a subject`
-
-Landed in 08e2bc1c: 1, 2, 6, 7. Open: 3, 4, 5 (CLI is now spw measure), 8, 9, 10.
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Editor projection contract
 
@@ -337,7 +326,7 @@ Clients (VS Code Problems, Neovim `[d`) must not invent new codes. Reading profi
 ## Agentic Hygiene
 
 - Rebase target: `origin/main@0c7cdfb7178079bf27a9a062ba1b310d07296f41` (HEAD at plan start; branch is `main` ahead of upstream — plan artifacts only until feature branch cut)
-- Rebase cadence: before commit 1 on feature branch, before merge
+- Rebase cadence: before `plan_artifacts` on feature branch, before merge
 - Hygiene split: working tree has many untracked `*.d.ts` under packages — **do not** include in this branch; leave untracked or a separate hygiene cleanup
 
 ## Dependencies

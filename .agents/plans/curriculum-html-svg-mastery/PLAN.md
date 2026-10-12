@@ -15,25 +15,25 @@ This is a page-design rung in the current ecology. The labs should leave behind 
 
 ## The Curriculum Sequence
 
-### Phase 1: SVG Coordinate Systems (`viewBox`) vs. Spw Strata (Commits 1-10)
+### Phase 1: SVG Coordinate Systems (`viewBox`) vs. Spw Strata (lab_coordinates_strata)
 Deep dive into transformations (`matrix()`, `translate`, `scale`) and the `<svg viewBox>` attribute. Understanding the mathematical difference between world space, user space, and viewport space. The Spw reflection explores how the infinite SVG user-space maps to Spw "Strata" and nested contexts.
 
-### Phase 2: Path Calculus (`<path d="...">`) vs. Spw Geometric Expressions (Commits 11-20)
+### Phase 2: Path Calculus (`<path d="...">`) vs. Spw Geometric Expressions (lab_paths_geometry)
 Master the SVG Path Data specification. Authoring `M/m`, `C/c/S/s` (Béziers), `A/a` (Arcs), and `Z/z` entirely by hand without visual drawing tools. The Spw reflection explores how logical AST operators can be rendered as continuous topological curves.
 
-### Phase 3: Filter Primitives (`<fe.../>`) vs. Spw Shaders and Valence (Commits 21-30)
+### Phase 3: Filter Primitives (`<fe.../>`) vs. Spw Shaders and Valence (lab_filters_valence)
 Deep dive into the SVG Filter Effects Module (`<feColorMatrix>`, `<feDisplacementMap>`, `<feComponentTransfer>`, `<feBlend>`). The Spw reflection maps raw physical DOM filters to high-level Spw "Atmosphere" and cognitive aesthetic definitions (the Valence Pentad).
 
-### Phase 4: Declarative Animations (SMIL) vs. Spw Temporal Flow (Commits 31-40)
+### Phase 4: Declarative Animations (SMIL) vs. Spw Temporal Flow (lab_smil_temporal)
 Master SMIL (`<animate>`, `<animateMotion>`, `<animateTransform>`) and animating SVG states completely devoid of JavaScript. The Spw reflection translates the compiler's discrete lifecycle ticks into continuous, temporal visual shifts in the DOM.
 
-### Phase 5: `<foreignObject>` and HTML Interop vs. Spw Containment (Commits 41-50)
+### Phase 5: `<foreignObject>` and HTML Interop vs. Spw Containment (lab_foreignobject_containment)
 Deep dive into the `<foreignObject>` spec, nesting the HTML renderer back inside the SVG pipeline. Exploring constraints, scroll contexts, and pointer events. The Spw reflection explores how hyper-structured text (the Spw markup editor) can exist within boundless graphical nodes.
 
 ## Agentic Hygiene
 
 - **Rebase target**: `main@551bb419` (updated 2026-10-12)
-- **Rebase cadence**: rebase before commit 1 and again before merge
+- **Rebase cadence**: rebase before lab_coordinates_strata and again before merge
 - **Hygiene split**: isolate unrelated out-of-scope drift into `feature/curriculum-html-svg-mastery-agentic-hygiene` before implementation commits
 
 ## Files
@@ -51,17 +51,7 @@ Predicted file scaffolding:
 
 ## Commits
 
-Preflight: `&[hygiene] — rebase onto origin/main and isolate unrelated drift before implementation commits`
-
-1. `&[hygiene] — rebase onto main and isolate unrelated drift before lab commits`
-2. `^seed[curriculum] — scaffold labs-svg/01-coordinates-strata.md (coordinate lab plus strata reflection)` (svg context dimensions; user space vs viewport; viewBox; preserveAspectRatio; group transforms and matrices; nested svg; absolute vs relative positioning; use; defs and shadow trees; viewBox-to-strata reflection)
-3. `^seed[curriculum] — scaffold labs-svg/02-paths-geometry.md (path lab plus AST-to-bezier reflection)` (path d foundation; M L H V; relative commands; cubic C S; quadratic Q T; arcs A; stroke properties; fill rules; markers; logical-AST-to-continuous-bezier reflection)
-4. `^seed[curriculum] — scaffold labs-svg/03-filters-valence.md (filter lab plus shader reflection)` (filter regions; feGaussianBlur; feColorMatrix; feBlend and feComposite; feTurbulence; displacement maps; lighting; morphology; feComponentTransfer; filters-as-WebGL-free-shaders reflection)
-5. `^seed[curriculum] — scaffold labs-svg/04-smil-temporal.md (SMIL lab plus temporal-flow reflection)` (animate; animateMotion; animateTransform; path morphing; keyTimes and keySplines; event-synchronized begin; repeat and fill; additive and accumulate; CSS animation interop; state-machines-to-temporal-flow reflection)
-6. `^seed[curriculum] — scaffold labs-svg/05-foreignobject-containment.md (foreignObject lab plus containment reflection)` (foreignObject spec; HTML inside SVG; stacking contexts; pointer events; text wrapping; filters on HTML; scroll contexts; form controls in spatial nodes; masking and clipping; text-editors-in-skewed-nodes reflection)
-7. `.[design] — record reusable geometry snippets in theme-stage-0-snapshots.spw and literate-ui.spw`
-
-Collapsed from 50 lesson-stubs to the real work units. No labs-svg file exists yet; the lesson list now lives in ~#covers. Commit 1 is the hygiene preflight.
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Dependencies
 
@@ -98,4 +88,4 @@ A formal `.spw` artifact mapping raw W3C SVG specifications to corresponding arc
 
 ## Reheated 2026-10-12
 
-The live commit list, shared lab format, verification tiers and open questions are in wip.spw (the commits and lab_format frames); the shared format is owned by curriculum-html-css-mastery. Lab home: docs/learn/labs/html-svg/. The commit list above predates the reheat where the two differ.
+The live commit list, shared lab format, verification tiers and open questions are in wip.spw (the commits and lab_format frames); the shared format is owned by curriculum-html-css-mastery. Lab home: docs/learn/labs/html-svg/.

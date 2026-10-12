@@ -33,12 +33,12 @@ No files expected to exceed 600 lines or 12 imports. Keep settings/UI classes sm
 
 ## Commits
 
-All landed or satisfied: f04cad68, a2e49bd0, 6f6278b7, 56cc81c5 (commits 7 and 8 via the shared resolver and fixture-shaped tests). Commits 1 to 5 predate the rewritten history, so their mapping to these hashes is approximate.
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 
 - Rebase target: historical baseline `58cd708a6b1e2ee40e972ffde90bbd1cbecbc154` (lore-era; not on rewritten main)
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before `wire_textmate_preflight`, before merge
 - Hygiene split: unrelated local build artifacts and untracked files exist; avoid touching and keep out of commits
 
 ## Dependencies

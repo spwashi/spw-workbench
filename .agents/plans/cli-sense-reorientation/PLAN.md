@@ -1355,11 +1355,7 @@ StackIR
 
 ## Commits
 
-1. `.[plans] — cli-sense-reorientation intermediate IR + verb map` (landed)
-2. `vocab[cli] — census/measure/surface aliases; help reorientation` (landed; stack is canonical, surface and profile are aliases)
-3. `#[cli] — SelectionIR globs: census, graph, and measure accept a quoted glob`
-4. `&[cli] — adopt spw.progressive-product/1 in one non-parser producer (census) with a compatibility test` (replaces the surface composite report; see open question surface_composite)
-5. `.[docs] — l/x dense serialization + * crystallize`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Dependencies
 

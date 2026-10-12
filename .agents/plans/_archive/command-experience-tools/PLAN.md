@@ -15,18 +15,18 @@ This work now belongs in the `speculative_editor_future` lane until the thinner 
 
 ## Phase Breakdown
 
-The 26 commits are strategically grouped into phases:
-1. **The Infrastructure** (Commits 1-3): The Command Bus and Actions.
-2. **The Command Palette** (Commits 4-5): The primary UI overlay.
-3. **Concept References** (Commits 6-11): Ontologies, lookup services, and hover cards.
-4. **Semantic Selection** (Commits 12-14): Selecting objects structurally rather than textually.
-5. **Object Manipulation** (Commits 15-21): UI and engines to modify AST objects.
-6. **Polish and Verification** (Commits 22-26): Testing, animations, and documentation.
+The original 26-commit marathon (dropped as original_marathon) was grouped into phases:
+1. **The Infrastructure**: The Command Bus and Actions.
+2. **The Command Palette**: The primary UI overlay.
+3. **Concept References**: Ontologies, lookup services, and hover cards.
+4. **Semantic Selection**: Selecting objects structurally rather than textually.
+5. **Object Manipulation**: UI and engines to modify AST objects.
+6. **Polish and Verification**: Testing, animations, and documentation.
 
 ## Agentic Hygiene
 
 - **Rebase target**: `main@3b1747c4` (updated 2026-03-27)
-- **Rebase cadence**: rebase before commit 1 and again before merge
+- **Rebase cadence**: rebase before record_disposition and again before merge
 - **Hygiene split**: isolate unrelated out-of-scope drift into `feature/command-experience-tools-agentic-hygiene` before implementation commits
 
 ## Files
@@ -56,10 +56,7 @@ Predicted file changes:
 
 ## Commits
 
-The original 26-commit marathon targeted src/core and src/ui, which no longer exist. The plan is stranded pending a disposition:
-
-1. `.[plans] — record the disposition: archive command-experience-tools, or name which vscode plan inherits each of the palette, concept lookup, and AST manipulation intents`
-2. `&[vscode] — only if re-homed: register manipulation intents as commands in extensions/vscode-spw/src/commands.ts over the semantic-edit patches, previewable before accept`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Dependencies
 

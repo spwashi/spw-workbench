@@ -18,7 +18,7 @@ Measured 2026-10-12 in `packages/spw-cli/templates/init/presets/installable-book
 ## Agentic Hygiene
 
 - **Rebase target**: `main@551bb419` (2026-10-12)
-- **Rebase cadence**: rebase before commit 1 and again before merge
+- **Rebase cadence**: rebase before hook_contract_test and again before merge
 - **Hygiene split**: isolate unrelated drift into `feature/audit-data-attributes-agentic-hygiene` before implementation commits
 
 ## Files
@@ -37,15 +37,11 @@ Measured 2026-10-12 in `packages/spw-cli/templates/init/presets/installable-book
 
 ## Commits
 
-1. `![cli] — add installable-book-hooks.test.ts: every data-* name under public/ is read by enhancements.js or the CSS, or listed in an explicit inert set; every name enhancements.js queries appears in some page`
-2. `&[cli] — mark the update notice built in showUpdateNotice with role=status so assistive tech announces it`
-3. `&[cli] — resolve data-js and data-online per ?[online_marker]: add the CSS reader or delete the two dataset writes, and update the inert set`
-4. `&[cli] — resolve data-edit-surface per ?[edit_surface_owner]: keep it in the declared inert set with a one-line owner note, or strip it from the nine HTML pages`
-5. `&[cli] — keep the install button hidden until beforeinstallprompt, only if the install-button wonder confirms html.js-enhanced .js-only overrides [hidden]`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Dependencies
 
-- `audit-css-tokens` shares the preset CSS files; commit 5 touches `style.css`, so coordinate rebases.
+- `audit-css-tokens` shares the preset CSS files; hide_install_button touches `style.css`, so coordinate rebases.
 - The old dependency on `refactor-import-sprawl` is dropped; no moved files remain to wait for.
 
 ## Spw Artifact

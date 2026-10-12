@@ -13,7 +13,7 @@
  touches: [~"packages", ~"scripts/analyzers", ~"scripts/pre-commit"]
  will_touch: [~"scripts/analyzers/package-dag-check.ts"]
  entry: ~"./PLAN.md"
- next: "Answer ?[gate_home], then land ~[1]: the package-dag-check analyzer that fails on a reverse package import."
+ next: "Answer ?[gate_home], then land ~[package_dag_check]: the package-dag-check analyzer that fails on a reverse package import."
 }
 
 ^["roots"]{
@@ -65,23 +65,23 @@
  >>[2026-10-12 14:57] decide — User decided on 2026-10-12 to rescope this plan rather than archive it
  >>[2026-10-12 14:57] observe — Re-measured: nine non-test non-index files exceed 12 import lines, not only commands.ts. No package.json declares an @spwashi dependency, scripts/pre-commit has no import check, and lib/spw named in CLAUDE.md does not exist. A regex scan finds 8 intra-package cycles of which 7 are type-only; the remaining one is the seed grammar group.
  >>[2026-10-12 14:57] revise — Rescoped to planning on the package DAG and the import guard: lane moved to principal engineering. Commits are now 1 to 6 (DAG analyzer, failing fixture, npm wiring, warn-only fan-in table, optional commands split, CLAUDE.md text). Three questions open. Old 1 to 26 moved to done as dropped.
+ >>[2026-10-12 15:27] revise — Commits named per the convention in 90c58bbc: 0 landed, 6 planned, 3 dropped.
 }
 
 ^["open"]{
- # Unresolved questions. Remove when resolved (log resolution in stream first).
- ?[gate_home]: "Should the DAG check join npm run lint, the pre-commit hook, or only run on demand, given CLAUDE.md says layer boundaries are pre-commit enforced and scripts/pre-commit has no import check? Unblocks ~[3]."
- ?[dispatcher_exempt]: "Is commands.ts (43 imports, a printXHelp and runSpwXCli pair per subcommand) exempt from the 12-import guard as a dispatcher, or should it split by command group? Unblocks ~[5] and the allowlist in ~[4]."
- ?[claude_md_layers]: "Does the CLAUDE.md Layer Boundaries text (lib/spw must not import @/, infra <- platform <- app <- ui) still describe anything, now that lib/spw and src/app are gone? Unblocks ~[6]."
+ # Unresolved questions. When resolved: log in stream, then move to ^["done"] as ~#resolved(label).
+ ?[gate_home]: "Should the DAG check join npm run lint, the pre-commit hook, or only run on demand, given CLAUDE.md says layer boundaries are pre-commit enforced and scripts/pre-commit has no import check? Unblocks ~[wire_lint_arch]."
+ ?[dispatcher_exempt]: "Is commands.ts (43 imports, a printXHelp and runSpwXCli pair per subcommand) exempt from the 12-import guard as a dispatcher, or should it split by command group? Unblocks ~[split_commands_dispatch] and the allowlist in ~[import_fanin_table]."
+ ?[claude_md_layers]: "Does the CLAUDE.md Layer Boundaries text (lib/spw must not import @/, infra <- platform <- app <- ui) still describe anything, now that lib/spw and src/app are gone? Unblocks ~[restate_layer_boundaries]."
 }
 
 ^["commits"]{
- # Old ~[1]..~[4] are replaced by the commits below (same intent, now with measured targets); old ~[5]..~[26] are in ^["done"] ~#dropped.
- ~[1]: "^seed[arch] — add scripts/analyzers/package-dag-check.ts: read imports in packages/*/src and fail on any edge outside seed to runtime to cli and lsp"
- ~[2]: "![arch] — fixture the failing case in scripts/analyzers/__tests__: a temp tree where seed imports runtime exits 1, and the live tree exits 0"
- ~[3]: "#[arch] — wire the check as npm run lint:arch, and into lint or the pre-commit hook per ?[gate_home]"
- ~[4]: "![arch] — extend the analyzer with a warn-only table of non-test, non-barrel files over 12 imports, with a dispatcher allowlist per ?[dispatcher_exempt]"
- ~[5]: "&[cli] — split commands.ts by command group, only if ?[dispatcher_exempt] answers split"
- ~[6]: ".[docs] — restate CLAUDE.md Layer Boundaries as the package DAG once ~[3] lands, per ?[claude_md_layers]"
+ ~[package_dag_check]: "^seed[arch] — add scripts/analyzers/package-dag-check.ts: read imports in packages/*/src and fail on any edge outside seed to runtime to cli and lsp"
+ ~[dag_failing_fixture]: "![arch] — fixture the failing case in scripts/analyzers/__tests__: a temp tree where seed imports runtime exits 1, and the live tree exits 0"
+ ~[wire_lint_arch]: "#[arch] — wire the check as npm run lint:arch, and into lint or the pre-commit hook per ?[gate_home]"
+ ~[import_fanin_table]: "![arch] — extend the analyzer with a warn-only table of non-test, non-barrel files over 12 imports, with a dispatcher allowlist per ?[dispatcher_exempt]"
+ ~[split_commands_dispatch]: "&[cli] — split commands.ts by command group, only if ?[dispatcher_exempt] answers split"
+ ~[restate_layer_boundaries]: ".[docs] — restate CLAUDE.md Layer Boundaries as the package DAG once ~[wire_lint_arch] lands, per ?[claude_md_layers]"
 }
 
 ^["cache"]{
@@ -89,19 +89,17 @@
  ~#base_ref: "main@551bb419"
  ~#rebased_at: "2026-10-12"
  ~#files_hot: ""
- ~#next_commit: "1"
+ ~#next_commit: "package_dag_check"
  ~#open_count: "3"
- ~#last_stream: "2026-10-12 14:57"
+ ~#last_stream: "2026-10-12 15:27"
  ~#taste_debt: ""
 }
 
 ^["done"]{
  # Written at merge time, and incrementally while the plan runs.
- ~#dropped: [
-  "~[5]..~[25] (original) — bootstrap, dock-overlay, panel, wiring, and init extractions targeted src/platform, src/app, and features, which no longer exist (logged in stream 2026-10-12)",
-  "~[1]..~[4] (original) — baseline count, DAG script, npm wiring, commands.ts split; superseded by the new ~[1]..~[5] after the baseline was measured below",
-  "~[26] (original) — curriculum prose 'Developing Taste in Spw Architectural Topologies'; reopen as a .[docs] note after ~[3] lands if wanted",
- ]
+ ~#dropped(extract_bootstrap_layout): "original commits 5 to 25 — bootstrap, dock-overlay, panel, wiring, and init extractions targeted src/platform, src/app, and features, which no longer exist (logged in stream 2026-10-12)"
+ ~#dropped(baseline_dag_split): "original commits 1 to 4 — baseline count, DAG script, npm wiring, commands.ts split; superseded by ~[package_dag_check], ~[wire_lint_arch] and ~[split_commands_dispatch] after the baseline was measured in ~#resolved(fan_in)"
+ ~#dropped(taste_topology_curriculum): "original commit 26 — curriculum prose 'Developing Taste in Spw Architectural Topologies'; reopen as a .[docs] note after ~[wire_lint_arch] lands if wanted"
  ~#resolved(fan_in): "Is commands.ts the only non-barrel file over the 12-import guard? — no: nine non-test, non-index files exceed 12 lines of import (commands.ts 43, stdio-server.ts 23, hot-session.ts 22, cli inspect.ts 21, lsp display.ts 14, cli pulse.ts 14, seed products.ts 13, seed expressions.ts 13, runtime hot-session-types.ts 13); evidence: grep -cE '^import |^} from ' over packages/*/src, 2026-10-12. commands.ts is a dispatcher with a printXHelp and runSpwXCli pair per subcommand, which is why ?[dispatcher_exempt] is open"
  ~#resolved(dag_edges): "What package edges exist? — seed imports no other package; runtime imports seed (21); cli imports seed (61) and runtime (4); lsp imports seed (20) and runtime (5); no import runs cli to lsp, lsp to cli, or runtime to either; no package.json declares an @spwashi dependency, so the DAG is written nowhere a tool can read; evidence: grep of from '@spwashi/spw-*' and of package.json, 2026-10-12"
  ~#resolved(enforcement): "Does scripts/pre-commit enforce the CLAUDE.md layer boundaries? — no: it holds no import or @/ check, and lib/spw does not exist; evidence: grep of scripts/pre-commit and ls lib/spw, 2026-10-12"

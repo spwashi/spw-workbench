@@ -52,15 +52,12 @@ Craft guard: Watch `SpwWorkspaceService` for state management scope creep. Panel
 
 ## Commits
 
-1. `![intellij] *audit[native-lsp] — identify the 263 replacement boundary and compare LSP4IJ`
-2. `&[intellij] =migration[lsp4ij] — replace native LSP API with LSP4IJ LanguageServerFactory`
-3. `^seed[intellij] — add SpwCustomServer interface and WorkspaceService state caching`
-4. `&[intellij] =surface[panels] — add annotation panel, workspace atlas panel, context strip widget`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 
 - Rebase target: `main`
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before `native_lsp_audit`, before merge
 - Hygiene split: none
 
 ## Dependencies

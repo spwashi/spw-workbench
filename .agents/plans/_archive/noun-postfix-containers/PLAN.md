@@ -33,20 +33,14 @@ Taste note: improve **correctness** and **recognizability** of the taught noun c
 
 ## Commits
 
-```
-1. .[plans] — bound noun postfix containers
-2. &[spw-seed] — bind same-line frame, body, and shell onto one expression
-3. ![spw-seed] — prove the noun specimen is one expression
-```
-
-All three landed together as f3061c52 (`&[spw-seed] — bind same-line postfix containers onto one noun`).
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy: `npm run test:seed` stabilize; `npm run lint:spw -- --strict` as ship gate for the seed package.
 
 ## Agentic Hygiene
 
 - Rebase target: `upstream/main@aae308a9`
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before bound_noun_containers, before merge
 - Hygiene split: none
 
 ## Dependencies

@@ -60,39 +60,29 @@ Axis attribution:
 - **stability** — what an edit is allowed to invalidate; the envelope is the stability boundary.
 - **noise** — the reuse threshold: how much envelope drift still counts as unchanged.
 
-Derived from corpus measurement in commit 7, not hand-picked.
+Derived from corpus measurement in apposition_frame_hashes, not hand-picked.
 
 ## Commits
 
-Landed in effect: 08e2bc1c (plan files, commit 1) and b8a6949d (parse-free apposition scan stands in for commit 6).
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
-2. `![spw-lsp] — pin the confirmed cache defects: eviction leak and recency flattening`
-3. `&[spw-lsp] — evict a document's index entries with the document`
-4. `&[spw-lsp] — peekDocument for bulk reads so fan-out stops flattening recency`
-5. `&[spw-lsp] — derive workspaceAnnotations from annotationsByFile, dropping the per-save rebuild`
-7. `^seed[spw-seed] — frame-level content hashes keyed by apposition name, built on scanAppositions`
-8. `&[spw-lsp] — retain the inbound reference index the graph build already computes`
-9. `&[spw-lsp] — reuse derived data when a granule's apposition envelope is unchanged`
-10. `#[spw-lsp] — codeLens surfacing granule tier, volatility, inbound degree, and hash age`
-11. `![tests] — scan/parse parity, envelope stability, and invalidation-proportionality suites`
-
-Dependency order: 2 lands first because the defect it pins is already demonstrated and must fail before 3 makes it pass. 3–5 are independent of each other and of the granule work. 6 supplies the scan that 7 and 9 key on. 8 is independent and can run in parallel with 6–7. 10 consumes everything.
+Dependency order: pin_cache_defects lands first because the defect it pins is already demonstrated and must fail before evict_with_document makes it pass. evict_with_document, peek_document and derive_workspace_annotations are independent of each other and of the granule work. scan_appositions supplied the scan that apposition_frame_hashes and reuse_granule_data key on. retain_inbound_refs is independent and can run in parallel with apposition_frame_hashes. granule_codelens consumes everything.
 
 Fuzz strategy:
-- Explore (commits 2–7): `npm run fuzz:types` plus `npm run test:lsp` and `npm run test:seed` after each.
-- Stabilize (commits 8–9): `npm run fuzz:stabilize` — the export surface and reference resolution both move.
-- Ship (commits 10–11): `npm run fuzz:ship`, plus `npm run lsp:smoke` for the navigation path touched in commit 8.
+- Explore (pin_cache_defects through apposition_frame_hashes): `npm run fuzz:types` plus `npm run test:lsp` and `npm run test:seed` after each.
+- Stabilize (retain_inbound_refs, reuse_granule_data): `npm run fuzz:stabilize` — the export surface and reference resolution both move.
+- Ship (granule_codelens, granule_test_suites): `npm run fuzz:ship`, plus `npm run lsp:smoke` for the navigation path touched in retain_inbound_refs.
 
 ## Agentic Hygiene
 
 - Rebase target: `main@f5af9eb3`
-- Rebase cadence: before commit 2, before merge
-- Hygiene split: **required, and active.** The working tree currently carries in-flight sequence-separator work in `packages/spw-seed/src/grammar/{expressions,containers,seed}.ts`, `types/ast/nodes.ts`, and `canonical/geometry-inspect.ts`, plus an untracked `.scratch/`. `types/ast/nodes.ts` is where `AppositionLabel` lives, so commit 6 borders live edits. Land or park the grammar work before commit 6, and do not begin this plan on a dirty seed tree.
+- Rebase cadence: before pin_cache_defects, before merge
+- Hygiene split: **required, and active.** The working tree currently carries in-flight sequence-separator work in `packages/spw-seed/src/grammar/{expressions,containers,seed}.ts`, `types/ast/nodes.ts`, and `canonical/geometry-inspect.ts`, plus an untracked `.scratch/`. `types/ast/nodes.ts` is where `AppositionLabel` lives, so scan_appositions bordered live edits. Land or park the grammar work before scan_appositions, and do not begin this plan on a dirty seed tree.
 - 76 untracked generated `.d.ts` files under `packages/spw-cli/src/` remain unignored and uncommitted; they are noise in every `git status` this plan will run. Worth a `.gitignore` rule before starting.
 
 ## Dependencies
 
-- **`spw-beat-diff-precipitation` — direct conflict.** It plans dynamic beat TTLs and a diffing/precipitation engine *inside* `packages/spw-lsp/src/server-index.ts`, the same file this plan edits for eviction, and both touch `types.ts`. Its commits 2–3 and this plan's commits 3–5 will collide. One must land first; this plan is the better candidate because it fixes correctness that the other plan's TTL work would otherwise inherit and amplify — configurable TTLs over a leaking index tune the rate of a bug.
+- **`spw-beat-diff-precipitation` — direct conflict.** It plans dynamic beat TTLs and a diffing/precipitation engine *inside* `packages/spw-lsp/src/server-index.ts`, the same file this plan edits for eviction, and both touch `types.ts`. Its commits 2–3 and this plan's evict_with_document, peek_document and derive_workspace_annotations will collide. One must land first; this plan is the better candidate because it fixes correctness that the other plan's TTL work would otherwise inherit and amplify — configurable TTLs over a leaking index tune the rate of a bug.
 - `geometric-analysis-tooling` — supplies `shapeFingerprint`, which becomes a second granule key once it exists. Not required here; the two should agree on what a granule *is* before either ships a key format.
 - `operational-topography` — `topography-probe.ts` owns `ParseHealth`; the validity probe must reuse it rather than mint a parallel notion of "did this parse".
 
@@ -112,7 +102,7 @@ Fuzz strategy:
   - Scanning is materially cheaper than parsing on the same input; if not, the probe has no reason to exist.
   - Granular invalidation reduces reparse volume on a realistic edit sequence. Measure it; do not assume it.
 - **Negative controls**:
-  - The eviction test must fail against current `main` and pass after commit 3. It already fails — that is why it is commit 2.
+  - The eviction test must fail against current `main` and pass after evict_with_document. It already fails — that is why pin_cache_defects comes first.
   - `test:lsp` 215/215 must stay green throughout.
   - Whole-file invalidation must remain correct for the 311 surfaces carrying no apposition.
   - `references` results must be identical before and after the inbound index lands — same locations, same order.

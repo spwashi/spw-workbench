@@ -225,16 +225,12 @@ Current target (`main@3b1747c4`) is stale. Rebase to current main before impleme
 
 ## Commits
 
-1. `.[plans] — stage vscode-register-explorer planning artifacts`
-2. `&[vscode-registers] — add typed register snapshot transport to the LSP shell`
-3. `&[vscode-registers] — add register explorer tree and reveal/refresh commands`
-4. `&[vscode-registers] — add materialization-aware detail view and cross-surface event wiring`
-5. `![vscode-registers] — verify extension compile and register snapshot flows`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 
 - Rebase target: `main@3b1747c4` (updated 2026-03-27)
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before stage_planning_artifacts, before merge
 - Hygiene split: none currently. The March 26, 2026 drift note is stale in the current clean worktree, but `extensions/vscode-spw/src/extension.ts`, `extensions/vscode-spw/src/context.ts`, `extensions/vscode-spw/package.json`, and `packages/spw-lsp/src/stdio-server.ts` remain shared hot files and should be checked again before implementation starts.
 
 ## Cognitive Surface Stack

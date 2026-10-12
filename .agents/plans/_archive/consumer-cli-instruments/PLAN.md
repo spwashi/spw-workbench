@@ -57,12 +57,7 @@ Taste note: improve **truthfulness**, **composability**, and **portability**. Em
 
 ## Commits
 
-1. `.[plans] =scope[consumer-cli-instruments] — record mounted-consumer CLI and grammar gaps` (landed 3907cabb)
-2. `^seed[project-join] — lex ~> as one project connector` (landed f681d043)
-3. `&[lattice] — count ~#name: cells as a distinct species` (landed inside 5f181249 with commit 4)
-4. `^seed[fingerprint] — name AST node-count signatures` (landed 5f181249)
-5. `#[cli] — add fingerprint, resolve, and lint commands` (landed inside f92382fe with commit 6)
-6. `&[cli] — prune infrastructure by default and emit query --stats` (landed f92382fe)
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy:
 - Explore: targeted seed lexer/parse tests for `~>` and lattice colon cells.
@@ -72,7 +67,7 @@ Fuzz strategy:
 ## Agentic Hygiene
 
 - Rebase target: `main@55c16e3b`
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before `record_consumer_gaps`, before merge
 - Hygiene split: none; working tree was clean at plan creation
 
 ## Dependencies

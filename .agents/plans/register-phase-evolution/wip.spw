@@ -97,20 +97,22 @@
  >>[2026-10-12 14:28] revise — reconciled commits with git: ~[1] superseded by P0 landing (181071ef); ~[2] landed as 14fd2c5c; the runtime half of ~[3] landed in 181071ef (RegisterPhase is PHASE_ORDER, sem/opt/prag kept as RegisterPhaseAlias). Remaining ~[3]..~[6] made concrete. Card next corrected.
  >>[2026-10-12 14:28] observe — selector-expr.ts, query/types.ts, presets.ts, match.ts and cli query.ts contain no phase vocabulary; register-bank.spw mentions lex and parse once. The old next move (selector predicate over PHASE_ORDER) would make portable spw-seed import spw-runtime, so the three titled-only questions were replaced by phase_home and phase_subject and the two template wonders by one two-ladders wonder.
  >>[2026-10-12 14:31] revise — convention: resolved questions and landed commits are kept in ^["done"] (resolved(label) and shipped) rather than deleted; ^["commits"] keeps a pointer comment.
+ >>[2026-10-12 15:27] revise — Commits named per the convention in 90c58bbc: 3 landed, 4 planned, 0 dropped.
 }
 
 ^["open"]{
  ?[phase_home]: "PHASE_ORDER lives in spw-runtime/src/state/types.ts but selectors live in the portable spw-seed, which may not import runtime; does the canonical phase list move into seed, or does the selector treat phase names as opaque strings that the CLI validates?"
- ?[phase_subject]: "Does a selector phase predicate pick register cells by RegisterPhase (5 names) or AST nodes by spirit-sequence phaseIndex (7 sigils in the LSP's SIGIL_SEMANTICS)? The answer decides whether commit 3 belongs in seed at all."
+ ?[phase_subject]: "Does a selector phase predicate pick register cells by RegisterPhase (5 names) or AST nodes by spirit-sequence phaseIndex (7 sigils in the LSP's SIGIL_SEMANTICS)? The answer decides whether ~[selector_phase_predicate] belongs in seed at all."
 }
 
 ^["commits"]{
- # ~[1]..~[2] landed or superseded — see ^["done"]
- # ~[3]: (old vocab[query] align terminology) runtime side LANDED in 181071ef: RegisterPhase is PHASE_ORDER with sem, opt, prag kept as RegisterPhaseAlias; the selector side has no phase vocabulary yet, so the remainder is the new ~[3]
- ~[3]: "^seed[query] — selector phase predicate in selector-expr.ts, placed according to phase_home and phase_subject"
- ~[4]: "&[cli] — accept the phase predicate through selectors.ts and spw query"
- ~[5]: "![query] — selector tests pin canonical phase names and the alias behaviour"
- ~[6]: ".[docs] — add the five-phase glossary to docs/runtime/spw/register-bank.spw (it mentions lex and parse once, in the facet note)"
+ .[selector_expr_grammar]: "14fd2c5c ^seed[query] =selectorExpr[parser,tokenizer] — Spw-native selector expression grammar"
+ .[align_runtime_phase_names]: "181071ef vocab[runtime] =satisfies[phase-contracts] — stabilize P0 runtime and seed invariants"
+ .[refresh_plan_after_p0]: "b28ffcb8 .[plans] =align[audit-marker-roadmap] — refresh planning surfaces"
+ ~[selector_phase_predicate]: "^seed[query] — selector phase predicate in selector-expr.ts, placed according to phase_home and phase_subject"
+ ~[cli_phase_predicate]: "&[cli] — accept the phase predicate through selectors.ts and spw query"
+ ~[pin_phase_names]: "![query] — selector tests pin canonical phase names and the alias behaviour"
+ ~[phase_glossary_docs]: ".[docs] — add the five-phase glossary to docs/runtime/spw/register-bank.spw (it mentions lex and parse once, in the facet note)"
 }
 
 ^["cache"]{
@@ -119,14 +121,13 @@
  ~#rebased_at: ""
  ~#hygiene_split: "exclude untracked `src/runtime/state/register-helpers.ts` from this branch"
  ~#files_hot: "packages/spw-seed/src/query/selector-expr.ts, packages/spw-cli/src/query.ts, docs/runtime/spw/register-bank.spw"
- ~#next_commit: "3"
+ ~#next_commit: "selector_phase_predicate"
  ~#open_count: "2"
- ~#last_stream: "2026-10-12 14:31"
+ ~#last_stream: "2026-10-12 15:27"
  ~#taste_debt: "defer the broader chemistry/metaphysics rename until audits and selector semantics are clearer"
 }
 
 ^["done"]{
- ~#shipped: ["14fd2c5c ^seed[query] =selectorExpr[parser,tokenizer] — Spw-native selector expression grammar", "181071ef vocab[runtime] =satisfies[phase-contracts] — stabilize P0 runtime and seed invariants"]
  ~#resolved(selector-expr grammar): "selector-expr grammar — operational/positional surface — the Spw-native grammar landed; phase predicates are the remainder, see phase_home and phase_subject; evidence: 14fd2c5c"
 }
 

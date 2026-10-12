@@ -78,12 +78,7 @@ Routed from the roadmap table in `vscode-lsp-roadmap/PLAN.md`. This plan stays d
 
 ## Commits
 
-1. `.[plans] — refresh vscode-plugin-performance against landed launch path`
-2. `&[vscode-startup] — default compiled LSP path + lean activation wiring`
-3. `&[vscode-index] — incremental annotation sync (no full rebuild on every save)`
-4. `&[vscode-context] — shared cursor context + visibility-gated tree refresh`
-5. `&[spw-lsp] — parse-backed semantic tokens + scan cost bounds`
-6. `![vscode-performance] *audit[mounted-consumer] — startup, save, cursor, sidebar probes`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Fuzz Strategy
 
@@ -95,7 +90,7 @@ Routed from the roadmap table in `vscode-lsp-roadmap/PLAN.md`. This plan stays d
 ## Agentic Hygiene
 
 - Rebase target: `main@b4832193891b2b89b7e1e20dc0e462e2e4c9236e`
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before stage_planning_artifacts, before merge
 - Hygiene split: none; coordinate with capability plan if touching custom-request types
 
 ## Dependencies

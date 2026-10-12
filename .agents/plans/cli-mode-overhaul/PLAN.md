@@ -87,27 +87,18 @@ Taste note:
 
 ## Commits
 
-1. `.[plans] — file cli-mode-overhaul with mode audit matrix` (landed)  
-2. `vocab[cli] — mode taxonomy (measure preview stream precipitate generate patch write) + CommandSpec fields`  
-3. `![cli] — complete mode×ceiling×artifact audit for all registry verbs + orphans`  
-4. `#[cli] — envelope v1: mode, ceiling, optional precipitates/patch/cacheKey`  
-5. `^seed[derived] — register precipitate/planned/patch (or audit-chosen) derived kinds; exclude from canon walks`  
-6. `&[cli] — flow-cache for hot/patch intermediate Spw (beat- or hash-keyed under gen policy)`  
-7. `&[cli] — migrate writers to mode-declared paths; help lists modes not only verbs`  
-8. `#[cli] — spw capabilities --json from registry modes; shape agreed with absorb-spwq-cli before either lands; plan status/check absorption depends on hygiene-index-consolidation commit 7`  
-9. `vocab[cli] — rename pass for what remains after the census/graph/density aliases: ls vs query, atlas vs graph (no muscle-memory veto)`  
-10. `![cli] — envelope coverage, flow-cache fixpoint, hot-loop smoke, agent compose demos`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy:
-- Explore (1–3): `lint:spw` on plan exhibits; unit tests for modes table completeness.  
-- Stabilize (4–7): `test:cli`, `fuzz:types`.  
-- Ship (8–10): `fuzz:ship` scoped to cli + seed derived-surface; `spw capabilities --json` smoke.
+- Explore (mode_taxonomy, freeze_mode_audit): `lint:spw` on plan exhibits; unit tests for modes table completeness.  
+- Stabilize (envelope_mode_fields, derived_precipitate_kinds, flow_cache, migrate_writers): `test:cli`, `fuzz:types`.  
+- Ship (capabilities_verb, rename_pass, envelope_coverage_smoke): `fuzz:ship` scoped to cli + seed derived-surface; `spw capabilities --json` smoke.
 
 ## Agentic Hygiene
 
 - Rebase target: `main@0c7cdfb7` (update at branch cut)  
-- Rebase cadence: before commit 2, before merge  
-- Hygiene split: **required** relative to `hygiene-index-consolidation` commit 7 (plan status on spw) — either land hygiene first and rebase, or absorb plan-status into commit 8 of this plan and mark hygiene’s commit 7 superseded.  
+- Rebase cadence: before mode_taxonomy, before merge  
+- Hygiene split: **required** relative to `hygiene-index-consolidation` plan_status_cli (plan status on spw) — either land hygiene first and rebase, or absorb plan-status into capabilities_verb of this plan and mark hygiene’s plan_status_cli superseded.  
 - Do not mix server-index / geometry AST work into this branch.
 
 ## Dependencies
@@ -146,7 +137,7 @@ Fuzz strategy:
 ## Spw Artifact
 
 - `cli-mode-overhaul.spw` — doctrine: modes, precipitates, flow-cache, free-rename stance.  
-- `mode-audit.spw` — living matrix of verb → modes × ceiling × artifact (updated in commit 3).
+- `mode-audit.spw` — living matrix of verb → modes × ceiling × artifact (updated in freeze_mode_audit).
 
 ---
 
@@ -167,7 +158,7 @@ Fuzz strategy:
 
 ---
 
-## Appendix A — Explicit effect audit (initial, commit 3 will freeze)
+## Appendix A — Explicit effect audit (initial, freeze_mode_audit will freeze)
 
 Status at plan filing. Columns: default mode → elevated modes; ceiling; writes authoring tree?
 

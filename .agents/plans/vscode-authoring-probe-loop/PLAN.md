@@ -302,17 +302,12 @@ Current rebase targets in the plan are stale (`main@3b1747c4`). Before implement
 
 ## Commits
 
-1. `.[plans] — stage vscode-authoring-probe-loop planning artifacts`
-2. `&[vscode-authoring] — add phase-aware completion and spirit-sequence hover`
-3. `&[vscode-authoring] — add actionable code-lens commands and materialization breadcrumb`
-4. `&[vscode-authoring] — add probe/run commands, operator-frequency heat, and editor status surfaces`
-5. `&[vscode-authoring] — wire cross-surface events and SpwContext fields`
-6. `![vscode-authoring] — verify compile and authoring-loop interaction paths`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 
 - Rebase target: `main@3b1747c4` (regrounded 2026-03-27 to match the packages-era plan ecology)
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before stage_planning_artifacts, before merge
 - Hygiene split: none currently. The March 26, 2026 drift note is stale in the current clean worktree, but `extensions/vscode-spw/src/extension.ts`, `extensions/vscode-spw/src/context.ts`, `extensions/vscode-spw/package.json`, and `packages/spw-lsp/src/stdio-server.ts` remain shared hot files and should be checked again before implementation starts.
 
 ## Cognitive Surface Stack

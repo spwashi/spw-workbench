@@ -80,18 +80,12 @@ Server routing is not capability advertisement. The current tree has no single c
 
 ## Commits
 
-Landed: a999a24f (spw/formContext handler, test and client type).
-
-1. `vocab[lsp] =register[protocol] — one registry listing the 23 methods the stdio switch handles and spw/workspaceManifest/v1`
-2. `![lsp] *audit[capabilities] — matrix with one row per registry entry and an evidence state from registered through tested`
-3. `vocab[lsp] — type or document the methods missing from SpwCustomRequestMap (it types 14 of the 23)`
-4. `![lsp] — one stdio dispatch test for each method no test names`
-5. `^seed[lsp] =request[earned] — a new request, only after a cost sample and a language wire both exist; held`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 
 - Rebase target: `main@a333db8d33606c362439487f41371ad4091506b6`
-- Rebase cadence: before commit 1, before implementation, before merge
+- Rebase cadence: before `protocol_registry`, before implementation, before merge
 - Hygiene split: keep pure audit commit separate from implementation
 - Cross-link: `.agents/plans/form-geometry-editor/PLAN.md` (earns formContext)
 

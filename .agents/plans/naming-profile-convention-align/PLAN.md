@@ -66,16 +66,7 @@ Taste note:
 
 ## Commits
 
-1. `.[plans] — file naming-profile-convention-align with naming census` (landed inside 08e2bc1c)
-2. `.[spw] — naming-alignment pattern: families, head-noun bans, co-development rule`  
-3. `![spw] — freeze census: profile families, language features, constants, convention coverage gaps`  
-4. `vocab[conventions] — index file-physics, hash-resonance, styles; refresh naming + cli from living registry`  
-5. `vocab[profile] — qualify profile families in help and public docs (format vs mutation vs dialect vs emit)`  
-6. `vocab[constants] — effect.l* only in living docs; shares the S0-S3 rename with seed-roundness-grades commit 1 (CLI help already speaks effect.l*)`  
-7. `vocab[identity] — cross-link surface-identity + CLI modes + derived kinds in alignment map`  
-8. `![hygiene] — alignment checklist gate for new public names; taste/lint hook optional`  
-9. `.[plans] — point seed-roundness, cli-mode-overhaul, hygiene appendices at alignment map`  
-10. `![docs] — pulse-mutate-beat + dialect-spec + naming convention co-read smoke`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy:
 - Explore: `lint:spw` on new/edited `.spw` surfaces.  
@@ -85,7 +76,7 @@ Fuzz strategy:
 ## Agentic Hygiene
 
 - Rebase target: `main@0c7cdfb7` (refresh at branch cut)  
-- Rebase cadence: before commit 2, before merge  
+- Rebase cadence: before `naming_alignment_pattern`, before merge  
 - Hygiene split: none required for pure vocab; if concurrent with cli-mode-overhaul, **land alignment map first** so mode/profile renames register into it.  
 - No server-index edits.
 
@@ -111,7 +102,7 @@ Fuzz strategy:
 - **Hypotheses**:
   - At least four distinct profile families appear in the tree under the bare word `profile` (census confirms).  
   - `conventions/index.spw` omits ≥3 live convention files (file-physics, hash-resonance, styles).  
-  - After commit 5, `spw format --help` and `spw pulse --help` never say bare “profile” without a family qualifier.  
+  - After `qualify_profile_help`, `spw format --help` and `spw pulse --help` never say bare “profile” without a family qualifier.  
 - **Negative controls**:
   - Dialect markers Spw.b/l/m/x unchanged.  
   - MUTATION_PROFILES rule behavior unchanged unless alias commit explicitly tests.  

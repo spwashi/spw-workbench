@@ -41,9 +41,9 @@ Recommended order: (d) first, then decide (e) and the `>> [` tolerance on eviden
 [MOD] packages/spw-seed/src/canonical/topography-probe.ts
 [MOD] packages/spw-cli/src/pulse.ts (call sites only; the file is already over the 600-line guard, so no new logic goes there)
 [MOD] packages/spw-seed/src/canonical/form-geometry.ts (call sites only)
-[MOD] packages/spw-seed/src/dialect/detect.ts (conditional, commit 4)
-[MOD] packages/spw-seed/src/lexer/plan-stream.ts (conditional, commit 5)
-[MOD] .agents/plans/_schema/wip-template.spw, .agents/scripts/agent-lib.sh (conditional, commit 6)
+[MOD] packages/spw-seed/src/dialect/detect.ts (conditional, `detect_plan_stream`)
+[MOD] packages/spw-seed/src/lexer/plan-stream.ts (conditional, `spaced_entry_tolerance`)
+[MOD] .agents/plans/_schema/wip-template.spw, .agents/scripts/agent-lib.sh (conditional, `template_dialect_pragma`)
 [NEW] a topography-probe test file for the fixture
 [DEL] (none)
 
@@ -52,20 +52,14 @@ Craft guard:
 
 ## Commits
 
-1. ![seed] — failing fixture: snapshotTopography on a stream frame with hostile prose, given the plan path.
-2. vocab[seed] — snapshotTopography accepts optional path and dialect; fixture now passes; default call unchanged.
-3. &[cli] — pulse and form-geometry pass the path; prose-edit stability fixture.
-4. ^seed[dialect] — conditional content detection, with negative controls.
-5. ^seed[lexer] — conditional `>> [` tolerance, with a plan-stream.test.ts case.
-6. .[plans] — conditional template and scaffold pragma, with a plan:stream round-trip case.
-7. ![plans] — record the post-fix tally against the baseline.
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
-Each commit has a failing-then-passing check: the fixture of commit 1 fails on the unchanged call until commit 2; commit 3 fails the stability fixture until the call sites pass the path; commit 4 fails a stdin-without-path fixture; commit 5 fails a spaced-entry fixture; commit 6 fails a template round-trip case.
+Each commit has a failing-then-passing check: the fixture of `hostile_prose_fixture` fails on the unchanged call until `topography_path_option`; `thread_path_callsites` fails the stability fixture until the call sites pass the path; `detect_plan_stream` fails a stdin-without-path fixture; `spaced_entry_tolerance` fails a spaced-entry fixture; `template_dialect_pragma` fails a template round-trip case.
 
 ## Agentic Hygiene
 
 - Rebase target: `main`
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before `hostile_prose_fixture`, before merge
 - Hygiene split: none
 
 ## Dependencies
@@ -75,15 +69,15 @@ none. Feeds plan-tooling-design (pulse report parity, plan:stream validator) and
 ## Failure Modes
 
 - Hard: a dialect or lexer change alters tokens of non-plan files; masked real brace errors.
-- Soft: content detection misfires on a doc quoting an entry; three files stay recovered until commit 5.
+- Soft: content detection misfires on a doc quoting an entry; three files stay recovered until `spaced_entry_tolerance`.
 - Non-negotiable: existing plan-stream.test.ts cases unchanged; stream lines are append-only; health stays count-sensitive and is not read as a validity verdict.
 
 ## Validation
 
 - Hypotheses: H1, H2, H3 in wip.spw.
-- Negative controls: token equality on non-plan sources before and after commits 2 to 4.
+- Negative controls: token equality on non-plan sources before and after `topography_path_option` through `detect_plan_stream`.
 - Demo sequence: append a hostile stream line with plan:stream, tally health, see no change for that file.
-- Metric: `npm run -s spw:pulse -- .agents/plans/*/wip.spw --json`, then count `reports[].beforeHealth` by value. Baseline (probe over 78 pre-existing files): 6 / 46 / 26 for complete_structured / recovered / invalid. Expected after commit 3: the 75 path-clean files stop depending on prose; after commit 5: all 78 have 0 stream-line errors. Whether a file reaches complete_structured also depends on its non-stream content, which is not promised here.
+- Metric: `npm run -s spw:pulse -- .agents/plans/*/wip.spw --json`, then count `reports[].beforeHealth` by value. Baseline (probe over 78 pre-existing files): 6 / 46 / 26 for complete_structured / recovered / invalid. Expected after `thread_path_callsites`: the 75 path-clean files stop depending on prose; after `spaced_entry_tolerance`: all 78 have 0 stream-line errors. Whether a file reaches complete_structured also depends on its non-stream content, which is not promised here.
 
 ## Spw Artifact
 

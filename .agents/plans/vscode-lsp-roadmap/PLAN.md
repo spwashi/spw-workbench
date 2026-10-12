@@ -214,9 +214,7 @@ Plans in this ecology are for **humans who deepen expertise**—optionally foldi
 
 ## Commits
 
-1. `.[plans] — stage vscode-lsp-roadmap and fill missing editor plan surfaces`
-2. `.[plans] — refresh performance, capability, and atlas plans against landed code`
-3. `.[plans] — wire upgrade/perf TypeScript plans into editor ecology`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 

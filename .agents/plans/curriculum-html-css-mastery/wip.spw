@@ -12,7 +12,7 @@
  touches: [~"docs/learn", ~"docs/design/md/dom-css-testing-harness.md", ~"docs/design/spw/theme-progression.spw", ~"src/testing/dom-css-harness.ts"]
  will_touch: [~"docs/learn/labs/html-css"]
  entry: ~"./PLAN.md"
- next: "Commit 1: create docs/learn/labs with the format README, a format-lint test, vitest.labs.config.ts and npm run test:labs; then Lab 1.01 as commit 2."
+ next: "~[lab_home_runner]: create docs/learn/labs with the format README, a format-lint test, vitest.labs.config.ts and npm run test:labs; then Lab 1.01 in ~[lab_semantics_ontology]."
 }
 
 ^["edges"]{
@@ -87,7 +87,7 @@
  ~#protocol: "hypothesis, switch, probe, instrumentation follow .agents/skills/spw-css-dom-lab/references/experiment-protocol.md; that skill stays a protocol and is not the lab directory"
  ~#tiers: "a Check names its tier per claim: structural (jsdom DOM and selector facts), pure (plain TypeScript math or parsing), or browser (stated in prose and attested by hand, never auto-passed)"
  ~#runner: "npm run test:labs, a new vitest.labs.config.ts including docs/learn/labs/**/*.test.ts, jsdom by default with a per-file node environment override"
- ~#order: "html-css commits 1 and 2 first (they create the home and prove the pair); svg commit 2 and logic-terminal commit 2 may then run in parallel; later labs are independent inside each curriculum"
+ ~#order: "html-css lab_home_runner and lab_semantics_ontology first (they create the home and prove the pair); svg lab_coordinates_strata and logic-terminal lab_terminal_tty may then run in parallel; later labs are independent inside each curriculum"
 }
 
 ^["stream"]{
@@ -97,11 +97,22 @@
  >>[2026-10-12 14:25] revise — Collapsed 50 lesson-stub commits to 7 work units (hygiene preflight, five lab files, one design fold-in); git history shows no labs/ directory ever landed under spw-css-dom-lab, so none of the 50 had shipped. Lesson list kept as ~#covers. Replaced two template wonders with a precedent audit of the repo's CSS.
  >>[2026-10-12 14:54] decide — reheat these curricula, 2026-10-12
  >>[2026-10-12 14:54] revise — Reheated to planning. Lab home docs/learn/labs/html-css; this plan owns the shared lab format (md plus colocated check test, test:labs runner, three verification tiers). Commits revised to 8 with Lab 1.01 as commit 2; hygiene preflight dropped; precedent audit and jsdom capability probe re-run and recorded.
+ >>[2026-10-12 15:37] revise — Commits named per the convention in 90c58bbc: 0 landed, 7 planned, 1 dropped.
 }
 
 ^["open"]{
- ?[writerside_scope]: "Does npm run lint:docs (writerside-check) accept new .md files under docs/learn/labs without a Writerside topic entry? Answer by running it after commit 1; unblocks the home choice staying at docs/learn/labs."
- ?[browser_only]: "Are browser-tier claims (calc, oklch, layout, scroll timelines) attested by a hand-written line in the lab, or does the toolchain gain a real browser? No browser package was found in node_modules on 2026-10-12. Unblocks commits 4 to 7 and the same tier in the svg plan."
+ ?[writerside_scope]: "Does npm run lint:docs (writerside-check) accept new .md files under docs/learn/labs without a Writerside topic entry? Answer by running it after lab_home_runner; unblocks the home choice staying at docs/learn/labs."
+ ?[browser_only]: "Are browser-tier claims (calc, oklch, layout, scroll timelines) attested by a hand-written line in the lab, or does the toolchain gain a real browser? No browser package was found in node_modules on 2026-10-12. Unblocks lab_topology_containment, lab_calculus_valence, lab_query_introspection and lab_temporal_navigation, and the same tier in the svg plan."
+}
+
+^["commits"]{
+ ~[lab_home_runner]: "#[labs] — create docs/learn/labs with the format README, a format-lint test, vitest.labs.config.ts and npm run test:labs"
+ ~[lab_semantics_ontology]: "^seed[curriculum] — html-css/01-semantics-ontology.md plus its jsdom check, opening with Lab 1.01 (html and body roots); covers head, meta, link; sectioning; text content; inline text; forms; details and dialog; tables; embedded media; ontology reflection"
+ ~[lab_topology_containment]: "^seed[curriculum] — html-css/02-topology-containment.md plus its check; covers normal flow and BFC; flexbox; grid; display:contents; subgrid; positioned strata; sticky; stacking contexts; container queries; strata reflection"
+ ~[lab_calculus_valence]: "^seed[curriculum] — html-css/03-calculus-valence.md plus its check; covers custom properties; calc; min, max, clamp; trig; exp and log; oklch and color-mix; relative colors; attr(); env(); valence-interpolation reflection"
+ ~[lab_query_introspection]: "^seed[curriculum] — html-css/04-query-introspection.md plus its check; covers cascade and @layer; attribute substring; structural and UI-state pseudo-classes; :has(); :is, :where, :not; @media; @supports; @scope; introspection reflection"
+ ~[lab_temporal_navigation]: "^seed[curriculum] — html-css/05-temporal-navigation.md plus its check; covers transitions; cubic-bezier; keyframes; additive animation; scroll and view timelines; scroll snap; View Transitions; :target and :checked state machines; navigation reflection"
+ ~[fold_lab_heuristics]: ".[design] — fold lab heuristics into dom-css-testing-harness.md and theme-progression.spw"
 }
 
 ^["cache"]{
@@ -109,14 +120,14 @@
  ~#base_ref: "main@551bb419"
  ~#rebased_at: "2026-10-12"
  ~#files_hot: ".agents/plans/curriculum-html-css-mastery/"
- ~#next_commit: "1"
+ ~#next_commit: "lab_home_runner"
  ~#open_count: "2"
- ~#last_stream: "2026-10-12 14:54"
+ ~#last_stream: "2026-10-12 15:37"
  ~#taste_debt: "keep each lab braided around page muscles and transfer questions rather than turning the plan into a standards catalog"
 }
 
 ^["done"]{
- ~#dropped: "commit 1 hygiene preflight (rebase and isolate drift) — replaced by base_ref main@551bb419 and by commit 1 creating a new directory that no other work touches; dropped 2026-10-12"
+ ~#dropped(hygiene_preflight): "rebase onto main and isolate unrelated drift before lab commits — replaced by base_ref main@551bb419 and by lab_home_runner creating a new directory that no other work touches; dropped 2026-10-12"
  ~#resolved(precedent_audit): "Does the repo own CSS already use the precedents behind Labs 2, 4, 5? — no; re-run 2026-10-12 of the grep over docs packages extensions src for @container, :has(, animation-timeline, scroll-timeline, view-transition, subgrid in css, html, ts, tsx listed zero files; color-mix or oklch matched 4 files (installable-book season.css, style.css, substrate.css, and atlas-html.ts), so only Lab 3 has repo precedent; evidence: stream 2026-10-12; consequence: Labs 2, 4, 5 review a repo pattern by contrast, naming the absence, and that scope rule is stated in the lab Repo pattern reviewed section"
  ~#resolved(format_owner): "Which plan owns the shared lab format? — this one, because it has the existing DOM harness and the critical path; evidence: decision 2026-10-12, the lab_format frame"
 }
@@ -126,6 +137,6 @@
   #:depth #!computational // lens: capability probe
   ~#hypothesis: "selectors and custom-property reads check structurally; calc, var, oklch, layout and timelines do not resolve"
   ~#observed: "one scratch run on 2026-10-12 with the repo jsdom: width set by calc(var(--a)*10px) read back as the unresolved calc text, color oklch(0.7 0.1 200) read back as the authored text, a :has(>p) rule applied its margin, and a custom property read as 2; @layer and @container were not exercised"
-  !probe{ "for one fixture per lesson family in Labs 2 to 5, call createDomCssFixture and cssValue, and record whether the value is resolved, authored text, or empty; the result fixes each Check tier before commits 4 to 7" }
+  !probe{ "for one fixture per lesson family in Labs 2 to 5, call createDomCssFixture and cssValue, and record whether the value is resolved, authored text, or empty; the result fixes each Check tier before lab_topology_containment, lab_calculus_valence, lab_query_introspection and lab_temporal_navigation" }
   $%[plan.commit_count, plan.phase_progress]
 }

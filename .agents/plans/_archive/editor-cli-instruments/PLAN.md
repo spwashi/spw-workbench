@@ -65,12 +65,7 @@ Taste note: improve recognizability, reversibility, performance legibility, and 
 
 ## Commits
 
-1. `.[plans] — define cross-editor CLI instrument contract` (landed a3e54329)
-2. `&[editor-instruments] — add parameterized CLI launch models and focused tests` (landed 8f5d58df)
-3. `&[intellij] — expose form, stack, cache, rename, and refactor-plan actions` (landed bd0f09e3)
-4. `&[vscode,neovim] — align live probes and corpus refactor planning` (landed a71d066c)
-5. `![editors] *verify[instruments] — prove mounted roots, cache receipts, builds, and copy` (landed 10d3dbde)
-6. `.[tooling] — publish editor instrument and recovery guidance` (landed f01a1d4c)
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Fuzz Strategy
 
@@ -81,7 +76,7 @@ Taste note: improve recognizability, reversibility, performance legibility, and 
 ## Agentic Hygiene
 
 - Rebase target: `main@0db31751a7639c63736e689fa190639a97ec7ce2`
-- Rebase cadence: before commit 1 and before merge
+- Rebase cadence: before `define_instrument_contract` and before merge
 - Hygiene split: none; `main...codex/editor-cli-instruments` was empty before planning
 
 ## Dependencies

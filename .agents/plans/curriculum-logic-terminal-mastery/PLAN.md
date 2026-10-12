@@ -15,25 +15,25 @@ This curriculum sits between the `language` and `service` rungs in the current e
 
 ## The Curriculum Sequence: 26 Steps to Linguistic Mastery
 
-### Phase I: The Terminal & TTY Mechanics (Commits 1–5)
+### Phase I: The Terminal & TTY Mechanics (lab_terminal_tty)
 Deep dive into raw TTY buffers, ANSI escape codes, standard streams, and interactive prompt mechanics. We establish how raw streams of characters are converted into structured evaluation loops (the REPL). The Spw reflection explores the terminal not as a linear prompt, but as a sensory event horizon mapping to Spw's continuous compilation model.
 
-### Phase II: Logical Inference & Prolog (Commits 6–10)
+### Phase II: Logical Inference & Prolog (lab_prolog_unification)
 Master declarative knowledge bases, Horn clauses, unification, and recursive backtracking. Moving from imperative execution to goal-oriented proof searches. The Spw reflection maps absolute Prolog Unification back to Spw's fluid Pattern Matching and "semantic equivalencies."
 
-### Phase III: Functional Purity & Haskell (Commits 11–15)
+### Phase III: Functional Purity & Haskell (lab_haskell_purity)
 Master strict separation of side-effects using Monads, lazy evaluation (thunks), Algebraic Data Types, and Typeclasses. The Spw reflection maps absolute Haskell `IO` purity to Spw's narrative Valences (Bone vs. Boon/Bonk) and translates lazy mathematical bounds into Spw's fluid Ontologies.
 
-### Phase IV: Graph Topologies & GQL (Commits 16–20)
+### Phase IV: Graph Topologies & GQL (lab_graph_gql)
 Master the ISO-standard Property Graph models, Cypher traversal syntax (`(a)-[r]->(b)`), and transitive closures. The Spw reflection translates rigorous Subgraph Projections and pattern matching algorithms into Spw's associative Resonance systems and spatial Lenses.
 
-### Phase V: The Spw CLI Synthesis (Commits 21–26)
+### Phase V: The Spw CLI Synthesis (lab_cli_synthesis)
 Unify the previous paradigms. Designing a CLI that leverages TTY interactivity, evaluates ASTs lazily (Haskell), processes logic transitively (Prolog/GQL), and communicates naturally. This phase outlines the ultimate architecture for the Spw command-line experience.
 
 ## Agentic Hygiene
 
 - **Rebase target**: `main@551bb419` (updated 2026-10-12)
-- **Rebase cadence**: rebase before commit 1 and again before merge
+- **Rebase cadence**: rebase before lab_terminal_tty and again before merge
 - **Hygiene split**: isolate unrelated out-of-scope drift into `feature/curriculum-logic-terminal-mastery-agentic-hygiene` before implementation commits
 
 ## Files
@@ -51,17 +51,7 @@ Predicted file scaffolding:
 
 ## Commits
 
-Preflight: `&[hygiene] — rebase onto origin/main and isolate unrelated drift before implementation commits`
-
-1. `&[hygiene] — rebase onto main and isolate unrelated drift before lab commits`
-2. `^seed[curriculum] — scaffold spw-logic-terminal-lab with labs/01-terminal-tty.md (TTY lab plus terminal-as-compiler reflection)` (TTY buffers and ANSI escapes; standard streams and POSIX pipelines; REPL evaluation loops; curses and blessed UI constraints; terminal-as-continuous-spatial-compiler reflection)
-3. `^seed[curriculum] — scaffold labs/02-prolog-unification.md (Prolog lab plus pattern-matching reflection)` (Horn clauses and facts; unification and substitution; resolution, backtracking, cut; homoiconicity; unification-vs-semantic-pattern-matching reflection)
-4. `^seed[curriculum] — scaffold labs/03-haskell-purity.md (Haskell lab plus valence reflection)` (purity and the IO monad; lazy evaluation and thunks; algebraic data types; typeclasses and parametric polymorphism; purity-to-valence (bone vs boon) reflection)
-5. `^seed[curriculum] — scaffold labs/04-graph-gql.md (property-graph lab plus resonance reflection)` (property graph model; Cypher and GQL pattern syntax; recursive traversal and transitive closure; subgraph projection and isomorphism; traversal-to-semantic-resonance reflection)
-6. `^seed[curriculum] — scaffold labs/05-cli-synthesis.md (synthesis lab against the spw CLI)` (polyglot AST interface; piped AST streams in bash; AST graphs in raw TTY; conversational prompt design; CLI-as-metacognitive-collaborator reflection)
-7. `.[docs] — write the Rosetta-stone .spw artifact translating one problem into Prolog, Haskell, GQL, and Spw`
-
-Collapsed from 26 lesson-stubs (20 labs plus 5 reflections plus a guide) to the real work units: one file per phase. No docs/learn/labs/logic-terminal directory exists yet; the lesson list now lives in ~#covers.
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Dependencies
 
@@ -100,4 +90,4 @@ A formal `.spw` document that acts as a Rosette Stone, translating a single conc
 
 ## Reheated 2026-10-12
 
-The live commit list, shared lab format, verification tiers and open questions are in wip.spw (the commits and lab_format frames); the shared format is owned by curriculum-html-css-mastery. Lab home: docs/learn/labs/logic-terminal/. The commit list above predates the reheat where the two differ.
+The live commit list, shared lab format, verification tiers and open questions are in wip.spw (the commits and lab_format frames); the shared format is owned by curriculum-html-css-mastery. Lab home: docs/learn/labs/logic-terminal/.

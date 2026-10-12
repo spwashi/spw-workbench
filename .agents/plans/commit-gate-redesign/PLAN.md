@@ -33,14 +33,12 @@ Craft guard:
 
 ## Commits
 
-Landed: f9c73daf (plan), 03983755 (shared runner), 76160302 (renderer and authorization), c4be2f46 (agent context), 37b6f42b (poll-review on the shared engine).
-
-5. `.[docs] — document the run, render, authorize ceremony and the set-agent-context helpers in the workflow and skill`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 
 - Rebase target: `main@f04cad6826118457ec72474a59a240125b3750a6`
-- Rebase cadence: before commit 2, before merge
+- Rebase cadence: before shared_review_runner, before merge
 - Hygiene split: none
 
 ## Dependencies

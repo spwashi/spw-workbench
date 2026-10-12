@@ -4,9 +4,9 @@ Make the workbench tell the truth about itself: clean trees, robust docs, naviga
 
 ## Goal
 
-Four drifts have the same shape: a surface claims something about the workspace, and nothing keeps the claim honest. Generated `.d.ts` files pollute `git status` while `outDir` already points at a cache. Path and Writerside checks exist but do not cover fragments, archived plan refs, or plan-cache lies. Indexes route canon well and plans poorly — fifty active plans, five stranded on deleted layouts, and at least one plan (`directive-lattice`) whose cache still says "next commit 1" after its spine has landed. This plan is the maintenance pass that turns those drifts into instruments: ignore or relocate noise, harden doc/path verification, publish a plan ecology index, and consolidate the ecology so status tokens, archive state, and hot-file collisions are queryable rather than remembered.
+Four drifts have the same shape: a surface claims something about the workspace, and nothing keeps the claim honest. Generated `.d.ts` files pollute `git status` while `outDir` already points at a cache. Path and Writerside checks exist but do not cover fragments, archived plan refs, or plan-cache lies. Indexes route canon well and plans poorly — fifty active plans, five stranded on deleted layouts, and at least one plan (`directive-lattice`) whose cache said "next commit 1" after its spine has landed. This plan is the maintenance pass that turns those drifts into instruments: ignore or relocate noise, harden doc/path verification, publish a plan ecology index, and consolidate the ecology so status tokens, archive state, and hot-file collisions are queryable rather than remembered.
 
-**Documentation and referentiality** are first-class here, not a side effect of path-check. The plan carries expression exhibits and graded goals: what should remain meaningful if string payloads are erased; what should gain axes (resolution, modality, effect, identity) when a string must remain. Appendix A diagnoses language gaps; **Appendix B** and `references/documentation-referentiality.spw` state robustness grades, live vs soft forms, before/after migrations, and tool goals for commit 6+.
+**Documentation and referentiality** are first-class here, not a side effect of path-check. The plan carries expression exhibits and graded goals: what should remain meaningful if string payloads are erased; what should gain axes (resolution, modality, effect, identity) when a string must remain. Appendix A diagnoses language gaps; **Appendix B** and `references/documentation-referentiality.spw` state robustness grades, live vs soft forms, before/after migrations, and tool goals for `harden_path_checks` onward.
 
 Taste note:
 - **correctness** — caches, refs, and status tokens match repository reality
@@ -92,30 +92,24 @@ Taste note:
 
 ## Commits
 
-Landed: commit 1 and the .d.ts ignore of commit 2 in 08e2bc1c (the .scratch ignore is moot), commit 5 in da5189bb. Remaining:
-
-3. `.[plans] — align cache status with card phase for directive-lattice (planning vs landed) and form-geometry-editor (active vs landed)`
-4. `.[plans] — record the disposition of the five stranded plans and brand-core-ids once the disposition question is answered`
-6. `![docs] — harden path and writerside checks for fragments and archives; align fixtures with referentiality grades g1–g2 and g5`
-7. `&[cli] — ecology plan status/check on the spw binary with envelope-friendly --json (write-ceiling honesty in mass/refresh help is carried by cli-mode-overhaul commit 7)`
-8. `![hygiene] — ship gate: clean status, refresh fixpoint, lint:docs:strict, spw plan status --json smoke`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy:
-- Explore (1–4): `npm run lint:spw` on touched plan surfaces; `git status -sb` noise floor.
-- Stabilize (5–7): `npm run lint:spw && npm run lint:docs:strict`; `npm run test:cli` if refresh/commands change.
-- Ship (8): `npm run fuzz:ship` if CLI packages move; otherwise `lint` + `spw refresh .agents/plans` fixpoint + clean tree excluding intentional untracked work.
+- Explore (`file_hygiene_plan`, `ignore_package_dts`, `mark_landed_cards`, `align_cache_status`, `stranded_disposition`): `npm run lint:spw` on touched plan surfaces; `git status -sb` noise floor.
+- Stabilize (`publish_plan_index`, `harden_path_checks`, `plan_status_cli`): `npm run lint:spw && npm run lint:docs:strict`; `npm run test:cli` if refresh/commands change.
+- Ship (`ship_gate`): `npm run fuzz:ship` if CLI packages move; otherwise `lint` + `spw refresh .agents/plans` fixpoint + clean tree excluding intentional untracked work.
 
 ## Agentic Hygiene
 
 - Rebase target: `main@873b266b`
-- Rebase cadence: before commit 2 (after filing), before merge
+- Rebase cadence: before `ignore_package_dts` (after `file_hygiene_plan`), before merge
 - Hygiene split: **this plan is the hygiene split.** Unrelated feature drift (apposition / beat / geometry implementation) stays out of this branch. Do not start server-index edits here.
-- Unrelated drift on main tip: none required for this plan; 60+ untracked `.d.ts` and `.scratch/` are exactly commit 2's subject.
+- Unrelated drift on main tip: none required for this plan; 60+ untracked `.d.ts` and `.scratch/` are exactly the subject of `ignore_package_dts` and the dropped `ignore_scratch`.
 
 ## Dependencies
 
 - **`plan-ecology-clustering`** — taxonomy and commit bar already exist; this plan *executes* consolidation against them rather than reinventing clusters.
-- **`spw-plan-maintenance` skill** — operational checklist; commits 3–5 are that skill made durable and indexable.
+- **`spw-plan-maintenance` skill** — operational checklist; `mark_landed_cards`, `align_cache_status`, `stranded_disposition` and `publish_plan_index` are that skill made durable and indexable.
 - **`surface-identity.spw`** — already settled content_hash / shape_fingerprint / granule_key; consolidation references it, does not reopen it.
 - **`apposition-cache-granules` before `spw-beat-diff-precipitation`** — schedule recorded and left open for those plans; this plan only indexes the collision.
 - **`directive-lattice`** — cache refresh only; remaining particle/canon commits stay on that plan.
@@ -132,20 +126,20 @@ Fuzz strategy:
 ## Validation
 
 - **Hypotheses**:
-  - After commit 2, a clean clone + `npm run build` leaves `git status` free of package-src `.d.ts` noise.
-  - After commit 3, `directive-lattice` `~#next_commit` advances past commits already present on main (or status becomes `review` with remainder named).
-  - After commit 5, every active plan slug appears exactly once in `.agents/plans/index.spw` under a cluster lane.
-  - After commit 6, `lint:docs:strict` catches a planted broken `~"…"` and a broken fragment target in fixtures (grades g1–g2).
-  - After commit 7, `spw refresh .agents/plans` is a fixpoint (second run applies zero edits).
+  - After `ignore_package_dts`, a clean clone + `npm run build` leaves `git status` free of package-src `.d.ts` noise.
+  - After `align_cache_status`, `directive-lattice` `~#next_commit` advances past commits already present on main (or status becomes `review` with remainder named).
+  - After `publish_plan_index`, every active plan slug appears exactly once in `.agents/plans/index.spw` under a cluster lane.
+  - After `harden_path_checks`, `lint:docs:strict` catches a planted broken `~"…"` and a broken fragment target in fixtures (grades g1–g2).
+  - After `plan_status_cli`, `spw refresh .agents/plans` is a fixpoint (second run applies zero edits).
   - `references/documentation-referentiality.spw` keeps g1-clean roots (every `@` / `~` in its roots frame resolves).
 - **Negative controls**:
   - `npm run lint:spw` stays green on the full corpus.
   - Apposition / beat / geometry PLAN.md commit lists are not rewritten (stream notes only if scheduling changes).
   - Archived plans remain parseable under `_archive/`; no live tilde ref resolves to a vanished active path.
-  - String-erase test is a **goal metric**, not a hard fail for hygiene commits 2–5.
+  - String-erase test is a **goal metric**, not a hard fail for the hygiene commits (`ignore_package_dts`, `mark_landed_cards`, `align_cache_status`, `stranded_disposition` and `publish_plan_index`).
 - **Demo sequence**:
-  1. `git status -sb` before/after commit 2.
-  2. `npm run spw:plan:check -- --slug directive-lattice` before/after commit 3.
+  1. `git status -sb` before/after `ignore_package_dts`.
+  2. `npm run spw:plan:check -- --slug directive-lattice` before/after `align_cache_status`.
   3. `spw skim .agents/plans/index.spw` — cluster lanes visible.
   4. `spw skim …/references/documentation-referentiality.spw` — grades and ladders visible.
   5. `spw query --from .agents/plans/hygiene-index-consolidation --selector pathRefs --summary`.
@@ -155,7 +149,7 @@ Fuzz strategy:
 ## Spw Artifact
 
 - `.agents/plans/hygiene-index-consolidation/hygiene-index-consolidation.spw` — four-pillar doctrine: hygiene floor, doc robustness grades, index dimensions, consolidation verbs.
-- `.agents/plans/hygiene-index-consolidation/references/documentation-referentiality.spw` — robustness grades g0–g5, live vs soft forms, stringless and dimensional goals, migrate examples, tool goals for commit 6+.
+- `.agents/plans/hygiene-index-consolidation/references/documentation-referentiality.spw` — robustness grades g0–g5, live vs soft forms, stringless and dimensional goals, migrate examples, tool goals for `harden_path_checks` onward.
 - `.agents/plans/hygiene-index-consolidation/references/cli-verb-alignment.spw` — CLI audit axes, findings F1–F8, product map, agent contract, plan slices.
 - `.agents/plans/hygiene-index-consolidation/references/index.spw` — reference routing table for the plan.
 
@@ -226,7 +220,7 @@ Full tables: `references/documentation-referentiality.spw` frames `forms_live` a
 | **Should become stringless** | effect ceilings as tokens, status/cluster vocab as tokens, required-key sets, `#yes`/`#no`, hot/warm/cold tiers |
 | **Must remain strings (for now)** | filesystem paths, human goal prose, host command lines, selector expr until native AST, multi-word titles |
 
-**Erase test (goal metric, not ship gate for commits 2–5):** parse → drop string payloads → roots aliases, particle mix, deixis table, closed tokens, and frame labels still recoverable. Fail if only freeform maps remain.
+**Erase test (goal metric, not ship gate for `ignore_package_dts`, `mark_landed_cards`, `align_cache_status`, `stranded_disposition` and `publish_plan_index`):** parse → drop string payloads → roots aliases, particle mix, deixis table, closed tokens, and frame labels still recoverable. Fail if only freeform maps remain.
 
 ### B.5 Goals — parse with more dimension
 
@@ -267,7 +261,7 @@ Full tables: `references/documentation-referentiality.spw` frames `forms_live` a
 | Cross-plan link | “see apposition-cache-granules” | `@apposition: ~"…/PLAN.md"` |
 | Deep nav | “search for granule_key” | fragment ref to `#spw_pattern_surface_identity` |
 
-### B.7 Tool goals (commit 6+)
+### B.7 Tool goals (`harden_path_checks` onward)
 
 **path-check — must:** resolve `~` and `@root`; report dangling with file:line.  
 **path-check — add:** fragment existence for `.spw` targets; warn live → `_archive` without repoint; optional JSON.  
@@ -284,7 +278,7 @@ npm run spw -- skim .agents/plans/hygiene-index-consolidation/references/documen
 
 ### B.8 Relation to Appendix A and out of scope
 
-Appendix A names **language products** (claim atoms, binding modality, holes, schema). Appendix B states **what documentation should do with forms that already exist**, and which tool checks this plan will harden. g4 organelle schema, claim-list grammar, and selector-as-AST remain follow-ons — not commits 2–8.
+Appendix A names **language products** (claim atoms, binding modality, holes, schema). Appendix B states **what documentation should do with forms that already exist**, and which tool checks this plan will harden. g4 organelle schema, claim-list grammar, and selector-as-AST remain follow-ons — not any commit in this plan's named list.
 
 ---
 
@@ -476,7 +470,7 @@ Usable without grammar changes; compatible with this plan’s scope:
 
 ## Appendix C — CLI verb alignment, composability, Spw-nativity, agent friendliness
 
-Filed 2026-07-27. **Audit + plan** for `@spwashi/spw-cli` and adjacent agent entrypoints. Exhibit: `references/cli-verb-alignment.spw`. Complements `spw-cli-overhaul` (envelope foundation, review) and this plan’s commit 7 (ecology-aware plan status).
+Filed 2026-07-27. **Audit + plan** for `@spwashi/spw-cli` and adjacent agent entrypoints. Exhibit: `references/cli-verb-alignment.spw`. Complements `spw-cli-overhaul` (envelope foundation, review) and this plan’s `plan_status_cli` (ecology-aware plan status).
 
 ### C.1 Snapshot — what exists
 
@@ -527,7 +521,7 @@ Filed 2026-07-27. **Audit + plan** for `@spwashi/spw-cli` and adjacent agent ent
 **Composability goals:**
 
 1. **All new `--json` output** uses envelope v1 (`ok`, `schemaVersion`, `command`, `data`, `summary`).  
-2. **Migrate** mass, authority, taste, doctor, atlas, geometry, beat, refresh to envelope (follow-on or staged in commit 7+).  
+2. **Migrate** mass, authority, taste, doctor, atlas, geometry, beat, refresh to envelope (follow-on or staged in `plan_status_cli` or later).  
 3. **Pulse:** dual-publish envelope fields or document pulse as the sole exception with a stable dual reader.  
 4. **Stdin/stdout:** sense verbs that emit envelope should be pipe-friendly; avoid requiring TTY.  
 5. Shared flag lexicon where possible: `--json`, `--help`, `--write` (always gated), `--from` for multi-root sense/read.
@@ -547,7 +541,7 @@ Filed 2026-07-27. **Audit + plan** for `@spwashi/spw-cli` and adjacent agent ent
 - Prefer seed products over host regex for any new verb.  
 - Bring **path-check** and **particle census** onto the registry (workspace/sense) or document them as `spw doctor` subprobes.  
 - Keep **derived** artifacts (`.expanded.spw`) excluded from default walks (naming convention already).  
-- Update `conventions/cli.spw` from `COMMANDS` (generate or checklist in commit 7).
+- Update `conventions/cli.spw` from `COMMANDS` (generate or checklist in `plan_status_cli`).
 
 #### C.2.4 Agent friendliness
 
@@ -569,7 +563,7 @@ Filed 2026-07-27. **Audit + plan** for `@spwashi/spw-cli` and adjacent agent ent
 | `--json` opt-in | must |
 | envelope v1 for agent-facing JSON | should → must for new work |
 | `spw capabilities --json` | should (follow-on or late commit) |
-| `spw plan status|check` (ecology) | should — **this plan commit 7** |
+| `spw plan status|check` (ecology) | should — **this plan, `plan_status_cli`** |
 | no silent write | must |
 | effect ceiling in help for writers | must |
 
@@ -592,7 +586,7 @@ Filed 2026-07-27. **Audit + plan** for `@spwashi/spw-cli` and adjacent agent ent
 
 ### C.4 Plan — what this plan owns vs follow-on
 
-#### Owned here (extend commit 7–8)
+#### Owned here (extend `plan_status_cli` and `ship_gate`)
 
 1. **`spw` ecology status** — multi-plan status/check (wrap agent-tools or reimplement) with `--json` envelope-friendly payload; relative paths; slug filter.  
 2. **Help honesty** — mass/refresh one-liners mention write ceiling when `--write` exists.  
@@ -614,14 +608,14 @@ Filed 2026-07-27. **Audit + plan** for `@spwashi/spw-cli` and adjacent agent ent
 - Changing effect grade names.  
 - Feature spines (granules, geometry AST, beat TTL).
 
-### C.5 Proposed commit refinement (commit 7)
+### C.5 Proposed commit refinement (`plan_status_cli`)
 
 Was: ecology-aware plan refresh and multi-plan status.
 
 **Refined:**
 
-7. `&[cli] — ecology plan status/check on the spw binary; envelope-friendly --json; write-ceiling honesty in mass/refresh help`  
-8. `![hygiene] — ship gate: clean status, refresh fixpoint, lint:docs:strict, spw plan status --json smoke`
+- `plan_status_cli`: `&[cli] — ecology plan status/check on the spw binary; envelope-friendly --json; write-ceiling honesty in mass/refresh help`  
+- `ship_gate`: `![hygiene] — ship gate: clean status, refresh fixpoint, lint:docs:strict, spw plan status --json smoke`
 
 ### C.6 Demo sequence (agent)
 

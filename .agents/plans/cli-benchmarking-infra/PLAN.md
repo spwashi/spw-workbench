@@ -66,16 +66,7 @@ Today, performance across the CLI's command and toolchain surfaces is measured a
 
 ## Commits
 
-1. `.[plans] — stage cli-benchmarking-infra planning artifacts` (landed, planning surfaces on main)
-2. `#[bench] — add retained-sample statistics, outcome classes, and data models under scripts/bench`
-3. `#[bench] — add synthetic, workbench, and identity-free consumer-shape workloads`
-4. `#[bench] — implement in-process and subprocess harness with first-event and profiling hooks`
-5. `#[bench] — benchmark the first slice only: cold root help, one light command, and inspect source stage cadence with loaded-module receipts`
-6. `#[bench] — implement differential comparison, instrumented spans, and outcome-aware regression gate`
-7. `#[bench] — add efficiency report generator (Markdown, Terminal, JSON, Spw) and wire package scripts`
-8. `![bench] — add test suite for stats math, harness, attribution, and reporters`
-9. `#[bench] — widen to the remaining CLI command groups, then the TypeScript toolchain profiler and TS7 readiness matrix`
-10. `.[bench] — document benchmarking protocol, efficiency lattice, and runbook`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy:
 - Explore: `npm run bench:quick`
@@ -85,7 +76,7 @@ Fuzz strategy:
 ## Agentic Hygiene
 
 - Rebase target: `main@c46558ffbb29a10abb1fee11dbec8aa522cbc8b3`
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before stage_bench_plan, before merge
 - Hygiene split: none; clean branch with no uncommitted drift
 
 ## Dependencies

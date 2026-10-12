@@ -202,13 +202,7 @@ Every related plan should include a short **`## Imagination / play`** block:
 
 ## Commits
 
-1. `.[plans] — stage shape-syntax-ecology + cross-link related plans` (landed in 08e2bc1c)
-2. `vocab[seed] — experimental syntax-catalog reference ids` (landed in 08e2bc1c)
-3. `![seed] — catalog tests + parse optional exp refs` (landed in 08e2bc1c)
-4. `#[lsp] — hover stack + exp refs` (landed in 08e2bc1c)
-5. `.[plans,docs] — distinguish operational syntax, notation exhibits, and prose` (landed in 6582f392)
-6. `^seed[experimental] — notation.exhibit catalog entry, status proposed, runtimeHook none`
-7. `![seed] — every cited =exp id resolves in the catalog or is a listed gap`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 

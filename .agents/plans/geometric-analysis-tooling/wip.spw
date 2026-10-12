@@ -11,7 +11,7 @@
  gist: "spw geometry counts operators from the AST, not characters, and fingerprints recurring ONF shape."
  touches: [~"packages/spw-seed/src/canonical/geometry-inspect.ts", ~"packages/spw-seed/src/lexer", ~"packages/spw-cli/src/geometry.ts", ~"packages/spw-lsp/src/handlers/spw-probes.ts"]
  entry: ~"./geometric-analysis-tooling.spw"
- next: "Stay dormant as the operator-count instrument. Reheat only for commit 3, the ops=3 stdin fix (still reproduces today); do not ship a fingerprint product from character scans."
+ next: "Stay dormant as the operator-count instrument. Reheat only for ~[ast_operator_census], the ops=3 stdin fix (still reproduces today); do not ship a fingerprint product from character scans."
 }
 
 ^["edges"]{
@@ -120,30 +120,31 @@
  >>[2026-10-12 14:29] verify — re-ran the stdin repro through spw geometry: still prints ops=3 (! ^ ~) and the lesson 'Unbalanced open braces (balance=1)' while braces=2 from the AST path; censusOperators in geometry-inspect.ts still scans characters. The defect stands.
  >>[2026-10-12 14:29] revise — reconciled commits with git: ~[1] landed; ~[2] and ~[4] to ~[9] deferred behind the 2026-09-30 dormancy; ~[10] merged into ~[3] so the one live commit fixes the defect and pins the repro. Closed hygiene: the LSP and neovim drift is gone from the working tree (git status shows only plan files and .gitignore). Noted that FormFingerprint (spw.fingerprint/1, 5f181249) already owns the word fingerprint as a node-count signature; no semanticHash, shapeHash or shapeFingerprint exists in packages/.
  >>[2026-10-12 14:31] revise — convention: resolved questions and landed commits are kept in ^["done"] (resolved(label) and shipped) rather than deleted; ^["commits"] keeps a pointer comment.
+ >>[2026-10-12 15:37] revise — Commits named per the convention in 90c58bbc: 2 landed, 8 planned, 1 dropped.
 }
 
 ^["open"]{
  ?[fallback]: "Do prose-heavy .spw surfaces parse well enough that an AST census does not go blind where the char scan was merely noisy? Decides whether fallback:true is a rare path or the common one."
- ?[fixity_yield]: "What fraction of operator nodes can recover fixity from parser position? onf.ts says 'often unset'. If low, an arity-keyed census loses resolution and ~[3] should key on sigil x site only; this decides whether the deferred ~[2] is worth reheating."
- ?[recurrence]: "What min-recur threshold separates idiom from accident for shape fingerprints? Needs corpus data from the deferred ~[6]; do not hand-pick it earlier."
+ ?[fixity_yield]: "What fraction of operator nodes can recover fixity from parser position? onf.ts says 'often unset'. If low, an arity-keyed census loses resolution and ~[ast_operator_census] should key on sigil x site only; this decides whether the deferred ~[parser_fixity_stamps] is worth reheating."
+ ?[recurrence]: "What min-recur threshold separates idiom from accident for shape fingerprints? Needs corpus data from the deferred ~[onf_shape_fingerprint]; do not hand-pick it earlier."
 }
 
 ^["resolved"]{
- $[vocab]: "Resolved 2026-07-26. Three names existed for one idea: onf.ts 'semantic hash' (declared invariant, never implemented), garden plan 'ONF shape hash' (~#kinds.structural), and this plan's 'fingerprint'. Settled on shapeFingerprint, keeping the ONF-shape qualifier. Rationale: hashString already means content identity here (inputHash/outputHash, beforeHash/afterHash, range-transform source id) where collision is failure; a shape fingerprint is many-to-one by design, where collision is the finding. Inverted collision semantics should not share a head noun. Commit 5 does the reconciliation before commit 6 implements."
+ $[vocab]: "Resolved 2026-07-26. Three names existed for one idea: onf.ts 'semantic hash' (declared invariant, never implemented), garden plan 'ONF shape hash' (~#kinds.structural), and this plan's 'fingerprint'. Settled on shapeFingerprint, keeping the ONF-shape qualifier. Rationale: hashString already means content identity here (inputHash/outputHash, beforeHash/afterHash, range-transform source id) where collision is failure; a shape fingerprint is many-to-one by design, where collision is the finding. Inverted collision semantics should not share a head noun. settle_shape_fingerprint does the reconciliation before onf_shape_fingerprint implements."
 }
 
 ^["commits"]{
- # Dormant by the 2026-09-30 decision: only ~[3] is live, because it fixes the measured ops=3 defect. The rest wait behind a human reheat.
- # ~[1] landed — see ^["done"]
- # ~[2]: DEFERRED — stamp actPlacement/fixity from parser position; reheat only if fixity_yield says the yield is worth it (onf.ts still calls parser position often unset)
- ~[3]: "^seed[geometry] — operator census and nesting from the AST so sigils inside strings are not counted; bump report to spw.geometry/2; pin the stdin repro (ops=1, no unbalance lesson) as a regression test"
- # ~[4]: DEFERRED — operator n-grams and depth profile (rhythm with order)
- # ~[5]: DEFERRED — vocab: settle shapeFingerprint against FormFingerprint (spw.fingerprint/1 in canonical/fingerprint.ts already means node-count signature, landed 5f181249) and the declared ONF shape hash
- # ~[6]: DEFERRED — ONF shape fingerprint and anti-unified templates; no semanticHash, shapeHash or structuralHash exists in packages/
- # ~[7]: DEFERRED — corpus mode for spw geometry (geometry.ts has no corpus path today)
- # ~[8]: DEFERRED — LSP coordinates from the /2 report
- # ~[9]: DEFERRED — spectral graph metrics; no Laplacian code exists in packages/
- # ~[10]: MERGED INTO ~[3] — the regression test rides with the census fix
+ # Dormant by the 2026-09-30 decision: only ast_operator_census is live, because it fixes the measured ops=3 defect. The deferred lines wait behind a human reheat.
+ .[refresh_geometry_scope]: "08e2bc1c &[canon-rewrite-v2] — land tip capability on upstream; phase 0 field clocks (the refreshed plan files first land here)"
+ .[card_geometry_plan]: "da5189bb .[plans] — card every live plan; derive the index; route readers to it"
+ ~[ast_operator_census]: "^seed[geometry] — operator census and nesting from the AST so sigils inside strings are not counted; bump report to spw.geometry/2; pin the stdin repro (ops=1, no unbalance lesson) as a regression test"
+ ~[parser_fixity_stamps]: "^seed[spw-seed] — stamp actPlacement/fixity from parser position; carry container depth in lexer state; deferred, reheat only if fixity_yield says the yield is worth it (onf.ts still calls parser position often unset)"
+ ~[operator_ngrams]: "^seed[geometry] — operator n-grams and depth profile so rhythm carries order; deferred"
+ ~[settle_shape_fingerprint]: "vocab[geometry] — settle shapeFingerprint against FormFingerprint (spw.fingerprint/1 in canonical/fingerprint.ts already means node-count signature, landed 5f181249) and the declared ONF shape hash; deferred"
+ ~[onf_shape_fingerprint]: "^seed[geometry] — ONF shape fingerprint and anti-unified templates; deferred, no semanticHash, shapeHash or structuralHash exists in packages/"
+ ~[geometry_corpus_mode]: "&[spw-cli] — corpus mode for spw geometry: scanCorpus baseline, z-scored deviation, derived thresholds; deferred, geometry.ts has no corpus path today"
+ ~[lsp_geometry_coordinates]: "#[spw-lsp] — surface Register Geometry coordinates from the /2 report; deferred"
+ ~[spectral_graph_metrics]: "&[spw-cli] — spectral graph metrics over the reference graph (Laplacian / Fiedler); deferred, no Laplacian code exists in packages/"
 }
 
 ^["cache"]{
@@ -152,13 +153,13 @@
  ~#rebased_at: ""
  ~#hygiene_split: "none — the LSP and neovim drift is no longer in the working tree"
  ~#files_hot: "packages/spw-seed/src/canonical/geometry-inspect.ts, packages/spw-seed/src/lexer/tokenize.ts, packages/spw-lsp/src/handlers/spw-probes.ts"
- ~#next_commit: "3"
+ ~#next_commit: "ast_operator_census"
  ~#open_count: "3"
- ~#last_stream: "2026-10-12 14:31"
- ~#taste_debt: "spectral metrics (commit 9) is the most speculative rung — ship only if the baseline from commit 7 gives it something to be surprising against"
+ ~#last_stream: "2026-10-12 15:37"
+ ~#taste_debt: "spectral metrics (spectral_graph_metrics) is the most speculative rung — ship only if the baseline from geometry_corpus_mode gives it something to be surprising against"
 }
 
 ^["done"]{
- ~#shipped: ["da5189bb .[plans] — card every live plan; derive the index; route readers to it", "08e2bc1c &[canon-rewrite-v2] — land tip capability on upstream; phase 0 field clocks"]
+ ~#dropped(geometry_test_suites): "fixity, census parity, fingerprint stability and corpus baseline suites as their own commit; merged into ast_operator_census, where the regression test rides with the census fix"
  ~#resolved(hygiene): "Uncommitted LSP and neovim drift touches handlers/spw-probes.ts; split branch or defer? — the drift is no longer in the working tree (git status shows only plan files and .gitignore); evidence: stream 2026-10-12 revise"
 }

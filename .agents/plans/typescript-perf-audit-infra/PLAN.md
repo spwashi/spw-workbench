@@ -78,12 +78,7 @@ Host note fields (optional, best-effort): node version, CPU count, platform. Nev
 
 ## Commits
 
-1. LANDED in a333db8d: `.[plans] — stage typescript-perf-audit-infra planning artifacts`
-2. `#[audit] — add typescript-perf single-run profiler with JSON identity schema`
-3. `#[audit] — add version/config matrix runner and compare mode`
-4. `#[audit] — wire package scripts audit:ts:perf(+json/matrix)`
-5. `.[docs] — document perf audit protocol in skill + research note`
-6. `![audit] — smoke matrix on current 5.9; golden schema shape tests if cheap`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy:
 
@@ -94,7 +89,7 @@ Fuzz strategy:
 ## Agentic Hygiene
 
 - Rebase target: `main@bca875c7f059edc8b9df4696cce9ed92a52acc1b`
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before stage_plan_artifacts, before merge
 - Hygiene split: none; do not mix upgrade-ladder pin changes into this branch
 
 ## Dependencies

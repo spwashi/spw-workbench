@@ -96,12 +96,7 @@ Maintenance disposition:
 
 ## Commits
 
-Landed (see wip.spw ^["done"]): a89010ae, bca875c7, 85554442, ccea9c97, aae308a9. The original commits 4 to 7 have no one-to-one hash; their work landed inside these.
-
-Remaining:
-
-11. `&[cli] — skim --json carries the exact source line beside the display snippet`
-12. `![cli] — pin the exact-versus-display split with a skim json test`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy:
 - Explore: `rg` for named-consumer and machine-local path leakage in changed operational surfaces.
@@ -111,7 +106,7 @@ Fuzz strategy:
 ## Agentic Hygiene
 
 - Rebase target: `main@131ac93f`
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before `scope_portable_audit`, before merge
 - Hygiene split: none; working tree was clean at plan creation
 
 ## Dependencies

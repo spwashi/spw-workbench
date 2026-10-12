@@ -97,33 +97,19 @@ and resolution (fragments dial reference granularity from file to node).
 
 ## Commits
 
-```
-1.  .[plans] =stage[directive-lattice] — plan artifacts
-2.  ^seed[lexer] — PARTICLE token family ⟨stance⟩#⟨aim⟩name
-3.  &[seed-grammar] — particle nodes bind to the following expression
-4.  vocab[seed] — normalize particle regs; adopt deixis/case/mood/aspect
-5.  &[seed-query] — particle selectors (aim/name); deixis (anchors) preset
-6.  ^seed[fragment] — resolve ~"file#anchor" → deixis-anchored node span
-7.  &[cli] — mount verifies fragments; expand projects anchored regions
-8.  ![seed] — corpus roundtrip gate + particle + fragment coverage
-9.  ^seed[census] — particle-stack pattern discovery across the corpus
-10. .[canon] — particle-lattice registry; naming conventions; pattern refactors (user-gated)
-11. ^seed[census] — comment-filtered noise lint (orphan deixis, unbound case, boundary-less # marks)
-```
-
-Landed: 1-7 and 9 as their own commits (1 272f5bd8, 2 8cdaf2a9, 3 25ca2e29, 4 dcddb4a5, 5 7fc7ebb9, 6 cf629afb, 7 2b9216c7, 9 2573f763); 8 landed as test coverage inside 3 and 6. Open: 10, 11.
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ### Fuzz strategy
 
-- Explore: `fuzz:types` per commit; parse-all after 2 and 3.
-- Stabilize: `fuzz:stabilize` after 3 (grammar) and 6 (fragments).
+- Explore: `fuzz:types` per commit; parse-all after particle_token_family and bind_particle_nodes.
+- Stabilize: `fuzz:stabilize` after bind_particle_nodes (grammar) and resolve_fragment (fragments).
 - Ship gate: `test:seed` + `test:cli` + `lint:spw` (344/344) + canonicalize
   byte-stability sweep before merge.
 
 ## Agentic Hygiene
 
 - Rebase target: `main@bb1ffe65`.
-- Rebase cadence: before commit 2, before merge.
+- Rebase cadence: before particle_token_family, before merge.
 - Hygiene split: none. Standing note: user stash
   `grok-working-tree-before-reconciliation-merge-2026-07-21` overlaps
   (`.spw/index.spw`, seed index) — reconciliation happens at their merge, not
@@ -140,7 +126,7 @@ none (bias-resolution-product already merged to main).
   gate; grammar change is additive (directives were unmodeled, not modeled
   differently).
 - **Soft**: tools that regexed `#>` (corpus counters, emit) drift from the
-  token family — re-point them to the DIRECTIVE token in commit 4/5.
+  token family — re-point them to the DIRECTIVE token in particle_vocabulary or particle_selectors.
 - **Non-negotiable**: no surface syntax changes; renames are concept-level
   (types, function names, docs) only.
 
@@ -156,6 +142,6 @@ none (bias-resolution-product already merged to main).
 
 ## Spw Artifact
 
-`.spw/registries/directive-lattice.spw` (commit 9): the stance×aim lattice,
+`.spw/registries/directive-lattice.spw` (lattice_registry): the stance×aim lattice,
 occupied cells (with corpus counts), open cells as wonder probes, and the
 naming decision.

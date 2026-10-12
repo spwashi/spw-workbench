@@ -18,7 +18,7 @@ The original plan (a 26-commit UI data-model curriculum over `src/core/models`) 
 ## Agentic Hygiene
 
 - **Rebase target**: `main@551bb419` (2026-10-12)
-- **Rebase cadence**: rebase before commit 1 and again before merge
+- **Rebase cadence**: rebase before operator_coverage_test and again before merge
 - **Hygiene split**: isolate unrelated drift into `feature/audit-ui-data-models-agentic-hygiene` before implementation commits
 
 ## Files
@@ -38,10 +38,7 @@ The original plan (a 26-commit UI data-model curriculum over `src/core/models`) 
 
 ## Commits
 
-1. `![lsp] — add a test that SIGIL_SEMANTICS has an entry for every OperatorKind (a Record<OperatorKind, true> fixture makes the compiler check the list)`
-2. `vocab[lsp] — export a closed SigilKey union and an isSigil guard, and key SIGIL_SEMANTICS by it; correct the satisfies comment, which names a coverage check the code does not perform`
-3. `vocab[lsp] — type phase as a closed union of the 7 spirit phases plus the six named non-phase strings (binding, observe, meta, access, query, identity), so an unknown phase is unrepresentable`
-4. `&[vscode-spw] — delete the extension copy of SIGIL_SEMANTICS, its SigilSemantic interface, and the context field, if ?[ext_table_reader] finds no reader`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Dependencies
 
@@ -49,4 +46,4 @@ The original plan (a 26-commit UI data-model curriculum over `src/core/models`) 
 
 ## Spw Artifact
 
-None planned. The coverage test in commit 1 is the checkable record.
+None planned. The coverage test in operator_coverage_test is the checkable record.

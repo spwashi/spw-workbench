@@ -4,7 +4,7 @@ Coordinate how VS Code, IntelliJ and Neovim read and act on plan files (`wip.spw
 
 ## Goal
 
-A plan file already carries facts an editor can use: the card, `^["cache"]` (status, base_ref, next_commit, open_count, last_stream), `^["stream"]` entries, `^["open"]` questions, wonder blocks, and the `^["done"]` local history (`~#shipped`, `~#resolved(label)`).
+A plan file already carries facts an editor can use: the card, `^["cache"]` (status, base_ref, next_commit, open_count, last_stream), `^["stream"]` entries, `^["open"]` questions, wonder blocks, and the `^["done"]` local history (`~#resolved(label)`, `~#dropped(name)`), and the named `^["commits"]` rows.
 Today three code paths read them and the LSP reads none of them by name. This plan is the contract between the plan-file format, the parser, and the editor plugins. It does not build client chrome; the VS Code plans own that.
 
 Taste note:
@@ -38,28 +38,28 @@ Taste note:
 
 Owned by `plan-stream-parse-health` (link by edge; not edited here).
 - A `>>[stamp] type — prose` line must parse as one entry whatever the caller's path argument, so a stream entry is a symbol or a diagnostic anchor and never an error.
-- The LSP must resolve the plan dialect (`Spw.p`) from the document URI, or the outline and any plan diagnostics read prose as errors. Whether `outlineFromSource` takes a path today is a question for ~[3] (see `?[extractor_home]`).
+- The LSP must resolve the plan dialect (`Spw.p`) from the document URI, or the outline and any plan diagnostics read prose as errors. Whether `outlineFromSource` takes a path today is a question for `shared_extractor` (see `?[extractor_home]`).
 
 ## The minimum shared contract
 
-Plan facts served as standard LSP products, so VS Code, Neovim and IntelliJ receive them without client code. Facts live in `references/plan-facts.spw` (~[2]).
+Plan facts served as standard LSP products, so VS Code, Neovim and IntelliJ receive them without client code. Facts live in `references/plan-facts.spw` (`plan_facts_table`).
 
 | Product | Plan fact | Status |
 |---------|-----------|--------|
 | `textDocument/documentSymbol` | section frames, `?[label]` under `^open` | landed (measured) |
-| `textDocument/documentSymbol` | `^cache` keys, `~[N]` rows, `^done` keys as children | ~[4] |
-| `textDocument/hover` | card and `^cache` field values with derivation; `~#resolved(label)` answer and evidence | ~[5] |
-| `textDocument/publishDiagnostics` | drift: `~#open_count` vs live `?[` lines, `~#last_stream` vs last `>>` line, `~#next_commit` vs `^commits` minus `^done` | ~[6], information severity, no write fix |
+| `textDocument/documentSymbol` | `^cache` keys, `~[name]` and `.[name]` commit rows, `^done` keys as children | `outline_plan_facts` |
+| `textDocument/hover` | card and `^cache` field values with derivation; `~#resolved(label)` answer and evidence | `plan_fact_hover` |
+| `textDocument/publishDiagnostics` | drift: `~#open_count` vs live `?[` lines, `~#last_stream` vs last `>>` line, `~#next_commit` vs the first `~[name]` in `^commits` | `drift_diagnostics`, information severity, no write fix |
 | completion after `>>[` | stamp from the manifest clock | `vscode-authoring-probe-loop`; blocked on `?[clock_field]` |
 
 Rules: the editor reports drift and never repairs it; `plan:stream` and the human remain the only writers of cache facts.
 
 ## Files
 
-[NEW] .agents/plans/plan-plugin-integration/references/plan-facts.spw (~[2])
-[MOD] packages/spw-lsp/src/handlers/outline.ts (~[4])
-[MOD] packages/spw-lsp/src/handlers/display.ts (hover, ~[5])
-[MOD] scripts/plans/plan-index.ts (call the shared extractor, ~[3])
+[NEW] .agents/plans/plan-plugin-integration/references/plan-facts.spw (`plan_facts_table`)
+[MOD] packages/spw-lsp/src/handlers/outline.ts (`outline_plan_facts`)
+[MOD] packages/spw-lsp/src/handlers/display.ts (hover, `plan_fact_hover`)
+[MOD] scripts/plans/plan-index.ts (call the shared extractor, `shared_extractor`)
 [NEW] a plan-fact extractor file in the home chosen by `?[extractor_home]`
 
 Craft guard:
@@ -67,13 +67,7 @@ Craft guard:
 
 ## Commits
 
-1. .[plans] — stage plan-plugin-integration and route its edges
-2. .[plans] — write references/plan-facts.spw: each plan fact with source frame, LSP product and owner plan
-3. &[seed] — one plan-fact extractor; plan-index.ts calls it, with a test that it matches plan:check on every wip.spw
-4. &[lsp] — outline lists ^cache keys, ~[N] commit rows and ^done keys as children of their frames
-5. &[lsp] — hover on ^cache and card fields and on ~#resolved(label) shows the value, its derivation and the stream stamp
-6. &[lsp] — drift diagnostics for open_count, last_stream and next_commit against the file, information severity, no write fix
-7. ![plans] — Neovim and IntelliJ receive 4 to 6 with no client code; record what each shows
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 
@@ -82,7 +76,7 @@ Craft guard:
 
 ## Dependencies
 
-- `plan-stream-parse-health` before ~[3] (path-independent parsing of stream lines).
+- `plan-stream-parse-health` before `shared_extractor` (path-independent parsing of stream lines).
 - Manifest tier and readiness from `vscode-workspace-atlas` and `vscode-plugin-performance` for facts beyond open documents.
 
 ## Failure Modes

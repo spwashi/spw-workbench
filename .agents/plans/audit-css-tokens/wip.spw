@@ -13,7 +13,7 @@
  touches: [~"packages/spw-cli/templates/init/presets/installable-book/public/assets", ~"packages/spw-cli/src/init-presets.ts"]
  will_touch: [~"packages/spw-cli/src/installable-book-tokens.test.ts"]
  entry: ~"./PLAN.md"
- next: "Answer ?[alpha_method], then land ~[1]: name the washes style.css hardcodes as substrate tokens."
+ next: "Answer ?[alpha_method], then land ~[name_preset_washes]: name the washes style.css hardcodes as substrate tokens."
 }
 
 ^["edges"]{
@@ -77,21 +77,21 @@
  >>[2026-10-12 14:57] decide — User decided on 2026-10-12 to rescope this plan rather than archive it
  >>[2026-10-12 14:57] observe — Correction to the 14:30 note: season.css overrides no tokens, it holds a header comment, an empty layer season block, and a commented dark example. The five oklch literals in style.css hardcode hue 45 or 80, so a season override cannot reach them, and the callout border follows data-spw-affect while its background does not.
  >>[2026-10-12 14:57] revise — Rescoped to planning on the installable-book preset: goal is a complete token layer so a season override re-themes every color. Commits are now 1 to 4 (name the washes, retire the literals, add a guard test, optional type scale). Old 1 2 and 26 moved to done as dropped. Three questions open, one dark-season wonder carries a probe.
+ >>[2026-10-12 15:36] revise — Commits named per the convention in 90c58bbc: 0 landed, 4 planned, 3 dropped.
 }
 
 ^["open"]{
- # Unresolved questions. Remove when resolved (log resolution in stream first).
- ?[alpha_method]: "May the preset derive washes with color-mix(in oklch, var(--spw-accent) 8%, transparent), or must it stay on plain oklch() with a literal alpha for older browsers? Unblocks the form of ~[1]."
- ?[ground_lift]: "Is the page gradient start at style.css line 21 (oklch(97% 0.01 80)) meant to follow --spw-ground in a season, or is it a fixed highlight? Unblocks whether ~[1] adds --spw-ground-lift or derives it."
- ?[type_scale]: "Does the preset want a font-size scale token before a second season ships (style.css keeps 0.95rem and 0.78rem literals, and substrate.css has only leading tokens)? Unblocks ~[4]."
+ # Unresolved questions. When resolved: log in stream, then move to ^["done"] as ~#resolved(label).
+ ?[alpha_method]: "May the preset derive washes with color-mix(in oklch, var(--spw-accent) 8%, transparent), or must it stay on plain oklch() with a literal alpha for older browsers? Unblocks the form of ~[name_preset_washes]."
+ ?[ground_lift]: "Is the page gradient start at style.css line 21 (oklch(97% 0.01 80)) meant to follow --spw-ground in a season, or is it a fixed highlight? Unblocks whether ~[name_preset_washes] adds --spw-ground-lift or derives it."
+ ?[type_scale]: "Does the preset want a font-size scale token before a second season ships (style.css keeps 0.95rem and 0.78rem literals, and substrate.css has only leading tokens)? Unblocks ~[type_scale_tokens]."
 }
 
 ^["commits"]{
- # Old ~[1] and ~[2] (baseline lists) are satisfied by the 2026-10-12 measurement in ^["done"]; old ~[3]..~[25] and ~[26] are in ^["done"] ~#dropped.
- ~[1]: "#[cli] — name the preset washes in substrate.css: an accent wash, an ink wash, a figure veil, and the ground lift as tokens derived from the base tokens"
- ~[2]: "&[cli] — replace the five oklch literals in style.css (lines 20, 21, 47, 204, 218) with those tokens"
- ~[3]: "![cli] — add installable-book-tokens.test.ts: style.css names no color literal, and every --spw-* in the season.css example block exists in substrate.css"
- ~[4]: "#[cli] — add a font-size scale to substrate.css and retire the rem literals in style.css, only if ?[type_scale] is answered yes"
+ ~[name_preset_washes]: "#[cli] — name the preset washes in substrate.css: an accent wash, an ink wash, a figure veil, and the ground lift as tokens derived from the base tokens"
+ ~[retire_oklch_literals]: "&[cli] — replace the five oklch literals in style.css (lines 20, 21, 47, 204, 218) with those tokens"
+ ~[token_guard_test]: "![cli] — add installable-book-tokens.test.ts: style.css names no color literal, and every --spw-* in the season.css example block exists in substrate.css"
+ ~[type_scale_tokens]: "#[cli] — add a font-size scale to substrate.css and retire the rem literals in style.css, only if ?[type_scale] is answered yes"
 }
 
 ^["cache"]{
@@ -99,19 +99,17 @@
  ~#base_ref: "main@551bb419"
  ~#rebased_at: "2026-10-12"
  ~#files_hot: ""
- ~#next_commit: "1"
+ ~#next_commit: "name_preset_washes"
  ~#open_count: "3"
- ~#last_stream: "2026-10-12 14:57"
+ ~#last_stream: "2026-10-12 15:36"
  ~#taste_debt: ""
 }
 
 ^["done"]{
  # Written at merge time, and incrementally while the plan runs.
- ~#dropped: [
-  "~[3]..~[25] (original) — targeted src/ui/tokens, src/styles, and src/ui/elements, which no longer exist (logged in stream 2026-10-12)",
-  "~[1] and ~[2] (original) — baseline lists of color and spacing literals; replaced by the measurement below and the new ~[1]..~[3]",
-  "~[26] (original) — curriculum prose 'Developing Taste in Spw CSS Architecture'; no grounded reader today, reopen as a .[docs] note once ~[3] lands if wanted",
- ]
+ ~#dropped(baseline_literal_maps): "the original first two commits, baseline maps of hardcoded color, spacing and type literals; replaced by the 2026-10-12 measurement in ~#resolved(unnamed_tint) and the rescoped name_preset_washes, retire_oklch_literals and token_guard_test"
+ ~#dropped(src_ui_token_refactor): "the original 23-step middle (valence color, type and spatial scales, element refactors, legacy cleanup, token gallery); targeted src/ui/tokens, src/styles and src/ui/elements, which no longer exist; evidence: stream 2026-10-12 14:30"
+ ~#dropped(css_taste_curriculum): "the original last commit, curriculum prose 'Developing Taste in Spw CSS Architecture'; no grounded reader today; reopen as a .[docs] note once token_guard_test lands if wanted"
  ~#resolved(unnamed_tint): "Which color literals in the installable-book preset have no --spw-* token? — style.css holds five oklch literals (lines 20, 21, 47, 204, 218); four restate base tokens with an alpha or hardcoded hue (accent 55% 0.15 45 twice, ink 25% 0.02 80, figure 99% 0.01 80), one (97% 0.01 80 at line 21) names no token; evidence: grep of style.css against substrate.css, 2026-10-12"
  ~#resolved(hue_lock): "Do those literals follow a re-theme? — no: they hardcode hue 45 and 80, while substrate.css moves --spw-accent per data-spw-affect and the season.css example moves ground, figure, and ink; the callout border follows the token and its background does not; evidence: style.css line 203 vs 204, substrate.css lines 67-71"
  ~#resolved(season_overrides): "How many tokens does season.css override? — none: the file is a header comment, an empty @layer season, and a commented example; the 14:30 stream claim of six overrides is stale; evidence: read of season.css, 2026-10-12, git log shows only 3734eecc and d5031987 touching the assets"
@@ -121,6 +119,6 @@
 ?["Which rules in the preset keep their warm light colors when the commented dark-season example in season.css is applied?"]{
   #:depth #!computational // lens: token coverage
   ~#hypothesis: "the page gradient, pre, callout, and notice backgrounds stay light because they hardcode oklch literals"
-  !probe{ "copy the commented :root block from season.css into @layer season in a scratch copy of the preset, serve public/, load index.html, and read getComputedStyle background-color for body, pre, .spw-callout, and .spw-notice (the notice appears only after a service-worker update, so inject one); rerun after ~[2] to see the set shrink to empty" }
+  !probe{ "copy the commented :root block from season.css into @layer season in a scratch copy of the preset, serve public/, load index.html, and read getComputedStyle background-color for body, pre, .spw-callout, and .spw-notice (the notice appears only after a service-worker update, so inject one); rerun after ~[retire_oklch_literals] to see the set shrink to empty" }
   $%[plan.commit_count, plan.phase_progress]
 }

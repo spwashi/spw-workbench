@@ -172,19 +172,12 @@ A mounted consumer's editor review (pin `229aedcf`) made no Neovim-specific ask.
 
 ## Commits
 
-1. `![neovim] *audit[surfaces] — map configured, invoked, observed, tested`
-2. `![neovim] *audit[mounted-consumer] — startup, roots, failure behavior`
-3. `vocab[neovim] — soft-fail or demote phantom custom-request wrappers`
-4. `.[neovim] — README + health honesty for mount/workbench discovery`
-5. `&[neovim] — project mass/path diagnostics + exact-only code actions` (after LSP emits them)
-6. `^[neovim] — :SpwPlan / optional statusline + reading_profile setting`
-7. `&[neovim] — project shared source products for file, block, and selection inspection`
-8. `![neovim] — smoke for wonder/ref/diagnostic/source-product contracts`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 
 - Rebase target: `main@0c7cdfb7178079bf27a9a062ba1b310d07296f41`
-- Rebase cadence: before commit 1, before implementation after audit, before merge
+- Rebase cadence: before `audit_surfaces`, before implementation after audit, before merge
 - Hygiene split: audit evidence commits separate from feature commits
 
 ## Dependencies

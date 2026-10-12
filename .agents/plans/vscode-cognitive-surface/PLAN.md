@@ -94,9 +94,7 @@ Routed from the roadmap table in `vscode-lsp-roadmap/PLAN.md`.
 
 ## Commits
 
-1. `.[plans] — formalize vscode-cognitive-surface PLAN and artifact`
-2. `.[plans] — publish user-question catalog and noise budget`
-3. `.[vscode]? — apply copy/badge dialect once lower rungs are quiet`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 

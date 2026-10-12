@@ -11,7 +11,7 @@
  gist: "The human authorizes a summarized commit; hook and poll-review share one review engine."
  touches: [~"scripts/commit-review", ~"scripts/pre-commit", ~".agents/skills/spw-commit-review", ~".agents/workflows/commit-review.md"]
  entry: ~"./PLAN.md"
- next: "Ship commit 5: document the run → render → authorize ceremony in .agents/workflows/commit-review.md and the skill."
+ next: "Ship ~[document_ceremony]: document the run → render → authorize ceremony in .agents/workflows/commit-review.md and the skill."
 }
 
 ^["roots"]{
@@ -94,6 +94,7 @@
  >>[2026-04-04 12:13] verify — shell parse checks passed for the new context helpers; in this sandbox the writer cannot persist hidden-path state, but resolver output stays clean and falls back to heuristic provenance as designed.
  >>[2026-10-12 14:27] revise — Resolved ?[agent_source]: c4be2f46 added set-agent-context.sh and clear-agent-context.sh with a TTL-bound context file and a heuristic fallback, so SPW_AGENT alone is no longer the only source.
  >>[2026-10-12 14:27] revise — Commits 1 to 4 reconciled to five landed hashes in done; commit 5 (docs) remains because the workflow doc still covers only the Touch ID prompt. Two open questions sharpened.
+ >>[2026-10-12 15:37] revise — Commits named per the convention in 90c58bbc: 5 landed, 1 planned, 0 dropped.
 }
 
 ^["open"]{
@@ -102,8 +103,12 @@
 }
 
 ^["commits"]{
- # ~[1]..~[4] landed — see ^["done"]
- ~[5]: ".[docs] — document the run, render, authorize ceremony and the set-agent-context helpers in .agents/workflows/commit-review.md (it still describes only the Touch ID prompt) and in the skill"
+ .[plan_gate_redesign]: "f9c73daf .[plans] — add commit-gate redesign plan surfaces"
+ .[shared_review_runner]: "03983755 &[commit-review] — extract shared review runner and commit-message validation"
+ .[informed_authorization]: "76160302 &[commit-review] — add summary renderer and informed authorization flow"
+ .[harden_agent_attribution]: "c4be2f46 &[commit-review] — add local context provenance with heuristic fallback"
+ .[unify_poll_review]: "37b6f42b &[commit-review] — unify staged poll-review and refresh hook runtime"
+ ~[document_ceremony]: ".[docs] — document the run, render, authorize ceremony and the set-agent-context helpers in .agents/workflows/commit-review.md (it still describes only the Touch ID prompt) and in the skill"
 }
 
 ^["cache"]{
@@ -112,13 +117,12 @@
  ~#rebased_at: ""
  ~#hygiene_split: "none"
  ~#files_hot: "scripts/pre-commit, scripts/commit-msg, scripts/commit-review/run-review.sh, scripts/commit-review/validate-commit-message.sh, scripts/commit-review/lib/agent-context.sh"
- ~#next_commit: "5"
+ ~#next_commit: "document_ceremony"
  ~#open_count: "2"
- ~#last_stream: "2026-10-12 14:27"
+ ~#last_stream: "2026-10-12 15:37"
  ~#taste_debt: "poll-review still has duplicated staged review logic, and inspect-before-authorize branching remains unimplemented"
 }
 
 ^["done"]{
- ~#shipped: ["f9c73daf .[plans] — add commit-gate redesign plan surfaces", "03983755 &[commit-review] — extract shared review runner and commit-message validation", "76160302 &[commit-review] — add summary renderer and informed authorization flow", "c4be2f46 &[commit-review] — add local context provenance with heuristic fallback", "37b6f42b &[commit-review] — unify staged poll-review and refresh hook runtime"]
  ~#resolved(agent_source): "Is explicit SPW_AGENT enough for agent attribution, or should the wrapper persist a context file? — a context file with TTL via set-agent-context.sh plus heuristic fallback; evidence: c4be2f46"
 }

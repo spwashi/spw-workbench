@@ -12,7 +12,7 @@
  touches: [~"extensions"]
  will_touch: [~"extensions/obsidian-spw"]
  entry: ~"./obsidian-spw.spw"
- next: "Commit 1: scaffold extensions/obsidian-spw with manifest, esbuild config, and empty main.ts."
+ next: "~[scaffold_plugin]: scaffold extensions/obsidian-spw with manifest, esbuild config, and empty main.ts."
 }
 
 ^["edges"]{
@@ -255,32 +255,33 @@
  >>[2026-04-06 00:04] taste — "interview_handles" renamed to "design_rationale" across sidecars. The questions are worth preserving; the frame name should describe what they are, not what they're for
  >>[2026-10-12 14:30] revise — Dormant plan, no extensions/obsidian-spw on disk, so no commit landed. Added a fence-scope probe as commit 2 (shifting the rest) so cm6_fence_scope is settled before the token adapter; added ?[protocol_types] from the taste debt; rewrote vault_uri and textfileview_editing as answerable questions (obsidian-api.spw:70 puts TextFileView under EditableFileView); one wonder added on fence activation.
  >>[2026-10-12 15:00] note — extensions/obsidian-spw does not exist yet, so files_hot names two paths not yet scaffolded; opened ?[hot_files_before_scaffold]; routed from lukewarm-backlog ?[obsidian_hot_unscaffolded].
+ >>[2026-10-12 15:25] revise — Commits named per the convention in 90c58bbc: 0 landed, 11 planned, 0 dropped.
 }
 
 ^["open"]{
  ?[vault_uri]: "Is vault.adapter.getBasePath() a stable public API, given the LSP needs file:// URIs built from vault-relative paths, or must the bridge take the vault root from a plugin setting?"
- ?[cm6_fence_scope]: "Does registerEditorExtension reach the contents of a spw fence inside a markdown note without extra language injection, and does commit 2 decide it?"
+ ?[cm6_fence_scope]: "Does registerEditorExtension reach the contents of a spw fence inside a markdown note without extra language injection, and does ~[probe_fence_scope] decide it?"
  ?[textfileview_editing]: "obsidian-api.spw places TextFileView under EditableFileView, so is a TextFileView with an embedded CM6 EditorView enough for editing .spw files, or does editing need its own ItemView?"
  ?[workspace_restore]: "What minimum state do custom leaves persist via getState and setState so restore stays helpful but never stale-authoritative?"
  ?[completion_layer]: "If Spw completions ship later, which belong to EditorSuggest and which to CM6 or LSP completion, so authoring aids stay distinct from language semantics?"
  ?[lezer_boundary]: "Does the first Lezer grammar exclude prose fallback and context-sensitive path sugar so the parser stays structurally honest (lezer-parser-scope.spw leans yes)?"
  ?[lezer_markdown_activation]: "Even with a working Lezer package, which Obsidian or CM6 hook activates it for a spw fence in markdown editing?"
  ?[protocol_types]: "Are the portable custom-request interfaces in vscode-spw/src/lsp/custom-requests.ts extracted into a shared package or duplicated into the plugin, decided before the LSP manager commit?"
- ?[hot_files_before_scaffold]: "Should cache files_hot list extensions/obsidian-spw/src paths before ~[1] scaffolds them (the directory does not exist yet), or only the plan files until then? Tracked at ~"../lukewarm-backlog/wip.spw" ?[obsidian_hot_unscaffolded]."
+ ?[hot_files_before_scaffold]: "Should cache files_hot list extensions/obsidian-spw/src paths before ~[scaffold_plugin] scaffolds them (the directory does not exist yet), or only the plan files until then? Tracked at ~"../lukewarm-backlog/wip.spw" ?[obsidian_hot_unscaffolded]."
 }
 
 ^["commits"]{
- ~[1]: "#[obsidian-spw] — scaffold plugin: manifest.json, package.json, tsconfig, esbuild config, empty main.ts, styles.css"
- ~[2]: "![obsidian-spw] — fence-scope probe: a logging editor extension in the scaffold, run against a note holding a spw fence and a plain markdown note, recording whether the extension reaches the fence (settles ?[cm6_fence_scope] before the token adapter is shaped)"
- ~[3]: "^seed[obsidian-spw] — token-map adapter: spw-seed lex → line-indexed token map → CM6 StreamParser bridge"
- ~[4]: "&[obsidian-spw] — TextFileView for .spw files: registerExtensions, tokenize-and-render, vault file association"
- ~[5]: "&[obsidian-spw] — markdown code block renderer for ```spw fences in reading view"
- ~[6]: "&[obsidian-spw] — LSP subprocess manager: spawn spw-lsp, JSON-RPC 2.0 stdio bridge, lifecycle management"
- ~[7]: "&[obsidian-spw] — Concepts leaf view: annotation index, grouping, density bars, co-occurrence"
- ~[8]: "&[obsidian-spw] — Workspace Atlas leaf view: vault-native topology, memory tiers, spirit phases"
- ~[9]: "&[obsidian-spw] — context-strip status bar: frame path, braids, debounced cursor tracking"
- ~[10]: "&[obsidian-spw] — settings tab: LSP server path, valence colors, view toggles"
- ~[11]: ".[obsidian-spw] — workspace entry, CSS custom properties for valence palette, README"
+ ~[scaffold_plugin]: "#[obsidian-spw] — scaffold plugin: manifest.json, package.json, tsconfig, esbuild config, empty main.ts, styles.css"
+ ~[probe_fence_scope]: "![obsidian-spw] — fence-scope probe: a logging editor extension in the scaffold, run against a note holding a spw fence and a plain markdown note, recording whether the extension reaches the fence (settles ?[cm6_fence_scope] before the token adapter is shaped)"
+ ~[token_map_adapter]: "^seed[obsidian-spw] — token-map adapter: spw-seed lex → line-indexed token map → CM6 StreamParser bridge"
+ ~[spw_file_view]: "&[obsidian-spw] — TextFileView for .spw files: registerExtensions, tokenize-and-render, vault file association"
+ ~[render_reading_fences]: "&[obsidian-spw] — markdown code block renderer for ```spw fences in reading view"
+ ~[lsp_process_manager]: "&[obsidian-spw] — LSP subprocess manager: spawn spw-lsp, JSON-RPC 2.0 stdio bridge, lifecycle management"
+ ~[concepts_leaf_view]: "&[obsidian-spw] — Concepts leaf view: annotation index, grouping, density bars, co-occurrence"
+ ~[atlas_leaf_view]: "&[obsidian-spw] — Workspace Atlas leaf view: vault-native topology, memory tiers, spirit phases"
+ ~[context_strip]: "&[obsidian-spw] — context-strip status bar: frame path, braids, debounced cursor tracking"
+ ~[settings_and_health]: "&[obsidian-spw] — settings tab: LSP server path, valence colors, view toggles; health controls (restart server, show health) and resilience polish"
+ ~[workspace_entry_readme]: ".[obsidian-spw] — workspace entry, CSS custom properties for valence palette, README"
 }
 
 ^["cache"]{
@@ -289,10 +290,10 @@
  ~#rebased_at: ""
  ~#hygiene_split: "none"
  ~#files_hot: "extensions/obsidian-spw/src/main.ts, extensions/obsidian-spw/src/editor/token-map.ts, .agents/plans/obsidian-spw/obsidian-spw.spw"
- ~#next_commit: "1"
+ ~#next_commit: "scaffold_plugin"
  ~#open_count: "9"
- ~#last_stream: "2026-10-12 15:00"
- ~#taste_debt: "protocol type duplication vs extraction — decide before commit 5; concepts-tree.ts is 751 lines in vscode — Obsidian version must decompose differently; keep Lezer scoped as syntax infrastructure rather than letting it absorb seed semantics by accident"
+ ~#last_stream: "2026-10-12 15:25"
+ ~#taste_debt: "protocol type duplication vs extraction — decide before ~[lsp_process_manager]; concepts-tree.ts is 751 lines in vscode — Obsidian version must decompose differently; keep Lezer scoped as syntax infrastructure rather than letting it absorb seed semantics by accident"
 }
 
 ^["done"]{
@@ -304,6 +305,6 @@
   #:depth #!computational // lens: host activation
   $^["architecture"]@here => %[fence.extension_hit, note.decoration_residue]
   ~#hypothesis: "the extension sees the whole markdown document but not a nested language, so fence tokens need a decoration pass of our own"
-  !probe{ "after commit 1, register a logging extension that records the document ranges it is asked to decorate; open one note with a spw fence and one without; compare the logged ranges and any decoration left on the plain note." }
+  !probe{ "after ~[scaffold_plugin], register a logging extension that records the document ranges it is asked to decorate; open one note with a spw fence and one without; compare the logged ranges and any decoration left on the plain note." }
   $%[obsidian.version, fence.extension_hit, note.decoration_residue]
 }

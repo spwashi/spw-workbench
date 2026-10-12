@@ -36,17 +36,14 @@ Taste note: improve **truthfulness** of timing. Profiling explains a stall; it d
 
 ## Commits
 
-```
-1. &[cli] — expose query stages and slow sources (landed 9afc6dc8)
-2. .[plans,cli] — distill query stage receipts (landed e106b302)
-```
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy: explore by inspecting `fromSource` boundaries; stabilize with `packages/spw-cli/src/query-profile.test.ts`; ship with those tests plus parse-validation of the distilled artifact. No broad fuzz for diagnostic-only changes.
 
 ## Agentic Hygiene
 
 - Rebase target: `main@f2e5b61b`
-- Rebase cadence: before commit 1 (done), before merge
+- Rebase cadence: before `expose_query_stages` (done), before merge
 - Hygiene split: construction-worlds and navigable-focus moved to `feature/construction-worlds`. Isolated `codex/query-profile` worktree.
 
 ## Dependencies

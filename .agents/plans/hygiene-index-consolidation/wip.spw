@@ -13,7 +13,7 @@
  gist: "Git status, doc refs, plan caches, and a plan index tell the truth without archaeology."
  touches: [~".gitignore", ~"scripts/analyzers/spw-path-check.ts", ~"packages/spw-cli/src/refresh.ts", ~".agents/plans"]
  entry: ~"./hygiene-index-consolidation.spw"
- next: "Commit 3: align cache status with card phase for directive-lattice (planning vs landed) and form-geometry-editor (active vs landed); then commit 6, the path and writerside checks."
+ next: "~[align_cache_status]: align cache status with card phase for directive-lattice (planning vs landed) and form-geometry-editor (active vs landed); then ~[harden_path_checks], the path and writerside checks."
 }
 
 ^["edges"]{
@@ -226,14 +226,14 @@
 
 ^["ecology_census"]{
  #:depth #!computational
- # Snapshot at filing — remeasure after commit 4.
+ # Snapshot at filing — remeasure after ~[stranded_disposition].
 
  ~#active_plans: "50"
  ~#archived_plans: "32"
  ~#stranded: "audit-css-tokens, audit-data-attributes, audit-ui-data-models, refactor-import-sprawl, symmetry-explorer-instrument"
  ~#needs_relocation: "brand-core-ids"
  ~#landed_ahead_cache: "directive-lattice (particle/fragment/census on main; cache next=1)"
- ~#review_stale: "seed-roundness-grades (commits 2-5 superseded), spw-cli-overhaul (next=6), spw-q-stabilization"
+ ~#review_stale: "seed-roundness-grades (harden_label_conflicts, cover_range_transform, cover_n_range, query_index_handles superseded), spw-cli-overhaul (next: none, all landed), spw-q-stabilization"
  ~#hot_collision: "apposition-cache-granules x spw-beat-diff-precipitation on server-index.ts + workspace cache block"
  ~#schedule: "apposition first — correctness before tunable TTL"
  ~#tip_unplanned: "spw mass, spw authority, spw-seed/lite — substrate for consumers; stream-note or thin retrospective"
@@ -253,7 +253,7 @@
 
 ^["target_inventory"]{
  #:index #!plans
- # Consolidation targets by verb. Update after commit 4; do not treat as cache.
+ # Consolidation targets by verb. Update after ~[stranded_disposition]; do not treat as cache.
 
  refresh_landed_ahead: [
   "directive-lattice",
@@ -412,11 +412,11 @@
 
 ^["validation"]{
  hypotheses: [
-  "commit 2 clears package-src .d.ts from git status after build",
-  "commit 3 advances directive-lattice past landed particle/fragment/census work",
-  "commit 5 places every active slug once under a cluster lane in plans/index.spw",
-  "commit 6 fixtures catch broken tilde and broken fragment",
-  "commit 7 refresh is a fixpoint on second run",
+  ".[ignore_package_dts] clears package-src .d.ts from git status after build",
+  "~[align_cache_status] advances directive-lattice past landed particle/fragment/census work",
+  ".[publish_plan_index] places every active slug once under a cluster lane in plans/index.spw",
+  "~[harden_path_checks] fixtures catch broken tilde and broken fragment",
+  "~[plan_status_cli] refresh is a fixpoint on second run",
  ]
  negative_controls: [
   "lint:spw full corpus green",
@@ -458,22 +458,26 @@
  >>[2026-09-28 17:08] observe — Plan index now exists: .agents/plans/index.spw is derived from every plan card by scripts/plans/plan-index.ts (see relationship-contours); this covers the plans-index intent of commit 5.
  >>[2026-10-12 14:36] observe — reconciled against main: ~[1] and the .d.ts half of ~[2] landed in 08e2bc1c (.gitignore now ignores packages/*/src/**/*.d.ts and .d.ts.map; git status shows no .d.ts today); the .scratch half is moot because there is no .scratch directory and no ignore entry. ~[5] landed in da5189bb (scripts/plans/plan-index.ts derives .agents/plans/index.spw from cards). ~[3] is half done: directive-lattice, form-geometry-editor, spw-cli-overhaul, and seed-roundness-grades all carry phase #landed on their cards, but directive-lattice cache status is still planning and form-geometry-editor's is still active. ~[6] has not landed: spw-path-check.ts and writerside-check.ts are unchanged since the workspace-import moves. ~[7]: refresh.ts still derives only open_count and last_stream, and plan:status and plan:check live in scripts/agent-tools.sh, not on the spw binary.
  >>[2026-10-12 14:36] revise — ?[d_ts_root_cause] resolved: the .gitignore comment records the cause (a bare tsc run without the package project, whose outDir is under node_modules/.cache/tsbuild) and the fix was ignore-only; moved to ^[done]. ?[stranded_fate] now names the five slugs and the live analogue found for each. ?[index_home] records that .spw/index.spw has no plans routing. ?[strict_default] records that lint is lint:spw plus lint:docs and strict is separate. ~[1], ~[2], ~[5] moved to ^[done]; ~[3], ~[4], ~[7] reworded to what remains; the write-ceiling help half of ~[7] belongs to cli-mode-overhaul ~[7].
+ >>[2026-10-12 15:28] revise — Commits named per the convention in 90c58bbc: 4 landed, 5 planned, 1 dropped.
 }
 
 ^["open"]{
- ?[stranded_fate]: "For the five stranded plans (audit-css-tokens, audit-data-attributes, audit-ui-data-models, refactor-import-sprawl, symmetry-explorer-instrument): archive each, or re-scope onto the live analogue its stream now names (installable-book preset tokens and data-* hooks, the two SIGIL_SEMANTICS tables, the package import DAG)? Decides ~[4] and the stranded count in plan-ecology-clustering."
- ?[refresh_ambition]: "spw refresh derives only open_count and last_stream; should it also derive next_commit (from ^[commits] minus ^[done] ~#shipped), leaving status and base_ref to judgment? Decides the scope of ~[7]."
- ?[index_home]: "scripts/plans/plan-index.ts writes .agents/plans/index.spw but .spw/index.spw has no plans route; should the canon index link it for mount consumers? Decides whether ~[5] is closed or needs one routing line."
- ?[strict_default]: "npm run lint is lint:spw plus lint:docs and lint:docs:strict (adds spw-path-check) is separate; promote strict into lint once ~[6] fixtures show a noise floor, or keep it a ship-gate-only step in ~[8]?"
+ ?[stranded_fate]: "For the five stranded plans (audit-css-tokens, audit-data-attributes, audit-ui-data-models, refactor-import-sprawl, symmetry-explorer-instrument): archive each, or re-scope onto the live analogue its stream now names (installable-book preset tokens and data-* hooks, the two SIGIL_SEMANTICS tables, the package import DAG)? Decides ~[stranded_disposition] and the stranded count in plan-ecology-clustering."
+ ?[refresh_ambition]: "spw refresh derives only open_count and last_stream; should it also derive next_commit (the first ~[name] in ^[commits]), leaving status and base_ref to judgment? Decides the scope of ~[plan_status_cli]."
+ ?[index_home]: "scripts/plans/plan-index.ts writes .agents/plans/index.spw but .spw/index.spw has no plans route; should the canon index link it for mount consumers? Decides whether .[publish_plan_index] is closed or needs one routing line."
+ ?[strict_default]: "npm run lint is lint:spw plus lint:docs and lint:docs:strict (adds spw-path-check) is separate; promote strict into lint once ~[harden_path_checks] fixtures show a noise floor, or keep it a ship-gate-only step in ~[ship_gate]?"
 }
 
 ^["commits"]{
- # ~[1], ~[2], ~[5] landed — see ^["done"]
- ~[3]: ".[plans] — align cache status with card phase for directive-lattice (planning vs landed) and form-geometry-editor (active vs landed)"
- ~[4]: ".[plans] — record the disposition of the five stranded plans and brand-core-ids once ?[stranded_fate] is answered"
- ~[6]: "![docs] — harden path and writerside checks for fragments and archives; align fixtures with referentiality grades g1-g2 and g5"
- ~[7]: "&[cli] — ecology plan status/check on the spw binary with envelope-friendly --json (write-ceiling honesty in mass/refresh help is carried by cli-mode-overhaul ~[7])"
- ~[8]: "![hygiene] — ship gate: clean status, refresh fixpoint, lint:docs:strict, spw plan status --json smoke"
+ .[file_hygiene_plan]: "08e2bc1c &[canon-rewrite-v2] — land tip capability on upstream; phase 0 field clocks"
+ .[ignore_package_dts]: "08e2bc1c &[canon-rewrite-v2] — land tip capability on upstream; phase 0 field clocks (with file_hygiene_plan)"
+ .[mark_landed_cards]: "da5189bb .[plans] — card every live plan; derive the index; route readers to it"
+ .[publish_plan_index]: "da5189bb .[plans] — card every live plan; derive the index; route readers to it (with mark_landed_cards)"
+ ~[align_cache_status]: ".[plans] — align cache status with card phase for directive-lattice (planning vs landed) and form-geometry-editor (active vs landed)"
+ ~[stranded_disposition]: ".[plans] — record the disposition of the five stranded plans and brand-core-ids once ?[stranded_fate] is answered"
+ ~[harden_path_checks]: "![docs] — harden path and writerside checks for fragments and archives; align fixtures with referentiality grades g1-g2 and g5"
+ ~[plan_status_cli]: "&[cli] — ecology plan status/check on the spw binary with envelope-friendly --json (write-ceiling honesty in mass/refresh help is carried by cli-mode-overhaul ~[migrate_writers])"
+ ~[ship_gate]: "![hygiene] — ship gate: clean status, refresh fixpoint, lint:docs:strict, spw plan status --json smoke"
 }
 
 ^["cache"]{
@@ -482,19 +486,16 @@
  ~#rebased_at: "2026-10-12"
  ~#hygiene_split: "self — this plan is the hygiene split; feature spines stay out"
  ~#files_hot: ".gitignore, scripts/analyzers/spw-path-check.ts, packages/spw-cli/src/refresh.ts, packages/spw-cli/src/commands.ts, .agents/plans/directive-lattice/wip.spw, .agents/plans/index.spw"
- ~#next_commit: "3"
+ ~#next_commit: "align_cache_status"
  ~#open_count: "4"
- ~#last_stream: "2026-10-12 14:36"
- ~#taste_debt: "multi-plan status UX not designed — summary-by-status is a guess until commit 7 sketches output; Appendix A language products, full envelope migration, and capabilities/review remain out of scope but will keep tempting scope creep"
+ ~#last_stream: "2026-10-12 15:28"
+ ~#taste_debt: "multi-plan status UX not designed — summary-by-status is a guess until ~[plan_status_cli] sketches output; Appendix A language products, full envelope migration, and capabilities/review remain out of scope but will keep tempting scope creep"
 }
 
 ^["done"]{
  # Written at merge time.
- ~#shipped: [
-  "08e2bc1c &[canon-rewrite-v2] — land tip capability on upstream; phase 0 field clocks (~[1], and ~[2]'s .d.ts ignore; the .scratch half is moot, no such directory)",
-  "da5189bb .[plans] — card every live plan; derive the index; route readers to it (~[5])",
- ]
  ~#resolved(d_ts_root_cause): "Are src/*.d.ts from a mis-invoked tsc (wrong rootDir) or an editor/tsserver emit? — a bare tsc run without the package project; the fix was ignore-only (.gitignore comment); evidence: 08e2bc1c and the 2026-10-12 revise stream entry"
+ ~#dropped(ignore_scratch): "the .scratch half of the declaration-noise commit is moot: no .scratch directory exists and no ignore entry is needed; evidence: stream 2026-10-12 14:36 observe"
 }
 
 #>wonder_hygiene_index_consolidation_1

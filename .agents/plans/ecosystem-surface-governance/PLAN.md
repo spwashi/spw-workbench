@@ -40,11 +40,7 @@ Independent consumers may supply pressure and evidence, but active governance su
 
 ## Commits
 
-1. `.[plans] =governance[archetypes] — align the portable surface contract` (landed `884d5e87`)
-2. `.[surfaces] =abstract[functions] — preserve ethos without identity claims` (landed `bca875c7`)
-3. `.[plans] =route[readiness] — align install, release, DX, CLI, and editors` (landed `912eeb0c`, `32859b93`, `9c1ebc10`)
-4. `![plans] *verify[governance] — check syntax, references, and evidence routes` (not yet run; see wip.spw ~[5])
-5. `.[surfaces] =govern[readiness] — replace the scalar status list in surface-archetypes.spw ^governance with a per-claim readiness vector` (open; wip.spw ~[6])
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 

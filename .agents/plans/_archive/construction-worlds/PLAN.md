@@ -34,9 +34,7 @@ Research surfaces stay claim-sized. No parser, runtime, or CLI source edits.
 
 ## Commits
 
-```
-1. .[research,plans] — record construction worlds and navigable focus (landed as `9bcf96f5`)
-```
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy: parse-validate the new research and plan surfaces. No runtime test run; this branch does not change executables.
 

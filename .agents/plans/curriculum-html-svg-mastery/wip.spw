@@ -12,7 +12,7 @@
  touches: [~"docs/design/spw/theme-stage-0-snapshots.spw", ~".spw/patterns/literate-ui.spw", ~"docs/learn"]
  will_touch: [~"docs/learn/labs/html-svg"]
  entry: ~"./PLAN.md"
- next: "After html-css commit 1 creates docs/learn/labs, ship Lab 1.01 (svg context dimensions) as html-svg/01-coordinates-strata.md plus its jsdom check."
+ next: "After html-css lab_home_runner creates docs/learn/labs, ship Lab 1.01 (svg context dimensions) in ~[lab_coordinates_strata] as html-svg/01-coordinates-strata.md plus its jsdom check."
 }
 
 ^["edges"]{
@@ -81,7 +81,7 @@
 
 ^["lab_format"]{
  # Format is owned by ../curriculum-html-css-mastery/wip.spw (see its lab_format frame). This frame records only what is svg-specific.
- ~#home: "docs/learn/labs/html-svg/, created by this plan only after html-css commit 1 lands the shared home, README and runner"
+ ~#home: "docs/learn/labs/html-svg/, created by this plan only after html-css lab_home_runner lands the shared home, README and runner"
  ~#tiers_here: "structural (viewBox, attributes, element tree via jsdom), pure (path data parsed and evaluated in TypeScript), browser (rendering, filters, SMIL timing; attested by hand)"
  ~#known_gap: "jsdom lacks getTotalLength and getBBox on path elements, so geometry claims need the pure tier"
 }
@@ -94,11 +94,21 @@
  >>[2026-10-12 14:25] revise — Collapsed 50 lesson-stub commits to 7 work units (hygiene preflight, five labs-svg files, one snippet fold-in); no labs-svg directory exists in git history. Lesson list kept as ~#covers. Replaced two template wonders with a precedent audit of in-repo SVG.
  >>[2026-10-12 14:54] decide — reheat these curricula, 2026-10-12
  >>[2026-10-12 14:54] revise — Reheated to planning. Lab home docs/learn/labs/html-svg under the shared format owned by curriculum-html-css-mastery; needs edge added. Lab 1.01 is commit 1, blocked on the css home commit. jsdom lacks getTotalLength and getBBox, so path claims need a pure-tier evaluator.
+ >>[2026-10-12 15:37] revise — Commits named per the convention in 90c58bbc: 0 landed, 6 planned, 1 dropped.
 }
 
 ^["open"]{
- ?[path_parser]: "Does Lab 2 hand-write a small path-data parser in the lab directory, or adopt a dependency? No svg or bezier package appears in package.json or node_modules (checked 2026-10-12), and a dependency is a repo-wide decision. Unblocks commit 3."
- ?[browser_only]: "Same question as html-css ?[browser_only]; this plan follows whatever that plan decides for filters, SMIL playback and layout. Unblocks commits 4 to 6."
+ ?[path_parser]: "Does Lab 2 hand-write a small path-data parser in the lab directory, or adopt a dependency? No svg or bezier package appears in package.json or node_modules (checked 2026-10-12), and a dependency is a repo-wide decision. Unblocks ~[lab_paths_geometry]."
+ ?[browser_only]: "Same question as html-css ?[browser_only]; this plan follows whatever that plan decides for filters, SMIL playback and layout. Unblocks lab_filters_valence, lab_smil_temporal and lab_foreignobject_containment."
+}
+
+^["commits"]{
+ ~[lab_coordinates_strata]: "^seed[curriculum] — html-svg/01-coordinates-strata.md plus its jsdom check, opening with Lab 1.01 (svg context dimensions); covers user space vs viewport; viewBox; preserveAspectRatio; group transforms and matrices; nested svg; absolute vs relative positioning; use; defs and shadow trees; viewBox-to-strata reflection"
+ ~[lab_paths_geometry]: "^seed[curriculum] — html-svg/02-paths-geometry.md plus its check; covers path d foundation; M L H V; relative commands; cubic C S; quadratic Q T; arcs A; stroke properties; fill rules; markers; logical-AST-to-continuous-bezier reflection"
+ ~[lab_filters_valence]: "^seed[curriculum] — html-svg/03-filters-valence.md plus its check; covers filter regions; feGaussianBlur; feColorMatrix; feBlend and feComposite; feTurbulence; displacement maps; lighting; morphology; feComponentTransfer; filters-as-WebGL-free-shaders reflection"
+ ~[lab_smil_temporal]: "^seed[curriculum] — html-svg/04-smil-temporal.md plus its check; covers animate; animateMotion; animateTransform; path morphing; keyTimes and keySplines; event-synchronized begin; repeat and fill; additive and accumulate; CSS animation interop; state-machines-to-temporal-flow reflection"
+ ~[lab_foreignobject_containment]: "^seed[curriculum] — html-svg/05-foreignobject-containment.md plus its check; covers foreignObject spec; HTML inside SVG; stacking contexts; pointer events; text wrapping; filters on HTML; scroll contexts; form controls in spatial nodes; masking and clipping; text-editors-in-skewed-nodes reflection"
+ ~[record_geometry_snippets]: ".[design] — record reusable geometry snippets in theme-stage-0-snapshots.spw and literate-ui.spw"
 }
 
 ^["cache"]{
@@ -106,14 +116,14 @@
  ~#base_ref: "main@551bb419"
  ~#rebased_at: "2026-10-12"
  ~#files_hot: ".agents/plans/curriculum-html-svg-mastery/"
- ~#next_commit: "1"
+ ~#next_commit: "lab_coordinates_strata"
  ~#open_count: "2"
- ~#last_stream: "2026-10-12 14:54"
+ ~#last_stream: "2026-10-12 15:37"
  ~#taste_debt: "keep each lab anchored in hand-authored geometry and transfer questions rather than drifting into exported-asset folklore"
 }
 
 ^["done"]{
- ~#dropped: "commit 1 hygiene preflight (rebase and isolate drift) — replaced by base_ref main@551bb419 and a new directory; dropped 2026-10-12"
+ ~#dropped(hygiene_preflight): "rebase onto main and isolate unrelated drift before lab commits — replaced by base_ref main@551bb419 and a new directory; dropped 2026-10-12"
  ~#resolved(precedent_audit): "How much hand-authored SVG does the repo ship for Labs 1 to 5 to review against? — little; re-run 2026-10-12 of the grep over docs packages extensions src listed 5 paths: the installable-book icon.svg, the vscode icon.svg, an intellij spwFile.svg in src and a copy under build, and an intellij build problems report html; none is under docs or src, and per-pattern counts were not separated; ts, tsx, css and html sources in docs, packages and the vscode extension showed no filter, animate or foreignObject match; evidence: stream 2026-10-12; consequence: only Lab 1 can lean on repo icons, Labs 3 to 5 name the absence in their Repo pattern reviewed section"
 }
 
@@ -122,6 +132,6 @@
   #:depth #!computational // lens: capability probe
   ~#hypothesis: "viewBox and attribute facts check in jsdom, but path length, bounding box and transform results need a pure-TypeScript evaluator"
   ~#observed: "one scratch run on 2026-10-12 with the repo jsdom: svg viewBox.baseVal.width read 10 for viewBox 0 0 10 10, while typeof getTotalLength and typeof getBBox on a path element were both undefined"
-  !probe{ "for each of the five lab families, write one assertion in a scratch check and record whether jsdom answers it, a ~40-line TypeScript evaluator answers it, or only a browser can; the result fixes ?[path_parser] and each Check tier before commit 3" }
+  !probe{ "for each of the five lab families, write one assertion in a scratch check and record whether jsdom answers it, a ~40-line TypeScript evaluator answers it, or only a browser can; the result fixes ?[path_parser] and each Check tier before lab_paths_geometry" }
   $%[plan.commit_count, plan.phase_progress]
 }

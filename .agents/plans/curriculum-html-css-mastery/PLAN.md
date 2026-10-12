@@ -43,7 +43,7 @@ This is the page-design rung in the current ecology. The labs should not just ac
 ## Agentic Hygiene
 
 - **Rebase target**: `main@551bb419` (updated 2026-10-12)
-- **Rebase cadence**: rebase before commit 1 and again before merge
+- **Rebase cadence**: rebase before lab_home_runner and again before merge
 - **Hygiene split**: isolate unrelated out-of-scope drift into `feature/curriculum-html-css-mastery-agentic-hygiene` before implementation commits
 
 ## Files
@@ -62,20 +62,7 @@ Predicted file scaffolding:
 
 ## Commits
 
-Preflight: `&[hygiene] — rebase onto origin/main and isolate unrelated drift before implementation commits`
-
-```spw
-^["commits"]{
- # Collapsed from 50 lesson-stubs (one per lab lesson) to the real work units. No lab file exists yet; the lesson list now lives in ~#covers. Commit 1 is the hygiene preflight; labs are independent after it.
- ~[1]: "&[hygiene] — rebase onto main and isolate unrelated drift before lab commits"
- ~[2]: "^seed[curriculum] — scaffold labs/01-semantics-ontology.md (HTML/ARIA lab plus Spw reflection)" ~#covers: "html/body roots; head, meta, link; sectioning; text content; inline text; forms; details and dialog; tables; embedded media; ontology reflection"
- ~[3]: "^seed[curriculum] — scaffold labs/02-topology-containment.md (layout lab plus containment reflection)" ~#covers: "normal flow and BFC; flexbox; grid; display:contents; subgrid; positioned strata; sticky; stacking contexts; container queries; strata reflection"
- ~[4]: "^seed[curriculum] — scaffold labs/03-calculus-valence.md (values lab plus valence reflection)" ~#covers: "custom properties; calc; min, max, clamp; trig; exp and log; oklch and color-mix; relative colors; attr(); env(); valence-interpolation reflection"
- ~[5]: "^seed[curriculum] — scaffold labs/04-query-introspection.md (selector lab plus introspection reflection)" ~#covers: "cascade and @layer; attribute substring; structural and UI-state pseudo-classes; :has(); :is, :where, :not; @media; @supports; @scope; introspection reflection"
- ~[6]: "^seed[curriculum] — scaffold labs/05-temporal-navigation.md (time lab plus navigation reflection)" ~#covers: "transitions; cubic-bezier; keyframes; additive animation; scroll and view timelines; scroll snap; View Transitions; :target and :checked state machines; navigation reflection"
- ~[7]: ".[design] — fold lab heuristics into dom-css-testing-harness.md and theme-progression.spw"
-}
-```
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Dependencies
 
@@ -109,4 +96,4 @@ Preflight: `&[hygiene] — rebase onto origin/main and isolate unrelated drift b
 
 ## Reheated 2026-10-12
 
-The live commit list, shared lab format, verification tiers and open questions are in wip.spw (the commits and lab_format frames); the shared format is owned by curriculum-html-css-mastery. Lab home: docs/learn/labs/html-css/. The commit list above predates the reheat where the two differ.
+The live commit list, shared lab format, verification tiers and open questions are in wip.spw (the commits and lab_format frames); the shared format is owned by curriculum-html-css-mastery. Lab home: docs/learn/labs/html-css/.

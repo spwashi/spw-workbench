@@ -53,17 +53,12 @@ This is the language-design rung in the current ecology. Its real value is not j
 
 ## Commits
 
-Landed or superseded: 1 (superseded; P0 landed in 181071ef), 2 (14fd2c5c selector expression grammar), and the runtime half of the old 3 (181071ef).
-
-3. `^seed[query] — selector phase predicate in selector-expr.ts, placed according to the open questions phase_home and phase_subject`
-4. `&[cli] — accept the phase predicate through selectors.ts and spw query`
-5. `![query] — selector tests pin canonical phase names and the alias behaviour`
-6. `.[docs] — add the five-phase glossary to docs/runtime/spw/register-bank.spw`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 
 - Rebase target: `main@3b1747c4` (updated 2026-03-27)
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before `refresh_plan_after_p0`, before merge
 - Hygiene split: none recorded beyond the normal caution against opportunistic helper extraction; keep structural drift out of this branch.
 
 ## Dependencies

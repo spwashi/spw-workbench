@@ -46,14 +46,7 @@ Display is already 1461 lines and the Concepts tree 750: audit responsibilities 
 
 ## Commits
 
-Landed: 14b4b477 (atlas and consultation design), 2c082311 (resolve parity), 861fa214 (fragments land on the anchor line).
-
-3. &[seed] — selectPathRefs reads the parser first; fallbackPathRefs only for a source the parser rejects
-4. &[lsp] — code lenses carry a command that opens a peek on the anchor's references
-5. &[lsp] — routes and a leading slash in fragment targets
-6. &[lsp] — willRenameFiles rewrites citations from a path refactor kind (waits on refactor-experiment-lifecycle 4e)
-7. ![lsp] — port the consumer's probe lines that run against this repo into fixtures for commits 3 to 6
-8. &[inquiry] — consultation and resume loop; held until the entry journey is chosen
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 The rows come from the Mounted-consumer asks table in the vscode-lsp-roadmap plan. The file-scoped alias binder stays a question (`?[alias_binder]`) until the language contract states binding rules.
 

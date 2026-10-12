@@ -13,7 +13,7 @@
  touches: [~"packages/spw-cli/templates/init/presets/installable-book/public/assets/enhancements.js", ~"packages/spw-cli/templates/init/presets/installable-book/public/assets/style.css"]
  will_touch: [~"packages/spw-cli/src/installable-book-hooks.test.ts"]
  entry: ~"./PLAN.md"
- next: "Run the !probe in the install-button wonder, then land ~[1]: pin the data-* contract in a test."
+ next: "Run the !probe in the install-button wonder, then land ~[hook_contract_test]: pin the data-* contract in a test."
 }
 
 ^["edges"]{
@@ -68,21 +68,21 @@
  >>[2026-10-12 14:57] decide — User decided on 2026-10-12 to rescope this plan rather than archive it
  >>[2026-10-12 14:57] observe — Correction to the 14:31 note: the CSS also reads data-spw-container, and the nav value of data-spw-region has no rule. data-edit-surface appears 17 times in the HTML and nothing in the repo reads it. showUpdateNotice builds a notice with no role or aria-live. html.js-enhanced .js-only sets display initial, which may override the hidden attribute on the install button; the wonder carries the probe and I did not run it.
  >>[2026-10-12 14:57] revise — Rescoped to planning on the installable-book hooks: goal is a checked data-* contract plus an announced update notice. Commits are now 1 to 5 starting with a contract test. The old dependency on refactor-import-sprawl is dropped. Old 1 2 3 4 to 26 moved to done as dropped. Two questions open.
+ >>[2026-10-12 15:36] revise — Commits named per the convention in 90c58bbc: 0 landed, 5 planned, 4 dropped.
 }
 
 ^["open"]{
- # Unresolved questions. Remove when resolved (log resolution in stream first).
- ?[edit_surface_owner]: "Is data-edit-surface (17 occurrences in the preset HTML, read by nothing in the repo) a contract with an outside editor or consumer site, or leftover scaffolding? Unblocks ~[4]: document it as inert, or strip it."
- ?[online_marker]: "Should body data-online drive a visible offline marker in style.css, or should the dataset writes in enhancements.js go? Unblocks ~[3]."
+ # Unresolved questions. When resolved: log in stream, then move to ^["done"] as ~#resolved(label).
+ ?[edit_surface_owner]: "Is data-edit-surface (17 occurrences in the preset HTML, read by nothing in the repo) a contract with an outside editor or consumer site, or leftover scaffolding? Unblocks ~[resolve_edit_surface]: document it as inert, or strip it."
+ ?[online_marker]: "Should body data-online drive a visible offline marker in style.css, or should the dataset writes in enhancements.js go? Unblocks ~[resolve_online_marker]."
 }
 
 ^["commits"]{
- # Old ~[1], ~[3], ~[26] and the dropped ~[2], ~[4]..~[25] are accounted for in ^["done"]; the numbering below is new.
- ~[1]: "![cli] — add installable-book-hooks.test.ts: every data-* name under public/ is read by enhancements.js or the CSS, or listed in an explicit inert set; every name enhancements.js queries appears in some page"
- ~[2]: "&[cli] — mark the update notice built in showUpdateNotice with role=status so assistive tech announces it"
- ~[3]: "&[cli] — resolve data-js and data-online per ?[online_marker]: add the CSS reader or delete the two dataset writes, and update the inert set"
- ~[4]: "&[cli] — resolve data-edit-surface per ?[edit_surface_owner]: keep it in the declared inert set with a one-line owner note, or strip it from the nine HTML pages"
- ~[5]: "&[cli] — keep the install button hidden until beforeinstallprompt, only if the install-button wonder confirms html.js-enhanced .js-only overrides [hidden]"
+ ~[hook_contract_test]: "![cli] — add installable-book-hooks.test.ts: every data-* name under public/ is read by enhancements.js or the CSS, or listed in an explicit inert set; every name enhancements.js queries appears in some page"
+ ~[announce_update_notice]: "&[cli] — mark the update notice built in showUpdateNotice with role=status so assistive tech announces it"
+ ~[resolve_online_marker]: "&[cli] — resolve data-js and data-online per ?[online_marker]: add the CSS reader or delete the two dataset writes, and update the inert set"
+ ~[resolve_edit_surface]: "&[cli] — resolve data-edit-surface per ?[edit_surface_owner]: keep it in the declared inert set with a one-line owner note, or strip it from the nine HTML pages"
+ ~[hide_install_button]: "&[cli] — keep the install button hidden until beforeinstallprompt, only if the install-button wonder confirms html.js-enhanced .js-only overrides [hidden]"
 }
 
 ^["cache"]{
@@ -90,20 +90,18 @@
  ~#base_ref: "main@551bb419"
  ~#rebased_at: "2026-10-12"
  ~#files_hot: ""
- ~#next_commit: "1"
+ ~#next_commit: "hook_contract_test"
  ~#open_count: "2"
- ~#last_stream: "2026-10-12 14:57"
+ ~#last_stream: "2026-10-12 15:36"
  ~#taste_debt: ""
 }
 
 ^["done"]{
  # Written at merge time, and incrementally while the plan runs.
- ~#dropped: [
-  "~[2] and ~[4]..~[25] (original) — targeted src/ui/elements, src/platform, src/app/dom-sync, which no longer exist (logged in stream 2026-10-12)",
-  "~[1] (original) — catalog of data-* names; folded into the new ~[1] test, with the catalog measured below",
-  "~[3] (original) — vocab[dom-sync] global versus component DOM state; the preset has no components, so the vocabulary has no examples to name",
-  "~[26] (original) — curriculum prose 'Developing Taste in Spw DOM Synchronization'; reopen as a .[docs] note after ~[1] lands if wanted",
- ]
+ ~#dropped(data_attribute_catalog): "the original first commit, a catalog of data-* names; folded into hook_contract_test, with the catalog measured in ~#resolved(hook_catalog)"
+ ~#dropped(dom_state_vocabulary): "the original vocab[dom-sync] commit naming global versus component DOM state; the preset has no components, so the vocabulary has no examples to name"
+ ~#dropped(src_dom_sync_refactor): "the original second commit and the 22-step middle (state machines, ARIA sync, dom-sync utilities); targeted src/ui/elements, src/platform and src/app/dom-sync, which no longer exist; evidence: stream 2026-10-12 14:31"
+ ~#dropped(dom_sync_curriculum): "the original last commit, curriculum prose 'Developing Taste in Spw DOM Synchronization'; reopen as a .[docs] note after hook_contract_test lands if wanted"
  ~#resolved(write_only): "Are body data-js and data-online, which enhancements.js writes, read by any selector or script in the preset? — no: git grep finds them only in enhancements.js (lines 2, 3, 12, 15); both are write-only; evidence: git grep for data-online, dataset.online, and [data-js across the repo, 2026-10-12"
  ~#resolved(css_readers): "Which data-* names does the CSS read? — the 14:31 stream note was incomplete: data-spw-region (hero, main, footer rules in style.css; the nav value, written 9 times, has no rule), data-spw-affect (five rules in substrate.css), and data-spw-container (four rules in substrate.css); evidence: grep of [data- in the preset CSS, 2026-10-12"
  ~#resolved(hook_catalog): "What data-* names does the preset write, and who reads them? — in the public/ HTML pages: data-spw-region 26 (footer 9, nav 9, main 7, hero 1), data-spw-container 14, data-spw-affect 8, data-edit-surface 17 (9 distinct values, no reader), data-include 16 (read by hydrateFragments), data-install-app 1 (read by enhancements.js); data-refresh-site and data-dismiss-notice are created by showUpdateNotice and read by its own listeners; evidence: grep -o over public/*.html, 2026-10-12"

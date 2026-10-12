@@ -12,7 +12,7 @@
  gist: "Package manifests, environment receipts, and leaf tasks make each change's build radius visible."
  touches: [~"package.json", ~"packages/spw-seed/package.json", ~"packages/spw-cli/package.json", ~"packages/spw-cli/src/doctor.ts"]
  entry: ~"./package-iteration-radius.spw"
- next: "Commit 2: write scripts/analyzers/package-contract-audit.ts comparing declared vs imported workspace edges; no manifest edits."
+ next: "~[audit_package_boundaries]: write scripts/analyzers/package-contract-audit.ts comparing declared vs imported workspace edges; no manifest edits."
 }
 
 ^["edges"]{
@@ -84,24 +84,27 @@
  >>[2026-08-24 13:02] verify — f3ab94eb defers authority extraction until needed; fresh command-registry imports measured 211–324 ms after one earlier 969 ms observation, and a split probe isolates the compiler in its own 3.4 MB chunk.
  >>[2026-10-12 14:34] observe — reconciled against main: ~[1] landed in c46558ff (plan artifacts); outside the list, f3ab94eb (defer compiler loading) and 8d454ad6 (spw-cli tsconfig now references spw-runtime) are on main. ~[2] has not landed: scripts/analyzers has no package-contract audit. Facts for the open questions: all four packages/*/package.json are private at 0.3.0; scripts/release/build-js-dist.ts already bundles bin/spw plus seed (index, parser, lite) and runtime (index, pipeline, substrate, resonance) entries and none for the LSP; extensions/vscode-spw declares esbuild ^0.19.0 and typescript ^5.2.0 against the root's esbuild ^0.27.3 and typescript ~5.9.3.
  >>[2026-10-12 14:34] revise — ?[publication], ?[toolchain_ranges], and ?[entrypoint_matrix] rewritten against those facts so each names the decision it unblocks; ?[task_graph] unchanged. ~[1] pointed at ^[done].
+ >>[2026-10-12 15:25] revise — Commits named per the convention in 90c58bbc: 3 landed, 7 planned, 0 dropped.
 }
 
 ^["open"]{
- ?[publication]: "All four workspace packages are private and jsdist ships no LSP entry; should the LSP ever ship as a package, or only inside the VS Code extension? Decides whether commit 7's matrix includes an LSP pack-and-import smoke."
- ?[toolchain_ranges]: "extensions/vscode-spw pins esbuild ^0.19.0 and typescript ^5.2.0 while the root uses ^0.27.3 and ~5.9.3; converge the extension to the root or keep a tested compatibility matrix? Decides commit 7's extension row and typescript-upgrade-ladder rung A."
+ ?[publication]: "All four workspace packages are private and jsdist ships no LSP entry; should the LSP ever ship as a package, or only inside the VS Code extension? Decides whether ~[verify_install_matrix]'s matrix includes an LSP pack-and-import smoke."
+ ?[toolchain_ranges]: "extensions/vscode-spw pins esbuild ^0.19.0 and typescript ^5.2.0 while the root uses ^0.27.3 and ~5.9.3; converge the extension to the root or keep a tested compatibility matrix? Decides ~[verify_install_matrix]'s extension row and typescript-upgrade-ladder rung A."
  ?[task_graph]: "Can npm workspace scripts meet the measured radius target before a task-graph or cache framework is justified?"
- ?[entrypoint_matrix]: "Should the entries build-js-dist.ts already bundles (bin/spw; seed index, parser, lite; runtime index, pipeline, substrate, resonance) be declared the public set, with every other export private until a clean-consumer smoke proves it? Decides commit 5's export smoke list."
+ ?[entrypoint_matrix]: "Should the entries build-js-dist.ts already bundles (bin/spw; seed index, parser, lite; runtime index, pipeline, substrate, resonance) be declared the public set, with every other export private until a clean-consumer smoke proves it? Decides ~[leaf_export_smokes]'s export smoke list."
 }
 
 ^["commits"]{
- # ~[1] landed — see ^["done"]
- ~[2]: "#[packages] — audit declared and imported workspace boundaries"
- ~[3]: "vocab[tooling] — add redacted environment and failure-locality receipts"
- ~[4]: "&[doctor] — explain runtime, lockfile, ABI, native, platform, and cache mismatches"
- ~[5]: "&[packages] — add truthful leaf verification and package export smoke paths"
- ~[6]: "#[bench] — measure dependency cones, invalidation, and first actionable feedback"
- ~[7]: "![packages] — verify clean install, pack, import, CLI, LSP, and extension matrices"
- ~[8]: ".[docs] — publish onboarding, package reference, and migration decisions"
+ .[plan_package_contracts]: "c46558ff .[plans] =orient[affinity,iteration-radius] — refresh consumer tooling direction"
+ .[cli_runtime_reference]: "8d454ad6 &[runtime,packages] — tune trace depth and cache identity"
+ .[defer_compiler_loading]: "f3ab94eb vocab[api]+&[cli] — align through and defer compiler loading"
+ ~[audit_package_boundaries]: "#[packages] — audit declared and imported workspace boundaries"
+ ~[environment_receipts]: "vocab[tooling] — add redacted environment and failure-locality receipts"
+ ~[doctor_mismatch_causes]: "&[doctor] — explain runtime, lockfile, ABI, native, platform, and cache mismatches"
+ ~[leaf_export_smokes]: "&[packages] — add truthful leaf verification and package export smoke paths"
+ ~[measure_dependency_cones]: "#[bench] — measure dependency cones, invalidation, and first actionable feedback"
+ ~[verify_install_matrix]: "![packages] — verify clean install, pack, import, CLI, LSP, and extension matrices"
+ ~[publish_package_docs]: ".[docs] — publish onboarding, package reference, and migration decisions"
 }
 
 ^["cache"]{
@@ -110,19 +113,14 @@
  ~#rebased_at: "2026-08-24"
  ~#hygiene_split: "one bounded cross-plan correction in gap-affinity-tooling; the broader manifest/environment audit remains in codex/package-iteration-radius"
  ~#files_hot: "packages/spw-seed/package.json, packages/spw-cli/package.json, packages/spw-cli/src/commands.ts, packages/spw-cli/src/authority.ts, packages/spw-cli/tsconfig.json, .agents/plans/package-iteration-radius/PLAN.md, .agents/plans/package-iteration-radius/wip.spw"
- ~#next_commit: "2"
+ ~#next_commit: "audit_package_boundaries"
  ~#open_count: "4"
- ~#last_stream: "2026-10-12 14:34"
+ ~#last_stream: "2026-10-12 15:25"
  ~#taste_debt: "Public package and entry-point intent, extension toolchain convergence, and the threshold for build orchestration remain unresolved until audit, clean-consumer, and radius evidence exist."
 }
 
 ^["done"]{
  # Written at merge time.
- ~#shipped: [
-  "c46558ff .[plans] =orient[affinity,iteration-radius] — refresh consumer tooling direction",
-  "f3ab94eb vocab[api]+&[cli] — align through and defer compiler loading (outside the commit list)",
-  "8d454ad6 &[runtime,packages] — tune trace depth and cache identity (adds the spw-runtime reference to spw-cli tsconfig; outside the commit list)",
- ]
 }
 
 #>wonder_package_iteration_radius_1

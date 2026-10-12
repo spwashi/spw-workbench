@@ -30,9 +30,7 @@ Craft guard:
 
 ## Commits
 
-1. `.[precipitate] — retarget the note's src/runtime paths to packages/spw-runtime and label spec-alignment's distill_extract stages as a proposal beside the shipped four` (the note itself already exists)
-2. `vocab[runtime] — doc-comment Precipitate as strictly per-stage and PipelineProjection as a keyed view, once telemetry_locality and failure_continuity are answered`
-3. `![runtime] — test that collectPrecipitates yields the four stages in STAGE_ORDER for valid source (no runtime test covers runSpwStepped today)`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy:
 - Explore: `npm run fuzz:explore`
@@ -42,7 +40,7 @@ Fuzz strategy:
 ## Agentic Hygiene
 
 - Rebase target: `main@46d4a17`
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before `align_note_and_spec`, before merge
 - Hygiene split: none
 
 ## Dependencies

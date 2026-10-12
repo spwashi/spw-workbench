@@ -36,9 +36,7 @@ Craft guard:
 
 ## Commits
 
-1. `.[plans] — scaffold lib-arch-spw-theory planning artifacts` (landed `46a2d573`)
-2. `.[lib-architecture] — add architecture/layout markdown and .spw support surfaces` (landed `a8d61a06`)
-3. `#[lib-architecture] — add architecture theory-check lint and wire package script` (landed `a8d61a06`)
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy:
 - Explore: `FUZZ=boonhonk npx eslint scripts/analyzers/v020-lib-architecture-check.ts`
@@ -48,7 +46,7 @@ Fuzz strategy:
 ## Agentic Hygiene
 
 - Rebase target: `main@5866dd3`
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before `scaffold_plan`, before merge
 - Hygiene split: none
 
 ## Dependencies

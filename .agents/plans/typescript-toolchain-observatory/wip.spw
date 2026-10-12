@@ -11,7 +11,7 @@
  gist: "TypeScript config, version, and bundle experiments become comparable JSON, Markdown, and .spw rows."
  touches: [~"scripts/analyzers", ~"scripts/release/build-js-dist.ts", ~"docs/research"]
  entry: ~"./typescript-toolchain-observatory.spw"
- next: "Once typescript-perf-audit-infra emits JSON rows, project them into docs/research/spw/typescript-toolchain-observatory.spw (commit 4)."
+ next: "Once typescript-perf-audit-infra emits JSON rows, project them into docs/research/spw/typescript-toolchain-observatory.spw (toolchain_projections)."
 }
 
 ^["edges"]{
@@ -103,22 +103,21 @@
  >> [2026-07-20] revise — version-matrix language should treat TS7 as installable stable, not only native-preview; dual-install with @typescript/typescript6 remains required for eslint API until 7.1.
  >>[2026-10-12 14:38] observe — reconciled against main: ~[1] landed in b41caa6b (plan staged); no TypeScript profile or matrix script exists under scripts/analyzers and no docs/research/spw/typescript-toolchain-observatory.spw exists, so ~[2]..~[7] are open. By the 2026-07-20 split decision, ~[2] and ~[3] are the same work as typescript-perf-audit-infra ~[2] and ~[3] (single-run profiler, version and config matrix), so they are moved there rather than duplicated here.
  >>[2026-10-12 14:39] revise — ?[preview_install] resolved by the 2026-07-20 split (TS 7 is installable stable and typescript-upgrade-ladder rung C owns the dual-install, so the observatory consumes it) and moved to ^[done]. ?[projection_schema] and ?[release_gate] sharpened against the perf-audit identity row and the existing build:jsdist and pack:jsdist:dry scripts; ?[editor_protocol] sharpened to the decision it unblocks. ~[1] moved to ^[done].
+ >>[2026-10-12 15:31] revise — Commits named per the convention in 90c58bbc: 1 landed, 4 planned, 2 dropped.
 }
 
 ^["open"]{
- ?[editor_protocol]: "Can editor-indexing time be measured by a local script (for example tsserver logs) or only by a manual VS Code protocol? Decides whether ~[6] publishes a script or a checklist for that axis."
- ?[projection_schema]: "Is the perf-audit identity row (compiler, config, duration, pass) enough to feed JSON, Markdown, and .spw projections, or does the observatory need extra fields such as bundle size and declaration output? Decides the row contract that ~[4] reads."
- ?[release_gate]: "Should the build:jsdist and pack:jsdist:dry results (file list and size) be recorded as observatory rows per toolchain variant, or stay a manual release step? Decides whether ~[5] adds a recorded row or only a narrative."
+ ?[editor_protocol]: "Can editor-indexing time be measured by a local script (for example tsserver logs) or only by a manual VS Code protocol? Decides whether observatory_protocol_docs publishes a script or a checklist for that axis."
+ ?[projection_schema]: "Is the perf-audit identity row (compiler, config, duration, pass) enough to feed JSON, Markdown, and .spw projections, or does the observatory need extra fields such as bundle size and declaration output? Decides the row contract that toolchain_projections reads."
+ ?[release_gate]: "Should the build:jsdist and pack:jsdist:dry results (file list and size) be recorded as observatory rows per toolchain variant, or stay a manual release step? Decides whether release_surface_inspection adds a recorded row or only a narrative."
 }
 
 ^["commits"]{
- # ~[1] landed — see ^["done"]
- # ~[2]: "MOVED to ../typescript-perf-audit-infra/wip.spw ~[2] — single-run profiler and configuration runner"
- # ~[3]: "MOVED to ../typescript-perf-audit-infra/wip.spw ~[3] — version matrix, stable versus native"
- ~[4]: "#[projection] — emit JSON, Markdown, and .spw projections from toolchain experiments"
- ~[5]: "&[release] — inspect jsdist, declaration outputs, and pack surfaces across toolchain variants"
- ~[6]: ".[docs] — publish observatory protocol, interpretation guide, and release-implication notes"
- ~[7]: "![toolchain] — verify profile loops, version matrix, projection outputs, and bundle QA stay truthful"
+ .[stage_observatory]: "b41caa6b .[plans] =typescript[toolchain-observatory] — stage toolchain observatory lane"
+ ~[toolchain_projections]: "#[projection] — emit JSON, Markdown, and .spw projections from toolchain experiments"
+ ~[release_surface_inspection]: "&[release] — inspect jsdist, declaration outputs, and pack surfaces across toolchain variants"
+ ~[observatory_protocol_docs]: ".[docs] — publish observatory protocol, interpretation guide, and release-implication notes"
+ ~[verify_observatory]: "![toolchain] — verify profile loops, version matrix, projection outputs, and bundle QA stay truthful"
 }
 
 ^["cache"]{
@@ -127,14 +126,15 @@
  ~#rebased_at: ""
  ~#hygiene_split: "none"
  ~#files_hot: "package.json, tsconfig.json, tsconfig.typecheck.json, scripts/release/build-js-dist.ts, docs/research/index.spw"
- ~#next_commit: "4"
+ ~#next_commit: "toolchain_projections"
  ~#open_count: "3"
- ~#last_stream: "2026-10-12 14:39"
+ ~#last_stream: "2026-10-12 15:31"
  ~#taste_debt: "avoid making the observatory a vanity benchmark surface; keep measurement tied to decisions and release implications"
 }
 
 ^["done"]{
  # Written at merge time.
- ~#shipped: ["b41caa6b .[plans] =typescript[toolchain-observatory] — stage toolchain observatory lane (~[1])"]
+ ~#dropped(profile_config_runners): "rehomed to typescript-perf-audit-infra as perf_profiler — single-run profiler and configuration runner"
+ ~#dropped(version_matrix_capture): "rehomed to typescript-perf-audit-infra as matrix_runner — version matrix, stable versus native"
  ~#resolved(preview_install): "Should TS7/native preview be an opt-in dependency lane in package.json, a separate npx script, or a documented precondition? — the observatory consumes the dual-install owned by typescript-upgrade-ladder rung C; TS 7 is installable stable, not preview; evidence: stream 2026-07-20 decide and revise entries"
 }

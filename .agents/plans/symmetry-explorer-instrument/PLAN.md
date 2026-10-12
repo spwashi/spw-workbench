@@ -20,16 +20,12 @@ Rescoped 2026-10-12 (user decision: do not archive). The five surfaces under `.s
 
 ## Commits
 
-1. `![seed] — failing tests for a D4/Z4 group: eight actions on a 2x2 tile, closure, inverses, Z4 as the rotation subgroup`
-2. `^seed[math] — add the pure D4/Z4 module under packages/spw-seed/src/math and export it`
-3. `.[symmetry] — point the five symmetry application surfaces at the module`
-
-The original three commits (viz[ui], styles[ui], exhibit[docs]) are dropped: their targets never existed in this history.
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 
-- Rebase target: historical baseline not recorded in the original branch memory; rebase onto current `main` before commit 1.
-- Rebase cadence: before commit 1, before merge
+- Rebase target: historical baseline not recorded in the original branch memory; rebase onto current `main` before d4_failing_tests.
+- Rebase cadence: before d4_failing_tests, before merge
 - Hygiene split: none recorded in the original branch memory; verify worktree drift before implementation.
 
 ## Dependencies

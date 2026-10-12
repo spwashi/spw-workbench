@@ -115,24 +115,26 @@
  >>[2026-10-12 14:29] revise — Resolved ?[ordering]: spw-beat-diff-precipitation is stranded and server-index.ts still has static WARM_TTL and COLD_TTL, so no dynamic-TTL edit collides with commits 3 to 5 today.
  >>[2026-10-12 14:29] revise — Resolved ?[granule_agreement] for now: geometric-analysis-tooling is dormant and its card says not to ship a fingerprint product from character scans, so no second key format competes; reopen if it reheats.
  >>[2026-10-12 14:29] observe — Commit 6 landed in effect as b8a6949d: scanAppositions in apposition-scan.ts returns name, raw body, span and a body mask hash without a parse. The eviction leak is unfixed on reading: evictStale deletes only documents entries and no leak test exists; no peekDocument exists; server-index.ts is 1302 lines.
+ >>[2026-10-12 15:36] revise — Commits named per the convention in 90c58bbc: 2 landed, 9 planned, 0 dropped.
 }
 
 ^["open"]{
- ?[coverage]: "Does apposition-keyed granularity pay for itself when 182 of 493 surfaces carried an apposition on 2026-07-27, so that commit 7 is built only if a real edit sequence shows most edited lines inside appositions?"
- ?[anonymous]: "The 5 anonymous appositions anchor a span but supply no key: does commit 7 give them span-position identity, or exclude them from granule keying?"
+ ?[coverage]: "Does apposition-keyed granularity pay for itself when 182 of 493 surfaces carried an apposition on 2026-07-27, so that apposition_frame_hashes is built only if a real edit sequence shows most edited lines inside appositions?"
+ ?[anonymous]: "The 5 anonymous appositions anchor a span but supply no key: does apposition_frame_hashes give them span-position identity, or exclude them from granule keying?"
 }
 
 ^["commits"]{
- # ~[1], ~[6] landed — see ^["done"]
- ~[2]: "![spw-lsp] — pin the confirmed cache defects: eviction leak (evictStale deletes only documents) and recency flattening"
- ~[3]: "&[spw-lsp] — evict a document's index entries with the document"
- ~[4]: "&[spw-lsp] — peekDocument for bulk reads so fan-out stops flattening recency"
- ~[5]: "&[spw-lsp] — derive workspaceAnnotations from annotationsByFile, dropping the per-save rebuild"
- ~[7]: "^seed[spw-seed] — frame-level content hashes keyed by apposition name, built on scanAppositions"
- ~[8]: "&[spw-lsp] — retain the inbound reference index the graph build already computes"
- ~[9]: "&[spw-lsp] — reuse derived data when a granule's apposition envelope is unchanged"
- ~[10]: "#[spw-lsp] — codeLens surfacing granule tier, volatility, inbound degree, and hash age"
- ~[11]: "![tests] — scan/parse parity, envelope stability, and invalidation-proportionality suites"
+ .[file_plan]: "08e2bc1c &[canon-rewrite-v2] — land tip capability on upstream; phase 0 field clocks (carried the plan files in)"
+ .[scan_appositions]: "b8a6949d ^seed[lattice] — parse-free apposition unit cells; spw lattice spectrum (stands in for the planned scan: name, body, span and mask hash without a parse)"
+ ~[pin_cache_defects]: "![spw-lsp] — pin the confirmed cache defects: eviction leak (evictStale deletes only documents) and recency flattening"
+ ~[evict_with_document]: "&[spw-lsp] — evict a document's index entries with the document"
+ ~[peek_document]: "&[spw-lsp] — peekDocument for bulk reads so fan-out stops flattening recency"
+ ~[derive_workspace_annotations]: "&[spw-lsp] — derive workspaceAnnotations from annotationsByFile, dropping the per-save rebuild"
+ ~[apposition_frame_hashes]: "^seed[spw-seed] — frame-level content hashes keyed by apposition name, built on scanAppositions"
+ ~[retain_inbound_refs]: "&[spw-lsp] — retain the inbound reference index the graph build already computes"
+ ~[reuse_granule_data]: "&[spw-lsp] — reuse derived data when a granule's apposition envelope is unchanged"
+ ~[granule_codelens]: "#[spw-lsp] — codeLens surfacing granule tier, volatility, inbound degree, and hash age"
+ ~[granule_test_suites]: "![tests] — scan/parse parity, envelope stability, and invalidation-proportionality suites"
 }
 
 ^["cache"]{
@@ -141,14 +143,13 @@
  ~#rebased_at: "2026-08-24"
  ~#hygiene_split: "required — in-flight grammar edits touch types/ast/nodes.ts, where AppositionLabel lives"
  ~#files_hot: "packages/spw-lsp/src/server-index.ts, packages/spw-lsp/src/types.ts, packages/spw-seed/src/types/ast/nodes.ts"
- ~#next_commit: "1"
+ ~#next_commit: "pin_cache_defects"
  ~#open_count: "2"
- ~#last_stream: "2026-10-12 14:29"
+ ~#last_stream: "2026-10-12 15:36"
  ~#taste_debt: "two-axis eviction (tier x volatility) is correct and deferred; granule identity must reconcile apposition name, content, structural ancestry, and future shape fingerprints without treating activity metadata as human evidence"
 }
 
 ^["done"]{
- ~#shipped: ["08e2bc1c &[canon-rewrite-v2] (carried the plan files in; planned commit 1)", "b8a6949d ^seed[lattice] — parse-free apposition unit cells (stands in for planned commit 6: name, body, span and mask hash without a parse)"]
  ~#resolved(ordering): "Land this plan first or rebase onto spw-beat-diff-precipitation edits to server-index.ts? — no collision today: that plan is stranded and TTLs are still static; evidence: stream 2026-10-12 observe on ordering"
  ~#resolved(granule_agreement): "Should both plans share one granule identity type before either ships a key format? — moot while geometric-analysis-tooling is dormant; reopen if it reheats; evidence: stream 2026-10-12 revise on granule_agreement"
 }

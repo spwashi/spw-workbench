@@ -197,17 +197,7 @@ The plugin needs an evidence plan, not just a feature list.
 
 ## Commits
 
-1. `#[obsidian-spw]` — scaffold plugin, build config, styles, and entry point
-2. `![obsidian-spw]` — fence-scope probe: a logging editor extension against a note with a `spw` fence and a plain note
-3. `^seed[obsidian-spw]` — build token-map adapter from `spw-seed` into CM6 stream semantics
-4. `&[obsidian-spw]` — register `.spw` file view and shared DOM token renderer
-5. `&[obsidian-spw]` — add reading-view renderer for `` ```spw `` fences
-6. `&[obsidian-spw]` — ship stdio process manager and JSON-RPC transport
-7. `&[obsidian-spw]` — add Concepts leaf using annotation and co-occurrence data
-8. `&[obsidian-spw]` — add Workspace Atlas leaf with vault-native topology and temperature
-9. `&[obsidian-spw]` — add context strip and cursor-driven refresh plumbing
-10. `&[obsidian-spw]` — add settings, health controls, and resilience polish
-11. `.[obsidian-spw]` — finalize README, workspace wiring, and planning artifacts
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy:
 
@@ -219,7 +209,7 @@ Fuzz strategy:
 ## Agentic Hygiene
 
 - Rebase target: `origin/main@37b6f42b`
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before `scaffold_plugin`, before merge
 - Hygiene split: none; only the `obsidian-spw` plan directory is currently untracked
 
 ## Dependencies

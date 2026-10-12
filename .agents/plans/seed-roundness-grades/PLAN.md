@@ -29,7 +29,7 @@ The user's original request also named four genuinely new grammar features (name
 
 ```
 [MOD] docs/theory/spw/operational-topography.spw   — S0/S1/S2 definitions → effect.l0-l3
-[MOD] docs/theory/spw/range-transform.spw           — S0-S2 refs → effect.l*; add real implementation pointer once commit 3 lands
+[MOD] docs/theory/spw/range-transform.spw           — S0-S2 refs → effect.l*; add real implementation pointer once cover_range_transform lands
 [MOD] docs/theory/spw/coupling-constructors.spw     — S1-S3 refs
 [MOD] docs/theory/spw/dimensional-axes.spw          — S0-S2 refs (leave E0-E2 in place, unresolved)
 [MOD] docs/theory/spw/form-geometry.spw             — S1 refs
@@ -44,7 +44,7 @@ The user's original request also named four genuinely new grammar features (name
 [MOD] .agents/skills/spw-semantics-rigor/SKILL.md   — S-grade refs
 [MOD] packages/spw-seed/src/canonical/differential.ts — label/rule-conflict handling for overlapping SourceEdits
 [NEW] packages/spw-seed/src/canonical/differential.test.ts — tests for the above (none exist today)
-[NEW?] packages/spw-seed/src/canonical/range-address.ts — real range-address/span-transform impl (name TBD; may live in an existing file instead — decide during commit 3)
+[NEW?] packages/spw-seed/src/canonical/range-address.ts — real range-address/span-transform impl (name TBD; may live in an existing file instead — decide during cover_range_transform)
 [MOD] packages/spw-seed/src/normalize.ts             — close empty-n-range gap flagged at line 371
 [MOD?] packages/spw-seed/src/grammar/containers.ts    — only if NRange grammar itself needs a fix, not just normalize
 [MOD] packages/spw-seed/src/query/selector-expr.ts    — indexing configurability handle
@@ -54,30 +54,21 @@ The user's original request also named four genuinely new grammar features (name
 
 ### Craft guard
 
-`differential.ts` is currently 296 lines with a focused single responsibility (source differentials); adding label-conflict handling should stay well under 400. `range-address.ts` is new — keep it to one concern (address resolution + span transform), not a dumping ground for other range-transform doc content. No file in this plan is near the 600-line/12-import guard today; re-check after commit 3 and 5 land since those are the only two touching genuinely new logic.
+`differential.ts` is currently 296 lines with a focused single responsibility (source differentials); adding label-conflict handling should stay well under 400. `range-address.ts` is new — keep it to one concern (address resolution + span transform), not a dumping ground for other range-transform doc content. No file in this plan is near the 600-line/12-import guard today; re-check after cover_range_transform lands; query_index_handles, the other slice touching genuinely new logic, was dropped.
 
 ## Commits
 
-```
-1. .[theory,prompts] — rename S0-S3 shorthand to effect.l0.measure..l3.external across living docs only
-2. (dropped) differential label conflicts: applyEdits already rejects overlapping and out-of-range edits, tested in semantic-edit.test.ts
-3. ![seed] — tests for range-transform.ts (module itself landed)
-4. ![seed] — tests for empty n-range '(())' (fix landed in bbb14615)
-5. (merged) IndexConfig wired into corpus-scan.ts; query-engine wiring awaits a consumer
-6. .[plans] — close seed-roundness-grades; retrospective + follow-up plan slugs for track B
-```
-
-The canonical running version lives in `wip.spw`.
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 **Fuzz strategy**:
-- Explore loop: `npm run fuzz:explore --target=seed` while iterating on commits 2-5 (if `fuzz:explore` script exists; else `npm run test:seed -- --watch`)
+- Explore loop: `npm run fuzz:explore --target=seed` while iterating on cover_range_transform and cover_n_range (if `fuzz:explore` script exists; else `npm run test:seed -- --watch`)
 - Stabilize loop: `npm run fuzz:stabilize` before each commit lands (types + runtime tests)
-- Ship gate: `npm run fuzz:ship` before commit 6
+- Ship gate: `npm run fuzz:ship` before close_retrospective
 
 ## Agentic Hygiene
 
 - Rebase target: `main@d852b1aa`
-- Rebase cadence: before commit 1 (already clean at plan time; re-check before merge if this branch runs long)
+- Rebase cadence: before effect_grade_rename (already clean at plan time; re-check before merge if this branch runs long)
 - Hygiene split: none — working tree was clean at plan time, no unrelated drift detected
 - Staged directly on `main`, matching recent plan convention (`bab81e15 .[plans] =stage[form-geometry-editor]`) rather than a dedicated `feature/*` branch, since no branch divergence exists to isolate
 
@@ -88,16 +79,16 @@ None. This plan is self-contained; track B (deferred net-new grammar + membrane/
 ## Failure Modes
 
 - **Hard**: An incomplete S0-S3 grep sweep leaves stale references in a doc this plan claims to have finished — mitigated by the grep-verify validation step per commit, not just at the end.
-- **Hard**: Changing `SourceEdit`/`NRangeNode` shape breaks `canonicalize`/`mutation-automata` consumers that already depend on today's shape — mitigated by running `test:seed` after every commit in commits 2-4, not just at the end.
-- **Soft**: `range-address.ts`'s exact location/name may need to change once the range-transform doc's actual algebra is worked out in commit 3 — acceptable, flagged `[NEW?]` above.
+- **Hard**: Changing `SourceEdit`/`NRangeNode` shape breaks `canonicalize`/`mutation-automata` consumers that already depend on today's shape — mitigated by running `test:seed` after cover_range_transform and cover_n_range, not just at the end.
+- **Soft**: `range-address.ts`'s exact location/name may need to change once the range-transform doc's actual algebra is worked out in cover_range_transform — acceptable, flagged `[NEW?]` above.
 - **Non-negotiable**: `EFFECT_GRADE_ORDER`'s numeric ordering (0/1/2/3) must not change during the rename — it's a pure text/doc substitution, no behavior change.
 - **Non-negotiable**: no edits to historical `.agents/plans/*` artifacts under this plan.
 
 ## Validation
 
-- **Hypotheses**: `grep -rl "\bS0\b\|\bS1\b\|\bS2\b\|\bS3\b"` across the living-doc file list above returns zero hits after commit 1 (E0-E2 hits in the same files are expected to remain — different, unresolved axis).
-- **Negative controls**: `npm run test:seed` passes unchanged after commits 2-4; no behavior change bundled into commit 1.
-- **Demo sequence**: `spw query --from docs/theory --expr '$~"S0"'` (or equivalent skim/select) returns no hits in the renamed files post-commit-1.
+- **Hypotheses**: `grep -rl "\bS0\b\|\bS1\b\|\bS2\b\|\bS3\b"` across the living-doc file list above returns zero hits after effect_grade_rename (E0-E2 hits in the same files are expected to remain — different, unresolved axis).
+- **Negative controls**: `npm run test:seed` passes unchanged after cover_range_transform and cover_n_range; no behavior change bundled into effect_grade_rename.
+- **Demo sequence**: `spw query --from docs/theory --expr '$~"S0"'` (or equivalent skim/select) returns no hits in the renamed files after effect_grade_rename.
 
 ## Spw Artifact
 

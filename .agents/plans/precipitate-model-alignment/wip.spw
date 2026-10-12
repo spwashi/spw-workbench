@@ -11,7 +11,7 @@
  gist: "Precipitate, substrate, assay, and resonance name checkable roles in the runtime pipeline."
  touches: [~"packages/spw-runtime/src/pipeline", ~"docs/runtime/spw/runtime-foundation.spw", ~"docs/specs/spw/spec-alignment.spw"]
  entry: ~"./precipitate-model-alignment.spw"
- next: "Reheat: answer failure_continuity (the invariant and the parse-failure branch disagree), then ship commit 1 against packages/spw-runtime/src/pipeline."
+ next: "Reheat: answer failure_continuity (the invariant and the parse-failure branch disagree), then ship ~[align_note_and_spec] against packages/spw-runtime/src/pipeline."
 }
 
 ^["edges"]{
@@ -64,6 +64,7 @@
  >>[2026-10-12 14:25] observe — invariant stage_continuity (exactly one precipitate per stage) disagrees with the parse-failure branch in runSpwStepped, which returns after the parse precipitate; five malformed inputs I tried (}}}, unterminated string, mismatched brace, empty) all still parsed successfully and yielded four precipitates, so the branch is reachable only through errors I could not trigger. Opened failure_continuity and telemetry_locality.
  >>[2026-10-12 14:31] revise — convention: resolved questions and landed commits are kept in ^["done"] (resolved(label) and shipped) rather than deleted; ^["commits"] keeps a pointer comment.
  >>[2026-10-12 15:00] observe — six malformed inputs through runSpwStepped (}}} unterminated string unclosed bracket empty parens and a sigil mix) all returned success true with 4 precipitates, and normalize.test.ts covers success paths only; opened ?[failure_branch_test]; routed from lukewarm-backlog.
+ >>[2026-10-12 15:27] revise — Commits named per the convention in 90c58bbc: 2 landed, 3 planned, 0 dropped.
 }
 
 ^["open"]{
@@ -74,10 +75,11 @@
 }
 
 ^["commits"]{
- # ~[1]: PARTLY LANDED — the canonical note precipitate-model-alignment.spw exists; docs alignment remains and is now ~[1] below
- ~[1]: ".[precipitate] — retarget the note's src/runtime paths to packages/spw-runtime and label spec-alignment's distill_extract stages (prime, wonder, extract) as a proposal beside the shipped desugar, parse, normalize, interpret"
- ~[2]: "vocab[runtime] — doc-comment Precipitate as strictly per-stage and PipelineProjection as a keyed view, once telemetry_locality and failure_continuity are answered"
- ~[3]: "![runtime] — test that collectPrecipitates yields desugar, parse, normalize, interpret in STAGE_ORDER for valid source (no runtime test covers runSpwStepped today)"
+ .[write_chemistry_note]: "c0860ec5 .[plans] &![runtime-axis-traceability] — archive completed axis traceability plan"
+ .[runtime_chemistry_layer]: "97f845e7 docs[chemistry] — add parallel chemistry vocabulary layer across runtime"
+ ~[align_note_and_spec]: ".[precipitate] — retarget the note's src/runtime paths to packages/spw-runtime and label spec-alignment's distill_extract stages (prime, wonder, extract) as a proposal beside the shipped desugar, parse, normalize, interpret"
+ ~[doc_per_stage_precipitate]: "vocab[runtime] — doc-comment Precipitate as strictly per-stage and PipelineProjection as a keyed view, once telemetry_locality and failure_continuity are answered"
+ ~[test_precipitate_order]: "![runtime] — test that collectPrecipitates yields desugar, parse, normalize, interpret in STAGE_ORDER for valid source (no runtime test covers runSpwStepped today)"
 }
 
 ^["cache"]{
@@ -86,9 +88,9 @@
  ~#rebased_at: ""
  ~#hygiene_split: "none"
  ~#files_hot: "docs/specs/spw/spec-alignment.spw, docs/runtime/spw/runtime-foundation.spw, packages/spw-runtime/src/pipeline/stages.ts, packages/spw-runtime/src/pipeline/types.ts"
- ~#next_commit: "1"
+ ~#next_commit: "align_note_and_spec"
  ~#open_count: "4"
- ~#last_stream: "2026-10-12 15:00"
+ ~#last_stream: "2026-10-12 15:27"
  ~#taste_debt: "The repo has chemistry-adjacent terms (substrate, resonance, valence, quality), but precipitate boundaries are not yet normalized across docs and code comments."
 }
 

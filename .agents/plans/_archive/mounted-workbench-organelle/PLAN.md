@@ -61,7 +61,7 @@ An independent consumer should be able to mount the workbench, give a repository
 
 ## Commits
 
-All landed: b4832193 (scope), 51d36684 (manifest evidence), eb45f240 and 28906c5d (CLI roots, tree, mount role), 47f4015c (VS Code navigation). Planned commits 4, 6 and 7 have no one-to-one hash.
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy:
 - Explore: targeted root-parser, CLI-tree, LSP-workspace, and VS Code compile loops.
@@ -71,7 +71,7 @@ Fuzz strategy:
 ## Agentic Hygiene
 
 - Rebase target: `main@bca875c7`
-- Rebase cadence: before commit 1, before source implementation, before merge
+- Rebase cadence: before scope_orientation_slice, before source implementation, before merge
 - Hygiene split: none; working tree was clean at plan creation
 
 ## Dependencies

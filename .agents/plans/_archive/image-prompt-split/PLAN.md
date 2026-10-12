@@ -26,9 +26,7 @@ The desired end state is a prompt surface that can be read in three passes: imag
 
 ## Commits
 
-1. `.[prompts] — plan image prompt surface split into brief, renderer profile, and emit` (landed `73775143`)
-2. `&[prompts] — restructure image prompt into semantic and renderer layers` (landed `73775143`)
-3. `.[prompts] — tighten emitted prompt guidance and model notes` (landed `73775143`)
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy:
 - Explore loop: `fuzz:explore --target=prompts`
@@ -38,7 +36,7 @@ Fuzz strategy:
 ## Agentic Hygiene
 
 - Rebase target: `main@605a2f0d24b5110c5dedeec8a9f181a026fc2f2a`
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before `plan_image_split`, before merge
 - Hygiene split: none; only in-scope drift is `prompts/image.prompt.spw`
 
 ## Dependencies

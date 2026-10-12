@@ -11,7 +11,7 @@
  gist: "Hovers show only what reading cannot: true deltas, cross-file facts, and measured mechanics."
  touches: [~"packages/spw-lsp/src/handlers/display.ts", ~"packages/spw-lsp/src/server-index.ts", ~"extensions/vscode-spw/src", ~"extensions/neovim-spw/lua/spw"]
  entry: ~"./spw-garden-geometry.spw"
- next: "Reheat at commit 2: compute true deltaEnter (local minus parent ambient) in DocumentLineContext, with fixtures."
+ next: "Reheat at true_delta_enter: compute true deltaEnter (local minus parent ambient) in DocumentLineContext, with fixtures."
 }
 
 ^["edges"]{
@@ -88,29 +88,31 @@
  >>[2026-10-12 14:30] revise — reconciled commits with git: ~[1] landed. ~[2] confirmed unlanded (server-index.ts still sets deltaBraids to a copy of localBraids). ~[3] is half done: inlay hints went anti-echo in 2ddc73c9, hover has not. Deferred ~[5] to ~[7] and ~[9] to ~[11], merged fixtures ~[8] into ~[2] to ~[4], and used the repo's &[lsp] scope instead of #[spw-lsp] for code changes. spw/formContext now exists (a999a24f), so half of the gardenStats blocker is gone.
  >>[2026-10-12 14:30] observe — measured ServerIndex.openDocument after one warm-up call, one run each on this machine: surface-identity.spw (69 lines) 28 ms, spw-garden-geometry.spw (263 lines) 211 ms, onf.spw (256 lines) 747 ms, PLAN.md (1065 lines) 496 ms. Question analyze_ms answered for now: not cheap enough to show in hover by default; replaced by a wonder about what drives the cost.
  >>[2026-10-12 14:31] revise — convention: resolved questions and landed commits are kept in ^["done"] (resolved(label) and shipped) rather than deleted; ^["commits"] keeps a pointer comment.
+ >>[2026-10-12 15:26] revise — Commits named per the convention in 90c58bbc: 1 landed, 9 planned, 1 dropped.
 }
 
 ^["open"]{
- ?[profile_syntax]: "Is #:hover #!profile the right on-surface marker for a pulse or hover profile, or a garden bed frame in workspace.spw? The answer unblocks the pulse profile commit ~[5]."
- ?[stats_home]: "Do garden stats live command-only or as an optional atlas weather leaf? The answer shapes the gardenStats request in ~[7]."
+ ?[profile_syntax]: "Is #:hover #!profile the right on-surface marker for a pulse or hover profile, or a garden bed frame in workspace.spw? The answer unblocks pulse_profiles."
+ ?[stats_home]: "Do garden stats live command-only or as an optional atlas weather leaf? The answer shapes the gardenStats request in garden_stats_request."
 }
 
 ^["commits"]{
- # ~[1] landed — see ^["done"]
- ~[2]: "&[lsp] — true deltaEnter (local minus parent ambient) in DocumentLineContext, with fixtures; deltaBraids is still a copy of localBraids at server-index.ts line 1283"
- ~[3]: "&[lsp] — anti-echo hover builder, delta-first; the inlay half landed in 2ddc73c9, hover has not changed"
- ~[4]: "&[lsp] — brace pair table and symmetry metrics (E0/E1) beside the existing balance and depth budget in analysis.ts"
- # ~[5]: DEFERRED — pulse profiles and spw/pulseRun; blocked on profile_syntax and on a custom-request registry
- # ~[6]: DEFERRED — lensPreview then lensApplyTick; edit-bearing ticks must consume parser-owned differential plans
- # ~[7]: DEFERRED — gardenStats/fileFeatures; blocked on stats_home and the custom-request registry (spw/formContext exists since a999a24f, which was half of the old blocker)
- # ~[8]: MERGED INTO ~[2], ~[3] and ~[4] — each commit carries its own fixtures
- # ~[9]: DEFERRED — VS Code commands and settings, after ~[5] to ~[7]
- # ~[10]: DEFERRED — Neovim wrappers, after ~[9]
- # ~[11]: DEFERRED — mounted-consumer and E2 noodle session notes
+ # 08e2bc1c and da5189bb, once listed as shipped here, only touched this plan's roots, stream and card in ecology sweeps; the doctrine and artifact were staged in a333db8d.
+ # Deferred slices stay planned after the active three; they wait on the custom-request registry and on ?[profile_syntax] and ?[stats_home].
+ .[stage_doctrine]: "a333db8d &[seed,cli,lsp,docs] =integrate[operational-topography] — land coupling/topography engine and plan sync"
+ ~[true_delta_enter]: "&[lsp] — true deltaEnter (local minus parent ambient) in DocumentLineContext, with fixtures; deltaBraids is still a copy of localBraids at server-index.ts line 1283"
+ ~[anti_echo_hover]: "&[lsp] — anti-echo hover builder, delta-first; the inlay half landed in 2ddc73c9, hover has not changed"
+ ~[brace_symmetry_metrics]: "&[lsp] — brace pair table and symmetry metrics (E0/E1) beside the existing balance and depth budget in analysis.ts"
+ ~[pulse_profiles]: "#[spw-lsp] — deferred: pulse profiles and spw/pulseRun (scoped beats); blocked on profile_syntax and on a custom-request registry"
+ ~[lens_requests]: "^seed[spw-lsp] =request[lens] — deferred: lensPreview then lensApplyTick; edit-bearing ticks must consume parser-owned differential plans"
+ ~[garden_stats_request]: "^seed[spw-lsp] =request[garden] — deferred: gardenStats/fileFeatures and grades; blocked on stats_home and the custom-request registry (spw/formContext exists since a999a24f, which was half of the old blocker)"
+ ~[vscode_garden_commands]: "&[vscode] — deferred: hover, pulse and lens commands and settings, after pulse_profiles, lens_requests and garden_stats_request"
+ ~[neovim_garden_wrappers]: "&[neovim] — deferred: portable wrappers for the same requests, after vscode_garden_commands"
+ ~[noodle_session_notes]: "![garden] — deferred: mounted-consumer and E2 noodle session notes"
 }
 
 ^["done"]{
- ~#shipped: ["da5189bb .[plans] — card every live plan; derive the index; route readers to it", "08e2bc1c &[canon-rewrite-v2] — land tip capability on upstream; phase 0 field clocks"]
+ ~#dropped(garden_fixture_pack): "merged into true_delta_enter, anti_echo_hover and brace_symmetry_metrics; each carries its own fixtures"
  ~#resolved(analyze_ms): "Is per-openDocument timing cheap enough to expose in hover mechanics by default? — no: warm openDocument took 28 ms (69 lines) to 747 ms (256-line onf.spw), single runs; evidence: stream 2026-10-12 observe"
 }
 
@@ -121,9 +123,9 @@
  ~#hygiene_split: "required-before-implementation — isolate garden plans from unrelated CLI/code churn when committing"
  ~#files_hot: ".agents/plans/spw-garden-geometry/index.spw, .agents/plans/spw-garden-geometry/PLAN.md, .agents/plans/spw-garden-geometry/spw-garden-geometry.spw, packages/spw-lsp/src/handlers/display.ts, .agents/plans/form-geometry-editor/PLAN.md"
  ~#surfaces: "index, plan, artifact, editor-physics, path-refs, register-token-config, substrate-organelle, phd-domains, org-static-llm, formula-variant"
- ~#next_commit: "2"
+ ~#next_commit: "true_delta_enter"
  ~#open_count: "2"
- ~#last_stream: "2026-10-12 14:31"
+ ~#last_stream: "2026-10-12 15:26"
  ~#taste_debt: "hover still optimized for completeness; seed differential kernel exists — garden must wait on formContext + registry before gardenStats"
 }
 

@@ -18,15 +18,15 @@ Each `?[name]` in `^["open"]` carries: the evidence (a path or command that re-v
 | Item | Home plan | Heat trigger | Cost |
 |------|-----------|--------------|------|
 | eslint_unwired | typescript-upgrade-ladder | rung C decides the typescript6 alias | S |
-| skills_overclaim | audit-fuzz-truthfulness | its commit 4 renames the aliases | S |
-| mass_undeclared | measure-invariant-generalization | ~[10] canon declaration | S |
+| skills_overclaim | audit-fuzz-truthfulness | its ~[retire_alias_profiles] renames the aliases | S |
+| mass_undeclared | measure-invariant-generalization | ~[declare_canon_mass] canon declaration | S |
 | old_grade_spelling | seed-roundness-grades, syntax-hardware-alignment | either plan edits those files | S |
 | span_collapsed_text | syntax-profile-stack, runtime-dx-foundation | a position shown for an Spw.l file | M |
 | dream_orphan | curiosity-mutation-ergonomics | `?[reuse_dream]` answered | S |
 | precipitate_failure_untested | precipitate-model-alignment | `?[failure_continuity]` answered | S |
 | spwq_open_decisions | spw-q-stabilization | a Spw.q parser or exporter commit | S |
-| gap_probe_order | gap-affinity-tooling | its ~[8] starts | S |
-| obsidian_hot_unscaffolded | obsidian-spw | ~[1] scaffolds the plugin | S |
+| gap_probe_order | gap-affinity-tooling | its ~[gap_census_bench] starts | S |
+| obsidian_hot_unscaffolded | obsidian-spw | ~[scaffold_plugin] scaffolds the plugin | S |
 | base_ref_gaps | hygiene-index-consolidation | any listed plan reheats | S |
 | register_explorer_silence | vscode-register-explorer | the plan is reheated | S |
 
@@ -44,7 +44,7 @@ Each `?[name]` in `^["open"]` carries: the evidence (a path or command that re-v
 
 ## Commits
 
-1. .[plans] — stage lukewarm-backlog and route its items to home plans
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 

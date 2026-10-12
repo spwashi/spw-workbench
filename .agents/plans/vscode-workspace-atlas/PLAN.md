@@ -351,16 +351,12 @@ Current target (`main@96815893`) is stale. Rebase to current main before impleme
 
 ## Commits
 
-1. `.[plans] — stage vscode-workspace-atlas planning artifacts`
-2. `&[vscode-workspace] — derive atlas metadata from workspace manifest and index helpers`
-3. `&[vscode-workspace] — add workspace atlas tree and root/memory navigation commands`
-4. `&[vscode-workspace] — add phase perspective, materialization badges, and resonance endpoint`
-5. `![vscode-workspace] — verify extension compile and manifest fallback behavior`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 
 - Rebase target: `main@96815893` (updated 2026-03-27)
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before stage_planning_artifacts, before merge
 - Hygiene split: none currently. The March 26, 2026 drift note is stale in the current clean worktree, but `extensions/vscode-spw/src/extension.ts`, `extensions/vscode-spw/src/context.ts`, `extensions/vscode-spw/package.json`, and `packages/spw-lsp/src/stdio-server.ts` remain shared hot files and should be checked again before implementation starts.
 
 ## Cognitive Surface Stack

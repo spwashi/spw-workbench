@@ -114,14 +114,7 @@ Roadmap rung **0c** (after operational-topography kernel, before or parallel to 
 
 ## Commits
 
-1. `.[plans] — stage form-geometry-editor projection plan`
-2. `^seed[lsp] =hover[coupling] — occupancy/payload packet at bound caret`
-3. `^seed[lsp] =action[mobility] — implemented label-mobility code actions`
-4. `vocab[lsp] =request[formContext] — revision-addressed geometry packet`
-5. `&[lsp,cli] =pulse[edits] — SourceEdit → TextEdit + check/apply commands`
-6. `![lsp] *verify[form-geometry] — hover/actions/formContext tests`
-
-Landed: 1 (bab81e15); 2, 3, 4 and 6 together in a999a24f. Open: 5.
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 

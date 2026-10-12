@@ -11,7 +11,7 @@
  gist: "Seed, runtime, LSP, CLI, and editor failures share one greppable station code and a next action."
  touches: [~"packages/spw-runtime/src/pipeline", ~"packages/spw-seed/src/parser.ts", ~"packages/spw-lsp/src/context.ts", ~"packages/spw-cli/src/main.ts"]
  entry: ~"./runtime-dx-foundation.spw"
- next: "Reheat with commit 1: define the SPW-* station code registry, reconciling it with the diagnostics spw doctor already emits."
+ next: "Reheat with station_registry: define the SPW-* station code registry, reconciling it with the diagnostics spw doctor already emits."
 }
 
 ^["edges"]{
@@ -100,31 +100,25 @@
  >>[2026-10-12 14:32] revise — replaced the 20 boilerplate commits with six that have a code target: ~[11] spw doctor landed (0d3d82cc, now in done); no SPW-* code exists anywhere in packages/, ParseEvent carries rule but no code, LSP diagnostics use source 'spw' with message '<rule>: parse error' and no code, and vscode-spw has only the context-strip status item and no output channel. Added doctor_id_reconcile (doctor uses nine kebab-case ids); sharpened doctor_depth and station_count; replaced both template wonders with one CLI-versus-LSP wording wonder.
  >>[2026-10-12 14:48] observe — Dogfood pass 2026-10-12: spw mem dump snapshots the runtime memory directory only (7 files, about 13.6 KB), not the surfaces a bulk pass edits, so it cannot bracket a plan edit; git is the real snapshot here. Question for this plan: should mem dump accept extra roots, or is a pulse delta report the intended before-and-after receipt?
  >>[2026-10-12 15:00] observe — an Spw.l parse reports a node at raw line 3 column 1 as line 1 column 24 while the offset matches raw, so a station message quoting line and column could point at collapsed text; opened ?[position_basis]; routed from lukewarm-backlog ?[span_collapsed_text].
+ >>[2026-10-12 15:20] revise — Commits named per the convention in 90c58bbc: 1 landed, 6 planned, 13 dropped.
 }
 
 ^["open"]{
- ?[station_count]: "Do we want publish/release as a first-class station, or should release remain a downstream literature surface that quotes the same codes? The answer fixes the station list in commit 1."
- ?[doctor_id_reconcile]: "spw doctor's nine checks use kebab-case ids (git-root, workbench-pin, ...); do SPW-<STATION>-<NNN> codes replace those ids or sit beside them as a second field? The answer decides the shape of commit 1."
+ ?[station_count]: "Do we want publish/release as a first-class station, or should release remain a downstream literature surface that quotes the same codes? The answer fixes the station list in station_registry."
+ ?[doctor_id_reconcile]: "spw doctor's nine checks use kebab-case ids (git-root, workbench-pin, ...); do SPW-<STATION>-<NNN> codes replace those ids or sit beside them as a second field? The answer decides the shape of station_registry."
  ?[doctor_depth]: "spw doctor probes the checkout, pin and runtime but no check starts the LSP or looks for the extension; should the next check launch the server, or only verify the launcher path? Past that point doctor gets slow and brittle."
  ?[position_basis]: "Do station messages quote line and column from the collapsed Spw.l text or from the raw source (a node at raw line 3 column 1 parses as line 1 column 24)? Tracked at ~"../lukewarm-backlog/wip.spw" ?[span_collapsed_text]."
 }
 
 ^["commits"]{
- # ~[11] landed — see ^["done"]
- # Dormant: the original 20 commits were a station-by-station template. Only the slices below have a concrete code target today; the rest are deferred until commit 1 settles the code shape.
- ~[1]: "#[dx-diagnostics] — station registry: station ids (seed, runtime, lsp, cli, vscode) and the SPW-<STATION>-<NNN> shape, with doctor's check ids as the first entries"
- # ~[2]: DEFERRED — parse timing hooks (packages/spw-seed/src/instrumentation/metrics.ts already tracks rule timings; check what it exposes before adding hooks)
- ~[3]: "&[seed] — a stable code per grammar rule on parse errors (ParseEvent carries rule and position today, no code)"
- ~[4]: "![seed] — malformed .spw fixtures show the code in parse error output"
- # ~[5]..~[7]: DEFERRED — runtime station hooks, resonance timing, propagation test; reheat after ~[3]
- ~[8]: "&[lsp] — set Diagnostic.code and a next-action message from the station code in handlers/analysis.ts (it emits source 'spw' and the message '<rule>: parse error' today)"
- # ~[9]..~[10]: DEFERRED — LSP latency telemetry and its smoke test
- # ~[12]: DEFERRED — --diagnostics flag on existing commands
- ~[13]: "&[cli] — spw doctor gains a check for LSP launch, with a case in doctor.test.ts (doctor.test.ts has no LSP case today)"
- ~[14]: "&[vscode] — Spw output channel carrying station-attributed diagnostics (no output channel exists; the only status item is the context strip)"
- # ~[15]..~[17]: DEFERRED — status bar health, settings validation, output channel test
- # ~[18]..~[19]: DEFERRED — DX playbook and instrumentation guide; write them from what ~[1]..~[14] actually ship
- # ~[20]: DEFERRED — formalize the station model in runtime-dx-foundation.spw after ~[1]
+ # Dormant: the original 20 commits were a station-by-station template. Only the slices below have a concrete code target today; the deferred ones sit in ^["done"] as ~#dropped(name) and take new names if reheated.
+ .[spw_doctor]: "0d3d82cc &[cli] =site[doctor-install] — tighten external site bootstrap ergonomics"
+ ~[station_registry]: "#[dx-diagnostics] — station registry: station ids (seed, runtime, lsp, cli, vscode) and the SPW-<STATION>-<NNN> shape, with doctor's check ids as the first entries"
+ ~[seed_rule_codes]: "&[seed] — a stable code per grammar rule on parse errors (ParseEvent carries rule and position today, no code)"
+ ~[seed_code_fixtures]: "![seed] — malformed .spw fixtures show the code in parse error output"
+ ~[lsp_diagnostic_code]: "&[lsp] — set Diagnostic.code and a next-action message from the station code in handlers/analysis.ts (it emits source 'spw' and the message '<rule>: parse error' today)"
+ ~[doctor_lsp_check]: "&[cli] — spw doctor gains a check for LSP launch, with a case in doctor.test.ts (doctor.test.ts has no LSP case today)"
+ ~[vscode_output_channel]: "&[vscode] — Spw output channel carrying station-attributed diagnostics (no output channel exists; the only status item is the context strip)"
 }
 
 ^["cache"]{
@@ -133,14 +127,26 @@
  ~#rebased_at: "2026-03-28"
  ~#hygiene_split: "none; prior drift landed on main"
  ~#files_hot: "packages/spw-runtime/src/pipeline/, packages/spw-seed/src/parser.ts, packages/spw-lsp/src/context.ts, packages/spw-cli/src/main.ts, extensions/vscode-spw/src/extension.ts, .agents/plans/runtime-dx-foundation/, .agents/plans/runtime-dx-foundation/references/"
- ~#next_commit: "1"
+ ~#next_commit: "station_registry"
  ~#open_count: "4"
- ~#last_stream: "2026-10-12 15:00"
+ ~#last_stream: "2026-10-12 15:20"
  ~#taste_debt: "every station phrase should survive movement between code, CLI, docs, status copy, and support conversation"
 }
 
 ^["done"]{
- ~#shipped: ["0d3d82cc &[cli] =site[doctor-install] — tighten external site bootstrap ergonomics"]
+ ~#dropped(parse_timing_hooks): "deferred until station_registry settles the code shape — parse timing hooks on spw-seed entry points; packages/spw-seed/src/instrumentation/metrics.ts already tracks rule timings, so check what it exposes first"
+ ~#dropped(runtime_station_hooks): "deferred until seed_rule_codes lands — wire station hooks through pipeline and substrate"
+ ~#dropped(resonance_timing): "deferred until seed_rule_codes lands — opt-in resonance cycle timing"
+ ~#dropped(station_propagation_test): "deferred until seed_rule_codes lands — verify station codes propagate through the substrate event chain"
+ ~#dropped(lsp_latency_telemetry): "deferred — parse duration and response latency telemetry in the LSP context"
+ ~#dropped(lsp_latency_smoke): "deferred — smoke test that LSP payloads carry station codes and timing"
+ ~#dropped(diagnostics_flag): "deferred — a --diagnostics flag on existing commands for verbose station output"
+ ~#dropped(status_bar_health): "deferred — status bar indicator for LSP connection health and parse performance"
+ ~#dropped(settings_validation): "deferred — settings validation with actionable error messages"
+ ~#dropped(output_channel_test): "deferred — verify the output channel shows station-attributed diagnostics while editing"
+ ~#dropped(dx_playbook): "deferred — DX playbook for install, health check and troubleshooting; write it from what the named slices actually ship"
+ ~#dropped(instrumentation_guide): "deferred — guide to reading station codes; write it from what the named slices actually ship"
+ ~#dropped(station_model_artifact): "deferred until station_registry — formalize the station model in runtime-dx-foundation.spw"
 }
 
 #>wonder_agents_plans_runtimedxfoundation_wip_1

@@ -1014,12 +1014,7 @@ Actors: human · static CI · LLM. Workbench as harness example + template (form
 
 ## Commits (planning → later implementation)
 
-1. landed (08e2bc1c, da5189bb) — `.[plans] — stage spw-garden-geometry doctrine and artifact`  
-2. `&[lsp] — true deltaEnter (local minus parent ambient) in DocumentLineContext, with fixtures`  
-3. `&[lsp] — anti-echo hover builder, delta-first (inlays already landed in 2ddc73c9)`  
-4. `&[lsp] — brace pair table and symmetry metrics (E0/E1)`  
-
-Deferred until the custom-request registry exists and profile_syntax and stats_home are answered: pulse profiles with `spw/pulseRun`, `lensPreview` then `lensApplyTick`, `gardenStats`/`fileFeatures`, the VS Code and Neovim wrappers, and the mounted-consumer notes. The old commit 8 (fixtures) rides with commits 2 to 4.
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 

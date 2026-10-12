@@ -21,7 +21,8 @@ One align episode. Preserve frame/body/scope/capsule and bare identifier shape. 
 normalize.ts remains below 600 lines; construction logic stays in a focused helper. index.ts is already above the guard and receives exports only. Runtime changes are confined to its entry boundary, not evaluator dispatch.
 
 ## Commits
-1. &[seed,runtime] — preserve normalized construction attachments (landed as `55c16e3b`)
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
+
 Plan recorded before code and included in the single requested episode.
 
 ## Agentic Hygiene

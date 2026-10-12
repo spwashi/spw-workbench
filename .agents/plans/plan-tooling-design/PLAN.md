@@ -23,12 +23,12 @@ Taste note:
 
 ## Changes ordered by value
 
-1. `plan:settle` (owned here, commits 1-2). First slice: `--resolve <label> --answer <text> --evidence <ref>` moves a question line into done as `~#resolved(label)` and recomputes `open_count`; `--ship N --hash <sha>` moves a commit and leaves the pointer comment. Plan-only delta by default.
-2. `plan:check` fix lines (commit 3). First slice: each drift issue prints the command that clears it; stale_base_ref prints the merge-base candidate.
+1. `plan:settle` (owned here, `settle_fixture` and `settle_verb`). First slice: `--resolve <label> --answer <text> --evidence <ref>` moves a question line into done as `~#resolved(label)` and recomputes `open_count`; `--ship N --hash <sha>` moves a commit and leaves the pointer comment. Plan-only delta by default.
+2. `plan:check` fix lines (`check_fix_hints`). First slice: each drift issue prints the command that clears it; stale_base_ref prints the merge-base candidate.
 3. Invalid cause and span in pulse (routed to runtime-dx-foundation).
 4. Pulse report parity between stdin and file (routed to curiosity-mutation-ergonomics).
-5. `mem dump` caller-chosen roots (commit 4). First slice: repeatable root paths under the dump extra folder.
-6. `plan:stream` dry-run reports parse-health effect (commit 5), after plan-stream-parse-health lands; until then an unquoted line is correct under the plan lens and needs no validator.
+5. `mem dump` caller-chosen roots (`mem_dump_roots`). First slice: repeatable root paths under the dump extra folder.
+6. `plan:stream` dry-run reports parse-health effect (`stream_dry_run_health`), after plan-stream-parse-health lands; until then an unquoted line is correct under the plan lens and needs no validator.
 7. Profile guard and baseline ref (routed; decisions are open questions here).
 
 ## Scope
@@ -48,22 +48,17 @@ Craft guard:
 
 ## Commits
 
-1. ![plans] — failing settle fixture.
-2. #[plans] — plan:settle verb.
-3. &[plans] — plan:check fix lines.
-4. &[cli] — mem dump caller-chosen roots.
-5. &[plans] — plan:stream dry-run health effect.
-6. .[plans] — schema comments and skill note.
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 
 - Rebase target: `main`
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before `settle_fixture`, before merge
 - Hygiene split: none
 
 ## Dependencies
 
-Commit 5 needs plan-stream-parse-health. Routed slices depend on curiosity-mutation-ergonomics and runtime-dx-foundation, both currently dormant; this plan does not reheat them.
+`stream_dry_run_health` needs plan-stream-parse-health. Routed slices depend on curiosity-mutation-ergonomics and runtime-dx-foundation, both currently dormant; this plan does not reheat them.
 
 ## Failure Modes
 

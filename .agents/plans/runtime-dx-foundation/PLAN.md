@@ -60,16 +60,7 @@ Taste note: improve **clarity** and **correctness** with explicit contracts, str
 
 ## Commits
 
-Dormant. The original twenty station-by-station commits were a template; only slices with a concrete code target today are kept. Commit 11 (`spw doctor`) landed in 0d3d82cc.
-
-1. `#[dx-diagnostics] — station registry: station ids and the SPW-<STATION>-<NNN> shape, with doctor's check ids as the first entries`
-3. `&[seed] — a stable code per grammar rule on parse errors`
-4. `![seed] — malformed .spw fixtures show the code in parse error output`
-8. `&[lsp] — set Diagnostic.code and a next-action message from the station code in handlers/analysis.ts`
-13. `&[cli] — spw doctor gains a check for LSP launch, with a test case`
-14. `&[vscode] — Spw output channel carrying station-attributed diagnostics`
-
-Deferred until commit 1 settles the code shape: 2, 5 to 7, 9, 10, 12, 15 to 20.
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy:
 - Explore: `npm run fuzz:runtime` (catch diagnostic hook regressions)
@@ -79,7 +70,7 @@ Fuzz strategy:
 ## Agentic Hygiene
 
 - Rebase target: `main@3b1747c4` (updated 2026-03-27; lore-era 591a86c6 no longer reachable)
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before station_registry, before merge
 - Hygiene split: none; prior local drift in package.json has landed on main
 
 ## Dependencies

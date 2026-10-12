@@ -24,14 +24,12 @@ The current runtime passes `FrameId`, `RegisterId`, and `DomainId` as simple str
 
 ## Commits
 
-1. `types[seed] — add branding utility and brand core identifiers (Frame, Register, Domain)` (landed `df312bb8`)
-2. `types[runtime] — apply branded IDs to RegisterBank and Substrate` (landed `df312bb8`)
-3. `test[runtime] — align tests to branded identifier types` (landed `df312bb8`)
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 
-- Rebase target: historical baseline not recorded in the original branch memory; rebase onto current `main` before commit 1.
-- Rebase cadence: before commit 1, before merge
+- Rebase target: historical baseline not recorded in the original branch memory; rebase onto current `main` before brand_utility.
+- Rebase cadence: before brand_utility, before merge
 - Hygiene split: none recorded in the original branch memory; verify worktree drift before implementation.
 
 ## Dependencies

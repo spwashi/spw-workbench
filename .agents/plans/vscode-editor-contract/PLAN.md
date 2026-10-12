@@ -57,14 +57,12 @@ Routed from the roadmap table in `vscode-lsp-roadmap/PLAN.md`. Two asks are cont
 
 ## Commits
 
-1. `.[plans] — formalize vscode-editor-contract PLAN and artifact skeleton`
-2. `.[plans] — publish observation, authority, and invalidation tables`
-3. `.[docs]? — link contract from extension README if stable`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 
 - Rebase target: `main@b4832193891b2b89b7e1e20dc0e462e2e4c9236e`
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before stage_prompting_surfaces, before merge
 - Hygiene split: required before implementation
 
 ## Dependencies

@@ -54,13 +54,7 @@ Craft guard:
 
 ## Commits
 
-1. LANDED in b41caa6b: `.[plans] — stage typescript-toolchain-observatory planning artifacts`
-2. MOVED to typescript-perf-audit-infra commit 2 (profile and configuration runner)
-3. MOVED to typescript-perf-audit-infra commit 3 (version matrix)
-4. `#[projection] — emit JSON, Markdown, and .spw projections from toolchain experiments`
-5. `&[release] — inspect jsdist, declaration outputs, and pack surfaces across toolchain variants`
-6. `.[docs] — publish observatory protocol, interpretation guide, and release-implication notes`
-7. `![toolchain] — verify profile loops, version matrix, projection outputs, and bundle QA stay truthful`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy:
 - Explore: `npm run build && npx tsc -b tsconfig.json --extendedDiagnostics`
@@ -70,7 +64,7 @@ Fuzz strategy:
 ## Agentic Hygiene
 
 - Rebase target: `main@e19267b9`
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before stage_observatory, before merge
 - Hygiene split: none
 
 ## Dependencies

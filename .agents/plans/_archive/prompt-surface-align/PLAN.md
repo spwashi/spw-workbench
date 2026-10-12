@@ -37,11 +37,7 @@ The JSON TextMate grammars are large and duplicated across VS Code and IntelliJ,
 
 ## Commits
 
-1. `.[prompt-surface] — plan parser and editor alignment for prompt packs` (landed `73775143`)
-2. `&[seed] — eliminate prompt-pack lexer errors in parser surface` (landed `7f5fb324`)
-3. `&[lsp] — align annotation and completion support with prompt headers` (landed `7f5fb324`)
-4. `&[plugins] — teach VS Code and IntelliJ prompt-surface syntax` (landed `7f5fb324`)
-5. `![prompt-surface] — lock prompt parsing and plugin anchor behavior with tests` (landed `7f5fb324`)
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy:
 - Explore loop: `fuzz:explore --target=prompt-surface`
@@ -51,7 +47,7 @@ Fuzz strategy:
 ## Agentic Hygiene
 
 - Rebase target: `main@737751435d515b93c4e39963b58fe2373070fa8b`
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before plan_alignment, before merge
 - Hygiene split: none; `main...HEAD` shows no unrelated drift outside `.agents/plans/`
 
 ## Dependencies

@@ -45,15 +45,12 @@ The desired end state is an audit surface whose command names, coverage, and out
 
 ## Commits
 
-Landed: commit 1 in b28ffcb8, commit 2 in 0921e6f7, commit 3 in 234aa5c5. Remaining:
-
-4. `&[fuzz] — rename or retire fuzz:complexity, fuzz:dead, fuzz:naming (aliases of audit:markers:md) and fuzz:async, fuzz:boonhonk (aliases of test:runtime); add scripts/analyzers/fuzz-profile-runner.ts only if a stage needs more than an npm script`
-5. `.[docs] — align spw-craft-quality and spw-fix-planning skills to the surviving fuzz and lint names`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 
 - Rebase target: historical baseline `07ffc5a17a55340c3f7000313df68cf0453a7b10` (not on rewritten main)
-- Rebase cadence: before commit 1, before merge
+- Rebase cadence: before file_audit_plan, before merge
 - Hygiene split: keep unrelated untracked drift in `src/runtime/state/register-helpers.ts` out of this branch.
 
 ## Dependencies

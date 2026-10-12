@@ -127,15 +127,7 @@ select → plan → materialize intermediate → review → apply → verify →
 
 ## Commits
 
-1. landed (da5189bb) — `.[refactor] — plan refactor-experiment-lifecycle artifacts`
-2. `vocab[seed] — selection contentHash and a stale-refusing check on spw.refactor.plan/1` (the plan card landed in 75d8f9d2 without hashes)
-3. `![seed] — refactor-plan tests for stale hash, conflict and compose`
-4. `#[cli] — selection corpus and plan/check from semantic rules`
-5. `&[cli] — hash-gated workspace apply and receipt envelope`
-6. `&[cli] — worktree apply (l1) and episode commit helper`
-7. `#[cli] — bias/experiment surface compiles to a plan`
-8. `.[docs] — refactor-experiment and pulse-mutate matrix`
-9. `#[lsp] — WorkspaceEdit from plan (optional follow-on)`
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Fuzz strategy
 
@@ -146,7 +138,7 @@ select → plan → materialize intermediate → review → apply → verify →
 ## Agentic Hygiene
 
 - Rebase target: `main@0c7cdfb7178079bf27a9a062ba1b310d07296f41`
-- Rebase cadence: before commit 1 on feature branch, before merge
+- Rebase cadence: before `plan_artifacts` on feature branch, before merge
 - Hygiene split: plan-only commits separate from implementation; no `*.d.ts` noise
 
 ## Dependencies

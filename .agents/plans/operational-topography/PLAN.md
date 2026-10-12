@@ -250,21 +250,7 @@ babble -> candidate pattern -> exact fixture -> impact packet -> steward review
 
 ## Commits
 
-1. `.[plans] =scope[operational-topography] — establish trajectory and plan contract`
-2. `.[theory] =formalize[operational-topography] — distinguish orientation, layout, and effects`
-3. `.[skills] =instrument[topographic-samples] — make probes revision-aware and agent-portable`
-4. `vocab[seed,runtime] =model[tagged-coupling] — share boundary kinematics without flattening operational kinds`
-5. `^tooling[seed] =measure[parsed-topography] — ship evidence-bearing read-only corpus scans`
-6. `^tooling[seed,cli] =contour[expand,reduce] — expose density projections with loss and restoration receipts`
-7. `vocab[lsp] =register[protocol] — make custom capability truth canonical and tested`
-8. `vocab[seed,lsp] =model[selection-transect,differential] — add typed observations and edit previews`
-9. `^seed[lsp,query] =sample[topographic-evidence] — implement exact-first read-only evidence packets`
-10. `&[seed,lsp,cli] =preview[layout,label] — expose parser-checked differential plans`
-11. `&[runtime,cli] =plan[hydration] — compile abstract sequences into previewable effect plans`
-12. `&[vscode,neovim] =project[topography] — render one server-owned contract in thin clients`
-13. `![topography] *verify[semantics,portability,cost] — prove invariants and negative controls`
-
-Landed: 1-8 through a333db8d, 86d433b4, 55190299, f96015fc, 7471a4fd and a4d21953 (not one-to-one; see wip.spw ^done). Open: 9 `^seed[grammar] — populate openLabel/closeLabel`; 11 hydration planner; 12 editor projection moved to form-geometry-editor; 13 verify.
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 Fuzz strategy:
 
@@ -276,7 +262,7 @@ Fuzz strategy:
 ## Agentic Hygiene
 
 - Rebase target: `main@b4832193891b2b89b7e1e20dc0e462e2e4c9236e`
-- Rebase cadence: before implementation commit 1 and before merge.
+- Rebase cadence: before `scope_plan_contract` and before merge.
 - Hygiene split: required before implementation. The current checkout is `main` with pre-existing unstaged and untracked work across mounted tooling, editor plans, documentation, CLI, Seed, and LSP. This planning/theory pass preserves that work in place, does not rebase it, and does not claim branch isolation. A later implementation branch must select reviewed changes deliberately.
 
 ## Dependencies

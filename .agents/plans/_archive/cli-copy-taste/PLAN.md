@@ -76,15 +76,12 @@ Taste note: improve **clarity**, **recognizability**, **naming**, and **expressi
 
 ## Commits
 
-1. `.[plans] — bound CLI copy and taste audit` (landed cb84c040)
-2. `vocab[cli] — clarify outcomes, controls, and recommendations` (landed 3b5b5d90)
-3. `.[conventions] — codify CLI voice and metaphor boundaries` (landed 350fda27)
-4. `.[changelog] — publish unreleased workbench changes` (landed a84348c5)
+Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Agentic Hygiene
 
 - Rebase target: `main@c46558ffbb29a10abb1fee11dbec8aa522cbc8b3`
-- Rebase cadence: main is an ancestor before commit 1; recheck before merge
+- Rebase cadence: main is an ancestor before bound_copy_audit; recheck before merge
 - Hygiene split: continue in the clean `codex/gap-affinity-tooling` worktree because the audited controls landed on this branch; isolate the plan, executable copy, convention, and changelog episodes and do not absorb unrelated main/worktree drift
 
 ## Dependencies
