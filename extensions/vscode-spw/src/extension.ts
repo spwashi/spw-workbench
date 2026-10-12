@@ -16,6 +16,7 @@ import { registerWorkspaceAtlasView } from './views/workspace-tree'
 import { registerSpwCommands } from './commands'
 import { registerSpwInstrumentCommands } from './instruments/commands'
 import { ProbeCache } from './instruments/probe-cache'
+import { registerQuestWalkthrough } from './quest/walkthrough'
 import { readSurfaceConfig, registerSurfaceDecorations } from './surface-decorations'
 
 let client: LanguageClient | undefined
@@ -54,6 +55,7 @@ export function activate(context: vscode.ExtensionContext): void {
     }),
     ...registerSpwCommands(client, requests),
     ...registerSpwInstrumentCommands(client, requests, probeCache),
+    ...registerQuestWalkthrough(context),
   ]
 
   context.subscriptions.push(...disposables)

@@ -89,6 +89,12 @@ async function verifyRuntimeFiles(manifest, root) {
   for (const snippets of manifest.contributes?.snippets ?? []) {
     required.add(runtimePath(snippets.path, 'snippet path'))
   }
+  for (const walkthrough of manifest.contributes?.walkthroughs ?? []) {
+    for (const step of walkthrough.steps ?? []) {
+      const media = step.media?.markdown ?? step.media?.image ?? step.media?.svg
+      if (typeof media === 'string') required.add(runtimePath(media, `walkthrough ${walkthrough.id} step ${step.id} media`))
+    }
+  }
 
   for (const relativePath of required) {
     const target = path.resolve(root, relativePath)
@@ -104,7 +110,8 @@ function verifyCommandContributions(manifest) {
   const actual = (manifest.contributes?.commands ?? [])
     .map((entry) => entry.command)
     .sort()
-  // Reviewed 2026-08-24: every entry below is registered in extension source.
+  // Reviewed 2026-10-12: every entry below is registered in extension source
+  // (renameSymbol and planCorpusRefactor in src/instruments/commands.ts).
   // Keep this independent receipt explicit rather than deriving it from the
   // manifest being verified.
   const expected = [
@@ -113,6 +120,8 @@ function verifyCommandContributions(manifest) {
     'spw.inspectCache',
     'spw.inspectGeometry',
     'spw.navigate',
+    'spw.planCorpusRefactor',
+    'spw.renameSymbol',
     'spw.restartLanguageServer',
     'spw.showFormSequence',
     'spw.showFlowProtocol',

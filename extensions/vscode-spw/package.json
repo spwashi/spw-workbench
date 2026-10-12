@@ -27,7 +27,8 @@
     "activationEvents": [
         "onLanguage:spw",
         "onView:spwConcepts",
-        "onView:spwWorkspace"
+        "onView:spwWorkspace",
+        "onCommand:spw.quest.tryStep"
     ],
     "engines": {
         "vscode": "^1.80.0"
@@ -43,6 +44,7 @@
         "compile:client": "esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --alias:@spwashi/spw-lsp/workspace-protocol=../../packages/spw-lsp/src/workspace-protocol.ts --format=cjs --platform=node",
         "compile": "npm run compile:server && npm run compile:client",
         "build": "npm run typecheck && npm run compile",
+        "quest:sync": "tsx scripts/sync-quest.ts",
         "watch": "npm run compile:server && esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --alias:@spwashi/spw-lsp/workspace-protocol=../../packages/spw-lsp/src/workspace-protocol.ts --format=cjs --platform=node --watch"
     },
     "categories": [
@@ -355,6 +357,64 @@
                     "group": "navigation@1"
                 }
             ]
-        }
+        },
+        "walkthroughs": [
+            {
+                "id": "spw.quest",
+                "title": "Get started with Spw",
+                "description": "Write a line, see what Spw reads, and know what it lets you grow. Seven steps, one change each.",
+                "steps": [
+                    {
+                        "id": "write",
+                        "title": "Write a line",
+                        "description": "Opens this step's line in a scratch .spw file that the language server reads: hover a word, open the outline, and watch the Problems panel as you edit.\n[Try it](command:spw.quest.tryStep?%5B%22write%22%5D)",
+                        "media": { "markdown": "walkthrough/write.md" },
+                        "completionEvents": ["onContext:spw.quest.tried.write"]
+                    },
+                    {
+                        "id": "act",
+                        "title": "Act on a word",
+                        "description": "Opens this step's lines in a scratch .spw file that the language server reads: hover a word, open the outline, and watch the Problems panel as you edit.\n[Try it](command:spw.quest.tryStep?%5B%22act%22%5D)",
+                        "media": { "markdown": "walkthrough/act.md" },
+                        "completionEvents": ["onContext:spw.quest.tried.act"]
+                    },
+                    {
+                        "id": "hold",
+                        "title": "Hold the parts of a thing",
+                        "description": "Opens this step's line in a scratch .spw file that the language server reads: hover a word, open the outline, and watch the Problems panel as you edit.\n[Try it](command:spw.quest.tryStep?%5B%22hold%22%5D)",
+                        "media": { "markdown": "walkthrough/hold.md" },
+                        "completionEvents": ["onContext:spw.quest.tried.hold"]
+                    },
+                    {
+                        "id": "name",
+                        "title": "Name the page",
+                        "description": "Opens this step's lines in a scratch .spw file that the language server reads: hover a word, open the outline, and watch the Problems panel as you edit.\n[Try it](command:spw.quest.tryStep?%5B%22name%22%5D)",
+                        "media": { "markdown": "walkthrough/name.md" },
+                        "completionEvents": ["onContext:spw.quest.tried.name"]
+                    },
+                    {
+                        "id": "point",
+                        "title": "Point to another page",
+                        "description": "Opens this step's line in a scratch .spw file that the language server reads: hover a word, open the outline, and watch the Problems panel as you edit.\n[Try it](command:spw.quest.tryStep?%5B%22point%22%5D)",
+                        "media": { "markdown": "walkthrough/point.md" },
+                        "completionEvents": ["onContext:spw.quest.tried.point"]
+                    },
+                    {
+                        "id": "ask",
+                        "title": "Ask a question",
+                        "description": "Opens this step's line in a scratch .spw file that the language server reads: hover a word, open the outline, and watch the Problems panel as you edit.\n[Try it](command:spw.quest.tryStep?%5B%22ask%22%5D)",
+                        "media": { "markdown": "walkthrough/ask.md" },
+                        "completionEvents": ["onContext:spw.quest.tried.ask"]
+                    },
+                    {
+                        "id": "grow",
+                        "title": "Grow it in a repository",
+                        "description": "In a workspace with .spw/_workbench, opens a terminal with the lint and resolve commands typed in; press Enter to run them. Without it, offers the quick start.\n[Try it](command:spw.quest.tryStep?%5B%22grow%22%5D)",
+                        "media": { "markdown": "walkthrough/grow.md" },
+                        "completionEvents": ["onContext:spw.quest.tried.grow"]
+                    }
+                ]
+            }
+        ]
     }
 }
