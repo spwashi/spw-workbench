@@ -1,0 +1,75 @@
+# wip — onboarding-quest
+# Started: 2026-10-12
+
+#>plan_onboarding_quest
+#:plan #!projection_feedback
+#:layer #!pragmatics
+
+@["card"]{
+ phase: #active
+ gist: "A newcomer meets Spw by playing in it: one quest every host draws, and a .spw folder of forks, experiments, shelves, wonders and asks"
+ touches: [~"docs/learn/quest.spw", ~"packages/spw-cli/templates/init/presets/quest", ~"packages/spw-seed/src/learn", ~"extensions/vscode-spw/src/quest", ~"extensions/intellij-spw/src/main/kotlin/com/spwashi/spw"]
+ entry: ~"./PLAN.md"
+ next: "~[pin_spw_quest]: once the workbench is pushed, pin spw.quest to it and point /init at --preset quest."
+}
+
+^["edges"]{
+ needs: [~"../plan-stream-parse-health/wip.spw"]
+ shares: [~"../vscode-authoring-probe-loop/wip.spw", ~"../plan-plugin-integration/wip.spw", ~"../shape-syntax-ecology/wip.spw", ~"../mounted-consumer-tooling/wip.spw"]
+}
+
+^["roots"]{
+ @plan: ~".agents/plans/onboarding-quest/PLAN.md"
+ @quest: ~"docs/learn/quest.spw"
+ @storyboard: ~"docs/learn/quest-storyboard.spw"
+ @preset: ~"packages/spw-cli/templates/init/presets/quest/.spw/quest/index.spw"
+ @checks: ~"packages/spw-seed/src/learn/quest.ts"
+ @fixity: ~"docs/theory/spw/fixity-brace-phrases.spw"
+ @ladder: ~"docs/theory/spw/apposition.spw"
+}
+
+^["intent"]{
+ ~#goal: "Onboarding invites play with the syntax itself: a reader forks a form, sees what the parser read, shelves the claim from felt to measured, and leaves with an ask the workbench can act on"
+ ~#taste: "one open question carried through every surface, so play and evidence are the same act"
+}
+
+^["open"]{
+ # Unresolved questions. When resolved: log in stream, then move to ^["done"] as ~#resolved(label).
+ ?[default_preset]: "Should spw init write .spw/quest by default, or only with --preset quest?"
+ ?[postfix_binds]: "Should door~ bind to the word before it, as the fixity_dual experiment proposes? The quest's first ask depends on the creator's call."
+ ?[asks_transport]: "How do a consumer's asks reach the workbench: an issue per ask, a pull request with the file, or a workbench command that reads mounted consumers?"
+ ?[bubble_map]: "Is the operator-to-balloon mapping right: ~ thought, ? question, ! burst, . statement, #> name plate, an apposition as an aside?"
+ ?[ladder_order]: "Should the seven panels reorder to climb the reading ladder (write, name, aside, act, hold, point, ask), or keep the smallest-act order?"
+}
+
+^["commits"]{
+ # Named, in order. Planned ~[name]; landed .[name](hash). Names are never reused.
+ .[quest_source](612caa14): "#[learn] — write the quest once, as seven panels at a door"
+ .[quest_cli_scaffold](d0ec5c46): "&[seed,cli] — spw quest walks the panels, and spw init writes a .spw an agent can grow"
+ .[vscode_walkthrough](214fd07b): "&[vscode] — a Get started walkthrough drawn from the quest, and a release tarball that carries it"
+ .[webstorm_quest](b586598c): "&[intellij] — start the Spw quest from WebStorm"
+ .[play_preset](3f2e2082): "&[cli] — spw init --preset quest writes a .spw to play in, and a shape for asking the workbench"
+ ~[pin_spw_quest]: "+[quest] (site repo) — pin spw.quest to the release revision and point /init at --preset quest"
+ ~[quest_project]: "&[cli] — spw quest --project <file> prints each form's fingerprint beside the recorded projection and marks drift; plan-only"
+ ~[collect_asks]: "&[cli] — read a consumer's asks.spw and print the asks in slot order, as text or JSON for an issue"
+ ~[storyboard_v2]: "#[learn] — after ?[bubble_map] and ?[ladder_order]: fold the storyboard draft into quest.spw and re-sync every host"
+}
+
+^["cache"]{
+ ~#status: "active"
+ ~#base_ref: "main@8ae9d35e"
+ ~#rebased_at: "2026-10-12"
+ ~#files_hot: "docs/learn/quest.spw, packages/spw-cli/templates/init/presets/quest, packages/spw-seed/src/learn/quest.ts"
+ ~#next_commit: "pin_spw_quest"
+ ~#open_count: "5"
+ ~#last_stream: "2026-10-12 18:07"
+}
+
+^["done"]{
+ # Local history: written incrementally, finalized at merge.
+}
+
+^["stream"]{
+ >>[2026-10-12 17:22] decide — Creator decided 2026-10-12: onboarding should invite play with the syntax through a .spw directory: forked options with their projections, experimental syntax, wonder, probes and measurements, objective and subjective shelves, and a structure for upstream requests. Plan opened to hold the quest surfaces and their follow-ups.
+ >>[2026-10-12 18:07] implement — Landed: quest source 612caa14, spw quest and the grow scaffold d0ec5c46, VS Code walkthrough 214fd07b, WebStorm action b586598c, and the play preset 3f2e2082. quest-preset.test.ts holds every recorded projection to the live parser; a scratch consumer lints clean and spw measure reconciles forks.spw with 0 drift.
+}
