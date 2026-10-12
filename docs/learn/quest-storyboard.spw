@@ -1,0 +1,130 @@
+# Quest storyboard — the first steps as panels, a draft
+#
+# Proposed shape for the next quest: each panel is a scene, a speaker and a
+# bubble, and the panels climb the reading ladder from text to structure.
+# quest.spw stays the release source until this draft is accepted.
+
+#>learn_quest_storyboard
+#:learn #!onboarding
+#:status #!proposed
+#:layer #!pragmatics
+
+^["roots"]{
+ @quest: ~"./quest.spw"
+ @fixity: ~"../theory/spw/fixity-brace-phrases.spw"
+ @ladder: ~"../theory/spw/apposition.spw"
+ @positions: ~"../theory/spw/form-geometry.spw"
+ @operators: ~"../theory/spw/operators.spw"
+}
+
+^["intent"]{
+ ~#goal: "A storyboard a reader walks: each panel shows who speaks, where, and what kind of bubble the operator makes"
+ ~#law: "A panel's layer is the reading ladder in apposition.spw, levels 0 to 4. It is never the runtime register liminality (local, liminal, visible, global), which only an explicit bridge moves."
+ ~#taste: "comics already has a grammar of balloons; the operator chooses the balloon, so the reader sees what the act does before reading a definition"
+}
+
+^["panel_grammar"]{
+ scene = "a ( ) scene: where the panel happens"
+ speaker = "an @ perspective: whose bubble it is"
+ bubble = "the line itself; the operator in front of the word sets the bubble's kind"
+ layer = "how far the line has become structure, from the ladder in apposition.spw"
+ fixity = "where the act sits relative to what it acts on: prefix, postfix, interior, membrane"
+}
+
+^["bubbles"]{
+ // Proposed mapping from operator to balloon. The reader names come from operators.spw.
+ caption = "no operator: the narrator's box, plain words"
+ thought = "~ potential: a cloud; kept open, not yet said"
+ question = "? wonder: a bubble that waits for an answer"
+ burst = "! action: a burst; something is committed"
+ statement = ". ground: a plain bubble; this settles here"
+ nameplate = "#> vibration as a frame address: the name plate on the panel"
+ aside = "~#name( ) apposition: a small bubble pinned beside the word it reads"
+}
+
+^["ladder"]{
+ // From apposition.spw ^["liminality_ladder"]; panels claim a level, a probe confirms it.
+ level_1 = "prose: in the file as words, no semantics yet"
+ level_2 = "named datum: queryable, a property of nothing in particular"
+ level_3 = "apposition: a reading bound to what it sits beside"
+ level_4 = "structure: takes part in resolution"
+}
+
+^["panels"]{
+ caption: .{
+  scene = `(morning)`
+  line = `the same door, again this morning`
+  bubble = "caption"
+  layer = "level_1"
+  quest_step = "write"
+ }[reg=facet]
+
+ nameplate: .{
+  scene = `(desk)`
+  line = `#>my_notes`
+  then = #[ `noticed = \`the same door\`` ]
+  bubble = "nameplate"
+  layer = "level_2"
+  quest_step = "name"
+ }[reg=facet]
+
+ aside: .{
+  scene = `(hallway)`
+  line = `door ~#says(\`again\`)`
+  bubble = "aside"
+  layer = "level_3"
+  quest_step = "new: apposition"
+ }[reg=facet]
+
+ four_bubbles: .{
+  scene = `(threshold)`
+  line = `~door`
+  then = #[ `?door`, `!door`, `.door` ]
+  bubble = "thought, question, burst, statement"
+  layer = "level_4"
+  fixity = "prefix"
+  quest_step = "act"
+ }[reg=facet]
+
+ hold: .{
+  scene = `(threshold)`
+  line = `door[closed]{hinge, frame, key}<threshold>`
+  bubble = "statement"
+  layer = "level_4"
+  fixity = "membrane: the < > capsule is the panel's border"
+  quest_step = "hold"
+ }[reg=facet]
+
+ speaker: .{
+  scene = `(kitchen)`
+  line = `@yesterday: ~"./yesterday.spw"`
+  bubble = "thought"
+  layer = "level_4"
+  quest_step = "point"
+ }[reg=facet]
+
+ question: .{
+  scene = `(kitchen)`
+  line = `?["why the same door"]{ !probe{ "count the doors this week" } }`
+  bubble = "question with a burst inside"
+  layer = "level_4"
+  fixity = "interior: the ! act sits inside the question's body"
+  quest_step = "ask"
+ }[reg=facet]
+
+ before_after: .{
+  scene = `(threshold)`
+  line = `~door`
+  then = #[ `door~` ]
+  bubble = "thought, then the same thought arriving after the word"
+  layer = "level_4 for the prefix; see the open question for the postfix"
+  fixity = "prefix: the act arms before the word; postfix: the word first, the act discharges after"
+  quest_step = "new: fixity"
+ }[reg=facet]
+}
+
+^["open"]{
+ ?[postfix_binds]: "door~ parses today as two expressions, the word and an operator with no operand, so a before/after panel can only say postfix does not bind yet; should the parser bind a postfix operator to the word before it (Operation with position postfix), as fixity-brace-phrases.spw proposes?"
+ ?[bubble_map]: "Is the operator-to-balloon mapping right: ~ thought, ? question, ! burst, . statement, #> name plate, apposition as an aside?"
+ ?[ladder_order]: "Should the release quest reorder to climb the ladder (write, name, aside, act, hold, point, ask, fixity, grow), or keep its seven steps and let only spw.quest draw panels?"
+}
