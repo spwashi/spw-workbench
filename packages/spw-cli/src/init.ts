@@ -68,7 +68,6 @@ export function printInitUsage(): void {
       {
         title: 'Compatibility',
         lines: [
-          '.spw/README.md              prompt and navigation entrypoint',
           'spw install [target-directory]',
           'npm run spw -- install [target-directory]',
           'npm run spw:install -- [target-directory]',
@@ -77,15 +76,22 @@ export function printInitUsage(): void {
       {
         title: 'Scaffolds',
         lines: [
-          '.spw/README.md              prompt and navigation entrypoint',
-          '.spw/index.spw              routing table and surface registry',
-          '.spw/mount.spw              studio binding and deployment targets',
+          '.spw/README.md              orientation, grow moves, and the verify commands',
+          '.spw/index.spw              routing table, a ^["grow"] frame, and a first question',
+          '.spw/mount.spw              workbench mount and resolve paths',
           '.spw/workspace.spw          workspace roots and LSP configuration',
+          '.agents/workflows/commit-review.md',
+          '.git/hooks/pre-commit (portable resolver when target is a git repo)',
+          'Existing files are kept; init only adds what is missing.',
+        ],
+      },
+      {
+        title: 'Preset show adds',
+        lines: [
           '.spw/origin.spw             generative seed and chromatic palette',
           '.spw/containers.spw         chunking scheme and CSS container mapping',
           '.spw/anchors.spw            cultural precipitation and merchandise readiness',
-          '.agents/workflows/commit-review.md',
-          '.git/hooks/pre-commit (portable resolver when target is a git repo)',
+          'public/, content/           an installable site; the preset replaces the base .spw files',
         ],
       },
       {
@@ -364,20 +370,28 @@ async function installWorkbench(options: InitCliOptions, runtime: InitRuntimeCon
   console.log(`\n${bold(green('Init Complete.'))}`)
   printDoctorReport(report)
   console.log('Suggested next steps:')
-  if (report.status === 'ok') {
-    console.log('  1. Open the consumer root in your editor')
-    console.log('  2. Run: npm --prefix .spw/_workbench run spw -- help')
-  } else if (!hasWorkbench) {
-    console.log('  1. git submodule add https://github.com/spwashi/spw-workbench .spw/_workbench')
-    console.log('  2. cd .spw/_workbench && npm install')
-    console.log('  3. cd .spw/_workbench && npm run spw:doctor -- ../..')
-  } else if (!hasWorkbenchDependencies) {
-    console.log('  1. cd .spw/_workbench && npm install')
-    console.log('  2. cd .spw/_workbench && npm run spw:doctor -- ../..')
-  } else {
-    console.log('  1. cd .spw/_workbench && npm run spw:doctor -- ../..')
-  }
+  suggestedNextSteps({ ready: report.status === 'ok', hasWorkbench, hasWorkbenchDependencies }).forEach((step, index) => {
+    console.log(`  ${index + 1}. ${step}`)
+  })
   console.log('')
+}
+
+/** Next steps from the consumer root; every path ends at the quest. */
+export function suggestedNextSteps(state: {
+  ready: boolean
+  hasWorkbench: boolean
+  hasWorkbenchDependencies: boolean
+}): string[] {
+  const steps: string[] = []
+  if (state.ready) {
+    steps.push('Open the consumer root in your editor')
+  } else {
+    if (!state.hasWorkbench) steps.push(`git submodule add ${WORKBENCH_GIT_URL} .spw/_workbench`)
+    if (!state.hasWorkbenchDependencies) steps.push('npm --prefix .spw/_workbench install')
+    steps.push('npm --prefix .spw/_workbench run spw -- doctor ../..')
+  }
+  steps.push('npm --prefix .spw/_workbench run spw -- quest')
+  return steps
 }
 
 async function ensureDir(dirPath: string): Promise<void> {

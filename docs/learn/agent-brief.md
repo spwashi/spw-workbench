@@ -10,6 +10,10 @@ Short contract for coding agents working this repo.
 4. **Mutate** — only after plan; effect ceilings `l1.memory` → explicit `l2.workspace`
 5. **Commit** — human Touch ID gate; episode block; no absolute user paths
 
+## Onboard a repository
+
+From the consumer repository root: mount the workbench with `git submodule add https://github.com/spwashi/spw-workbench .spw/_workbench`, install it with `npm --prefix .spw/_workbench install`, scaffold with `npm --prefix .spw/_workbench run spw:init -- ../..`, and check readiness with `npm --prefix .spw/_workbench run spw:doctor -- ../..`. Then grow once: take one move from the `^["grow"]` frame in `.spw/index.spw` (add a page, name it with `#>`, cite it from `index.spw`, or ask one question with a `!probe` in it), and confirm it with `npm --prefix .spw/_workbench run spw -- quest --check grow`, which runs `lint .spw` and `resolve --from .spw` and exits 0 when both pass. `quest --check <step> "<line>"` checks any single line the same way. Stop before any commit; leave the diff for a person to read.
+
 ## Sense loop (corpus)
 
 ```text

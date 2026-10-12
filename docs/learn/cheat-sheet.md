@@ -84,6 +84,7 @@ So `a => b` is two steps; `a -> b` is one chained expression.
 ## CLI sense loop
 
 ```bash
+spw quest [--list | --check <step> "<line>"]   # first steps; the parser checks each line
 spw invent <roots> [--role hub] [--sort degree]
 spw map <roots> [--compare other] [--hubs N]
 spw formula [roots] [--catalog] [--family field]

@@ -14,3 +14,15 @@
   mount: @mount
   workspace: @workspace
 }
+
+^["grow"]{
+  // One move at a time. After each, run the verify commands in README.md; stop before any commit and read the diff.
+  page = "add a page beside this file, notes.spw, holding one line you already keep"
+  name = "put #>notes on its first line, so other pages can point at it"
+  cite = "add @notes: ~\"./notes.spw\" to ^\"roots\" above; spw resolve follows it"
+  ask = "ask one question in the page, with the act that would answer it: ?[\"…\"]{ !probe{ \"…\" } }"
+}
+
+?["what does this repository keep in .spw so far"]{
+  !probe{ "npm --prefix .spw/_workbench run spw -- tree .spw --depth 2" }
+}

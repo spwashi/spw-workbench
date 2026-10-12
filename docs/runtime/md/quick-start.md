@@ -32,13 +32,29 @@ npm --prefix .spw/_workbench run spw -- select .spw/index.spw --selector navigab
 ```text
 consumer-repository/
 ├── .agents/workflows/commit-review.md
+├── .git/hooks/pre-commit        # commit review gate, when the target is a git repository
 └── .spw/
-    ├── README.md
-    ├── index.spw
-    ├── mount.spw
-    ├── workspace.spw
-    └── _workbench/
+    ├── README.md                # orientation, grow moves, verify commands
+    ├── index.spw                # routing table, a ^["grow"] frame, a first question
+    ├── mount.spw                # where the workbench is mounted
+    ├── workspace.spw            # workspace roots and LSP configuration
+    └── _workbench/              # the mounted workbench (infrastructure)
 ```
+
+## Next: grow
+
+```bash
+npm --prefix .spw/_workbench run spw -- quest
+```
+
+The quest walks seven lines, from a plain sentence to a cited page with a question in it, and the parser reads each one back. Its last step runs `lint .spw` and `resolve --from .spw` against this repository. Then take one move from the `^["grow"]` frame in `.spw/index.spw` and verify it:
+
+```bash
+npm --prefix .spw/_workbench run spw -- lint .spw
+npm --prefix .spw/_workbench run spw -- resolve --from .spw
+```
+
+Nothing here commits. Read the diff, then commit it yourself.
 
 Continue with the [mounted-workbench contract](mounted-workbench.md) or run `npm --prefix .spw/_workbench run spw -- help`.
 
@@ -46,6 +62,7 @@ Continue with the [mounted-workbench contract](mounted-workbench.md) or run `npm
 
 | Goal | Doc |
 |------|-----|
+| First steps, checked line by line | [docs/learn/quest.spw](../../learn/quest.spw) · `spw quest` |
 | 15 min / 1 h / 1 day paths | [docs/learn/README.md](../../learn/README.md) |
 | Operators + CLI one-pager | [docs/learn/cheat-sheet.md](../../learn/cheat-sheet.md) |
 | invent → map → formula session | [docs/learn/worked-cli.md](../../learn/worked-cli.md) · [sense-loop.md](sense-loop.md) |

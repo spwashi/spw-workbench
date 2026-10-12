@@ -6,6 +6,7 @@ Progressive paths for humans and agents. Prefer **small runnable commands** over
 
 | Time | Path | Outcome |
 |------|------|---------|
+| **First** | [Quest](quest.spw) — `npm run spw -- quest` | Seven lines, each read back by the parser; the last one checks your `.spw` |
 | **15 min** | [Path §15](path.md#15-minutes) + [cheat sheet](cheat-sheet.md) | Read a surface, open a ref, list CLI |
 | **1 hour** | [Path §1h](path.md#1-hour) + [worked CLI](worked-cli.md) | Sense-loop a tree; form wrap; dry pulse |
 | **1 day** | [Path §1d](path.md#1-day) + [examples](../examples/) | Theory + editors + one small change |
@@ -15,6 +16,7 @@ Progressive paths for humans and agents. Prefer **small runnable commands** over
 
 | Kind | Entry |
 |------|--------|
+| Quest steps (every host reads them) | [quest.spw](quest.spw) |
 | Language few-shots | [lang/few-shot](../lang/md/few-shot.spw.md) |
 | Install / mount | [runtime/quick-start](../runtime/md/quick-start.md) |
 | CLI sense loop | [runtime/sense-loop](../runtime/md/sense-loop.md) |

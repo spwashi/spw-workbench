@@ -949,3 +949,23 @@ export {
   type TemplateSlotDef,
   type SigilSnippetDef,
 } from './canonical'
+
+// Learn — quest steps and reader names shared by every host
+export {
+  CONTAINER_READER_NAMES,
+  OPERATOR_READER_NAMES,
+  QUEST_CHECKS,
+  QuestFormatError,
+  checkLine,
+  checkStep,
+  formatLineReading,
+  loadQuest,
+  readMarks,
+  type CheckLineOptions,
+  type LineReading,
+  type Quest,
+  type QuestCheckResult,
+  type QuestLineRole,
+  type QuestStep,
+  type ReaderMark,
+} from './learn'

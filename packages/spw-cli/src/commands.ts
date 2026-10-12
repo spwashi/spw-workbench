@@ -33,6 +33,7 @@ import {
   type PulseErrorEnvelope,
 } from './pulse'
 import { printQueryHelp, runQueryCli } from './query'
+import { printQuestHelp, runSpwQuestCli } from './quest'
 import { printRefactorHelp, runSpwRefactorCli } from './refactor'
 import { printRefreshHelp, runSpwRefreshCli } from './refresh'
 import { printRootsHelp, runSpwRootsCli } from './roots'
@@ -154,6 +155,13 @@ export const COMMANDS: CommandSpec[] = [
     summary: 'Create or check a workbench-shaped mount',
     printHelp: () => printMountHelp(),
     run: (invoked, args) => runSpwMountCli(argv(invoked, args)),
+  },
+  {
+    name: 'quest',
+    group: 'workspace',
+    summary: 'Walk the first steps into Spw, one checked line at a time',
+    printHelp: () => printQuestHelp(),
+    run: (invoked, args) => runSpwQuestCli(argv(invoked, args), { dispatch: dispatchCommand }),
   },
   {
     name: 'tree',
@@ -439,6 +447,13 @@ export const COMMANDS: CommandSpec[] = [
   },
 ]
 
+/** Run one subcommand in this process — how `spw quest` runs its grow step. */
+async function dispatchCommand(name: string, args: string[]): Promise<void> {
+  const spec = findCommand(name)
+  if (!spec) throw new Error(`unknown command "${name}"`)
+  await spec.run(name, args)
+}
+
 /** Every accepted token, canonical names and aliases alike. */
 export function knownCommands(): string[] {
   const names = ['help']
@@ -519,6 +534,7 @@ export function printRootHelp(): void {
       {
         title: 'Examples',
         lines: [
+          'spw quest',
           'spw doctor',
           'spw atlas --advice',
           'spw formula --catalog',
