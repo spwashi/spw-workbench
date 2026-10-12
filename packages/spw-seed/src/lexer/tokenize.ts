@@ -31,6 +31,7 @@ import {
 } from './matchers'
 import { buildConnectorMap, buildOperatorMap, resolveLexProfile } from './profiles'
 import { readPlanStreamEntry } from './plan-stream'
+import { readCommitRef } from './commit-ref'
 
 /**
  * Tokenize input, yielding ParseEvents for each token and returning all tokens.
@@ -97,6 +98,19 @@ export function* tokenize(
           timestamp: performance.now(),
           depth,
         }
+      }
+      continue
+    }
+    const commitRef = options.planStream ? readCommitRef(state) : null
+    if (commitRef) {
+      tokens.push(commitRef)
+      yield {
+        type: 'token',
+        rule: 'commitRef',
+        position: commitRef.span.start,
+        data: { token: commitRef } as TokenEventData,
+        timestamp: performance.now(),
+        depth,
       }
       continue
     }

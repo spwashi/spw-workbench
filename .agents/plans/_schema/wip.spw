@@ -38,9 +38,12 @@
 # - Open questions leave ^["open"] when resolved — resolution logged in stream first,
 #   then kept in ^["done"] as ~#resolved(label), never deleted.
 # - Commits are named, not numbered. Planned is ~[name], landed is .[name] (potential
-#   grounds into the same line): .[name]: "<hash> <subject>". Order is block position.
+#   grounds into the same line) with the change it landed in as its scene:
+#   .[name](<hash>): "<subject>". In plan files the hash lexes as one commit_ref token.
+#   A landing whose hash is unknown has no scene: .[name]: "unverified <subject>; evidence: ...".
+#   Order is block position.
 #   A name is never reused; a rescope gets new names. No range comments, ever.
-#   Landed together: each name keeps its own line, .[b]: "<hash> <subject> (with a)".
+#   Landed together: each name keeps its own line; the shared scene shows it: .[a](<hash>), .[b](<hash>).
 #   Dropped: ~#dropped(name): "<reason>" in ^["done"], one line each, beside ~#resolved(label).
 #   ~#next_commit in the cache names the next ~[name].
 # - Cache is recomputed — never hand-edited.
