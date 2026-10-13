@@ -10,7 +10,7 @@
  gist: "Every release day cuts a dated, immutable set of browser parser builds with a manifest, and spw.quest serves them for other sites to import"
  touches: [~"scripts/release", ~"docs/runtime/md"]
  entry: ~"./PLAN.md"
- next: "~[release_names]: land the /2 names, then cut 2026.10.13-pre.1 from the pushed revision for spw.quest to serve at /parser/next.js."
+ next: "Deploy spw.quest and read the banner at ?parser=next; on the 13th, ~[first_release] cuts 2026.10.13 from the release revision and carries it."
 }
 
 ^["edges"]{
@@ -55,13 +55,13 @@
 ^["commits"]{
  # Named, in order. Planned ~[name]; landed .[name](hash). Names are never reused.
  .[release_builder](17b0d6d7): "#[release] — npm run bundle:parser cuts full and lite in min and debug forms with an alias and a spw.parser-release/1 manifest; refuses a dirty tree and refuses to rewrite a published release"
- ~[quest_parser_routes]: "+[quest] (site repo) — spw.quest serves /parser/ from worker static assets with immutable caching, CORS, a latest redirect and a 404 that lists what exists"
+ .[quest_parser_routes](55fb8f75): "+[quest] (site repo) — Serve dated parser releases from spw.quest, and lead the guide with a script you can change, copy or download"
  ~[first_release]: "+[quest] (site repo) — carry release 2026.10.13 from the workbench into spw.quest's assets and verify every hash"
  .[prerelease_builder](a6d69642): "#[release] — bundle:parser --pre cuts a prerelease keyed by revision, ready to try in production"
- ~[release_names]: "#[release] — spw.parser-release/2: one folder per name, YYYY.MM.DD, -pre.N or -patch.N, holding parser.js, full and lite in min and debug; no offsets"
+ .[release_names](749899ee): "#[release] — parser cuts are named for a day: YYYY.MM.DD, -pre.N or -patch.N"
  ~[stamp_matches_manifest]: "![release] — a test holds each file's SPW_PARSER_BUILD stamp to the manifest revision, name, kind, variant and form"
- ~[prerelease_routes]: "+[quest] (site repo) — /parser/<day>-pre.N/ and /parser/next.js from gitignored assets, never through latest.js; carry with prune"
- ~[production_parser_switch]: "+[quest] (site repo) — ?parser=next|latest|<name> runs that parser in the guide for one visitor, with a banner naming the build"
+ .[prerelease_routes](051a5a7d): "+[quest] (site repo) — Name parser builds by day, try a prerelease with ?parser=next, and pin /init to a6d69642"
+ .[production_parser_switch](051a5a7d): "+[quest] (site repo) — the same commit: ?parser=next|latest|<name> with a banner naming the build"
 }
 
 ^["cache"]{
@@ -69,9 +69,9 @@
  ~#base_ref: "main@77599452"
  ~#rebased_at: "2026-10-12"
  ~#files_hot: "scripts/release/build-parser-release.ts, package.json"
- ~#next_commit: "release_names"
+ ~#next_commit: "first_release"
  ~#open_count: "4"
- ~#last_stream: "2026-10-12 20:35"
+ ~#last_stream: "2026-10-12 20:52"
 }
 
 ^["done"]{
@@ -84,4 +84,7 @@
  >>[2026-10-12 20:17] decide — Creator asked to prepare prereleases that can be tested in production. A prerelease is keyed by revision at pre/<rev12>/ with the release layout; spw.quest serves it from gitignored assets at /parser/pre/ and /parser/next.js, never through latest.js, and a ?parser= switch on the guide runs it for one visitor.
  >>[2026-10-12 20:35] decide — Creator found pre/<revision> awkward and settled the names: a release YYYY.MM.DD is cut once, a prerelease is YYYY.MM.DD-pre.N and a fix to a published day is YYYY.MM.DD-patch.N, numbered per day and kind with the same revision keeping its number. Offsets are gone; each folder holds parser.js, full and lite in min and debug forms, and a spw.parser-release/2 manifest.
  >>[2026-10-12 20:35] implement — Builder, tests (19 pass) and docs/runtime/md/parser-release.md moved to /2 as ~[release_names]; .[prerelease_builder](a6d69642) marked landed. The site agent carries the same names into spw.quest routes, ordering pre.N, the release, then patch.N.
+ >>[2026-10-12 20:36] implement — Landed .[release_names](749899ee). Cut 2026.10.13-pre.1 from the clean tree at 749899ee: full.min.js 74362 B (18550 B gzipped), lite.min.js 2930 B; no dirty mark; parser.js parses ~door.
+ >>[2026-10-12 20:42] verify — spw.quest carries 2026.10.13-pre.1 in gitignored assets with every sha256 matching; routes, next.js, latest.js (never a prerelease) and the ?parser= switch are rebuilt for the names, worker tests 39 pass and check:workers passes; uncommitted in the site tree until tried in production.
+ >>[2026-10-12 20:52] implement — Site commits landed: 051a5a7d carries the names, prerelease routes, next.js and the ?parser= switch; 2026.10.13-pre.1 sits in gitignored assets and deploys from the working tree. 55fb8f75 was the first route shape, on offsets.
 }
