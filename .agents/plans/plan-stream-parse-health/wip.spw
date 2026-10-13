@@ -8,15 +8,15 @@
 
 !["card"]{
  phase: #planning
- gist: "Plan files measure their true parse health because stream prose is read as prose, wherever the file is parsed."
- touches: [~"packages/spw-seed/src/canonical/topography-probe.ts", ~"packages/spw-seed/src/lexer/plan-stream.ts", ~"packages/spw-cli/src/pulse.ts", ~".agents/plans/_schema/wip-template.spw"]
+ gist: "Stream lines read as prose in every .spw file and dialect, so parse health measures structure however a file is parsed."
+ touches: [~"packages/spw-seed/src/lexer/plan-stream.ts", ~"packages/spw-seed/src/lexer/tokenize.ts", ~"packages/spw-seed/src/experimental/syntax-catalog.ts", ~"docs/theory/spw", ~"packages/spw-seed/src/canonical/topography-probe.ts", ~".agents/plans/_schema/wip-template.spw"]
  entry: ~"./PLAN.md"
- next: "~[hostile_prose_fixture]: commit refs landed in 8ae9d35e; next, a failing snapshotTopography fixture for a >>[stamp] line with a hyphen, an apostrophe and an unbalanced quote, then thread the path."
+ next: "~[hostile_prose_fixture], now with no path given; then ~[stream_line_census] over the 13 files outside plans, the negative control for ~[entry_line_all_dialects]."
 }
 
 ^["edges"]{
- shares: [~"../plan-tooling-design/wip.spw", ~"../syntax-profile-stack/wip.spw", ~"../shape-syntax-ecology/wip.spw"]
- feeds: [~"../plan-tooling-design/wip.spw"]
+ shares: [~"../plan-tooling-design/wip.spw", ~"../syntax-profile-stack/wip.spw", ~"../shape-syntax-ecology/wip.spw", ~"../vscode-plugin-performance/wip.spw"]
+ feeds: [~"../plan-tooling-design/wip.spw", ~"../plan-plugin-integration/wip.spw"]
 }
 
 ^["roots"]{
@@ -32,7 +32,8 @@
 }
 
 ^["intent"]{
- ~#goal: "Parse health on plan files should report real structural problems, not the prose of the stream. The lexer already owns the rest of a >>[ line, but the health probe parses without the plan path, so most plans are read as Spw.b and every hyphen, em dash or apostrophe becomes an error."
+ ~#goal: "A >>[stamp] type — prose line is a construct of the language, not of plan files: it reads as one entry in every dialect, so neither a caller's path nor a pragma decides whether stream prose is an error."
+ ~#was: "Parse health on plan files should report structure, not stream prose; the lexer owned a >>[ line only under Spw.p, and the health probe parses without the path."
  ~#taste: "measure the thing, not the lens: a health verdict must not depend on whether the caller remembered to pass a path"
 }
 
@@ -45,9 +46,9 @@
 }
 
 ^["concept_index"]{
- primary: [#plan_stream, #parse_health, #dialect_detection]
+ primary: [#stream_line, #plan_stream, #parse_health, #dialect_detection]
  surfaces: [#seed, #cli, #plans]
- tensions: [#count_sensitive_metric, #path_vs_content_detection, #do_not_change_other_constructs]
+ tensions: [#count_sensitive_metric, #path_vs_content_detection, #do_not_change_other_constructs, #line_not_file_boundary]
  transfers: [#service]
 }
 
@@ -63,18 +64,18 @@
 }
 
 ^["parallel_work"]{
- critical_path: [#fixture, #snapshot_options, #pulse_callsites]
- parallelizable: [#lexer_space_tolerance, #template_pragma]
- shared_hot_files: ["packages/spw-cli/src/pulse.ts", "packages/spw-seed/src/dialect/syntax-stack.ts"]
+ critical_path: [#fixture, #census, #all_dialects, #post_fix_tally]
+ parallelizable: [#stream_line_theory, #lexer_space_tolerance, #template_pragma]
+ shared_hot_files: ["packages/spw-seed/src/lexer/tokenize.ts", "packages/spw-seed/src/dialect/syntax-stack.ts", "packages/spw-cli/src/pulse.ts"]
  merge_risks: [#hot_file, #dialect_precedence]
  handoff_artifacts: [@plan, @lexer_test]
 }
 
 ^["risk_model"]{
- hard_failures: ["a dialect or lexer change alters the tokens of a non-plan file", "plan files start reporting complete_structured while real brace errors are masked"]
- soft_failures: ["content detection misfires on a doc that quotes a >>[ example", "the three files with spaced >> [ lines stay recovered until ~[spaced_entry_tolerance] or a line migration"]
+ hard_failures: ["a lexer change alters the tokens of any line that is not a line-start >>[ entry, in any dialect", "plan files start reporting complete_structured while real brace errors are masked"]
+ soft_failures: ["a doc that shows a stream line as code now reads it as an entry; inline entries such as ^[\"stream\"]{ >>[2026-07-27] note - … } in syntax-profile-stack.spw wait on ?[inline_entries]", "the three files with spaced >> [ lines stay recovered until ~[spaced_entry_tolerance] or a line migration"]
  recoveries: ["revert the detection commit and keep the path threading, which is independent", "keep the metric commit so a regression is visible"]
- non_negotiables: ["the existing plan-stream.test.ts cases stay green unchanged", "stream entries are never rewritten by a tool, only appended", "parse health stays a count-sensitive signal, not a validity verdict"]
+ non_negotiables: ["the existing plan-stream.test.ts cases stay green unchanged", "dated stream entries are never rewritten by a tool, only appended", "parse health stays a count-sensitive signal, not a validity verdict", "template filling stays textual: template-fill.ts replaces ${name} in raw text, so a prose body costs the saga templates nothing"]
 }
 
 ^["validation"]{
@@ -82,10 +83,12 @@
   "H1 parse(source, {path}) reports zero errors on 75 of 78 wip.spw files while parse(source) reports tens to 160 errors on the same files",
   "H2 the residual errors in audit-fuzz-truthfulness, register-phase-evolution and typescript-toolchain-observatory come from entries spelled >> [ with a space",
   "H3 once health is measured with the plan lens, pulse tallies on plan files stop moving when stream prose changes",
+  "H4 lexing line-start >>[ entries in every dialect clears the 9 stream-line errors in sense-loop.spw (6) and portrait.prompt.spw (3) and changes no other token in the corpus",
+  "H5 once entries lex in every dialect, pathless snapshotTopography gives every wip.spw its with-path verdict, so path threading is needed only for commit refs, if at all",
  ]
  negative_controls: [
   "plan-stream.test.ts cases for << >> stream bounds, inline >>[, strings and comments stay identical",
-  "tokens of every non-wip .spw under docs and .spw are unchanged before and after ~[topography_path_option] and ~[thread_path_callsites]",
+  "tokens of every line outside a line-start >>[ entry are byte-identical in every .spw file and dialect, before and after ~[entry_line_all_dialects]",
  ]
  demo_path: [
   "append a stream line containing a hyphen, an apostrophe and an unbalanced quote with plan:stream",
@@ -102,25 +105,39 @@
  >>[2026-10-12 15:25] revise — Commits named per the convention in 90c58bbc: 0 landed, 7 planned, 0 dropped.
  >>[2026-10-12 17:02] decide — Creator decided 2026-10-12: the hash syntax .[name](hash): "subject" is the next slice, after release. The plan-only lexer rule comes first (plan-stream-parse-health), then the one-pass conversion (plan-tooling-design), then editor affordances (plan-plugin-integration).
  >>[2026-10-12 17:21] implement — Landed in 8ae9d35e: commit refs in plan files lex as one identifier marked commit_ref; 301 landed lines in 67 plans now read .[name](hash): subject; seed 824, cli 292, build clean, total parse errors over 280 .agents files unchanged at 1724.
+ >>[2026-10-12 21:02] decide — Creator asked to re-evaluate the plan-only boundary. Stream lines appear in 13 .spw files outside plans (saga templates with ordinal stamps, prompt logs, a docs example) and misparse there: sense-loop.spw 6 errors, portrait.prompt.spw 3. The hard failure narrows from the tokens of a non-plan file to the tokens of any line that is not a line-start >>[ entry; the plan now leads with ~[entry_line_all_dialects] behind a census fixture, and path threading and content detection wait on H5.
+ >>[2026-10-12 21:02] observe — template-fill.ts fills ${name} by regex over raw text, so a prose entry body costs the saga templates nothing. syntax-profile-stack.spw writes entries inline after a frame brace. server-index.ts refreshFileAnnotations also parses without a path.
 }
 
 ^["open"]{
- ?[detect_vs_thread]: "Should health lens come from threading the path into snapshotTopography, from content detection of a plan stream, or both? Path covers pulse files; content covers stdin and LSP buffers."
+ ?[detect_vs_thread]: "After ~[entry_line_all_dialects], does pathless parse still need the plan lens? Stream prose no longer does; commit refs stay plan-only, so path threading and content detection matter only if H5 finds errors left on them."
  ?[detect_rule]: "If content detection, what is the narrowest signature: a ^[stream] frame header followed by a >>[ line at line start, or a #:plan marker? Which one misfires on docs that quote an example entry?"
  ?[space_tolerance]: "Should the lexer accept >> [ with a space, or should the three files with that spelling be migrated line by line? Stream entries are append-only by schema."
  ?[template_pragma]: "Should wip-template.spw and plan:init stamp an at-dialect Spw.p pragma so new plans are right with no code change? Six of 78 wip.spw files already carry it."
  ?[old_quoted_entries]: "Older entries of the form >>[date] with a quoted string already parse; do they stay as they are, given the append-only rule?"
+ ?[body_reading]: "Is an entry body plain prose, or prose with refs lexed inside it (@root, ~\"path\", $slot, ~[name], ?[label], .[name](hash))? Template filling is textual either way; the refs matter for highlighting and go-to-definition."
+ ?[stamp_kinds]: "Which stamps make an entry: YYYY-MM-DD HH:MM, YYYY-MM-DD, an ordinal? Does an unknown stamp still make an entry, of kind other?"
+ ?[ordinal_beats]: "A dated entry is a log line and append-only; is an ordinal entry a beat in a script that may be edited and renumbered, and may a tool renumber it?"
+ ?[inline_entries]: "Theory docs write entries inline, ^[\"stream\"]{ >>[2026-07-27] note - … }; does an entry need a line of its own, or may it follow a frame's opening brace?"
+ ?[entry_scope]: "Every stream line found outside plans sits in a ^[…]{ } frame (stream or loop), except the VS Code grammar fixture; is the rule line-start anywhere, or line-start inside a frame?"
  ?[archive_dialect]: "Archived plans read as historical Spw.b by path, so their stream entries and commit refs lex as ordinary Spw (71 landed lines there split digit-leading hashes); should _archive under .agents/plans keep the plan dialect, or stay historical?"
 }
 
 ^["commits"]{
  .[commit_ref_fixture](8ae9d35e): "![seed] — failing fixture: in a plan file, .[name](551bb419): \"subject\" lexes the digit-leading hash as one token, and the same text outside a plan file lexes as it does today"
  .[commit_ref_token](8ae9d35e): "^seed[lexer] — plan files only (Spw.p): a run of 7 to 40 lowercase hex filling a ( ) lexes as one commit-ref token, gated like readPlanStreamEntry"
- ~[hostile_prose_fixture]: "![seed] — failing fixture: snapshotTopography of a ^[stream] frame holding >>[stamp] lines with hyphen, em dash, apostrophe and unbalanced quote is not invalid when given the plan path (topography-probe.test.ts)"
- ~[topography_path_option]: "vocab[seed] — snapshotTopography accepts optional path and dialect; resolves the same stack parse already resolves; default call is unchanged"
- ~[thread_path_callsites]: "&[cli] — pulse.ts passes the repo-relative path at its snapshotTopography call sites (before and after), and form-geometry.ts likewise; fixture: pulse tally on a copied wip fixture is stable under a prose edit"
- ~[detect_plan_stream]: "^seed[dialect] — conditional on ?[detect_vs_thread]: detectDialect reads a plan-stream signature so pathless parse (stdin, LSP) picks Spw.p; negative control over docs that quote an entry"
+ ~[hostile_prose_fixture]: "![seed] — failing fixture: snapshotTopography of a ^[stream] frame holding >>[stamp] lines with hyphen, em dash, apostrophe and unbalanced quote is not invalid, with no path given (topography-probe.test.ts)"
+ ~[stream_line_census]: "![seed] — fixture over every line-start >>[ outside .agents: 13 files with their dialect, tokens and errors today (sense-loop.spw 6, portrait.prompt.spw 3); the negative control for ~[entry_line_all_dialects]"
+ ~[stream_line_theory]: ".[theory] — docs/theory/spw/stream-lines.spw: an entry appended to its frame; a dated stamp is a log line, an ordinal a beat; the body is prose; how >>[ sits beside << >> streams"
+ ~[register_stream_entry]: "#[experimental] — =exp[id: stream.entry_line] registered as proposed in SYNTAX_CATALOG, citing the theory note"
+ ~[entry_line_all_dialects]: "^seed[lexer] — readPlanStreamEntry runs in every dialect, not only under planStream; the census errors go to 0, every other token is byte-identical, plan-stream.test.ts is unchanged"
+ ~[stamp_kinds]: "vocab[seed] — conditional on ?[stamp_kinds]: an entry states its stamp kind (time, day, ordinal, other) so the LSP and writers stop re-deriving it"
+ ~[entry_body_refs]: "^seed[lexer] — conditional on ?[body_reading]: refs inside an entry body lex as their own tokens within the prose"
+ ~[editor_grammar_parity]: "![editors] — VS Code, IntelliJ and Neovim highlight a line-start entry in every .spw as the lexer reads it; the VS Code grammar fixture already does outside plans"
  ~[spaced_entry_tolerance]: "^seed[lexer] — conditional on ?[space_tolerance]: readPlanStreamEntry accepts a >> [ spelling, with a case in plan-stream.test.ts"
+ ~[topography_path_option]: "vocab[seed] — conditional on ?[detect_vs_thread]: snapshotTopography accepts optional path and dialect; resolves the same stack parse already resolves; default call is unchanged"
+ ~[thread_path_callsites]: "&[cli] — conditional on ?[detect_vs_thread]: pulse.ts and form-geometry.ts pass the repo-relative path at their snapshotTopography call sites; fixture: pulse tally on a copied wip fixture is stable under a prose edit"
+ ~[detect_plan_stream]: "^seed[dialect] — likely dropped by ~[entry_line_all_dialects]; conditional on ?[detect_vs_thread]: detectDialect reads a plan-stream signature so pathless parse (stdin, LSP) picks Spw.p; negative control over docs that quote an entry"
  ~[template_dialect_pragma]: ".[plans] — conditional on ?[template_pragma]: stamp the dialect pragma in wip-template.spw and the plan:init scaffold; a plan:stream round-trip case in test-agent-tools.sh"
  ~[post_fix_tally]: "![plans] — record the post-fix health tally over every wip.spw in the stream and compare with the baseline in this plan"
 }
@@ -132,8 +149,8 @@
  ~#hygiene_split: "none"
  ~#files_hot: ""
  ~#next_commit: "hostile_prose_fixture"
- ~#open_count: "6"
- ~#last_stream: "2026-10-12 17:21"
+ ~#open_count: "11"
+ ~#last_stream: "2026-10-12 21:02"
  ~#taste_debt: ""
 }
 

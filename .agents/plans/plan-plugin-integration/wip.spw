@@ -16,7 +16,7 @@
 
 ^["edges"]{
  needs: [~"../plan-stream-parse-health/wip.spw"]
- shares: [~"../vscode-lsp-roadmap/wip.spw", ~"../vscode-authoring-probe-loop/wip.spw", ~"../vscode-workspace-atlas/wip.spw", ~"../vscode-plugin-performance/wip.spw", ~"../vscode-editor-contract/wip.spw", ~"../vscode-cognitive-surface/wip.spw", ~"../citation-navigation/wip.spw", ~"../intellij-lsp4ij/wip.spw", ~"../neovim-spw-surfaces/wip.spw"]
+ shares: [~"../plan-tooling-design/wip.spw", ~"../directive-lattice/wip.spw", ~"../vscode-lsp-roadmap/wip.spw", ~"../vscode-authoring-probe-loop/wip.spw", ~"../vscode-workspace-atlas/wip.spw", ~"../vscode-plugin-performance/wip.spw", ~"../vscode-editor-contract/wip.spw", ~"../vscode-cognitive-surface/wip.spw", ~"../citation-navigation/wip.spw", ~"../intellij-lsp4ij/wip.spw", ~"../neovim-spw-surfaces/wip.spw"]
 }
 
 ^["roots"]{
@@ -102,12 +102,14 @@
  >>[2026-10-12 15:24] revise — Commits named per the convention in 90c58bbc: 1 landed, 6 planned, 0 dropped.
  >>[2026-10-12 17:02] decide — Creator decided 2026-10-12: the hash syntax .[name](hash): "subject" is the next slice, after release. The plan-only lexer rule comes first (plan-stream-parse-health), then the one-pass conversion (plan-tooling-design), then editor affordances (plan-plugin-integration).
  >>[2026-10-12 20:09] implement — Landed in e6c56978: commit-ref hover and the missing-hash note in plan files. Links, completion and a token type move to commit_ref_links.
+ >>[2026-10-12 21:02] decide — Creator asked for completions beyond stamps and types: landing a planned commit from git log (~[land_commit_action], which takes over hash completion from ~[commit_ref_links]), plan-name completion and navigation, schema keys, and stream completion wherever a stream frame is.
 }
 
 ^["open"]{
  ?[extractor_home]: "Where does the one plan-fact extractor live: packages/spw-seed (portable, parse-based, LSP and CLI both import it), or scripts/plans/plan-index.ts exported to the LSP? Decides ~[shared_extractor] and whether agent-lib.sh keeps its line grep."
  ?[clock_field]: "Which workspace manifest field declares the stream clock (no field is named clock today), and is it a timezone, a source command, or a fixed offset? Decides whether the stamp completion in vscode-authoring-probe-loop can be standard LSP."
  ?[drift_severity]: "Should open_count and last_stream drift be information or warning, given plan:stream and spw refresh also write them and a stale cache is already reported by plan:check?"
+ ?[land_ranking]: "Which commits does landing offer first: HEAD, commits whose sigil and scope match the planned line, or a ranking by subject words? A site commit lands in another repository; does the action read that repository's log?"
  ?[done_in_outline]: "Do ^done entries (~#resolved(label), ~#dropped(name)) appear as outline children, as hover on ?[label] mentions, or both? Decides ~[plan_fact_hover] and what Neovim sees."
 }
 
@@ -119,7 +121,12 @@
  ~[plan_fact_hover]: "&[lsp] — hover on ^cache and card fields and on ~#resolved(label) shows the value, its derivation and the stream stamp"
  ~[drift_diagnostics]: "&[lsp] — drift diagnostics for open_count, last_stream and next_commit against the file, information severity, no write fix"
  .[commit_ref_affordances](e6c56978): "&[lsp] — in plan files a commit-ref hash hovers with its subject, date and files, and a hash git does not have gets an information note"
- ~[commit_ref_links]: "&[lsp] — the rest of the commit-ref affordances: a document link to the commit, completion of recent hashes after ](, and a semantic token type of its own"
+ ~[commit_ref_links]: "&[lsp] — the rest of the commit-ref affordances: a document link to the commit and a semantic token type of its own; hash completion moved to ~[land_commit_action]"
+ ~[land_commit_action]: "&[lsp] — on a ~[name] line in ^[\"commits\"], completion after ]( and a code action offer recent commits with their subjects and rewrite the line to .[name](hash): \"subject\"; the same move as plan-tooling-design ~[settle_verb] --ship"
+ ~[plan_name_completion]: "&[lsp] — ~#next_commit: \" offers the planned ~[name]s, ~#resolved( the open ?[label]s, ~#dropped( the planned names, and a stream entry body this file's names"
+ ~[plan_name_navigation]: "&[lsp] — go-to-definition and references for plan names: ~#next_commit, ~#resolved(label), a mention in an entry and another plan's ~\"../x/wip.spw#name\" reach the ~[name], .[name] or ?[label] line (needs directive-lattice ~[plan_name_fragments])"
+ ~[schema_key_completion]: "&[lsp] — inside ^[\"cache\"]{ and the card, the keys .agents/plans/_schema/wip.spw declares and the file lacks; phase: # offers the phases; the card glyph offers the lanes"
+ ~[stream_completion_everywhere]: "&[lsp] — after plan-stream-parse-health ~[entry_line_all_dialects]: >>[ completes the stamp in any ^[\"stream\"] frame and the next number in an ordinal stream; isPlanStreamFile stops gating it"
  ~[cross_editor_check]: "![plans] — Neovim and IntelliJ receive ~[outline_plan_facts], ~[plan_fact_hover] and ~[drift_diagnostics] with no client code; record what each shows"
 }
 
@@ -130,8 +137,8 @@
  ~#hygiene_split: "none"
  ~#files_hot: ".agents/plans/plan-plugin-integration/PLAN.md, .agents/plans/plan-plugin-integration/wip.spw"
  ~#next_commit: "plan_facts_table"
- ~#open_count: "4"
- ~#last_stream: "2026-10-12 20:09"
+ ~#open_count: "5"
+ ~#last_stream: "2026-10-12 21:02"
  ~#taste_debt: ""
 }
 

@@ -8,6 +8,8 @@ Make parse health on plan files measure structure instead of stream prose. (Card
 The lexer already owns the rest of such a line (`readPlanStreamEntry`, landed in c855e832 behind the `planStream` metasyntax flag of dialect `Spw.p`), and `parse(source, { path })` on a `.agents/plans/*/wip.spw` file resolves to `Spw.p`.
 The gap is upstream of the lexer: `snapshotTopography(source)` in `topography-probe.ts` calls `parse(source)` with no path, so a plan without an `@dialect:Spw.p` pragma is read as `Spw.b`, where hyphens, em dashes, apostrophes and unbalanced quotes tokenize as errors.
 
+Re-evaluated 2026-10-12 at the creator's prompt: stream lines also appear in 13 `.spw` files outside plans (saga templates with ordinal stamps, prompt logs, a docs example), and there they misparse (`sense-loop.spw` 6 errors, `portrait.prompt.spw` 3). The boundary that protects other constructs is the line, not the file: a line-start `>>[` entry reads the same in every dialect, and every other token stays byte-identical. The earlier hard failure, "alters the tokens of a non-plan file", guarded the plan-only fix and is narrowed to that line.
+
 Taste note:
 - correctness / naming: a health verdict is a measurement; it must not change with the caller's lens.
 
@@ -28,17 +30,22 @@ Taste note:
 - (d) Thread path and dialect into `snapshotTopography` and its callers: smallest change, fixes pulse on files, does not help stdin or LSP buffers.
 - (e) Content detection in `detectDialect`: a plan-stream signature selects `Spw.p` with no path. Fixes stdin and LSP, but risks misfiring on docs that quote an entry.
 - (f) Stamp `@dialect:Spw.p` in the wip template and scaffold: fixes new plans with no code, does not fix existing ones without a migration that touches 70+ files.
+- (g) Lex line-start `>>[` entries in every dialect: fixes plans with no path and the 13 files outside plans; the guard moves from non-plan files to non-entry lines. Commit refs stay plan-only.
 
-Recommended order: (d) first, then decide (e) and the `>> [` tolerance on evidence, then (f) for new plans.
+Recommended order (revised): (g) first, behind a census fixture; then (d) and (e) only if H5 leaves errors on commit refs; the `>> [` tolerance on evidence; (f) for new plans if still useful.
 
 ## Scope
 
-- In scope: topography-probe options, pulse and form-geometry call sites, optional dialect detection, optional `>> [` lexing, template pragma, health tally.
+- In scope: line-start `>>[` entries in every dialect with a census fixture, a theory note and an `=exp` registration; conditionally topography-probe options, pulse and form-geometry call sites, dialect detection, `>> [` lexing and the template pragma; the health tally.
 - Out of scope: any change to how constructs outside a line-start `>>[` are lexed; rewriting existing stream lines; changing the health taxonomy (complete_structured / recovered / invalid).
 
 ## Files
 
-[MOD] packages/spw-seed/src/canonical/topography-probe.ts
+[MOD] packages/spw-seed/src/lexer/tokenize.ts (the planStream gate around readPlanStreamEntry)
+[MOD] packages/spw-seed/src/experimental/syntax-catalog.ts (stream.entry_line)
+[NEW] docs/theory/spw/stream-lines.spw
+[NEW] a census fixture over the stream lines outside plans
+[MOD] packages/spw-seed/src/canonical/topography-probe.ts (conditional)
 [MOD] packages/spw-cli/src/pulse.ts (call sites only; the file is already over the 600-line guard, so no new logic goes there)
 [MOD] packages/spw-seed/src/canonical/form-geometry.ts (call sites only)
 [MOD] packages/spw-seed/src/dialect/detect.ts (conditional, `detect_plan_stream`)
@@ -54,7 +61,7 @@ Craft guard:
 
 Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
-Each commit has a failing-then-passing check: the fixture of `hostile_prose_fixture` fails on the unchanged call until `topography_path_option`; `thread_path_callsites` fails the stability fixture until the call sites pass the path; `detect_plan_stream` fails a stdin-without-path fixture; `spaced_entry_tolerance` fails a spaced-entry fixture; `template_dialect_pragma` fails a template round-trip case.
+Each commit has a failing-then-passing check: the fixture of `hostile_prose_fixture` fails on the unchanged lexer until `entry_line_all_dialects`; `stream_line_census` records today's tokens and errors and then holds every non-entry token fixed; `thread_path_callsites` fails the stability fixture until the call sites pass the path; `detect_plan_stream` fails a stdin-without-path fixture; `spaced_entry_tolerance` fails a spaced-entry fixture; `template_dialect_pragma` fails a template round-trip case.
 
 ## Agentic Hygiene
 
@@ -68,14 +75,14 @@ none. Feeds plan-tooling-design (pulse report parity, plan:stream validator) and
 
 ## Failure Modes
 
-- Hard: a dialect or lexer change alters tokens of non-plan files; masked real brace errors.
+- Hard: a lexer change alters the tokens of any line that is not a line-start `>>[` entry, in any dialect; masked real brace errors.
 - Soft: content detection misfires on a doc quoting an entry; three files stay recovered until `spaced_entry_tolerance`.
 - Non-negotiable: existing plan-stream.test.ts cases unchanged; stream lines are append-only; health stays count-sensitive and is not read as a validity verdict.
 
 ## Validation
 
 - Hypotheses: H1, H2, H3 in wip.spw.
-- Negative controls: token equality on non-plan sources before and after `topography_path_option` through `detect_plan_stream`.
+- Negative controls: token equality on every line outside a line-start `>>[` entry, in every `.spw` file and dialect, before and after `entry_line_all_dialects`.
 - Demo sequence: append a hostile stream line with plan:stream, tally health, see no change for that file.
 - Metric: `npm run -s spw:pulse -- .agents/plans/*/wip.spw --json`, then count `reports[].beforeHealth` by value. Baseline (probe over 78 pre-existing files): 6 / 46 / 26 for complete_structured / recovered / invalid. Expected after `thread_path_callsites`: the 75 path-clean files stop depending on prose; after `spaced_entry_tolerance`: all 78 have 0 stream-line errors. Whether a file reaches complete_structured also depends on its non-stream content, which is not promised here.
 
