@@ -1,113 +1,138 @@
 # Plan: caches-living-tree
 
-Turn the dated caches cut into an undated living tree that agents can extend from one door, give dated material a journal, and revise cache-surface syntax so surfaces carry less prose and index by anchor. (Card, phase, and next move: [wip.spw](./wip.spw) · measures and layout: [caches-living-tree.spw](./caches-living-tree.spw) · index: [../index.spw](../index.spw))
+Restructure `.spw/caches` into two layers: a living tree that agents edit to keep true, and an append-only journal of what was seen or made on a day. Both are entered from one root and one extension door, and surface syntax is revised so surfaces carry less prose and address by anchor. (Card, phase, and next move: [wip.spw](./wip.spw) · measures and layout: [caches-living-tree.spw](./caches-living-tree.spw) · index: [../index.spw](../index.spw))
 
 ## Goal
 
-`.spw/caches/2026-09-30/` holds 439 corrected, sourced surfaces. Its date names when it opened, not what it holds, and an agent that lands there finds no root index, a 232-line contract, a gate that fails, and a caches index that routes only to the raw shelf.
+`.spw/caches/2026-09-30/` holds 439 corrected, sourced surfaces. Its date names when it opened, not what it holds. Beside it, 14 raw topic folders fill the caches root. An agent that lands here finds no root index, a 232-line contract, a gate that fails, and a caches index that routes only to the raw shelf.
 
 When this plan is done:
-- The cut lives at `.spw/caches/cut/` as a living tree with a root index, relevance tiers, and a short extension door.
-- What was true on a given day (resume notes, snapshot manifests, receipt ledgers) lives in a canon-root journal at `.spw/journal/`, one `YYYY-MM-DD-<slug>.spw` file per entry.
-- Each snapshot of the tree is a git tag paired with a journal manifest.
-- Surfaces stop spending characters on what tools can derive. Today path prefixes take about 417k characters, and receipts and card fields take about 17% of all lines.
+
+```
+.spw/caches/
+  index.spw        one root: the tree, the journal, the door
+  extend.spw       how to add to each layer
+  tree/            living synthesis: a later agent edits it to keep it true
+  journal/         dated and append-only: never edited after its day
+    2026-09-30-gemini-shelf/    the raw generation, moved whole
+    2026-09-30-resume.spw
+    2026-10-01-season-2026-q4/  the season instance: calendar and trail
+    <date>-cut-receipts.spw     receipt ledgers
+    2026-10-13-cut-snapshot.spw manifest for the tag caches-cut/2026.09.30
+```
+
+- **What each layer holds:** the tree is a view over the journal and the sources. Each snapshot of the tree is a git tag paired with a journal manifest.
+- **How refs address anchors:** `@tree#src_x` and `@journal#entry_anchor`, with both roots declared once in `.spw/workspace.spw`.
+- **Where the size goes:** surfaces stop spending characters on what tools can derive. Today path prefixes take about 417k characters, and receipts and card fields take about 17% of the cut's lines.
 
 Taste note: indexability and thrift. One signal per wire, address by anchor, and derive what can be derived. Claim statements are the knowledge and stay prose.
 
 ## Owner decisions (2026-10-13)
 
-- **Syntax:** samples first, then parser changes. New forms are staged as proposals p8 to p11 under `syntax-hardware-alignment`, and no lexer or resolver change lands before the owner picks among the samples.
-- **Extension model:** a living tree plus git-tag snapshots, rather than extending the dated directory in place or opening a new dated cut per pass.
-- **Dated files:** a journal directory for dated `.spw` files, at `.spw/journal/`.
-- **Carried from `caches-cut-2026-09-30`:** the raw shelf stays where it is and stays committed, the quarantine stands, and host-feature caches are residue.
+- **Syntax:** samples first, then parser changes. New forms are staged as proposals p8 to p11 under `syntax-hardware-alignment`.
+- **Ref form:** a root figure with a fragment, starting from `@cut#src_x`. Because the root is named for the layer, refs read `@tree#…` and `@journal#…`.
+- **Layout:**
+  - `index.spw`, `extend.spw`, `tree/` and `journal/` inside `.spw/caches`.
+  - The living layer is named `tree`.
+  - The canon-root journal from the first draft is dropped.
+- **Raw generation:** it becomes the journal entry `2026-09-30-gemini-shelf/`, moved whole. This revises the earlier "shelf stays in its topic folders" decision. Nothing is deleted, the disclosure and the quarantine move with it, and the shelf stays committed.
+- **Season:** the 2026 Q4 calendar and trail become a journal entry, and the recurring season forms stay in the tree.
+- **Snapshot tag:** `caches-cut/2026.09.30` on `main@813444dc`. Later snapshots are `caches/YYYY.MM.DD`.
+- **Carried from `caches-cut-2026-09-30`:** the quarantine stands, and host-feature caches are residue.
 
 ## Scope
 
 - **In scope:**
-  - Open the journal and move the caches resume note into it.
-  - Tag the shelved cut and write its manifest as a journal entry.
-  - Move the cut to `.spw/caches/cut/` and repoint the gate, the caches index, docs, and plan cards and roots.
-  - Write a cut root index with relevance tiers and an extension door.
-  - Fix the three forward panel refs so the gate passes.
-  - Write syntax samples p8 to p11 under `syntax-hardware-alignment`.
-  - Pilot the forms that parse today on `making/authorship/`.
-  - Make concepts a closed vocabulary.
-  - Move receipts to journal ledgers.
-  - Trim card fields.
-  - If the owner picks a form, add anchor-addressed refs to the resolver, LSP, and gate, then migrate refs.
+  - The tag and its manifest.
+  - Opening the journal and declaring the workspace roots.
+  - Moving the shelf into the journal.
+  - Moving the cut to `tree/`.
+  - Moving the season instance into the journal.
+  - The root index and extension door, plus the three forward panel refs so the gate passes.
+  - Syntax samples p8 to p11, and the `making/authorship/` pilot.
+  - Closed concepts, receipts moved to journal ledgers, and the card trim.
+  - Anchor-addressed refs in the resolver, LSP, and gate after the samples review, then the ref migration.
 - **Out of scope:**
-  - The raw shelf's content and location.
-  - The cut's remaining weave, apparatus, and harm-sweep stages, which stay in `caches-cut-2026-09-30` and run on the new path.
+  - The raw generation's content.
+  - The cut's weave, apparatus, and harm-sweep stages, which stay in `caches-cut-2026-09-30` and run on the new path.
   - Rewriting claim statements.
   - The p1 to p7 proposals.
-  - spwashi.com, which is not written from here.
-  - Plan stream entries that name the old path. They are history and stay as written.
+  - spwashi.com.
+  - Plan stream entries that name old paths. They are history.
+  - Renaming `spw-cut-gate`. That waits for a vocab commit.
+  - Moving `tree/provenance` into the journal (`?[provenance_home]`).
 
 ## Files
 
 ```
-[NEW] .agents/plans/caches-living-tree/{PLAN.md,wip.spw,caches-living-tree.spw}
-[MOD] .agents/plans/index.spw                         — regenerated with the card
-[NEW] .spw/journal/index.spw                          — journal contract: entry naming, kinds, routing; lists entries by date
-[NEW] .spw/journal/2026-09-30-caches-resume.spw       — moved from .spw/caches/resume/2026-09-30-direction.spw
-[DEL] .spw/caches/resume/                             — emptied by the move
-[NEW] .spw/journal/2026-10-13-caches-cut-snapshot.spw — tag, commit, counts, gate status
-[NEW] .spw/journal/<date>-caches-cut-receipts.spw     — receipt ledgers, one per pass date, generated
-[MOD] .spw/index.spw                                  — @journal root
-[MOD] .spw/caches/index.spw                           — route @cut and @journal; label the raw shelf
-[MOD] .spw/caches/2026-09-30/** → .spw/caches/cut/**  — git mv of 439 files; 13 files name their own dated path
-[NEW] .spw/caches/cut/index.spw                       — root: classes, apparatus, relevance tiers
-[NEW] .spw/caches/cut/extend.spw                      — extension door
-[MOD] .spw/caches/cut/contract.spw                    — living scope, journal receipts, card, concept rules
-[MOD] .spw/caches/cut/vocabulary.spw                  — closed concept set
-[MOD] .spw/caches/cut/panels/{index,gap-table}.spw, record/information/taxonomy-cautions.spw — planned panels as strings, not refs
-[MOD] .spw/caches/cut/making/authorship/*.spw         — pilot
-[MOD] .spw/caches/cut/**                              — mechanical passes: concepts, receipts, card
+[MOD] .agents/plans/caches-living-tree/{PLAN.md,wip.spw,caches-living-tree.spw}
+[MOD] .agents/plans/index.spw
+[MOD] .spw/workspace.spw                              — @caches, @tree, @journal roots
+[NEW] .spw/caches/journal/index.spw                   — entry naming, kinds, append-only rule; entries by date
+[NEW] .spw/caches/journal/2026-09-30-resume.spw       — moved from .spw/caches/resume/2026-09-30-direction.spw
+[NEW] .spw/caches/journal/2026-10-13-cut-snapshot.spw — tag, commit, counts, gate result
+[NEW] .spw/caches/journal/2026-09-30-gemini-shelf/**  — 14 topic folders and the old caches index, moved whole (208 + 1 files)
+[NEW] .spw/caches/journal/2026-10-01-season-2026-q4/{calendar,trail}.spw — moved from the cut
+[NEW] .spw/caches/journal/<date>-cut-receipts.spw     — receipt ledgers, one per pass date, generated
+[MOD] .spw/caches/index.spw                           — rewritten as the two-layer root
+[NEW] .spw/caches/extend.spw                          — extension door
+[MOD] .spw/caches/2026-09-30/** → .spw/caches/tree/** — git mv of 439 files; 13 name their own dated path
+[MOD] .spw/caches/tree/contract.spw                   — living scope, journal receipts, card, concept rules
+[MOD] .spw/caches/tree/vocabulary.spw                 — closed concept set
+[MOD] .spw/caches/tree/season/index.spw and refs to the season instance
+[MOD] .spw/caches/tree/panels/{index,gap-table}.spw, record/information/taxonomy-cautions.spw — planned panels as strings
+[MOD] .spw/caches/tree/**                             — lineage strings; mechanical passes: concepts, receipts, card
+[MOD] .spw/caches/tree/making/authorship/*.spw        — pilot
 [MOD] scripts/analyzers/spw-cut-gate.ts               — default path, journal receipts, concept vocabulary
 [MOD] scripts/analyzers/spw-cut-voice.ts              — doc refs
 [NEW] scripts/analyzers/spw-cut-migrate.ts            — receipts-to-journal and card-trim passes, if spw mutate cannot express them
 [MOD] docs/design/product/time-paths.spw              — resume note path
-[MOD] .agents/plans/{caches-cut-2026-09-30,syntax-hardware-alignment,apposition-cache-granules,citation-navigation,...}/ — cards and roots only
+[MOD] .agents/plans/{caches-cut-2026-09-30,syntax-hardware-alignment,...}/ — cards and roots only
 [MOD] .agents/plans/syntax-hardware-alignment/syntax-hardware-alignment.spw — proposals p8 to p11
 [NEW] .agents/plans/syntax-hardware-alignment/samples/cut-surface.spw — before and after of one surface
-[MOD?] packages/spw-cli/src/resolve.ts, packages/spw-lsp/src/handlers/navigation.ts, packages/spw-lsp/src/server-index.ts, packages/spw-seed/src/lexer/* — only after ?[anchor_ref_form]
+[MOD] packages/spw-cli/src/resolve.ts, packages/spw-lsp/src/handlers/navigation.ts, packages/spw-lsp/src/server-index.ts — @root#anchor lookup through a directory root's anchor index
+[MOD?] packages/spw-seed/src/lexer/* — only if @root#anchor does not already lex as one figure
 ```
 
 ### Craft guard
 
-- `spw-cut-gate.ts` is 392 lines and gains journal and concept checks. Split the voice-style check families out before it passes 600.
-- Receipt ledgers can run long: 2717 receipt lines over 439 files. Group rows by event, date, agent, care, and outcome with file lists, and split by pass date so each entry stays under 600 lines.
-- Six source registries already pass 500 lines. They are out of scope, but the extension door names them as split candidates.
+- `spw-cut-gate.ts` is 392 lines and gains journal and concept checks. Split check families out before it passes 600.
+- Receipt ledgers group rows by event, date, agent, care, and outcome with file lists, and split by pass date so each entry stays under 600 lines.
+- Six source registries already pass 500 lines. The door names them as split candidates.
 
 ## Commits
 
-1. `.[plans]` — caches-living-tree plans the living cut, the journal, and leaner cache syntax
-2. `#[journal]` — `.spw/journal` holds dated surfaces, routed from the canon index; the caches resume note is its first entry
-3. `.[journal]` — the shelved cut is tagged `caches-cut/2026.09.30` and its manifest is a journal entry
-4. `&[caches]` — the cut lives at `.spw/caches/cut`, undated; the gate, the caches index, docs, and plan roots follow
-5. `.[caches]` — the cut gets a root index with relevance tiers and an extension door, and the gate passes
-6. `^seed[caches]` — samples for anchor-addressed refs, journal receipts, a lean card, and closed concepts, as proposals p8 to p11
-7. `.[caches]` — `making/authorship` rewritten with the sampled forms that parse today
-8. `#[caches]` — concepts become a closed vocabulary and the gate enforces it
-9. `&[caches]` — per-surface receipts move to journal ledgers; each surface keeps as_of and one line that names its ledger
-10. `&[caches]` — cards drop fields the title comment and the sources already carry
-11. `^seed[resolver]` — only if the owner picks a form: anchor-addressed refs resolve in the CLI, the LSP, and the gate
-12. `&[caches]` — only after commit 11: refs into the cut drop their path prefix
+1. `.[plans]` — caches-living-tree plans the living cut, the journal, and leaner cache syntax (landed `5383dfa2`)
+2. `.[plans]` — caches-living-tree takes the journal into the cache tree, with the raw generation and the season instance as entries
+3. No commit: the owner tags `main@813444dc` as `caches-cut/2026.09.30`.
+4. `#[caches]` — `.spw/caches/journal` holds dated append-only entries; the resume note and the snapshot manifest are its first, and the workspace declares `@caches`, `@tree` and `@journal`
+5. `&[caches]` — the raw generation becomes the journal entry `2026-09-30-gemini-shelf`, moved whole; its index keeps the disclosure and the quarantine, and lineage strings in the cut follow
+6. `&[caches]` — the cut lives at `.spw/caches/tree`, undated; the gate, docs, and plan cards and roots follow
+7. `&[caches]` — the 2026 Q4 calendar and trail become the journal entry `2026-10-01-season-2026-q4`; recurring season forms stay in the tree
+8. `.[caches]` — one root index routes the tree and the journal, an extension door says how to add to each, and the gate passes
+9. `^seed[caches]` — samples for `@tree#anchor` refs, journal receipts, a lean card, and closed concepts, as proposals p8 to p11
+10. `.[caches]` — `making/authorship` rewritten with the sampled forms that parse today
+11. `#[caches]` — concepts become a closed vocabulary and the gate enforces it
+12. `&[caches]` — per-surface receipts move to journal ledgers; each surface keeps as_of and one line that names its ledger
+13. `&[caches]` — cards drop fields the title comment and the sources already carry
+14. `^seed[resolver]` — after the samples review: `@tree#anchor` and `@journal#anchor` resolve in the CLI, the LSP, and the gate
+15. `&[caches]` — refs inside the caches drop their path prefix
 
-The owner reviews the samples between commits 6 and 7, and again before commit 11.
+The owner reviews the samples between commits 9 and 10.
 
 Fuzz strategy:
-- **Explore:** after each commit, run the cut gate with `--json`, `spw resolve --from .spw/caches/cut --warn`, and `spw census .spw/caches/cut`, and log the measures to the stream.
+- **Explore:** after each commit, run the cut gate with `--json`, `spw resolve --from .spw/caches --warn`, and `spw census .spw/caches/tree`, and log the measures to the stream.
 - **Stabilize:** `npm run lint:spw`, `npm run spw:plan:check`, and `npm run fuzz:stabilize`.
-- **Ship:** `npm run fuzz:ship`, plus `test:cli`, `test:lsp`, and `test:seed` when commit 11 lands.
+- **Ship:** `npm run fuzz:ship`, plus `test:cli`, `test:lsp`, and `test:seed` with commit 14.
 
 ## Agentic Hygiene
 
 - Rebase target: `main@813444dc`.
-- Rebase cadence: before commit 2 and before merge.
+- Rebase cadence: before commit 4 and before merge.
 - Hygiene split: none. The tree was clean at branch time.
-- Plan streams across the ecology name `.spw/caches/2026-09-30`. They are history and stay as written; only cards, roots, and touches follow the move.
-- Mechanical passes run as scripts with a dry-run diff first, never as hand edits across the tree.
+- Moves use `git mv` only, so git records pure renames. Content edits land in separate commits from moves.
+- Plan streams across the ecology name old paths. They are history and stay as written; only cards, roots, and touches follow.
+- Mechanical passes run as scripts with a dry-run diff first.
 - Commits and the snapshot tag need the owner's authorization.
 
 ## Dependencies
@@ -117,13 +142,13 @@ None to merge first.
   - `caches-cut-2026-09-30`: its remaining stages run on the new path.
   - `citation-navigation`: anchor resolution in the LSP.
   - `apposition-cache-granules`: cache surfaces.
-- **Feeds:** `syntax-hardware-alignment`, which owns the proposals and the parser decision.
+- **Feeds:** `syntax-hardware-alignment`, which owns the proposals.
 
 ## Failure Modes
 
 - **Hard:**
-  - Refs from outside the cut still point at the dated path.
-  - The tag names a commit whose cut differs from the shelved one.
+  - A move leaves refs or lineage strings pointing at old paths.
+  - The tag names the wrong commit.
   - A mechanical pass rewrites a claim statement or renames an anchor.
 - **Soft:**
   - LSP and graph indexes keep old paths until reindexed.
@@ -131,32 +156,34 @@ None to merge first.
 - **Non-negotiable:**
   - No anchor is renamed or reused.
   - Claim statements stay byte-identical through mechanical passes.
-  - The raw shelf and its quarantine are untouched.
+  - The raw generation moves whole as pure renames.
+  - The quarantine keeps every file it names.
   - Every commit leaves the gate and `spw resolve` no worse than before.
 
 ## Validation
 
 - **Hypotheses:**
-  - H1: the move keeps all 8180 anchors and every ref target. The only unresolved refs that change are the three panel refs.
+  - H1: the moves keep all 8180 anchors and every ref target. The only unresolved refs that change are the three panel refs.
   - H2: every receipt tuple is recoverable from the journal ledgers.
-  - H3: receipts plus card trim cut at least 15% of lines.
-  - H4: an agent given only the extension door adds a passing surface.
-  - H5: anchor-addressed refs remove about 8% of characters.
+  - H3: receipts plus card trim cut at least 15% of the tree's lines.
+  - H4: an agent given only the extension door adds a passing tree surface and a passing journal entry.
+  - H5: anchor-addressed refs remove about 8% of the tree's characters.
 - **Negative controls:**
-  - The raw shelf diff is empty.
-  - The quarantine list is unchanged.
+  - Every shelf file is a 100% rename.
+  - The quarantine names the same nine files.
   - The sorted claim statements are identical before and after each pass.
 - **Demo sequence:**
-  1. Open `.spw/caches/cut/index.spw` and follow the extension door.
-  2. Add one surface in a worktree and run the gate.
-  3. Check out `caches-cut/2026.09.30` and find the shelved cut as it was.
+  1. Open `.spw/caches/index.spw` and follow the door.
+  2. Add a surface and a journal entry in a worktree and run the gate.
+  3. Check out `caches-cut/2026.09.30` and find the old layout.
 
 ## Spw Artifact
 
 `.agents/plans/caches-living-tree/caches-living-tree.spw` records:
 - the baseline measures
-- the layout: living tree, journal, and tag
+- the two-layer layout and the rule that places a surface
 - the journal entry kinds
-- what a lean surface keeps and what it derives
+- what a lean surface keeps and derives
+- the relevance tiers
 
-It is the reference the extension door and the contract revisions cite.
+The extension door and the contract revisions cite it.

@@ -24,27 +24,32 @@
 }
 
 ^["layout"]{
- tree: ~".spw/caches/index.spw"
- cut: "the living tree at .spw/caches/cut holds what is true now; a surface carries as_of on what changes"
- journal: "the canon-root journal at .spw/journal holds what was true on a day, one YYYY-MM-DD-slug.spw file per entry"
- snapshot: "a git tag caches-cut/YYYY.MM.DD names a state of the tree; a journal entry of the same day records the tag, its commit, and the counts"
- shelf: "the raw generation stays in its topic folders under .spw/caches as provenance"
+ root: ~".spw/caches/index.spw"
+ tree: "the living synthesis at .spw/caches/tree: a later agent edits a surface here to keep it true; a surface carries as_of on what changes"
+ journal: "the dated layer at .spw/caches/journal: an entry records what was seen or made on a day and is never edited after"
+ placement: "a surface goes in the tree when someone should keep it true, and in the journal when it records a day; the tree is a view over the journal and the sources"
+ snapshot: "a git tag names a state of the tree, caches-cut/2026.09.30 for the shelved cut and caches/YYYY.MM.DD after it; a journal entry of the same day records the tag, its commit, and the counts"
+ shelf: "the raw generation of 2026-09-30 is one journal entry, journal/2026-09-30-gemini-shelf, moved whole with its disclosure and quarantine"
+ refs: "@tree#anchor and @journal#anchor, roots declared once in .spw/workspace.spw; anchors are unique within each layer"
  why: "a dated directory names when a cut opened, not what it holds; extension needs one place that is always current, and history needs one place that is never rewritten"
 }
 
 ^["journal"]{
- naming: "YYYY-MM-DD-slug.spw, the date the entry records; flat until a year passes about a hundred entries, then one folder per year"
+ naming: "YYYY-MM-DD-slug.spw for one file, YYYY-MM-DD-slug/ for an entry of several files; the date is the day the entry records; flat until a year passes about a hundred entries, then one folder per year"
  append_only: "an entry is not edited after its day; a later entry corrects it with a supersedes edge"
- kinds: #[ resume, snapshot, receipts, decision ]
- resume: "where to pick up after a mount or a session limit"
- snapshot: "a tag, its commit, file and anchor counts, and the gate result"
+ kinds: #[ generation, instance, observation, receipts, snapshot, resume, decision ]
+ generation: "a body of generated material as it arrived, such as the gemini shelf"
+ instance: "one dated run of a recurring form in the tree, such as the 2026 Q4 season"
+ observation: "what a source said when it was read, so a tree claim can cite the reading instead of restating its date"
  receipts: "inspection rows for one pass, grouped by event, date, agent, care, and outcome, with the files each row covers"
+ snapshot: "a tag, its commit, file and anchor counts, and the gate result"
+ resume: "where to pick up after a mount or a session limit"
  decision: "an owner decision with its date, so plans and surfaces can cite it instead of restating it"
 }
 
 ^["lean_surface"]{
  keeps: #[ "title comment", "file anchor", "axis stack", "claim, door, and cold_open", "as_of and lineage", "edges", "keystone claims with sources and limits", "try kits", "wonders" ]
- derives: #[ "the card title, from the title comment", "continuity, from the cold_open", "receipts, from journal ledgers", "the path of a ref, from a unique anchor", "proof, from the sources a claim cites" ]
+ derives: #[ "the card title, from the title comment", "continuity, from the cold_open", "receipts, from journal ledgers", "the path of a ref, from a unique anchor", "proof, from the sources a claim cites", "the day a source was read, from a journal observation" ]
  rule: "a field earns its line when no tool can derive it from another field in the same tree"
 }
 

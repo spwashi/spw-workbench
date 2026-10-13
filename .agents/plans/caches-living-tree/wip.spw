@@ -8,10 +8,10 @@
 
 !["card"]{
  phase: #planning
- gist: "The caches cut becomes an undated living tree that agents can extend from one door, dated material moves to a journal, and cache surfaces carry less prose and index by anchor."
- touches: [~".spw/caches/2026-09-30", ~".spw/caches/index.spw", ~".spw/index.spw", ~"scripts/analyzers/spw-cut-gate.ts"]
+ gist: "The caches become two layers, a living tree agents edit to keep true and an append-only journal of what was seen or made on a day, entered from one root and one door, with surfaces that carry less prose and address by anchor."
+ touches: [~".spw/caches", ~".spw/workspace.spw", ~"scripts/analyzers/spw-cut-gate.ts"]
  entry: ~"./PLAN.md"
- next: "~[journal_open]: open .spw/journal with its index and move the caches resume note in as the first entry."
+ next: "~[cut_snapshot]: the owner tags main at 813444dc as caches-cut/2026.09.30; then ~[journal_open]."
 }
 
 ^["edges"]{
@@ -22,11 +22,11 @@
 ^["roots"]{
  @plan: ~".agents/plans/caches-living-tree/PLAN.md"
  @artifact: ~".agents/plans/caches-living-tree/caches-living-tree.spw"
+ @caches: ~".spw/caches/index.spw"
  @cut: ~".spw/caches/2026-09-30"
  @contract: ~".spw/caches/2026-09-30/contract.spw"
  @vocabulary: ~".spw/caches/2026-09-30/vocabulary.spw"
- @shelf: ~".spw/caches/index.spw"
- @canon: ~".spw/index.spw"
+ @workspace: ~".spw/workspace.spw"
  @gate: ~"scripts/analyzers/spw-cut-gate.ts"
  @resolve: ~"packages/spw-cli/src/resolve.ts"
  @proposals: ~".agents/plans/syntax-hardware-alignment/syntax-hardware-alignment.spw"
@@ -34,8 +34,8 @@
 }
 
 ^["intent"]{
- ~#goal: "An agent that lands in the caches finds one root, one extension door, and one gate command, and can add a surface without reading the history of the cut. What is true now lives in the tree; what was true on a day lives in the journal. Surfaces spend their characters on claims, not on paths, receipts, and repeated card fields."
- ~#taste: "indexability and thrift: one signal per wire, address by anchor, derive what can be derived"
+ ~#goal: "An agent that lands in the caches finds one root, one extension door, and one gate command. A surface goes in the tree when a later agent should edit it to keep it true, and in the journal when it records what was seen or made on a day. Surfaces spend their characters on claims, not on paths, receipts, and repeated card fields."
+ ~#taste: "indexability and thrift: one signal per wire, address by anchor, derive what can be derived; the tree is a view over the journal and the sources"
 }
 
 ^["development"]{
@@ -47,16 +47,16 @@
 }
 
 ^["concept_index"]{
- primary: [#living_tree, #journal, #extension_door, #anchor_address, #receipt_ledger]
- surfaces: [#caches, #canon, #gate, #resolver]
- tensions: [#dated_vs_living, #prose_vs_index, #samples_before_parser, #permanence]
+ primary: [#living_tree, #journal, #extension_door, #anchor_address, #receipt_ledger, #observation]
+ surfaces: [#caches, #workspace, #gate, #resolver]
+ tensions: [#synthesis_vs_observation, #prose_vs_index, #samples_before_parser, #permanence]
  transfers: [#language, #service]
 }
 
 ^["recursive_improvement"]{
  loop: [
-  "? measure the cut before each pass: lines, string characters, path-ref characters, receipt lines, concept singletons",
-  "< ship one pass per commit, mechanical passes by script, never by hand across 439 files",
+  "? measure the caches before each pass: lines, string characters, path-ref characters, receipt lines, concept singletons",
+  "< ship one pass per commit, mechanical passes by script, never by hand across hundreds of files",
   "$ record the measures in the stream so thrift is a time series",
   "^ fold each settled form back into the contract, the vocabulary, and the gate",
   "% hold claim statements and anchors byte-identical through every mechanical pass",
@@ -65,8 +65,8 @@
 }
 
 ^["parallel_work"]{
- critical_path: [#journal_open, #cut_move, #cut_door, #syntax_samples]
- parallelizable: [#authorship_pilot, #concept_vocab]
+ critical_path: [#cut_snapshot, #journal_open, #shelf_entry, #tree_move, #root_door, #syntax_samples]
+ parallelizable: [#season_instances, #authorship_pilot, #concept_vocab]
  shared_hot_files: ["scripts/analyzers/spw-cut-gate.ts", ".spw/caches/index.spw", ".spw/caches/2026-09-30/contract.spw"]
  merge_risks: [#path_move_vs_open_plans, #gate_drift, #lsp_index_stale_paths]
  handoff_artifacts: [@plan, @artifact, @contract]
@@ -86,43 +86,45 @@
 
 ^["risk_model"]{
  hard_failures: [
-  "the move leaves refs from outside the cut pointing at the dated path",
+  "a move leaves refs or lineage strings pointing at the dated cut or the old shelf folders",
   "the snapshot tag names a commit whose cut differs from the shelved one",
   "a mechanical pass rewrites a claim statement or renames an anchor"
  ]
  soft_failures: [
-  "LSP and graph caches keep the old path until reindexed",
-  "open worktrees and plan streams still name the dated path"
+  "LSP and graph caches keep the old paths until reindexed",
+  "open worktrees and plan streams still name the old paths"
  ]
  recoveries: [
-  "spw resolve and the cut gate run after every commit; any unresolved ref blocks the commit",
-  "plan streams are history and keep the old path; cards and roots follow the move"
+  "spw resolve and the cut gate run after every commit; any new unresolved ref blocks the commit",
+  "plan streams are history and keep the old paths; cards and roots follow the move",
+  "the tag caches-cut/2026.09.30 holds the layout as shelved, so any move can be compared against it"
  ]
  non_negotiables: [
   "no anchor is renamed or reused; the permanence rule holds",
   "claim statements stay byte-identical through mechanical passes",
-  "the raw shelf and its quarantine stay untouched",
+  "the raw generation moves whole and unchanged; git records every shelf file as a pure rename",
+  "the quarantine keeps every file it names",
   "commits and the snapshot tag are authorized by the owner"
  ]
 }
 
 ^["validation"]{
  hypotheses: [
-  "H1 the move changes no anchor and no ref target: 8180 anchors before and after, and the only unresolved refs that change are the three panel refs this plan fixes",
+  "H1 the moves change no anchor and no ref target: 8180 anchors before and after, and the only unresolved refs that change are the three panel refs this plan fixes",
   "H2 the receipt ledger loses nothing: every file, event, at, agent, care, and outcome tuple is recoverable from journal entries",
-  "H3 receipts to the journal and a trimmed card cut at least 15 percent of lines with claim statements byte-identical",
-  "H4 an agent given only the extension door and the gate adds one surface that passes the gate",
-  "H5 anchor-addressed refs remove about 400 thousand characters, about 8 percent of the cut"
+  "H3 receipts to the journal and a trimmed card cut at least 15 percent of the tree's lines with claim statements byte-identical",
+  "H4 an agent given only the extension door and the gate adds one surface to the tree and one entry to the journal, and both pass",
+  "H5 anchor-addressed refs remove about 400 thousand characters, about 8 percent of the tree"
  ]
  negative_controls: [
-  "git diff of the raw shelf directories is empty",
-  "the quarantine list in .spw/caches/index.spw is unchanged",
+  "git shows every raw shelf file as a 100 percent rename into journal/2026-09-30-gemini-shelf",
+  "the quarantine names the same nine files at their new paths",
   "the sorted list of claim statement strings is identical before and after each mechanical pass"
  ]
  demo_path: [
-  "open .spw/caches/cut/index.spw and follow the extension door",
-  "add one surface in a worktree and run the gate",
-  "check out the tag caches-cut/2026.09.30 and find the dated cut as it was shelved"
+  "open .spw/caches/index.spw and follow the extension door",
+  "add one surface to the tree and one entry to the journal in a worktree and run the gate",
+  "check out the tag caches-cut/2026.09.30 and find the dated cut and the shelf as they were"
  ]
 }
 
@@ -133,27 +135,35 @@
  >>[2026-10-13 10:08] decide — The owner asked for a directory for dated .spw files, a journal. It opens at .spw/journal at the canon root, entries named YYYY-MM-DD-slug.spw; resume notes, snapshot manifests, and receipt ledgers are its first kinds of entry.
  >>[2026-10-13 10:08] decide — The living tree is .spw/caches/cut; the raw shelf stays where it is, per the owner decision recorded in the caches-cut-2026-09-30 plan.
  >>[2026-10-13 10:08] taste — The contract is 232 lines and every rule in it is real, but an extending agent needs a door of about forty lines: where to put a surface, which exemplar to copy, which namespace to write under, which gate to run, and where its receipt goes.
+ >>[2026-10-13 10:17] decide — The owner took @cut#src_x as the starting ref form, a root figure with a fragment; the root names the layer, so refs read @tree#src_x and @journal#entry_anchor, with both roots declared once in .spw/workspace.spw.
+ >>[2026-10-13 10:17] decide — The owner approved caches-cut/2026.09.30 on main at 813444dc as the snapshot tag. Later snapshots of the living tree are tagged caches/YYYY.MM.DD.
+ >>[2026-10-13 10:17] observe — Time binds unevenly: 53 surfaces mark era current, 111 carry 296 as_of lines outside provenance, and all 631 quantity cells carry an at. Season holds recurring forms (arc, retrospective protocol, festivals, fiscal and academic years, the journal template) and one dated instance, the 2026 Q4 calendar with its trail.
+ >>[2026-10-13 10:17] revise — Putting season files in the journal moved the line: the journal is not a side folder for notes but the dated layer of the caches. A surface belongs in the tree when someone should edit it to keep it true, and in the journal when it records what was seen or made on a day and is never edited after. The tree becomes a view over the journal and the sources.
+ >>[2026-10-13 10:17] decide — The owner chose that structure inside .spw/caches: index.spw and extend.spw at the root, tree/ for the living synthesis, journal/ for dated append-only entries. The raw generation becomes one journal entry, journal/2026-09-30-gemini-shelf, moved whole; this revises the earlier decision that the shelf stays in its topic folders, and nothing is deleted. The canon-root journal from 10:08 is dropped.
+ >>[2026-10-13 10:17] decide — The living layer is named tree, not cut; a cut is a dated selection and this layer is not one.
+ >>[2026-10-13 10:17] decide — Only the season instance moves: calendar-2026q4 and trails/season-2026-q4 become journal/2026-10-01-season-2026-q4; the recurring season forms stay in tree/season.
 }
 
 ^["open"]{
- ?[anchor_ref_form]: "Which form addresses an anchor without its path: a cut-scoped fragment ~\"#src_creator_epub33\", a root figure with a fragment such as @cut#src_creator_epub33, or a new anchor-ref mark? The samples show all three; the owner picks before any parser change."
- ?[snapshot_tag]: "Is caches-cut/2026.09.30 on main at 813444dc the right tag? Its cut matches dfed5cc6 except one line in spw/history/editor-extension-arcs.spw."
- ?[season_home]: "Do season/ and trails/season-2026-q4.spw stay in the living tree with as_of, or move to the journal as dated entries?"
+ ?[provenance_home]: "tree/provenance holds a review scorecard and errata logs, which record what was found on days; do they move to the journal once refs are anchor-addressed and a move no longer rewrites paths?"
 }
 
 ^["commits"]{
- ~[plan]: ".[plans] — caches-living-tree plans the living cut, the journal, and leaner cache syntax"
- ~[journal_open]: "#[journal] — .spw/journal holds dated surfaces, routed from the canon index; the caches resume note is its first entry"
- ~[cut_snapshot]: ".[journal] — the shelved cut is tagged caches-cut/2026.09.30 and its manifest is a journal entry"
- ~[cut_move]: "&[caches] — the cut lives at .spw/caches/cut, undated; the gate, the caches index, docs, and plan roots follow"
- ~[cut_door]: ".[caches] — the cut gets a root index with relevance tiers and an extension door, and the gate passes"
- ~[syntax_samples]: "^seed[caches] — samples for anchor-addressed refs, journal receipts, a lean card, and closed concepts, as proposals p8 to p11"
+ .[plan](5383dfa2): ".[plans] — caches-living-tree plans the living cut, the journal, and leaner cache syntax"
+ ~[plan_revision]: ".[plans] — caches-living-tree takes the journal into the cache tree, with the raw generation and the season instance as entries"
+ ~[cut_snapshot]: "no commit: the owner tags main at 813444dc as caches-cut/2026.09.30 before any move"
+ ~[journal_open]: "#[caches] — .spw/caches/journal holds dated append-only entries; the resume note and the snapshot manifest are its first, and the workspace declares @caches, @tree, and @journal"
+ ~[shelf_entry]: "&[caches] — the raw generation becomes the journal entry 2026-09-30-gemini-shelf, moved whole; its index keeps the disclosure and the quarantine, and lineage strings in the cut follow"
+ ~[tree_move]: "&[caches] — the cut lives at .spw/caches/tree, undated; the gate, docs, and plan cards and roots follow"
+ ~[season_instances]: "&[caches] — the 2026 Q4 calendar and trail become the journal entry 2026-10-01-season-2026-q4; recurring season forms stay in the tree"
+ ~[root_door]: ".[caches] — one root index routes the tree and the journal, an extension door says how to add to each, and the gate passes"
+ ~[syntax_samples]: "^seed[caches] — samples for @tree#anchor refs, journal receipts, a lean card, and closed concepts, as proposals p8 to p11"
  ~[authorship_pilot]: ".[caches] — making/authorship rewritten with the sampled forms that parse today"
  ~[concept_vocab]: "#[caches] — concepts become a closed vocabulary and the gate enforces it"
  ~[receipts_to_journal]: "&[caches] — per-surface receipts move to journal ledgers; each surface keeps as_of and one line that names its ledger"
  ~[card_trim]: "&[caches] — cards drop fields the title comment and the sources already carry"
- ~[anchor_refs]: "^seed[resolver] — conditional on ?[anchor_ref_form]: anchor-addressed refs resolve in the CLI, the LSP, and the gate"
- ~[anchor_refs_migrate]: "&[caches] — conditional on ~[anchor_refs]: refs into the cut drop their path prefix"
+ ~[anchor_refs]: "^seed[resolver] — after the owner reviews the samples: @tree#anchor and @journal#anchor resolve in the CLI, the LSP, and the gate"
+ ~[anchor_refs_migrate]: "&[caches] — after ~[anchor_refs]: refs inside the caches drop their path prefix"
 }
 
 ^["cache"]{
@@ -161,12 +171,17 @@
  ~#base_ref: "main@813444dcd95167de820f9f7480b369717810628b"
  ~#rebased_at: ""
  ~#hygiene_split: "none"
- ~#files_hot: ".spw/caches/2026-09-30/contract.spw, scripts/analyzers/spw-cut-gate.ts, .spw/caches/index.spw"
- ~#next_commit: "journal_open"
- ~#open_count: "3"
- ~#last_stream: "2026-10-13 10:08"
- ~#taste_debt: "spw-cut-gate.ts is 392 lines and gains journal and concept checks; split it before it passes 600"
+ ~#files_hot: ".spw/caches/index.spw, .spw/caches/2026-09-30/contract.spw, scripts/analyzers/spw-cut-gate.ts, .spw/workspace.spw"
+ ~#next_commit: "plan_revision"
+ ~#open_count: "1"
+ ~#last_stream: "2026-10-13 10:17"
+ ~#taste_debt: "spw-cut-gate.ts is 392 lines and gains journal and concept checks; split it before it passes 600. The gate keeps the name cut; renaming it waits for a vocab commit."
 }
 
 ^["done"]{
+ ~#resolved(anchor_ref_form): "Which form addresses an anchor without its path? — a root figure with a fragment, @tree#src_x, with roots declared in .spw/workspace.spw; evidence: stream 2026-10-13 10:17"
+ ~#resolved(snapshot_tag): "Is caches-cut/2026.09.30 on 813444dc right? — yes; later snapshots are caches/YYYY.MM.DD; evidence: stream 2026-10-13 10:17"
+ ~#resolved(season_home): "Do season files stay in the tree? — the 2026 Q4 instance moves to the journal, the recurring forms stay; evidence: stream 2026-10-13 10:17"
+ ~#dropped(cut_move): "superseded by ~[tree_move]: the living layer is named tree"
+ ~#dropped(cut_door): "superseded by ~[root_door]: the door sits at the caches root and covers the tree and the journal"
 }
