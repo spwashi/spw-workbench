@@ -118,7 +118,8 @@ export interface BindingNode extends ASTNode {
 }
 
 /**
- * Line-level item: `.. text` or, for plan streams, `>>[stamp] verb — text`.
+ * Line-level item: `.. text`, or a stream entry `>>[stamp] verb — text` in any
+ * dialect (docs/theory/spw/line-items.spw).
  *
  * `>>` only marks an entry outside `<<…>>` bounds, where it closes nothing.
  */

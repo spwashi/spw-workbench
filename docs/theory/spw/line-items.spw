@@ -1,0 +1,78 @@
+// Line items - stream entries, bullets, and the mixed phrases they carry
+//
+// A line item is a line-start marker, an optional mode, and a body that runs to the newline.
+// The body is a mixed phrase, prose and expressions, and the marker chooses which is the ground.
+//
+// @see docs/theory/spw/fixity-brace-phrases.spw    prefix binds, postfix does not
+// @see docs/theory/spw/mutation-flow-automata.spw  ?[stream_entry]
+// @see docs/theory/spw/brace-charge-crawl.spw      << >> order-capture, ; sequential
+// @see packages/spw-seed/src/types/ast/nodes.ts    BulletNode
+// @see packages/spw-seed/src/lexer/stream-entry.ts the entry reader
+
+#>spw_theory_line_items
+#:layer #!semantics
+#:status #!proposed
+
+^seed[Spw.Line.Items v:0.1 @profile:Spw.b @intent:line_items]
+
+^["roots"]{
+ @fixity: ~"./fixity-brace-phrases.spw"
+ @flow: ~"./mutation-flow-automata.spw"
+ @crawl: ~"./brace-charge-crawl.spw"
+ @nodes: ~"../../../packages/spw-seed/src/types/ast/nodes.ts"
+ @entry: ~"../../../packages/spw-seed/src/lexer/stream-entry.ts"
+ @catalog: ~"../../../packages/spw-seed/src/experimental/syntax-catalog.ts"
+ @plan: ~"../../../.agents/plans/plan-stream-parse-health/wip.spw"
+}
+
+^["thesis"]{
+ ~#claim: "A line item is a line-start marker, an optional [mode] and a body that runs to the newline: the marker says what the line is, the mode where it sits in its order, the body what it carries."
+ ~#ground: "The body is a mixed phrase, a sequence of prose and expressions, and the marker chooses which is the ground and which the figure."
+ ~#taste: "one reading per marker; the fixity law draws the line between prose and expression; nothing a reader would call a sentence is a syntax error"
+}
+
+^["markers"]{
+ statement = "`.. item` states a Spw item; expression-first; ordered by position"
+ numbered = "`..[n] item` is the nth statement, a step or a rank, which may be edited and renumbered"
+ emission = "`>>[stamp] type — text` is an utterance that left a stream; prose-first; append-only when dated"
+ pointer = "`$[n]` is not an item: it selects the nth item"
+}
+
+^["stream"]{
+ ~#closer: "In `<< a ; b >>` the >> closes an ordered capture."
+ ~#prefix: "At a line start with no << open, >> has nothing on its left; prefix binds, so it reads as the act its closer names: this came out of the stream."
+ ~#open_claims: "An open << claims a line-start >> as its closer, so `<< a` followed by `>>[2026]` stamps the whole stream, where a prefix >>[stamp] stamps one emission."
+ ~#dated: "A dated emission cannot be un-emitted, which is why dated entries are append-only."
+ ~#ordinal: "An ordinal >>[n] is the shape of a log a run will write, as the saga templates use it; a list of steps to perform is a schedule, written ..[n] or << a ; b >>."
+ ~#answers: "mutation-flow-automata ?[stream_entry]: an entry outside << >> is not orthogonal to ;. The newline between entries is the schedule's ;, and the stamp is its order key."
+}
+
+^["newline"]{
+ ~#ends_body: "The newline ends a line item's body, as it ends a // comment; one body is one utterance, one claim to a line."
+ ~#joins_items: "Between line items the newline plays ;, so a frame of entries reads as << e1 ; e2 ; e3 >>."
+ ~#dialects: "Where a dialect reads newlines as spaces, nothing ends a body, so that dialect has no line items."
+ ~#inline: "After a frame's opening brace a marker is in prefix position too, but a body that runs to the newline would take the frame's closing brace; an inline entry needs its own terminator, and a quoted body is one."
+}
+
+^["mode"]{
+ ~#frame: "A [mode] right after the marker is a mode on the item, as in door[closed]: the item's coordinate in its order."
+ ~#kinds: "a time such as 2026-10-12 21:34, a day such as 2026-07-27, or a position such as 0"
+}
+
+^["phrases"]{
+ ~#senses: "A brace phrase (fixity-brace-phrases.spw) is an Act and Bound silhouette and a backtick phrase is the canonical string; this note reads what a phrase carries: a sequence of prose and expressions."
+ ~#prose_first: "Prose is the ground and expressions the figure; >> bodies read this way."
+ ~#expression_first: "Spw is the ground and prose the figure: what Spw cannot read becomes quiet prose instead of an error; .. bodies read this way."
+ ~#boundary: "Inside prose a sigil begins an expression only at the start of a word and only when a name, bracket, brace or quote follows at once: prefix binds, postfix does not."
+ ~#figures: "path refs, $slot and ${slot}, ~[name], ?[label], .[name](hash), %[x], #>anchor, =exp[id: x], &[scope], ^seed[x]"
+ ~#half_formed: "A figure whose bracket does not close on its line, or holds a quote, a slash or prose punctuation, is half-formed and stays prose: ~#lens( by regex, ~[what's this]."
+ ~#roots_wait: "@ names stay prose for now: in prose an @ name is as often an npm scope, @typescript-eslint/parser, as a root."
+ ~#stay_prose: "exist? and door~ are postfix; e.g. and 2026.10.13-pre.1 have no word start; ~/air has no operand; a quote that does not close on its line"
+ ~#backticks: "A backtick phrase has no marker to choose its ground: `door~` in the quest is a code sample, while `full: parse` in a set is a label."
+}
+
+^["open"]{
+ ?[backtick_ground]: "How does a backtick phrase choose its ground: by the key it sits under, by a mark, or does each reader take the reading it needs?"
+ ?[roots_in_prose]: "How does an @ name in prose read as a root and not an npm scope: only when the root is declared, only with a following path, or never?"
+ ?[stamp_kinds]: "Should an item state its mode's kind (time, day, position, other) so tools stop re-deriving it from the text?"
+}

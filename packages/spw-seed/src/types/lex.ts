@@ -37,7 +37,7 @@ export interface LexProfile {
 
 export interface LexOptions {
   profile?: LexProfile | string
-  /** Preserve line-leading plan entries outside ordinary << >> stream bounds. */
+  /** Lex plan-file tokens: commit refs `.[name](hash)`. Stream entries lex in every dialect. */
   planStream?: boolean
   /** Retained event detail; generation counts remain visible for cost accounting. */
   eventPolicy?: ParseEventPolicy

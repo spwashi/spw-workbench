@@ -234,6 +234,20 @@ export const SYNTAX_CATALOG: readonly SyntaxCatalogEntry[] = [
     summary: 'Phrase rewrite optimization under fixity laws + OptCacheIR key',
   },
   {
+    id: 'phrase.line_item',
+    status: 'proposed',
+    docs: 'docs/theory/spw/line-items.spw',
+    runtimeHook: 'parse',
+    summary: 'Line item: a line-start .. or >> marker, an optional [mode], and a body that runs to the newline',
+  },
+  {
+    id: 'phrase.mixed_reading',
+    status: 'proposed',
+    docs: 'docs/theory/spw/line-items.spw',
+    runtimeHook: 'parse',
+    summary: 'A body read as prose and expressions; the marker chooses the ground (>> prose-first, .. expression-first)',
+  },
+  {
     id: 'regional.ocean_o',
     status: 'proposed',
     dialect: 'Spw.o',

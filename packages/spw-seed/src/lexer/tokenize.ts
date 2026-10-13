@@ -30,7 +30,7 @@ import {
   matchPhrase,
 } from './matchers'
 import { buildConnectorMap, buildOperatorMap, resolveLexProfile } from './profiles'
-import { readPlanStreamEntry } from './plan-stream'
+import { entryLineEnd, figureEnd, readEntryMarker } from './stream-entry'
 import { readCommitRef } from './commit-ref'
 
 /**
@@ -85,36 +85,25 @@ export function* tokenize(
     depth,
   }
 
-  while (!isAtEnd(state)) {
-    const entry = options.planStream ? readPlanStreamEntry(state, streamDepth) : null
-    if (entry) {
-      for (const token of entry) {
-        tokens.push(token)
-        yield {
-          type: 'token',
-          rule: 'planStreamEntry',
-          position: token.span.start,
-          data: { token } as TokenEventData,
-          timestamp: performance.now(),
-          depth,
-        }
-      }
-      continue
+  function* push(token: Token, rule: string): Generator<ParseEvent, void, void> {
+    tokens.push(token)
+    yield {
+      type: 'token',
+      rule,
+      position: token.span.start,
+      data: { token } as TokenEventData,
+      timestamp: performance.now(),
+      depth,
     }
+  }
+
+  /** One token by the ordinary rules: a commit ref in plan files, then the matchers in order. */
+  function* lexOne(): Generator<ParseEvent, void, void> {
     const commitRef = options.planStream ? readCommitRef(state) : null
     if (commitRef) {
-      tokens.push(commitRef)
-      yield {
-        type: 'token',
-        rule: 'commitRef',
-        position: commitRef.span.start,
-        data: { token: commitRef } as TokenEventData,
-        timestamp: performance.now(),
-        depth,
-      }
-      continue
+      yield* push(commitRef, 'commitRef')
+      return
     }
-    let matched = false
 
     for (const matcher of matchers) {
       const gen = matcher(state, depth + 1)
@@ -129,48 +118,67 @@ export function* tokenize(
         tokens.push(result.value)
         if (result.value.type === 'STREAM_OPEN') streamDepth++
         if (result.value.type === 'STREAM_CLOSE') streamDepth = Math.max(0, streamDepth - 1)
-        matched = true
-        break
+        return
       }
     }
 
-    if (!matched) {
-      const pos = getPosition(state)
-      const char = state.input[state.offset]
+    const pos = getPosition(state)
+    const char = state.input[state.offset]
 
-      if (lexProfile.unknownAsText) {
-        advance(state)
-        const token: Token<'TEXT'> = {
-          type: 'TEXT',
-          value: char,
-          span: { start: pos, end: getPosition(state) },
-        }
-        tokens.push(token)
-        yield {
-          type: 'token',
-          rule: 'text',
-          position: pos,
-          data: { token } as TokenEventData,
-          timestamp: performance.now(),
-          depth,
-        }
-      } else {
-        yield {
-          type: 'error',
-          rule: 'tokenize',
-          position: pos,
-          data: {
-            message: `Unexpected character: ${char}`,
-            found: char,
-            recoverable: true,
-          } as ErrorEventData,
-          timestamp: performance.now(),
-          depth,
-        }
-
-        advance(state)
+    if (lexProfile.unknownAsText) {
+      advance(state)
+      yield* push({ type: 'TEXT', value: char, span: { start: pos, end: getPosition(state) } } as Token<'TEXT'>, 'text')
+    } else {
+      yield {
+        type: 'error',
+        rule: 'tokenize',
+        position: pos,
+        data: {
+          message: `Unexpected character: ${char}`,
+          found: char,
+          recoverable: true,
+        } as ErrorEventData,
+        timestamp: performance.now(),
+        depth,
       }
+
+      advance(state)
     }
+  }
+
+  /** An entry's body to the end of its line: prose as TEXT, each figure lexed by the ordinary rules. */
+  function* lexEntryBody(): Generator<ParseEvent, void, void> {
+    const lineEnd = entryLineEnd(state.input, state.offset)
+    const bodyStart = state.offset
+    let text = getPosition(state)
+    const flushText = function* (): Generator<ParseEvent, void, void> {
+      if (state.offset === text.offset) return
+      const value = state.input.slice(text.offset, state.offset)
+      yield* push({ type: 'TEXT', value, span: { start: text, end: getPosition(state) } } as Token<'TEXT'>, 'streamEntry')
+    }
+
+    while (state.offset < lineEnd) {
+      const end = figureEnd(state.input, state.offset, bodyStart, lineEnd)
+      if (end === null) {
+        advance(state)
+        continue
+      }
+      yield* flushText()
+      while (state.offset < end) yield* lexOne()
+      text = getPosition(state)
+    }
+    yield* flushText()
+  }
+
+  while (!isAtEnd(state)) {
+    // A line-start >> entry owns its line in every dialect; commit refs stay a plan-file token.
+    const marker = readEntryMarker(state, streamDepth)
+    if (marker) {
+      yield* push(marker, 'streamEntry')
+      yield* lexEntryBody()
+      continue
+    }
+    yield* lexOne()
   }
 
   const eofToken: Token<'EOF'> = {

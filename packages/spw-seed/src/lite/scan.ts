@@ -47,6 +47,8 @@ export type LiteTokenKind =
   | 'string'
   | 'phrase'
   | 'comment'
+  /** The rest of a stream entry's line after its `>>`: prose, not syntax. */
+  | 'text'
   | 'arrow'
   | 'connector'
   | 'number'
@@ -83,6 +85,7 @@ export function scan(source: string): LiteToken[] {
   const out: LiteToken[] = []
   const n = source.length
   let i = 0
+  let streams = 0
 
   const push = (kind: LiteTokenKind, start: number, end: number, bound?: LiteBoundKind) => {
     const tok: LiteToken = { kind, value: source.slice(start, end), start, end }
@@ -97,6 +100,17 @@ export function scan(source: string): LiteToken[] {
     if (SPACE.test(ch)) {
       while (i < n && SPACE.test(source[i]!)) i++
       push('space', start, i)
+      continue
+    }
+
+    // A line-start `>>[` with no `<<` open is a stream entry, in every dialect:
+    // the marker, then the rest of the line as prose (docs/theory/spw/line-items.spw).
+    if (ch === '>' && source.startsWith('>>[', i) && streams === 0 && atLineStart(source, i)) {
+      i += 2
+      push('close', start, i, 'stream')
+      const text = i
+      while (i < n && source[i] !== '\n' && source[i] !== '\r') i++
+      push('text', text, i)
       continue
     }
 
@@ -173,6 +187,7 @@ export function scan(source: string): LiteToken[] {
     const bound = matchBound(source, i)
     if (bound) {
       i += bound.text.length
+      if (bound.kind === 'stream') streams = Math.max(0, streams + (bound.closing ? -1 : 1))
       push(bound.closing ? 'close' : 'open', start, i, bound.kind)
       continue
     }
@@ -272,6 +287,13 @@ const ZERO_BOUNDS = (): Record<LiteBoundKind, number> => ({
   body: 0,
   capsule: 0,
 })
+
+/** Only spaces or tabs between the previous newline (or the start) and `i`. */
+function atLineStart(source: string, i: number): boolean {
+  let j = i
+  while (j > 0 && (source[j - 1] === ' ' || source[j - 1] === '\t')) j--
+  return j === 0 || source[j - 1] === '\n'
+}
 
 /**
  * Measure a surface's shape without building a tree.

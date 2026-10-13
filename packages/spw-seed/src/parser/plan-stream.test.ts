@@ -54,10 +54,18 @@ describe('plan stream entries', () => {
     expect(lex(source, { planStream: true }).tokens).toEqual(lex(source).tokens)
   })
 
-  it('does not capture inline markers, strings, comments, or other dialects', () => {
+  it('does not capture inline markers, strings, or comments', () => {
     for (const source of ['x >>[2026]', '" >>[2026] "', '// >>[2026]\n']) {
       expect(lex(source, { planStream: true }).tokens).toEqual(lex(source).tokens)
     }
-    expect(parse(ENTRY, { dialect: 'Spw.b' }).errors.length).toBeGreaterThan(0)
+  })
+
+  // Was: an entry in Spw.b read as errors. Entries are a construct of the language now
+  // (docs/theory/spw/line-items.spw), so every dialect reads them the way Spw.p does.
+  it.each(['Spw.b', 'Spw.t', 'Spw.x'])('reads an entry in %s as Spw.p does', (dialect) => {
+    const source = `^["stream"]{\n ${ENTRY}\n}\n`
+    const result = parse(source, { dialect })
+    expect(result.errors).toEqual([])
+    expect(result.tokens).toEqual(parse(source, { dialect: 'Spw.p' }).tokens)
   })
 })

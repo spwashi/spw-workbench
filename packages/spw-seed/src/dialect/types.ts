@@ -93,7 +93,7 @@ export interface MetasyntaxFlags {
   machineLint: boolean
   /** Recognize flow CA glyphs as first-class authoring (docs + future lower). */
   flowGlyphs: boolean
-  /** Plan/stream idioms (>> , open blocks). */
+  /** Plan-file idioms: commit refs. Line-start >> entries read in every dialect. */
   planStream: boolean
 }
 
