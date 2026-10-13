@@ -102,6 +102,7 @@
  >>[2026-10-12 14:28] observe — The stdio switch handles 23 spw/* methods (7 direct, 16 through handleSpwProbe) but SpwCustomRequestMap types 14; the phantom resonance, operatorFrequency, phaseContext and registerSnapshot types are now handled server-side. No registry exists; a name grep finds test files naming only 8 of the 23.
  >>[2026-10-12 15:22] revise — Commits named per the convention in 90c58bbc: 1 landed, 5 planned, 0 dropped.
  >>[2026-10-13 11:59] revise — Corrections from the caches (hosts/lsp-surface.spw, checked against stdio-server.ts 336 to 400): 8 methods are answered directly and 15 through the probe handler, not 7 and 16; ?[earned_requests] lists referenceGraph as uncalled, but VS Code calls it (commands.ts 114), and formContext has a client type and no caller. Scorecard bugs 1 and 2 are still present and land here as keep_cache_layers and trace_setting_id. capability_matrix becomes the one host matrix the Neovim and IntelliJ audits fill.
+ >>[2026-10-13 15:33] implement — Landed ac381ee7: cacheReflection keeps plane and every well-formed layer card, so the cache card can show the LSP plane present; the language client id is spw, so spw.trace.server is the setting the client reads.
 }
 
 ^["open"]{
@@ -116,8 +117,8 @@
  ~[type_missing_methods]: "vocab[lsp] — type or document the methods missing from SpwCustomRequestMap (it types 14 of the 23); type one only when a caller earns it"
  ~[dispatch_tests]: "![lsp] — one stdio dispatch test for each method no test names (a name grep finds 8 of 23 named)"
  ~[earned_request]: "^seed[lsp] =request[earned] — a new request, only after a retained cost sample and a language wire both exist; held"
- ~[keep_cache_layers]: "&[vscode] — cacheReflection passes layers through, with a test (scorecard bug 1; hosts/known-defects.spw, editor_hosts_defects_d1)"
- ~[trace_setting_id]: "&[vscode] — contribute spwLanguageServer.trace.server so tracing reaches the client (scorecard bug 2; editor_hosts_defects_d2)"
+ .[keep_cache_layers](ac381ee7): "&[vscode] — the cache card keeps its plane and layers, and spw.trace.server reaches the language client"
+ .[trace_setting_id](ac381ee7): "&[vscode] — the cache card keeps its plane and layers, and spw.trace.server reaches the language client"
 }
 
 ^["cache"]{
@@ -128,7 +129,7 @@
  ~#files_hot: "packages/spw-lsp/src/stdio-server.ts, packages/spw-lsp/src/server-index.ts, extensions/vscode-spw/src/lsp/custom-requests.ts, .agents/plans/form-geometry-editor/PLAN.md"
  ~#next_commit: "protocol_registry"
  ~#open_count: "2"
- ~#last_stream: "2026-10-13 11:59"
+ ~#last_stream: "2026-10-13 15:33"
  ~#taste_debt: "No protocol registry yet; the stdio switch is the only list of handled methods and the client map types 14 of 23"
 }
 

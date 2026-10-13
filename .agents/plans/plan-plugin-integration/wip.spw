@@ -11,7 +11,7 @@
  gist: "Editor plugins read and act on wip.spw plan facts through standard LSP products, one fact model."
  touches: [~"packages/spw-lsp/src/handlers/outline.ts", ~"scripts/plans/plan-index.ts", ~".agents/scripts/agent-lib.sh"]
  entry: ~"./PLAN.md"
- next: "~[commit_ref_token_type] and ~[commit_ref_document_link]: commit refs in plan files get their own token type and a link that opens the commit in VS Code; then ~[commit_view_vscode] and ~[land_commit_action]."
+ next: "~[commit_ref_vscode_test]: an extension-host test that opens a fixture plan and checks hover, the commitRef token, the link, and the commit view; then ~[land_commit_action]."
 }
 
 ^["edges"]{
@@ -105,6 +105,8 @@
  >>[2026-10-12 21:02] decide — Creator asked for completions beyond stamps and types: landing a planned commit from git log (~[land_commit_action], which takes over hash completion from ~[commit_ref_links]), plan-name completion and navigation, schema keys, and stream completion wherever a stream frame is.
  >>[2026-10-13 11:59] revise — resolved [clock_field]: e6c56978 reads a clock zone from .spw/site.spw or .spw/workspace.spw, else SPW_TZ, else local time. The IntelliJ outline is a Kotlin line reader that never asks the server (hosts/jetbrains-native-features.spw), so cross_editor_check expects it absent. Stream completion here extends the same handler vscode-authoring-probe-loop landed as stream_stamp_completion; coordinate before stream_completion_everywhere.
  >>[2026-10-13 15:06] decide — The owner escalated git-hash support in VS Code on 2026-10-13; it becomes this plan's first slice and a now row in the plan index priority. commit_ref_links splits into commit_ref_token_type, commit_ref_document_link, and commit_view_vscode; commit_ref_beyond_plans and commit_ref_vscode_test are added, with ?[prose_hashes] deciding how far hashes outside the landed form reach. Git calls stay in commit-refs.ts for this slice; local-numbering-vcs lsp_adapter moves them later.
+ >>[2026-10-13 15:33] decide — resolved [prose_hashes]: the owner chose to catch more, with a maintainable resolution strategy. Any 7 to 40 hex run with a digit and a letter that git confirms as a commit hovers and links wherever it stands and takes no color; landed refs keep their token and missing-hash note.
+ >>[2026-10-13 15:33] implement — Landed a80a5df7: COMMIT_REF_STRATEGY and READERS in commit-refs.ts hold the rule as data, git cat-file --batch-check confirms many hashes in one process, links name full hashes in spw-commit URIs, and each landed hash is one commitRef token. Landed 00c6a56e: VS Code opens a commit link as a read-only diff document, and Spw: Open Commit Changes opens the multi-file changes view through the Git extension, falling back to the document. No automated test drives the changes view; commit_ref_vscode_test is next.
 }
 
 ^["open"]{
@@ -112,7 +114,6 @@
  ?[drift_severity]: "Should open_count and last_stream drift be information or warning, given plan:stream and spw refresh also write them and a stale cache is already reported by plan:check?"
  ?[land_ranking]: "Which commits does landing offer first: HEAD, commits whose sigil and scope match the planned line, or a ranking by subject words? A site commit lands in another repository; does the action read that repository's log?"
  ?[done_in_outline]: "Do ^done entries (~#resolved(label), ~#dropped(name)) appear as outline children, as hover on ?[label] mentions, or both? Decides ~[plan_fact_hover] and what Neovim sees."
- ?[prose_hashes]: "Outside the .[name](hash) form, does a 7 to 40 hex run in prose or a string hover and link whenever git confirms the object, or only when it is written in parentheses after a landed name?"
 }
 
 ^["commits"]{
@@ -123,10 +124,10 @@
  ~[plan_fact_hover]: "&[lsp] — hover on ^cache and card fields and on ~#resolved(label) shows the value, its derivation and the stream stamp"
  ~[drift_diagnostics]: "&[lsp] — drift diagnostics for open_count, last_stream and next_commit against the file, information severity, no write fix"
  .[commit_ref_affordances](e6c56978): "&[lsp] — in plan files a commit-ref hash hovers with its subject, date and files, and a hash git does not have gets an information note"
- ~[commit_ref_token_type]: "&[lsp] — commit refs get a semantic token type of their own and a TextMate scope for the .[name](hash) form; editor-reading-hierarchy ~[commit_frame_roles] colors landed lines from it"
- ~[commit_ref_document_link]: "&[lsp] — every commit ref the repository holds carries a document link to a spw-commit URI naming the full hash; a hash git lacks keeps its information note and gets no link"
- ~[commit_view_vscode]: "&[vscode] — the link opens the commit inside VS Code: the multi-diff changes view over its files through the built-in Git extension API when present, else a read-only spw-commit document with subject, author, date, stat, and patch; never an untitled buffer"
- ~[commit_ref_beyond_plans]: "&[lsp] — the same hover and link for hashes in journal commit bindings, in stream entries that write (hash) after a landed name, and in episode scene refs, only when git confirms the object; such hashes take no color, per ?[prose_hashes]"
+ .[commit_ref_token_type](a80a5df7): "&[lsp] — one hash resolution strategy: landed refs take a commitRef token, and every hash git confirms hovers and links to its commit"
+ .[commit_ref_document_link](a80a5df7): "&[lsp] — one hash resolution strategy: landed refs take a commitRef token, and every hash git confirms hovers and links to its commit"
+ .[commit_view_vscode](00c6a56e): "&[vscode] — commit links open inside VS Code: a read-only diff document, and the changes view through the Git extension"
+ .[commit_ref_beyond_plans](a80a5df7): "&[lsp] — one hash resolution strategy: landed refs take a commitRef token, and every hash git confirms hovers and links to its commit"
  ~[commit_ref_vscode_test]: "![vscode] — extension test on a fixture plan with a known commit: hover, token, link, open, and completion; an unknown hash gets the note and no link"
  ~[land_commit_action]: "&[lsp] — on a ~[name] line in ^[\"commits\"], completion after ]( and a code action offer recent commits with their subjects and rewrite the line to .[name](hash): \"subject\"; the same move as plan-tooling-design ~[settle_verb] --ship"
  ~[plan_name_completion]: "&[lsp] — ~#next_commit: \" offers the planned ~[name]s, ~#resolved( the open ?[label]s, ~#dropped( the planned names, and a stream entry body this file's names"
@@ -142,9 +143,9 @@
  ~#rebased_at: "2026-10-12"
  ~#hygiene_split: "none"
  ~#files_hot: ".agents/plans/plan-plugin-integration/PLAN.md, .agents/plans/plan-plugin-integration/wip.spw"
- ~#next_commit: "commit_ref_token_type"
- ~#open_count: "5"
- ~#last_stream: "2026-10-13 15:06"
+ ~#next_commit: "commit_ref_vscode_test"
+ ~#open_count: "4"
+ ~#last_stream: "2026-10-13 15:33"
  ~#taste_debt: ""
 }
 
@@ -153,4 +154,5 @@
  # ~#resolved(label): "<question> — <answer>; evidence: <stream stamp | commit | path>"
  ~#resolved(clock_field): "Which workspace manifest field declares the stream clock (no field is named clock today), and is it a timezone, a source command, or a fixed offset? Decides whether the stamp completion in vscode-authoring-probe-loop can be standard LSP. — answered by e6c56978: plan-stream.ts reads a clock zone from .spw/site.spw or .spw/workspace.spw, else SPW_TZ, else local time; evidence: plan-stream.ts lines 8 to 10 and 27"
  ~#dropped(commit_ref_links): "split on 2026-10-13, when the owner escalated git-hash support in VS Code, into ~[commit_ref_token_type], ~[commit_ref_document_link], and ~[commit_view_vscode]"
+ ~#resolved(prose_hashes): "Outside the .[name](hash) form, does a 7 to 40 hex run in prose or a string hover and link whenever git confirms the object, or only when it is written in parentheses after a landed name? — catch more: any 7 to 40 hex run with a digit and a letter that git confirms as a commit hovers and links wherever it stands, and takes no color; COMMIT_REF_STRATEGY and READERS in commit-refs.ts hold the rule, so a new source is one row (owner, 2026-10-13; landed in a80a5df7)"
 }
