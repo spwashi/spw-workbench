@@ -63,7 +63,7 @@ npm run lint:spw                 # Parse-validate all .spw files
 npm run lint:docs                # Verify .spw path references
 npm run audit                    # @spw: marker audit
 npm run audit:full               # Full codebase audit
-npm run audit:spw:syntax         # .spw syntax validation (excludes .agents)
+npm run audit:spw:syntax         # .spw syntax validation
 ```
 
 ### Fuzz Profiles

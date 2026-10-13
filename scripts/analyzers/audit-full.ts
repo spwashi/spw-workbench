@@ -191,7 +191,7 @@ async function runUiContextPanelAudit(): Promise<AuditCheckResult> {
 
 async function runSpwSyntaxAudit(): Promise<AuditCheckResult> {
   const scriptPath = path.resolve('scripts/analyzers/spw-syntax-validate.ts')
-  const run = await runNodeScript<SpwSyntaxPayload>(scriptPath, ['--json', '--exclude', '.agents'])
+  const run = await runNodeScript<SpwSyntaxPayload>(scriptPath, ['--json'])
 
   const status: AuditStatus = run.payload.failed > 0
     ? 'fail'

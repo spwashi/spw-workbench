@@ -23,6 +23,12 @@ export const DEFAULT_IGNORED_DIRS: ReadonlySet<string> = new Set([
   ...INFRASTRUCTURE_DIRS,
 ])
 
+/**
+ * Dot directories that hold authored surfaces: the canon root and the agent
+ * plans. Every other dot entry (.git, .claude worktrees, editor state) is skipped.
+ */
+export const AUTHORED_DOT_DIRS: ReadonlySet<string> = new Set(['.spw', '.agents'])
+
 export interface CollectSpwFilesOptions {
   /** Directory basenames to skip entirely. Defaults to DEFAULT_IGNORED_DIRS. */
   ignore?: ReadonlySet<string>
@@ -100,7 +106,7 @@ async function walk(
 
   const results = await Promise.all(
     entries.map(async entry => {
-      if (entry.name.startsWith('.') && entry.name !== '.spw') return []
+      if (entry.name.startsWith('.') && !AUTHORED_DOT_DIRS.has(entry.name)) return []
       if (entry.isDirectory()) {
         if (skipDirectory(dir, entry.name, ignore)) return []
         return walk(path.join(dir, entry.name), ignore, accept)

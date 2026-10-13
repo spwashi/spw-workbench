@@ -55,6 +55,16 @@ describe('collectSpwFiles', () => {
     expect(files.some(f => f.includes('.hidden'))).toBe(false)
   })
 
+  it('walks .agents, where plans live, and still skips agent worktrees under .claude', async () => {
+    await fs.mkdir(path.join(root, '.agents', 'plans', 'p'), { recursive: true })
+    await fs.writeFile(path.join(root, '.agents', 'plans', 'p', 'wip.spw'), '', 'utf8')
+    await fs.mkdir(path.join(root, '.claude', 'worktrees', 'w'), { recursive: true })
+    await fs.writeFile(path.join(root, '.claude', 'worktrees', 'w', 'copy.spw'), '', 'utf8')
+    const rel = (await collectSpwFiles(root)).map(f => path.relative(root, f))
+    expect(rel).toContain(path.join('.agents', 'plans', 'p', 'wip.spw'))
+    expect(rel.some(f => f.startsWith('.claude'))).toBe(false)
+  })
+
   it('honors a custom ignore set (replaces, rather than merges with, the default)', async () => {
     const files = await collectSpwFiles(root, { ignore: new Set(['nested']) })
     const rel = files.map(f => path.relative(root, f)).sort()

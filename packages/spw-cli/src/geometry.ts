@@ -29,11 +29,12 @@ import {
   type GeometryReport,
 } from '@spwashi/spw-seed'
 import { formatJsonEnvelope } from './envelope'
+import { AUTHORED_DOT_DIRS } from './fs-walk'
 import { printHelpPage } from './help'
 import { emitDetail, emitHeader, emitNext, formatTable, meta } from './view'
 import { resolveWorkspacePath, tryDiscoverSpwWorkspace, resolveCliInput } from './workspace'
 
-const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', '_workbench', '.agents'])
+const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', '_workbench'])
 
 interface GeomArgs {
   files: string[]
@@ -241,7 +242,7 @@ async function collectSpwFiles(target: string, maxFiles: number, out: string[]):
   const entries = await fs.readdir(abs, { withFileTypes: true })
   for (const e of entries) {
     if (out.length >= maxFiles) return
-    if (e.name.startsWith('.') && e.name !== '.spw') continue
+    if (e.name.startsWith('.') && !AUTHORED_DOT_DIRS.has(e.name)) continue
     if (IGNORED_DIRS.has(e.name)) continue
     const full = path.join(abs, e.name)
     if (e.isDirectory()) await collectSpwFiles(full, maxFiles, out)

@@ -2,7 +2,8 @@
  * spw-particle-census — the corpus's particle physics, measured.
  *
  * Sweeps every authored .spw surface and reports:
- *   - the aim mix per top-level tree (dialect signatures: deixis = navigability,
+ *   - the aim mix per top-level tree, with .agents/plans and its _archive apart
+ *     (dialect signatures: deixis = navigability,
  *     case = queryability, mood = assertion richness, aspect = volatility)
  *   - duplicate anchors (same deixis name in multiple files — ambiguous targets
  *     for ~"file#anchor" resolution and reverse indexing)
@@ -18,7 +19,17 @@ import path from 'node:path'
 import process from 'node:process'
 import { isDerivedSurface, parse, particleBindings, particleMix, type ParticleMix } from '@spwashi/spw-seed'
 
-const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', 'dist-ssr', 'release', '.agents'])
+// Matches the language server's walk: build output, mounts and agent worktrees are copies, not surfaces.
+const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', 'dist-ssr', 'release', 'build', '.claude', '_workbench'])
+
+/** Plans and archived plans are trees of their own; elsewhere the first segment names the tree. */
+function treeOf(rel: string): string {
+  const parts = rel.split(path.sep)
+  if (parts[0] === '.agents' && parts[1] === 'plans') {
+    return parts[2] === '_archive' ? '.agents/plans/_archive' : '.agents/plans'
+  }
+  return parts[0] ?? '.'
+}
 
 type Mix = ParticleMix
 
@@ -88,7 +99,7 @@ async function census(roots: string[]): Promise<Census> {
 
   for (const file of files) {
     const rel = path.relative(process.cwd(), file)
-    const tree = rel.split(path.sep)[0] ?? '.'
+    const tree = treeOf(rel)
     const mix = (trees[tree] ??= emptyMix())
     const source = await fs.readFile(file, 'utf8')
     const ast = parse(source).ast ?? null

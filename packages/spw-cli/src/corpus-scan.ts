@@ -52,7 +52,7 @@ import {
 import { collectSpwFiles, DEFAULT_IGNORED_DIRS } from './fs-walk'
 import { resolveWorkspacePath, tryDiscoverSpwWorkspace, type SpwWorkspace } from './workspace'
 
-export const CORPUS_IGNORED = new Set([...DEFAULT_IGNORED_DIRS, '_workbench', '.agents'])
+export const CORPUS_IGNORED = new Set([...DEFAULT_IGNORED_DIRS, '_workbench'])
 
 /** @deprecated Prefer PopulationRole from seed */
 export type InventoryRole = PopulationRole

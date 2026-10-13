@@ -142,7 +142,7 @@ Examples:
   npm run lint:spw                                  # All files
   npm run lint:spw -- docs/theory                   # Only the theory folder
   npm run lint:spw -- --match semantics             # Files mentioning 'semantics'
-  npm run lint:spw -- --exclude .agents              # Ignore generated/agent files
+  npm run lint:spw -- --exclude _archive             # Skip archived surfaces
   npm run lint:spw -- --fail-fast --strict          # CI fast fail
 `)
 }
@@ -151,7 +151,8 @@ Examples:
 // File Collection
 // ---------------------------------------------------------------------------
 
-const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', 'dist-ssr', '.agents'])
+// Matches the language server's walk: build output, mounts and agent worktrees are copies, not surfaces.
+const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', 'dist-ssr', 'release', 'build', '.claude', '_workbench'])
 
 async function collectSpwFiles(dir: string): Promise<string[]> {
     let entries
