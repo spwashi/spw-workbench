@@ -1,0 +1,142 @@
+# wip — local-numbering-vcs
+# Branch: feature/caches-living-tree
+# Started: 2026-10-13
+
+#>plan_local_numbering_vcs
+#:plan #!execution_truth
+#:layer #!pragmatics
+
+!["card"]{
+ phase: #planning
+ gist: "Local ids follow one rule (labels are identity, ordinals are derived for display), and every version-control touchpoint reads the VCS from .spw/workspace.spw, detected by default, so plans, lexer, LSP, CLI, and hooks work in git, jj, or no VCS."
+ touches: [~".spw/workspace.spw", ~"packages/spw-seed/src/lexer/commit-ref.ts", ~"packages/spw-lsp/src/handlers/commit-refs.ts", ~".agents/scripts/agent-lib.sh"]
+ entry: ~"./PLAN.md"
+ next: "~[schema_numbering_rule]: state the rule in the plan schema and drop its stale ~[N] section; then ~[vcs_settings] and ~[vcs_adapter]."
+}
+
+^["edges"]{
+ shares: [~"../caches-living-tree/wip.spw", ~"../parser-releases/wip.spw", ~"../plan-tooling-design/wip.spw", ~"../hygiene-index-consolidation/wip.spw"]
+ feeds: [~"../plan-stream-parse-health/wip.spw"]
+}
+
+^["roots"]{
+ @plan: ~".agents/plans/local-numbering-vcs/PLAN.md"
+ @artifact: ~".agents/plans/local-numbering-vcs/local-numbering-vcs.spw"
+ @workspace: ~".spw/workspace.spw"
+ @schema: ~".agents/plans/_schema/wip.spw"
+ @commit_ref_lexer: ~"packages/spw-seed/src/lexer/commit-ref.ts"
+ @commit_ref_lsp: ~"packages/spw-lsp/src/handlers/commit-refs.ts"
+ @agent_lib: ~".agents/scripts/agent-lib.sh"
+}
+
+^["intent"]{
+ ~#goal: "A reader can scan a plan's commits by state and order without anyone maintaining numbers, and find any numbered thing (p10, r3, a release, a tag) by searching its scope. A workspace that uses jj, an older git, or no VCS gets the same plans, refs, and tools, with gaps named rather than errors."
+ ~#taste: "derive what can be derived: names and dates are authored, ordinals and colors are computed; one adapter owns the VCS"
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #service
+ develops: [#naming, #portability, #truth]
+ review_surfaces: [@artifact, @workspace, @schema]
+ snippet_routes: [#example, #query]
+}
+
+^["concept_index"]{
+ primary: [#local_id, #derived_ordinal, #vcs_adapter, #detection]
+ surfaces: [#plans, #lexer, #lsp, #cli, #hooks]
+ tensions: [#scan_vs_maintain, #portable_seed_vs_workspace_setting, #hooks_without_git]
+ transfers: [#service, #language]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? list every place a number or a VCS id is authored, parsed, or displayed",
+  "< move one touchpoint behind the adapter per commit",
+  "$ record which touchpoints still call git directly",
+  "^ fold the numbering rule into the plan schema and the cache contract",
+  "% keep every existing .[name](hash) line lexing and resolving as it does today",
+ ]
+ gates: [#no_renumbering, #git_default_unchanged]
+}
+
+^["parallel_work"]{
+ critical_path: [#numbering_inventory, #vcs_settings, #vcs_adapter]
+ parallelizable: [#schema_numbering_rule, #commit_ref_pattern]
+ shared_hot_files: [".spw/workspace.spw", ".agents/scripts/agent-lib.sh", "packages/spw-lsp/src/handlers/commit-refs.ts"]
+ merge_risks: [#hook_regression, #seed_portability]
+ handoff_artifacts: [@plan, @artifact]
+}
+
+^["risk_model"]{
+ hard_failures: [
+  "a widened commit-ref pattern lexes ordinary hex-looking words in stream prose as ids",
+  "the commit gate stops running in a git repo because detection picked the wrong kind"
+ ]
+ soft_failures: [
+  "a jj or VCS-less workspace sees commit refs as unresolved ids",
+  "a consumer mounting the workbench without git submodules cannot run the mount check"
+ ]
+ non_negotiables: [
+  "with no workspace setting, a git repository behaves exactly as today",
+  "packages/spw-seed stays portable: the lexer takes the id pattern as an option, it never reads workspace files",
+  "no planned commit is ever given an authored number"
+ ]
+}
+
+^["validation"]{
+ hypotheses: [
+  "H1 every direct git call outside the adapter can move behind it without changing output in this repository",
+  "H2 a derived ordinal plus a state color makes a plan's commits scannable without authored numbers",
+  "H3 one id pattern option covers git SHA-1 and SHA-256 ids and jj change ids without lexing prose words as ids"
+ ]
+ negative_controls: [
+  "every .[name](hash) line in the plan corpus lexes and resolves as before",
+  "spw doctor, plan:index, and the commit gate print the same output in this repository before and after"
+ ]
+ demo_path: [
+  "run spw doctor in this repo, in a jj-colocated clone, and in a plain copy; each names its VCS and default branch",
+  "open a plan and see its commits numbered by position and colored by state, with no number in the source"
+ ]
+}
+
+^["stream"]{
+ >>[2026-10-13 12:05] observe — Local numbering in the repo today: commits are labels (~[name] planned, .[name](hash) landed, since 90c58bbc); proposals p1 to p11 are authored and never reused but are hard to find (the owner asked where p10 is mentioned); receipts r1 to rN are positional per file; some next_steps lists still use ~[1] to ~[4]; stream stamps, journal dates, release cuts (YYYY.MM.DD, -pre.N, -patch.N), and tags (caches-cut/2026.09.30) are dates. The schema documents named commits at line 40 but still shows the numbered ~[N] form at lines 301 to 332.
+ >>[2026-10-13 12:05] observe — The owner liked ~[N] as a prefix because the number took another color and the order could be scanned; predicted numbers were hard to maintain, and the text labels are worth keeping. 90c58bbc dropped numbers because range comments hid which commit was which: only 4 of 29 plans mapped numbers onto hashes.
+ >>[2026-10-13 12:05] decide — Labels stay the identity of a commit. Any ordinal is derived for display from the frame order and colored by state (planned, landed, dropped); nobody authors or renumbers it. An authored number is allowed only where it is monotonic and never reused within a named scope, such as p10 in syntax-hardware-alignment or -pre.N in a release.
+ >>[2026-10-13 12:05] observe — VCS touchpoints: the seed commit-ref lexer accepts 7 to 40 lowercase hex (commit-ref.ts:5), so SHA-256 git ids and jj change ids do not lex; the LSP shells out to git in handlers/commit-refs.ts and upstream-bridge.ts; the CLI in atlas.ts, doctor.ts, and init.ts (which installs .git/hooks/pre-commit and git submodules); agent-lib.sh hardcodes main for base refs; the commit gate, commit-review scripts, the parser release builder, and the episode corpus analyzer call git directly. Nothing reads a VCS setting.
+}
+
+^["open"]{
+ ?[jj_hooks]: "jj has no commit hooks; in a jj workspace, does the human-authorization gate become an explicit spw review command, or does the plan only document the gap?"
+ ?[id_scope_search]: "Should every authored number carry its scope in a findable form, as an anchor such as #>sha_p10, or is the frame label p10_lean_card enough once workspace symbol search covers frame labels?"
+ ?[submodule_mount]: "Consumers mount the workbench as a git submodule; is a copy or a jj workspace a supported mount, or only a documented exception?"
+}
+
+^["commits"]{
+ ~[plan]: ".[plans] — local-numbering-vcs plans one numbering rule and a workspace-configured VCS"
+ ~[numbering_inventory]: ".[plans] — lands with ~[plan]: the artifact lists every local numbering scheme and VCS touchpoint with the rule it follows today"
+ ~[schema_numbering_rule]: "#[plans] — the plan schema states the rule (labels are identity, ordinals are derived, authored numbers are monotonic per scope) and drops its stale ~[N] section"
+ ~[vcs_settings]: "#[workspace] — .spw/workspace.spw gains ^[vcs] with kind auto (git, jj, hg, none), default_branch auto, and an id pattern; detection reads .git, .jj, and .hg"
+ ~[vcs_adapter]: "&[cli] — one adapter (detect, head, default branch, is-ancestor, short id, status, log) behind spw vcs --json; spw doctor reports what it detected"
+ ~[agent_lib_adapter]: "&[agents] — agent-lib.sh asks the adapter for the default branch and base sha instead of hardcoding main"
+ ~[lsp_adapter]: "&[lsp] — commit-refs.ts and upstream-bridge.ts go through the adapter; with no VCS a commit ref shows as an unresolved id, not an error"
+ ~[commit_ref_pattern]: "^seed[lexer] — the commit-ref id pattern is a lexer option (default hex 7 to 40, as today); callers pass hex 7 to 64 or the jj change-id alphabet from the workspace setting"
+ ~[scripts_adapter]: "&[scripts] — the parser release builder and the episode corpus analyzer use the adapter; the commit-gate scripts stay git-only and say so"
+ ~[vcs_fixtures]: "![vcs] — fixtures for a git repo, a jj-colocated repo, and a plain directory; the adapter, spw doctor, and plan:index agree on each"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@813444dcd95167de820f9f7480b369717810628b"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: ".spw/workspace.spw, .agents/scripts/agent-lib.sh, packages/spw-seed/src/lexer/commit-ref.ts"
+ ~#next_commit: "schema_numbering_rule"
+ ~#open_count: "3"
+ ~#last_stream: "2026-10-13 12:05"
+ ~#taste_debt: ""
+}
+
+^["done"]{
+}

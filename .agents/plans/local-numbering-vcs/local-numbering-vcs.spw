@@ -1,0 +1,49 @@
+# Local Numbering and VCS
+#
+# Every local numbering scheme in the workbench, the rule each follows, and every place a tool assumes git.
+
+#>local_numbering_vcs
+#:layer #!pragmatics
+
+^["rule"]{
+ identity: "a label or a date names a thing; a position never does"
+ display: "ordinals are derived by tools from frame order and shown in their own color; nobody authors or renumbers them"
+ authored_numbers: "an authored number is monotonic and never reused within a named scope (p10 in syntax-hardware-alignment, -pre.N in a release)"
+ findable: "a numbered thing is found by searching its scope and number together; a bare number is never the only address"
+ vcs_ids: "a landed commit keeps the id its VCS gave it; the pattern for that id comes from the workspace setting"
+}
+
+^["numbering"]{
+ as_of: "2026-10-13"
+ commits: .{ form: "~[label] planned, .[label](id) landed, ~#dropped(label)", rule: "label identity since 90c58bbc", gap: "no ordinal or state color, so a plan's shape does not scan" }
+ proposals: .{ form: "p1 to p11 in syntax-hardware-alignment", rule: "authored, monotonic, never reused", gap: "found only by frame label, such as p10_lean_card" }
+ receipts: .{ form: "r1 to rN per surface", rule: "positional", gap: "moves to journal ledgers under p9" }
+ next_steps: .{ form: "~[1] to ~[4] in some artifacts", rule: "positional", gap: "same failure 90c58bbc fixed for commits" }
+ schema_example: .{ form: "~[N] at _schema/wip.spw lines 301 to 332", rule: "stale", gap: "contradicts the named form at line 40" }
+ stream: .{ form: ">>[YYYY-MM-DD HH:MM]", rule: "clock" }
+ journal: .{ form: "YYYY-MM-DD-slug.spw", rule: "date the entry records" }
+ releases: .{ form: "YYYY.MM.DD, -pre.N, -patch.N", rule: "date plus monotonic suffix" }
+ tags: .{ form: "caches-cut/2026.09.30, caches/YYYY.MM.DD", rule: "scope plus date" }
+ experiments: .{ form: "=exp ids such as phrase.line_item", rule: "dotted label, registered" }
+}
+
+^["vcs_touchpoints"]{
+ as_of: "2026-10-13"
+ lexer: .{ at: "packages/spw-seed/src/lexer/commit-ref.ts:5", does: "accepts 7 to 40 lowercase hex in .[name](id)", gap: "SHA-256 git ids and jj change ids do not lex" }
+ lsp_commit_refs: .{ at: "packages/spw-lsp/src/handlers/commit-refs.ts", does: "shells out to git with a timeout and caches by hash" }
+ lsp_upstream: .{ at: "packages/spw-lsp/src/upstream-bridge.ts", does: "calls git" }
+ cli: .{ at: "packages/spw-cli/src/atlas.ts, doctor.ts, init.ts", does: "git calls; init installs .git/hooks/pre-commit and adds the workbench as a git submodule" }
+ agent_lib: .{ at: ".agents/scripts/agent-lib.sh:99", does: "base sha from rev-parse main, branch from rev-parse --abbrev-ref", gap: "main is hardcoded" }
+ commit_gate: .{ at: "scripts/pre-commit, scripts/commit-review/*, scripts/touchid-authorize.swift", does: "git hook gate with Touch ID" }
+ scripts: .{ at: "scripts/release/build-parser-release.ts, scripts/analyzers/spw-episode-corpus.ts, scripts/spw-lib.sh, scripts/spw-reset.sh", does: "direct git calls" }
+ plan_schema: .{ at: ".agents/plans/_schema", does: "base_ref main@sha, landed .[name](hash)" }
+ setting: "nothing reads a VCS setting; .spw/workspace.spw has none"
+}
+
+^["setting_sketch"]{
+ // A proposal for ~[vcs_settings]; not yet in .spw/workspace.spw.
+ kind: "auto, git, jj, hg, or none; auto reads .jj, then .git, then .hg, and a colocated jj repo reports jj over git"
+ default_branch: "auto: the remote HEAD, then main, then master, then the current branch"
+ id_pattern: "git: hex 7 to 64; jj: change ids in the k to z alphabet, 8 to 32; hg: hex 12 to 40"
+ hooks: "git: the commit gate; jj and none: an explicit review command, see ?[jj_hooks]"
+}
