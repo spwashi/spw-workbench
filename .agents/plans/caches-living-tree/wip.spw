@@ -11,7 +11,7 @@
  gist: "The caches become two layers, a living tree agents edit to keep true and an append-only journal of what was seen or made on a day, entered from one root and one door, with surfaces that carry less prose and address by anchor."
  touches: [~".spw/caches", ~".spw/workspace.spw", ~"scripts/analyzers/spw-cut-gate.ts"]
  entry: ~"./PLAN.md"
- next: "~[shelf_entry]: move the 13 raw topic folders and the shelf index into journal/2026-09-30-gemini-shelf as pure renames, then repoint lineage strings."
+ next: "~[tree_move]: spw refactor --rename path:.spw/caches/2026-09-30=.spw/caches/tree, git mv, declare @tree, repoint the gate and plan cards; resolve the whole caches root after."
 }
 
 ^["edges"]{
@@ -102,7 +102,7 @@
  non_negotiables: [
   "no anchor is renamed or reused; the permanence rule holds",
   "claim statements stay byte-identical through mechanical passes",
-  "the raw generation moves whole and unchanged; git records every shelf file as a pure rename",
+  "the raw generation moves whole; no byte changes except outward links that spw refactor rebases",
   "the quarantine keeps every file it names",
   "commits and the snapshot tag are authorized by the owner"
  ]
@@ -117,7 +117,7 @@
   "H5 anchor-addressed refs remove about 400 thousand characters, about 8 percent of the tree"
  ]
  negative_controls: [
-  "git shows every raw shelf file as a 100 percent rename into journal/2026-09-30-gemini-shelf",
+  "every raw shelf file is a rename into journal/2026-09-30-gemini-shelf, 100 percent except the files whose outward links were rebased",
   "the quarantine names the same nine files at their new paths",
   "the sorted list of claim statement strings is identical before and after each mechanical pass"
  ]
@@ -144,6 +144,10 @@
  >>[2026-10-13 10:17] decide — Only the season instance moves: calendar-2026q4 and trails/season-2026-q4 become journal/2026-10-01-season-2026-q4; the recurring season forms stay in tree/season.
  >>[2026-10-13 10:21] implement — Tagged main at 813444dc as caches-cut/2026.09.30, annotated, local. Opened .spw/caches/journal with its contract and seven entry kinds; the resume note moved in whole as 2026-09-30-resume.spw, and the snapshot manifest is 2026-10-13-cut-snapshot.spw. The workspace declares @caches and @journal; @tree waits for the move.
  >>[2026-10-13 10:21] decide — The resume note moved in unchanged, so its not_in_this_revision frame now goes stale with the move. Under the append-only rule a new resume entry supersedes it rather than an edit; ~[root_door] writes it.
+ >>[2026-10-13 10:32] implement — Moved the 13 raw topic folders and the shelf index into journal/2026-09-30-gemini-shelf with spw refactor --rename path and git mv: 196 files are pure renames, 11 jetbrains and vscode files had outward links rebased (58 edits, no conflicts), and the shelf index keeps its anchor spw_caches_index. A stub root at .spw/caches/index.spw routes the cut, the journal, and its three entries until ~[root_door].
+ >>[2026-10-13 10:32] decide — Lineage strings and provenance records in the cut (708 occurrences in 159 files) keep their old .spw/caches paths: they name raw files as they stood at the tag, the gate checks only that lineage is present, and all 341 raw anchors are unique, so ~[anchor_refs_migrate] turns lineage into @journal anchor refs that no later move can break.
+ >>[2026-10-13 10:32] surprise — One root-relative ref in season/index.spw cited the shelf index by anchor; spw refactor never saw it because the index moved by hand, and resolving only the journal missed it. The cut gate caught it. Resolve the whole caches root after every move, not the moved part.
+ >>[2026-10-13 10:32] verify — spw resolve over .spw/caches: 10487 citations, 10479 resolve, the 8 unresolved are the known refs to unwritten panels; cut gate 3 failing as before; 212 journal files parse.
 }
 
 ^["open"]{
@@ -154,7 +158,7 @@
  .[plan](5383dfa2): ".[plans] — caches-living-tree plans the living cut, the journal, and leaner cache syntax"
  .[plan_revision](5842dcc0): ".[plans] — caches-living-tree takes the journal into the cache tree, with the raw generation and the season instance as entries"
  .[cut_snapshot](813444dc): "no commit: tag caches-cut/2026.09.30, annotated, on main at 813444dc"
- ~[journal_open]: "#[caches] — .spw/caches/journal holds dated append-only entries; the resume note and the snapshot manifest are its first, and the workspace declares @caches, @tree, and @journal"
+ .[journal_open](61252c65): "#[caches] — .spw/caches/journal holds dated append-only entries; the resume note and the snapshot manifest are its first, and the workspace declares @caches, @tree, and @journal"
  ~[shelf_entry]: "&[caches] — the raw generation becomes the journal entry 2026-09-30-gemini-shelf, moved whole; its index keeps the disclosure and the quarantine, and lineage strings in the cut follow"
  ~[tree_move]: "&[caches] — the cut lives at .spw/caches/tree, undated; the gate, docs, and plan cards and roots follow"
  ~[season_instances]: "&[caches] — the 2026 Q4 calendar and trail become the journal entry 2026-10-01-season-2026-q4; recurring season forms stay in the tree"
@@ -174,9 +178,9 @@
  ~#rebased_at: ""
  ~#hygiene_split: "none"
  ~#files_hot: ".spw/caches/index.spw, .spw/caches/2026-09-30/contract.spw, scripts/analyzers/spw-cut-gate.ts, .spw/workspace.spw"
- ~#next_commit: "shelf_entry"
+ ~#next_commit: "tree_move"
  ~#open_count: "1"
- ~#last_stream: "2026-10-13 10:21"
+ ~#last_stream: "2026-10-13 10:32"
  ~#taste_debt: "spw-cut-gate.ts is 392 lines and gains journal and concept checks; split it before it passes 600. The gate keeps the name cut; renaming it waits for a vocab commit."
 }
 

@@ -156,7 +156,7 @@ None to merge first.
 - **Non-negotiable:**
   - No anchor is renamed or reused.
   - Claim statements stay byte-identical through mechanical passes.
-  - The raw generation moves whole as pure renames.
+  - The raw generation moves whole; only outward links that spw refactor rebases change.
   - The quarantine keeps every file it names.
   - Every commit leaves the gate and `spw resolve` no worse than before.
 
@@ -169,7 +169,7 @@ None to merge first.
   - H4: an agent given only the extension door adds a passing tree surface and a passing journal entry.
   - H5: anchor-addressed refs remove about 8% of the tree's characters.
 - **Negative controls:**
-  - Every shelf file is a 100% rename.
+  - Every shelf file is a rename, 100% except files with rebased outward links.
   - The quarantine names the same nine files.
   - The sorted claim statements are identical before and after each pass.
 - **Demo sequence:**
