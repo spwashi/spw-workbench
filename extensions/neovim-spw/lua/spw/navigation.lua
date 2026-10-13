@@ -1,4 +1,8 @@
 -- lua/spw/navigation.lua — Spw reference resolution and navigation for Neovim
+--
+-- LSP first: when an spw client is attached, gf/gF, :SpwOpenRef and :SpwPeekRef
+-- defer to its definition/documentLink answer (lua/spw/lsp_nav.lua). The Lua
+-- pattern extractor below serves only buffers with no spw client attached.
 local M = {}
 
 ---@param msg string
@@ -15,9 +19,10 @@ function M.has_lsp_code_action_provider(bufnr)
   local get_clients = vim.lsp.get_clients or vim.lsp.get_active_clients
   if not get_clients then return false end
 
+  local call = require('spw.lsp').client_call
   local clients = get_clients({ bufnr = bufnr })
   for _, client in ipairs(clients) do
-    if client.supports_method and client:supports_method('textDocument/codeAction') then
+    if client.supports_method and call(client, 'supports_method', 'textDocument/codeAction') then
       return true
     end
   end
@@ -289,15 +294,46 @@ function M.jump_to_anchor(bufnr, anchor)
   return false
 end
 
----Open Spw reference under cursor (~"..." or @root/path).
----@param opts? { jump_anchor?: boolean, find_root?: fun(path: string): string }
+---Which path serves navigation in `bufnr` now: 'lsp' (with its method) or 'lua'.
+---@param bufnr? integer
+---@return 'lsp'|'lua', string
+function M.route(bufnr)
+  local path, source = require('spw.lsp').navigation_route(bufnr or vim.api.nvim_get_current_buf())
+  return path, source
+end
+
+---Dispatch to the attached server, else to the Lua extractor; record the path taken.
+---@param opts table
+---@param lua_fn fun(opts: table): string
+local function routed(opts, lua_fn)
+  local bufnr = vim.api.nvim_get_current_buf()
+  local path, source, client = require('spw.lsp').navigation_route(bufnr)
+  if path == 'lsp' and not opts.force_lua then
+    require('spw.lsp_nav').open(client, source, bufnr, opts)
+    return
+  end
+  vim.b[bufnr].spw_nav_path = 'lua'
+  vim.b[bufnr].spw_nav_source = 'lua_patterns'
+  local result = lua_fn(opts)
+  if vim.api.nvim_buf_is_valid(bufnr) then vim.b[bufnr].spw_nav_result = result end
+end
+
+---Open Spw reference under cursor: LSP definition when attached, else Lua patterns.
+---@param opts? { jump_anchor?: boolean, find_root?: fun(path: string): string, force_lua?: boolean }
 function M.open_ref_under_cursor(opts)
+  routed(opts or {}, M.open_ref_lua)
+end
+
+---Open Spw reference under cursor (~"..." or @root/path) with the Lua extractor.
+---@param opts? { jump_anchor?: boolean, find_root?: fun(path: string): string }
+---@return string result 'opened'|'missing'|'native'
+function M.open_ref_lua(opts)
   opts = opts or {}
   local bufnr = vim.api.nvim_get_current_buf()
   local bufpath = vim.api.nvim_buf_get_name(bufnr)
   if bufpath == '' then
     vim.cmd(opts.jump_anchor and 'normal! gF' or 'normal! gf')
-    return
+    return 'native'
   end
 
   local row, col0 = unpack(vim.api.nvim_win_get_cursor(0))
@@ -305,7 +341,7 @@ function M.open_ref_under_cursor(opts)
   local ref = M.ref_under_cursor(line, col0)
   if not ref then
     vim.cmd(opts.jump_anchor and 'normal! gF' or 'normal! gf')
-    return
+    return 'native'
   end
 
   local find_root_fn = opts.find_root or require('spw.lsp').find_root
@@ -324,25 +360,35 @@ function M.open_ref_under_cursor(opts)
       notify(('Anchor not found: #%s'):format(anchor), vim.log.levels.WARN)
     end
   end
+  return existed and 'opened' or 'missing'
 end
 
 function M.open_ref_under_cursor_and_anchor()
   M.open_ref_under_cursor({ jump_anchor = true })
 end
 
----@param opts? { jump_anchor?: boolean, find_root?: fun(path: string): string }
+---Preview Spw reference under cursor: LSP definition when attached, else Lua patterns.
+---@param opts? { jump_anchor?: boolean, find_root?: fun(path: string): string, force_lua?: boolean }
 function M.peek_ref_under_cursor(opts)
+  opts = vim.tbl_extend('force', opts or {}, { peek = true })
+  routed(opts, M.peek_ref_lua)
+end
+
+---Preview Spw reference under cursor with the Lua extractor.
+---@param opts? { jump_anchor?: boolean, find_root?: fun(path: string): string }
+---@return string result 'peeked'|'missing'|'empty'
+function M.peek_ref_lua(opts)
   opts = opts or {}
   local bufnr = vim.api.nvim_get_current_buf()
   local bufpath = vim.api.nvim_buf_get_name(bufnr)
-  if bufpath == '' then return end
+  if bufpath == '' then return 'empty' end
 
   local row, col0 = unpack(vim.api.nvim_win_get_cursor(0))
   local line = vim.api.nvim_buf_get_lines(bufnr, row - 1, row, false)[1] or ''
   local ref = M.ref_under_cursor(line, col0)
   if not ref then
     notify('No Spw reference under cursor.', vim.log.levels.INFO)
-    return
+    return 'empty'
   end
 
   local find_root_fn = opts.find_root or require('spw.lsp').find_root
@@ -352,7 +398,7 @@ function M.peek_ref_under_cursor(opts)
   local resolved, anchor, exists = M.resolve_ref(ref, root, bufdir, lines)
   if not exists then
     notify('Target does not exist yet; use code action to create.', vim.log.levels.WARN)
-    return
+    return 'missing'
   end
 
   local current_win = vim.api.nvim_get_current_win()
@@ -367,6 +413,7 @@ function M.peek_ref_under_cursor(opts)
   if ok then
     vim.api.nvim_set_current_win(current_win)
   end
+  return 'peeked'
 end
 
 ---@param opts? { find_root?: fun(path: string): string }

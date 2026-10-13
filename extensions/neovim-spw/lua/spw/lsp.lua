@@ -70,6 +70,53 @@ function M.build_cmd(root)
   return { 'npm', 'run', '--silent', 'lsp' }, root
 end
 
+local has_method_clients = vim.fn.has('nvim-0.11') == 1
+
+--- Call a client method across the 0.10 closure form and the 0.11 method form.
+---@param client table
+---@param name string
+---@return any
+function M.client_call(client, name, ...)
+  if has_method_clients then return client[name](client, ...) end
+  return client[name](...)
+end
+
+--- The spw client attached to `bufnr` (optionally serving `method`), or nil.
+---@param bufnr integer
+---@param method string|nil
+---@return table|nil
+function M.attached_client(bufnr, method)
+  local get_clients = vim.lsp.get_clients or vim.lsp.get_active_clients
+  if not get_clients then return nil end
+  for _, client in ipairs(get_clients({ name = 'spw', bufnr = bufnr })) do
+    if not method or M.client_call(client, 'supports_method', method) then
+      return client
+    end
+  end
+  return nil
+end
+
+--- Which path serves reference navigation in `bufnr`: the attached server's
+--- definition (else documentLink) product, or the Lua pattern fallback.
+---@param bufnr integer
+---@return 'lsp'|'lua' path
+---@return string source
+---@return table|nil client
+function M.navigation_route(bufnr)
+  for _, method in ipairs({ 'textDocument/definition', 'textDocument/documentLink' }) do
+    local client = M.attached_client(bufnr, method)
+    if client then return 'lsp', method, client end
+  end
+  return 'lua', 'lua_patterns', nil
+end
+
+--- Which path serves completion in `bufnr`: LSP completion or the Lua omnifunc.
+---@param bufnr integer
+---@return 'lsp'|'lua'
+function M.completion_route(bufnr)
+  return M.attached_client(bufnr, 'textDocument/completion') and 'lsp' or 'lua'
+end
+
 --- Called when the Spw LSP client attaches to a buffer.
 ---@param _ any client (unused)
 ---@param bufnr integer
@@ -125,7 +172,7 @@ function M.request_custom(method, params, cb)
     cb('Spw LSP not attached', nil)
     return
   end
-  client.request(method, params or {}, function(err, result)
+  M.client_call(client, 'request', method, params or {}, function(err, result)
     cb(err, result)
   end, 0)
 end
@@ -159,7 +206,7 @@ function M.stop()
   local get_clients = vim.lsp.get_clients or vim.lsp.get_active_clients
   if not get_clients then return end
   for _, client in ipairs(get_clients({ name = 'spw' })) do
-    client.stop()
+    M.client_call(client, 'stop')
   end
 end
 

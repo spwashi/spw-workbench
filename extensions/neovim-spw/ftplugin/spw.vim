@@ -29,7 +29,11 @@ endif
 
 " Fallback action maps for Spw UX commands.
 " These remain available even if LSP on_attach keymaps are delayed/overridden.
+" gf/gF route per buffer: the attached spw server's definition/documentLink
+" answer when one is attached, the Lua pattern extractor only when none is.
 if !exists('g:spw_lsp_keymaps') || g:spw_lsp_keymaps
+  nnoremap <silent><buffer> gf <Cmd>lua require('spw.navigation').open_ref_under_cursor()<CR>
+  nnoremap <silent><buffer> gF <Cmd>lua require('spw.navigation').open_ref_under_cursor_and_anchor()<CR>
   nnoremap <silent><buffer> <localleader>a <Cmd>SpwCodeAction<CR>
   nnoremap <silent><buffer> <localleader>q <Cmd>SpwRefsQuickfix<CR>
   nnoremap <silent><buffer> <localleader>p <Cmd>SpwPeekRef<CR>

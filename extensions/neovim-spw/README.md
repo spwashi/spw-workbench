@@ -8,6 +8,8 @@ Neovim support for **Spw** (Symbolic Processing Workbench) files.
 |---------|--------|-------|
 | Syntax highlighting | `syntax/spw.vim` | Operator-physics palette with valence, container, and sigil layers |
 | LSP | `lua/spw-lsp.lua` | Connects to the shared `stdio-server.ts` used by VS Code and IntelliJ |
+| Navigation | `lua/spw/navigation.lua`, `lua/spw/lsp_nav.lua` | LSP first: `gf`/`gF` use the server's definition (else documentLink); Lua patterns only with no client attached |
+| Instruments | `lua/spw/inspect.lua`, `lua/spw/quest.lua` | `:SpwInspect`, `:SpwFingerprint`, `:SpwMemory`, `:SpwPerf`, `:SpwProject`, `:SpwQuest` through the `spw` CLI |
 | Filetype detection | `ftdetect/spw.vim` | `*.spw` → `filetype=spw` |
 | Editor defaults | `ftplugin/spw.vim` | `#` commentstring, fold method, suffix resolution |
 
@@ -67,7 +69,7 @@ vim.g.spw_lsp_folds = false
 
 ## Default keymaps
 
-Set on attach (disable with `vim.g.spw_lsp_keymaps = false`):
+Set by the ftplugin and again on attach (disable with `vim.g.spw_lsp_keymaps = false`):
 
 `<localleader>` is your Neovim `maplocalleader` key. If you never set it, Vim default is `\`.
 
@@ -75,6 +77,14 @@ Set on attach (disable with `vim.g.spw_lsp_keymaps = false`):
 |-----|--------|
 | `gf` | Open Spw reference under cursor (`~"…"`, `~<path>`, `~<label>"…"`, `@root/...`) |
 | `gF` | Open Spw reference and jump to `#anchor` (line number or label) |
+
+`gf`, `gF`, `:SpwOpenRef` and `:SpwPeekRef` ask the attached `spw` client first:
+`textDocument/definition`, or `textDocument/documentLink` (its `#L<n>` target) when
+definition is not served. The Lua patterns in `lua/spw/navigation.lua` run only when no
+`spw` client is attached to the buffer. When the server resolves nothing under the cursor
+(not a reference, or a missing target), Vim's own `gf` runs; `<localleader>a` offers to
+create a missing target. Each run records `vim.b.spw_nav_path` (`lsp` | `lua`),
+`vim.b.spw_nav_source`, and `vim.b.spw_nav_result`.
 | `<localleader>a` | Spw code action at cursor (create missing target, or fallback LSP actions) |
 | `<localleader>q` | Populate quickfix with unresolved references in current buffer |
 | `<localleader>p` | Preview reference under cursor and jump to `#anchor` |
@@ -106,20 +116,51 @@ Set on attach (disable with `vim.g.spw_lsp_keymaps = false`):
 | `:SpwPhase` | Spirit-phase context at cursor (`spw/phaseContext`) |
 | `:SpwFormSeq [notation]` | Explain form sequence (default confluence wrap) |
 | `:SpwTemperature` | Workspace temperature tiers |
+| `:SpwInspect [tokens\|structure\|trace]` | Progressive source products for the saved file (`spw inspect source <file> --through <stage>`, default `trace`); with a range or visual selection, `--text=` |
+| `:SpwFingerprint` | AST node-type counts for the selection or current line (`spw fingerprint --expr=`) |
+| `:SpwMemory` | Runtime memory status and dumps (`spw inspect memory`, which reads through `spw mem status`, then `spw mem list`) |
+| `:SpwPerf` | pathRef count with walk/parse timing for the file's folder (`spw query --from <folder> --selector pathRefs --count --stats`) |
+| `:SpwProject` | The saved file's `spw.emit/1` intermediate form as JSON (`spw emit ir <file>`; no `--out`, nothing written) |
+| `:SpwQuest` | Quest panels from `spw quest --json` in an editable scratch buffer |
+| `:SpwQuest check [step]` | `spw quest --check <step> "<current line>"`; the step defaults to the nearest panel heading |
 | `:SpwInsertFormWrap` | Insert `& => {&} => {&[#label]}` at cursor |
 | `:SpwWrapContainer [label]` | Wrap visual selection or word under cursor in Spw container `^["label"]{ ... }` |
+
+### Instruments
+
+`:SpwInspect`, `:SpwFingerprint`, `:SpwMemory` and `:SpwPerf` open a plain-text receipt in a
+scratch split: a header naming what was read (saved file, line range passed inline, or the
+runtime memory under the consumer root), then for each run its command, exit code and time,
+the CLI's stderr (header cards, `--stats`), then its stdout. Inline source is summarized in
+the receipt as `--text=<N chars>`. A non-zero exit that still carries a product (fingerprint
+exit 1 for a prose fallback) is shown with its exit, not hidden behind an error.
+File-backed instruments read the saved file and warn when the buffer has unsaved edits.
+`:SpwProject` opens bare JSON so the buffer stays valid JSON; its command and time go to
+`:messages`. Arguments match the VS Code and IntelliJ instruments, so one fixture reads the
+same in every editor.
+
+`:SpwQuest` draws the panels in their order with every `try` line verbatim; each try line
+shows its check verdict as virtual text. Write or edit a line under a panel and run
+`:SpwQuest check`: the verdict appears under the line and in `vim.b.spw_quest_last`.
+The `grow` step runs `spw lint .spw && spw resolve --from .spw` only when checked.
+
+All instruments run the CLI from the consumer root (`npm --prefix <tool root> run spw`,
+discovered as for `:SpwRefactorPlan`) and are read-only.
 
 The concise creative loop is `:SpwForm` → `:SpwStack` → `:SpwCache` → `:SpwRename` → `:SpwRefactorPlan`. File probes use live buffer text through the LSP. Results are ordinary scratch splits that can be searched, copied, remapped, or composed with the rest of a Neovim workflow. Corpus planning uses saved files, runs with the consumer root as `cwd`, opens JSON in a scratch buffer, and never adds `--write`.
 
 ## Auto-completion & Omnifunc
 
-The plugin provides a native `omnifunc` provider (`<C-x><C-o>`):
+The plugin provides a native `omnifunc` provider (`<C-x><C-o>`). When an `spw` client serving
+`textDocument/completion` is attached, it hands off to `vim.lsp.omnifunc`, so items come
+from the server. With no client attached it falls back to:
 
 - **`@`**: Autocompletes workspace root shelf aliases (`@biome/`, `@harness/`, `@gen/`, `@docs/`, etc.)
 - **`#`**: Autocompletes directives (`#!pragmatics`, `#!semantics`, `#!physics`) and label anchors
 - **`~`**: Autocompletes reference templates (`~"..."`, `~<...>`)
 
-Works seamlessly with `nvim-cmp` or `blink.cmp` via the omni completion source.
+Works seamlessly with `nvim-cmp` or `blink.cmp` via the omni completion source. The path taken
+is recorded in `vim.b.spw_completion_path` (`lsp` | `lua`).
 
 ## Tree-sitter queries
 
@@ -184,10 +225,25 @@ Run Neovim's health check to verify your setup (Node.js, LSP binary, Neovim vers
 :checkhealth spw
 ```
 
+It reports on the current `.spw` buffer (or the most recent one, since `:checkhealth` opens
+its own buffer): whether an `spw` LSP client is attached, the active navigation path
+(`lsp (textDocument/definition)`, `lsp (textDocument/documentLink)`, or `lua`), the
+completion path, the last navigation in that buffer, whether every instrument command is
+registered, and which CLI host the instruments will use.
+
 ## Headless testing
 
-Run the headless smoke test suite:
+Run the headless suites from the repository root:
 
 ```sh
+# Exports, reference patterns, mounted-consumer CLI command shape
 nvim --headless -u NONE -l extensions/neovim-spw/tests/mounted-consumer-smoke.lua
+# Command registration and the LSP-or-fallback choice (in-process fake server)
+nvim --headless -u NONE -l extensions/neovim-spw/tests/lsp-route-smoke.lua
+# Instrument builders, then real CLI runs against tests/fixtures/instrument.spw
+nvim --headless -u NONE -l extensions/neovim-spw/tests/instrument-smoke.lua
+# Opt-in: the LSP path against the real server (needs node deps)
+nvim --headless -u NONE -l extensions/neovim-spw/tests/real-lsp-smoke.lua
 ```
+
+`SPW_NVIM_SKIP_CLI=1` limits `instrument-smoke.lua` to the builder checks.

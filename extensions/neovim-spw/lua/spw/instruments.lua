@@ -12,17 +12,21 @@ end
 ---@param title string
 ---@param lines string[]
 ---@param filetype string
-function M.open_scratch(title, lines, filetype)
+---@param opts? { modifiable?: boolean, name?: string }
+---@return integer bufnr
+function M.open_scratch(title, lines, filetype, opts)
+  opts = opts or {}
   local buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
   vim.bo[buf].buftype = 'nofile'
   vim.bo[buf].bufhidden = 'wipe'
   vim.bo[buf].swapfile = false
   vim.bo[buf].filetype = filetype
-  vim.bo[buf].modifiable = false
-  pcall(vim.api.nvim_buf_set_name, buf, 'spw://instrument/' .. title:gsub('%s+', '-'):lower())
+  vim.bo[buf].modifiable = opts.modifiable == true
+  pcall(vim.api.nvim_buf_set_name, buf, opts.name or ('spw://instrument/' .. title:gsub('%s+', '-'):lower()))
   vim.cmd('botright split')
   vim.api.nvim_win_set_buf(0, buf)
+  return buf
 end
 
 ---@param method string
@@ -163,22 +167,101 @@ function M.refactor_plan(spec)
   M.run_cli(host, invocation)
 end
 
+local NO_HOST = 'Spw instruments require an npm `spw` script in the workspace, mounted .spw/_workbench, or vim.g.spw_cli_root.'
+
+--- Consumer root for `bufnr`: the configured root, the file's workspace, a
+--- scratch buffer's recorded origin, or the working directory's workspace.
+---@param bufnr integer
+---@return string
+function M.consumer_root(bufnr)
+  if vim.g.spw_lsp_root then return vim.g.spw_lsp_root end
+  local recorded = vim.b[bufnr].spw_consumer_root
+  if type(recorded) == 'string' and recorded ~= '' then return recorded end
+  local name = vim.api.nvim_buf_get_name(bufnr)
+  if name ~= '' and vim.bo[bufnr].buftype == '' and not name:match('^%a[%w+.-]*://') then
+    return lsp.find_root(name)
+  end
+  return lsp.find_root(vim.fn.getcwd() .. '/.')
+end
+
+--- Saved-file context for a file-backed instrument, or nil after notifying why not.
+---@param label string
+---@return table|nil
+function M.file_context(label)
+  local bufnr = vim.api.nvim_get_current_buf()
+  local file = vim.api.nvim_buf_get_name(bufnr)
+  if file == '' or vim.bo[bufnr].buftype ~= '' then
+    notify(label .. ' reads a saved workspace file; open one first.', vim.log.levels.WARN)
+    return nil
+  end
+  local consumer_root = M.consumer_root(bufnr)
+  local host = cli.resolve_host(consumer_root)
+  if not host then
+    notify(NO_HOST, vim.log.levels.ERROR)
+    return nil
+  end
+  if vim.bo[bufnr].modified then
+    notify(label .. ' reads the saved file; unsaved edits are not included.', vim.log.levels.WARN)
+  end
+  return { bufnr = bufnr, file = file, consumer_root = consumer_root, host = host }
+end
+
+--- Text of a command range: the charwise/blockwise visual selection when the
+--- range came from one, else whole lines; nil without a range.
+---@param opts table|nil user-command opts
+---@return string|nil
+function M.range_text(opts)
+  if not opts or (opts.range or 0) == 0 then return nil end
+  local vs, ve = vim.fn.getpos("'<"), vim.fn.getpos("'>")
+  local mode = vim.fn.visualmode()
+  if vim.fn.exists('*getregion') == 1 and (mode == 'v' or mode == '\22')
+    and opts.line1 == vs[2] and opts.line2 == ve[2] then
+    return table.concat(vim.fn.getregion(vs, ve, { type = mode }), '\n')
+  end
+  return table.concat(vim.api.nvim_buf_get_lines(0, opts.line1 - 1, opts.line2, false), '\n')
+end
+
+--- The command as a reader sees it, with inline source summarized by length.
+---@param invocation table
+---@return string
+function M.command_echo(invocation)
+  local parts = { 'spw' }
+  for _, arg in ipairs(invocation.args) do
+    local flag, value = arg:match('^(%-%-[%w-]+)=(.*)$')
+    if flag == '--text' or flag == '--expr' then
+      table.insert(parts, string.format('%s=<%d chars>', flag, #value))
+    else
+      table.insert(parts, arg:find('[%s"\']') and vim.fn.shellescape(arg) or arg)
+    end
+  end
+  return table.concat(parts, ' ')
+end
+
+---@param text string
+---@return string[]
+local function text_lines(text)
+  local lines = vim.split(text or '', '\n', { plain = true })
+  while #lines > 0 and lines[#lines] == '' do table.remove(lines) end
+  return lines
+end
+
+--- Run one CLI invocation from the consumer root; `done` receives the run.
 ---@param host table
 ---@param invocation table
-function M.run_cli(host, invocation)
+---@param done fun(run: { code: integer, ok: boolean, stdout: string, stderr: string, duration_ms: integer })
+function M.exec(host, invocation, done)
   local command = cli.command(host, invocation)
   local started = (vim.uv or vim.loop).hrtime()
+  local ok_codes = invocation.ok_codes or { [0] = true }
   local finish = function(code, stdout, stderr)
     vim.schedule(function()
-      local duration_ms = math.floor(((vim.uv or vim.loop).hrtime() - started) / 1000000)
-      if code ~= 0 then
-        local detail = vim.split(vim.trim(stderr or ''), '\n', { plain = true })[1] or 'no detail'
-        notify(string.format('%s exited %d: %s', invocation.title, code, detail), vim.log.levels.ERROR)
-        return
-      end
-      M.open_scratch(invocation.title, vim.split(stdout or '', '\n', { plain = true }), invocation.output)
-      notify(string.format('%s completed in %dms · source: CLI · effect: read-only',
-        invocation.title, duration_ms), vim.log.levels.INFO)
+      done({
+        code = code,
+        ok = ok_codes[code] == true,
+        stdout = stdout or '',
+        stderr = stderr or '',
+        duration_ms = math.floor(((vim.uv or vim.loop).hrtime() - started) / 1000000),
+      })
     end)
   end
 
@@ -199,5 +282,71 @@ function M.run_cli(host, invocation)
     on_exit = function(_, code) finish(code, table.concat(stdout, '\n'), table.concat(stderr, '\n')) end,
   })
 end
+
+--- Run one invocation and open its stdout alone (e.g. JSON) in a scratch split;
+--- a non-zero exit is a notified error. Records vim.g.spw_instrument_last.
+---@param host table
+---@param invocation table
+function M.run_cli(host, invocation)
+  M.exec(host, invocation, function(run)
+    vim.g.spw_instrument_last = { title = invocation.title, code = run.code, duration_ms = run.duration_ms }
+    if not run.ok then
+      local detail = vim.split(vim.trim(run.stderr), '\n', { plain = true })[1] or 'no detail'
+      notify(string.format('%s exited %d: %s', invocation.title, run.code, detail), vim.log.levels.ERROR)
+      return
+    end
+    local buf = M.open_scratch(invocation.title, text_lines(run.stdout), invocation.output)
+    vim.g.spw_instrument_last = vim.tbl_extend('force', vim.g.spw_instrument_last, { bufnr = buf })
+    notify(string.format('%s completed in %dms · %s · source: CLI · effect: read-only',
+      invocation.title, run.duration_ms, M.command_echo(invocation)), vim.log.levels.INFO)
+  end)
+end
+
+--- Run invocations in order and open one receipt in a scratch split: a header
+--- naming where the reading came from, then per run its command, exit and
+--- time, stderr (the CLI's header card and stats), then stdout. Records
+--- vim.g.spw_instrument_last = { title, code (highest exit), duration_ms, bufnr }.
+---@param host table
+---@param spec { title: string, reading: string, notes?: string[], invocations: table[] }
+function M.report(host, spec)
+  local runs = {}
+  local function finish()
+    local lines = {
+      string.format('# %s · reading: %s · cwd: consumer root · effect: read-only', spec.title, spec.reading),
+    }
+    for _, note in ipairs(spec.notes or {}) do table.insert(lines, '# ' .. note) end
+    local code, total, failed = 0, 0, {}
+    for i, run in ipairs(runs) do
+      local invocation = spec.invocations[i]
+      code, total = math.max(code, run.code), total + run.duration_ms
+      if not run.ok then table.insert(failed, M.command_echo(invocation)) end
+      vim.list_extend(lines, {
+        '',
+        '# $ ' .. M.command_echo(invocation),
+        string.format('# exit %d · %dms', run.code, run.duration_ms),
+      })
+      vim.list_extend(lines, text_lines(run.stderr))
+      vim.list_extend(lines, text_lines(run.stdout))
+    end
+    local buf = M.open_scratch(spec.title, lines, 'text')
+    vim.g.spw_instrument_last = { title = spec.title, code = code, duration_ms = total, bufnr = buf }
+    if #failed > 0 then
+      notify(spec.title .. ' finished with errors: ' .. table.concat(failed, '; '), vim.log.levels.WARN)
+    else
+      notify(string.format('%s completed in %dms · source: CLI · effect: read-only', spec.title, total),
+        vim.log.levels.INFO)
+    end
+  end
+  local function step(i)
+    if i > #spec.invocations then return finish() end
+    M.exec(host, spec.invocations[i], function(run)
+      runs[i] = run
+      step(i + 1)
+    end)
+  end
+  step(1)
+end
+
+M.no_host_message = NO_HOST
 
 return M

@@ -2,6 +2,7 @@
 local lsp = require('spw.lsp')
 local nav = require('spw.navigation')
 local instruments = require('spw.instruments')
+local inspect = require('spw.inspect')
 local M = {}
 
 ---@param msg string
@@ -41,6 +42,40 @@ function M.setup()
 
   vim.api.nvim_create_user_command('SpwCache', instruments.cache, {
     desc = 'Inspect Spw LSP session cache reflection',
+  })
+
+  vim.api.nvim_create_user_command('SpwInspect', function(opts)
+    inspect.inspect(opts.fargs[1], opts)
+  end, {
+    nargs = '?',
+    range = true,
+    complete = function() return require('spw.cli').inspect_stages end,
+    desc = 'Progressive source products through tokens|structure|trace (default trace) for the saved file, or a range via --text',
+  })
+
+  vim.api.nvim_create_user_command('SpwFingerprint', inspect.fingerprint, {
+    range = true,
+    desc = 'AST node-type fingerprint of the selection or current line (spw fingerprint --expr=)',
+  })
+
+  vim.api.nvim_create_user_command('SpwMemory', inspect.memory, {
+    desc = 'Runtime memory status and dumps (spw inspect memory, spw mem list)',
+  })
+
+  vim.api.nvim_create_user_command('SpwPerf', inspect.perf, {
+    desc = "pathRef count with walk/parse timing for the file's folder (spw query --count --stats)",
+  })
+
+  vim.api.nvim_create_user_command('SpwProject', inspect.project, {
+    desc = 'EmitDocument intermediate form of the saved file (spw emit ir; read-only)',
+  })
+
+  vim.api.nvim_create_user_command('SpwQuest', function(opts)
+    require('spw.quest').command(opts.fargs)
+  end, {
+    nargs = '*',
+    complete = function(arglead, cmdline) return require('spw.quest').complete(arglead, cmdline) end,
+    desc = 'Open quest panels (spw quest --json); :SpwQuest check [step] checks the current line',
   })
 
   vim.api.nvim_create_user_command('SpwRename', function() vim.lsp.buf.rename() end, {

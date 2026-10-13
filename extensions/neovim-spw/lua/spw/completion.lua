@@ -1,10 +1,12 @@
 -- lua/spw/completion.lua — Dynamic Spw auto-completion and omnifunc provider for Neovim
 --
--- Completion items are derived dynamically from:
--- 1. Active LSP server (textDocument/completion) when attached
--- 2. Workspace configuration file (.spw/shelves.spw)
--- 3. In-file root declarations (@alias: ~"path")
--- 4. User global overrides (vim.g.spw_shelves and vim.g.spw_directives)
+-- LSP first: when an spw client serving textDocument/completion is attached,
+-- the omnifunc hands off to vim.lsp.omnifunc. Only otherwise are items read
+-- from the Lua fallback sources:
+-- 1. Workspace configuration file (.spw/shelves.spw)
+-- 2. In-file root declarations (@alias: ~"path")
+-- 3. User global overrides (vim.g.spw_shelves and vim.g.spw_directives)
+-- The path taken is recorded in vim.b.spw_completion_path ('lsp' | 'lua').
 
 local nav = require('spw.navigation')
 local lsp = require('spw.lsp')
@@ -69,6 +71,20 @@ end
 ---@param base string
 ---@return integer|table
 function M.omnifunc(findstart, base)
+  local current = vim.api.nvim_get_current_buf()
+  if lsp.completion_route(current) == 'lsp' and vim.lsp.omnifunc then
+    vim.b[current].spw_completion_path = 'lsp'
+    return vim.lsp.omnifunc(findstart, base)
+  end
+  vim.b[current].spw_completion_path = 'lua'
+  return M.lua_omnifunc(findstart, base)
+end
+
+--- Pattern-derived completion used when no spw client serves completion.
+---@param findstart integer
+---@param base string
+---@return integer|table
+function M.lua_omnifunc(findstart, base)
   local line = vim.api.nvim_get_current_line()
   local col = vim.api.nvim_win_get_cursor(0)[2]
 
