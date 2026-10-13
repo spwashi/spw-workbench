@@ -81,8 +81,9 @@ function createLanguageClient(
   // The stdio-server.ts handles: definition, documentLink, hover,
   // documentSymbol, workspaceSymbol, completion, codeLens,
   // formatting, diagnostics, and the custom `spw/*` request lane.
+  // The client id names the trace setting the client reads: `spw` reads `spw.trace.server`.
   return new LanguageClient(
-    'spwLanguageServer',
+    'spw',
     'Spw Language Server',
     createServerOptions(context),
     createClientOptions(),

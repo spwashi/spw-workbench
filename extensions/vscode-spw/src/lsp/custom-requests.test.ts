@@ -101,3 +101,33 @@ describe('VS Code workspace request client', () => {
       .rejects.toThrow('Invalid spw.workspaceManifest v1 payload.')
   })
 })
+
+describe('VS Code cache reflection', () => {
+  function clientFor(payload: unknown) {
+    const transport: SpwRequestTransport = {
+      async sendRequest<R>(): Promise<R> { return payload as R },
+    }
+    return createSpwCustomRequestClient(transport)
+  }
+
+  it('keeps the plane and the layer cards, so the cache card can show the LSP plane present', async () => {
+    const layer = { surface: 'cache.layer/1', plane: 'lsp_session_reflection', present: true, source: 'spw-lsp', stats: { tracked: 3 } }
+    const reflection = await clientFor({
+      plane: 'lsp_session_reflection',
+      layers: [layer, { plane: 'unknown_plane', present: true, source: 'x' }, 'not a card'],
+      beat: 4,
+      tracked: 3,
+      concentration: 0.5,
+      notes: [],
+      families: [],
+    }).cacheReflection()
+    expect(reflection?.plane).toBe('lsp_session_reflection')
+    expect(reflection?.layers).toEqual([layer])
+  })
+
+  it('leaves plane and layers out when the server sends none', async () => {
+    const reflection = await clientFor({ beat: 1, tracked: 0, concentration: 0, notes: [], families: [] }).cacheReflection()
+    expect(reflection).not.toHaveProperty('plane')
+    expect(reflection).not.toHaveProperty('layers')
+  })
+})

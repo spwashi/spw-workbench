@@ -289,6 +289,15 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null
 }
 
+const CACHE_PLANES: readonly SpwCacheLayerCard['plane'][] = ['editor_probe_cache', 'lsp_session_reflection', 'runtime_cache', 'corpus_memo']
+
+function isCacheLayerCard(value: unknown): value is SpwCacheLayerCard {
+  return isRecord(value)
+    && (CACHE_PLANES as readonly unknown[]).includes(value.plane)
+    && typeof value.present === 'boolean'
+    && typeof value.source === 'string'
+}
+
 function isAnnotationKind(value: unknown): value is SpwAnnotationKind {
   return (SPW_ANNOTATION_KINDS as readonly unknown[]).includes(value)
 }
@@ -391,6 +400,9 @@ class SpwLanguageServerRequests implements SpwCustomRequestClient {
     const payload = await this.request('spw/cacheReflection', {})
     if (!isRecord(payload) || typeof payload.tracked !== 'number') return null
     return {
+      // The cache card reads plane and layers; dropping them showed the LSP plane as absent.
+      ...(payload.plane === 'lsp_session_reflection' ? { plane: payload.plane } : {}),
+      ...(Array.isArray(payload.layers) ? { layers: payload.layers.filter(isCacheLayerCard) } : {}),
       beat: typeof payload.beat === 'number' ? payload.beat : 0,
       tracked: payload.tracked,
       concentration: typeof payload.concentration === 'number' ? payload.concentration : 0,
