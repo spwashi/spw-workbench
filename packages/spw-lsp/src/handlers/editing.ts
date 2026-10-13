@@ -21,6 +21,7 @@ import type {
 } from '../types'
 import { CK } from '../types'
 import { formContextCodeActions } from './form-context'
+import { planStreamCompletion } from './plan-stream'
 
 // ── Completion ──────────────────────────────────────────────────
 
@@ -35,6 +36,16 @@ export async function completion(params: CompletionParams, deps: HandlerDeps): P
     const line = source.split('\n')[pos.line] ?? ''
     const prefix = line.slice(0, pos.character)
     const items: LspCompletionItem[] = []
+
+    // 0. Plan stream entry: the stamp after `>>[`, the entry type after `>>[stamp] `
+    const streamItems = await planStreamCompletion({
+        filePath: deps.pathFromUri(uri),
+        prefix,
+        suffix: line.slice(pos.character),
+        position: pos,
+        workspaceRoot: deps.workspaceRoot,
+    })
+    if (streamItems) return streamItems
 
     // 1. @-root completion
     if (prefix.endsWith('@')) {

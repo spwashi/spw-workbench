@@ -46,6 +46,10 @@ export interface LspCompletionItem {
     insertText?: string
     insertTextFormat?: number // 1=PlainText 2=Snippet
     sortText?: string
+    /** Text the client filters against; defaults to label. */
+    filterText?: string
+    /** Replaces a range instead of inserting at the cursor (wins over insertText). */
+    textEdit?: LspTextEdit
 }
 
 // ── Code Lens ───────────────────────────────────────────────────
@@ -186,6 +190,8 @@ export const CK = {
     Field: 5,
     Variable: 6,
     Interface: 8,
+    Value: 12,
+    EnumMember: 20,
 } as const
 
 // ── Request Param Types ─────────────────────────────────────────

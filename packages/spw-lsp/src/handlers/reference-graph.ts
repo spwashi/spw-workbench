@@ -13,7 +13,7 @@
  */
 
 import { promises as fs } from 'node:fs'
-import { selectPathRefs } from '../spw-selector'
+import { selectPathRefs, type SpwSelectorHit } from '../spw-selector'
 import { stripAnchor } from '../helpers'
 import type { HandlerDeps } from '../types'
 import {
@@ -78,15 +78,26 @@ export function invalidateReferenceGraph(): void {
   cache = null
 }
 
-async function readSource(filePath: string, deps: HandlerDeps): Promise<string | null> {
-  // Prefer the open buffer: an edit that has not been saved still counts.
+interface CitedSource {
+  source: string
+  hits: SpwSelectorHit[]
+}
+
+/**
+ * A surface's text and citations. The open buffer wins — an edit that has not
+ * been saved still counts — and a closed file's citations come from the
+ * index's scan memo, so a graph rebuild does not parse the corpus again.
+ */
+async function readCitations(filePath: string, deps: HandlerDeps): Promise<CitedSource | null> {
   const open = deps.serverIndex.getDocument(deps.uriFromPath(filePath))
-  if (open) return open.text
+  if (open) return { source: open.text, hits: open.selectorHits ?? selectPathRefs(open.text) }
+  let source: string
   try {
-    return await fs.readFile(filePath, 'utf8')
+    source = await fs.readFile(filePath, 'utf8')
   } catch {
     return null
   }
+  return { source, hits: deps.serverIndex.citationsFor?.(filePath, source) ?? selectPathRefs(source) }
 }
 
 export async function buildReferenceGraph(
@@ -119,11 +130,12 @@ export async function buildReferenceGraph(
   for (const surface of isSurface) inbound.set(surface, new Set())
 
   const resolved = await deps.mapWithConcurrency(files, 8, async (file) => {
-    const source = await readSource(file, deps)
-    if (source === null) return null
+    const cited = await readCitations(file, deps)
+    if (cited === null) return null
+    const { source, hits } = cited
 
     const targets: string[] = []
-    for (const hit of selectPathRefs(source)) {
+    for (const hit of hits) {
       // A fragment addresses a node inside a surface; the edge is to the file.
       // Directories resolve as navigation resolves them, so a hub count and a
       // working Ctrl+Click agree.

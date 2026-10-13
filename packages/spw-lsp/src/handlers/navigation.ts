@@ -199,7 +199,11 @@ export async function references(params: ReferencesParams, deps: HandlerDeps): P
                     if (fileText === null) return [] as LspLocation[]
                     if (!needles.some((needle) => fileText.includes(needle))) return [] as LspLocation[]
 
-                    const candidateHits = (cachedDoc?.selectorHits ?? selectPathRefs(fileText)).filter((candidate) =>
+                    // An open buffer's hits, else the scan's memo for this text, else a parse.
+                    const fileHits = cachedDoc?.selectorHits
+                        ?? deps.serverIndex.citationsFor?.(filePath, fileText)
+                        ?? selectPathRefs(fileText)
+                    const candidateHits = fileHits.filter((candidate) =>
                         needles.some((needle) => candidate.raw.includes(needle) || candidate.target.includes(needle))
                     )
                     if (candidateHits.length === 0 && !fileText.includes(basenameNeedle)) {

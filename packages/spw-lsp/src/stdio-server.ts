@@ -217,7 +217,7 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
             documentSymbolProvider: true,
             workspaceSymbolProvider: true,
             codeActionProvider: true,
-            completionProvider: { triggerCharacters: ['@', '~', '/', '#', '$'] },
+            completionProvider: { triggerCharacters: ['@', '~', '/', '#', '$', '['] },
             codeLensProvider: { resolveProvider: false },
             documentFormattingProvider: true,
             documentRangeFormattingProvider: true,

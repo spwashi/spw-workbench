@@ -186,6 +186,13 @@ export class ServerIndex {
   private framesByFile = new Map<string, FrameEntry[]>()
   private projections: ProjectionEntry[] = []
   private selectorDefs = new Map<string, SelectorDefinition>()
+  /**
+   * Citations per workspace file, keyed by content hash. Citations come from a
+   * parse, and the scan already parses every file, so a corpus pass — the
+   * reference graph, cross-file references — reads them here instead of
+   * parsing the workspace a second time.
+   */
+  private citationsByFile = new Map<string, { hash: string; hits: SpwSelectorHit[] }>()
   private requestEpoch = 0
   private workspaceRoot: string
 
@@ -388,7 +395,8 @@ export class ServerIndex {
     } catch {
       doc.parseResult = null
     }
-    doc.selectorHits = selectPathRefs(doc.text)
+    // Citations read the parse just made; a parse that threw falls back to text.
+    doc.selectorHits = selectPathRefs(doc.text, doc.parseResult)
     doc.mix = particleMix(doc.parseResult?.ast ?? null, doc.text)
     // Pass parse result so analyzeDocumentContext reuses tokens already produced
     const structure = analyzeDocumentContext(doc.filePath, doc.text, doc.parseResult)
@@ -565,6 +573,7 @@ export class ServerIndex {
     this.framesByFile.clear()
     this.projections = []
     this.selectorDefs.clear()
+    this.citationsByFile.clear()
 
     // Load workspace config files first (shelves → topology depends on shelf roots)
     await this.loadShelves()
@@ -576,13 +585,15 @@ export class ServerIndex {
     for (const filePath of spwFiles) {
       try {
         const text = await fs.readFile(filePath, 'utf8')
-        const structure = analyzeDocumentContext(filePath, text)
+        const parsed = parse(text)
+        const structure = analyzeDocumentContext(filePath, text, parsed)
         for (const entry of structure.annotations) {
           this.addAnnotation(entry)
         }
         for (const entry of structure.frames) {
           this.addFrame(entry)
         }
+        this.rememberCitations(filePath, text, parsed)
 
         // Extract selector definitions from sel.spw-like files
         this.extractSelectorDefs(filePath, text)
@@ -645,19 +656,35 @@ export class ServerIndex {
       const text = await fs.readFile(filePath, 'utf8')
       this.removeAnnotationsForFile(filePath)
       this.removeFramesForFile(filePath)
-      const structure = analyzeDocumentContext(filePath, text)
+      const parsed = parse(text)
+      const structure = analyzeDocumentContext(filePath, text, parsed)
       for (const entry of structure.annotations) {
         this.addAnnotation(entry)
       }
       for (const entry of structure.frames) {
         this.addFrame(entry)
       }
+      this.rememberCitations(filePath, text, parsed)
       this.extractSelectorDefs(filePath, text)
     } catch {
       // file deleted or unreadable — clear its entries
       this.removeAnnotationsForFile(filePath)
       this.removeFramesForFile(filePath)
+      this.citationsByFile.delete(filePath)
     }
+  }
+
+  private rememberCitations(filePath: string, text: string, parsed?: ParseOutput | null): SpwSelectorHit[] {
+    const hits = selectPathRefs(text, parsed)
+    this.citationsByFile.set(filePath, { hash: hashString(text), hits })
+    return hits
+  }
+
+  /** Citations in a workspace file's text, parsed at most once per content. */
+  citationsFor(filePath: string, text: string): SpwSelectorHit[] {
+    const known = this.citationsByFile.get(filePath)
+    if (known && known.hash === hashString(text)) return known.hits
+    return this.rememberCitations(filePath, text)
   }
 
   private removeAnnotationsForFile(filePath: string): void {

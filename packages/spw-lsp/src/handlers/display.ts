@@ -7,7 +7,7 @@
 
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
-import { SIGIL_SEMANTICS, type AnnotationKind } from '../server-index'
+import { SIGIL_SEMANTICS, type AnnotationEntry, type AnnotationKind } from '../server-index'
 import { annotationLabel } from '../apposition'
 import { findPathRefAtPosition } from '../spw-selector'
 import { statKind } from '../helpers'
@@ -21,6 +21,7 @@ import {
 } from '../types'
 import { outlineFromSource } from './outline'
 import { formContextHover } from './form-context'
+import { hoverCommitRef } from './commit-refs'
 import { buildWonderHint, codeSpan, hoverApposition, hoverWonder, parseWonderBlock, sourceTokens } from './wonder'
 import {
   formatCatalogEntryMarkdown,
@@ -36,7 +37,20 @@ import { scanBracePhrases, countPhrasesById, measureProbesAndSubstrate } from '@
 type DisplayAnnotationKind = 'topic' | 'lens' | 'intent' | 'anchor'
 
 const ANNOTATION_RE = /(##>|#!|#:|#>|#)([a-zA-Z_][a-zA-Z0-9_]*)/g
-const ANCHOR_RE = /##?>([a-zA-Z_][a-zA-Z0-9_]*)/
+
+/**
+ * Anchor declared on each line, from the document's token-read annotations. A
+ * `#>name` written inside a string, a backtick phrase or a comment is text, so
+ * it neither earns an anchor lens nor counts incoming references.
+ */
+function anchorsByLine(annotations: readonly AnnotationEntry[] | undefined): Map<number, string> {
+    const byLine = new Map<number, string>()
+    for (const entry of annotations ?? []) {
+        if (entry.kind !== 'anchor' && entry.kind !== 'prompt_root') continue
+        if (!byLine.has(entry.line)) byLine.set(entry.line, entry.name)
+    }
+    return byLine
+}
 
 /** LSP SymbolKind.String — an apposition is a reading, and the shared SK table has no entry for it. */
 const SYMBOL_KIND_STRING = 15
@@ -350,6 +364,10 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
     const tokensOf = () => (tokens ??= sourceTokens(source, uri, deps))
     const contextAt = (character: number) =>
         buildContextMarkdown(deps.serverIndex.getContextAtPosition(uri, { line: pos.line, character }) as DisplayLineContext | null)
+
+    // -1. A landed commit's hash in a plan file, read from git
+    const commitHover = await hoverCommitRef(source, docPath, pos, deps.workspaceRoot)
+    if (commitHover) return commitHover
 
     // 0. Experimental catalog / dialect stack (plan-syntax presence)
     const expHover = hoverExperimentalOrDialect(source, line, pos, docPath, deps.workspaceRoot)
@@ -931,6 +949,7 @@ export function codeLens(params: DocumentParams, deps: HandlerDeps): LspCodeLens
     const fileAnnotations = deps.serverIndex.annotationsForFile(docPath)
     const lines = doc.text.split('\n')
     const lenses: LspCodeLens[] = []
+    const anchors = anchorsByLine(doc.annotations)
 
     for (let i = 0; i < lines.length; i += 1) {
         const line = lines[i]
@@ -952,9 +971,8 @@ export function codeLens(params: DocumentParams, deps: HandlerDeps): LspCodeLens
         }
 
         // Anchor cross-file refs
-        const anchorMatch = line.match(ANCHOR_RE)
-        if (anchorMatch) {
-            const name = anchorMatch[1]
+        const name = anchors.get(i)
+        if (name) {
             const refs = deps.serverIndex.lookupAnnotation(name)
             const otherFiles = refs.filter(e => e.file !== docPath)
             const fileCount = new Set(otherFiles.map(e => e.file)).size
@@ -1192,12 +1210,12 @@ export async function inlayHints(params: InlayHintParams, deps: HandlerDeps): Pr
     }
 
     // 4) Incoming reference hints on anchor lines
+    const anchors = anchorsByLine(doc.annotations)
     for (let lineNo = Math.max(0, range.start.line); lineNo <= Math.min(lines.length - 1, range.end.line); lineNo++) {
         const line = lines[lineNo]
-        const anchorMatch = line.match(ANCHOR_RE)
-        if (!anchorMatch) continue
+        const name = anchors.get(lineNo)
+        if (!name) continue
 
-        const name = anchorMatch[1]
         const refs = deps.serverIndex.lookupAnnotation(name)
         const otherFiles = refs.filter((entry) => entry.file !== docPath)
         const fileCount = new Set(otherFiles.map((entry) => entry.file)).size

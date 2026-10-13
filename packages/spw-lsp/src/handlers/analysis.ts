@@ -16,6 +16,7 @@ import type {
     LspDiagnostic, LspFoldingRange, DocumentParams,
     HandlerDeps,
 } from '../types'
+import { commitRefDiagnostics } from './commit-refs'
 
 type StringDelimiter = '"' | "'" | null
 
@@ -124,6 +125,8 @@ export async function publishDiagnostics(uri: string, deps: HandlerDeps): Promis
             if (resolved) continue
 
             const target = hit.kind === 'pathRef' ? hit.target : `@${hit.root}/${hit.target}`
+            // A recovered hit was read from text the parser could not structure — say so.
+            const provenance = hit.recovered ? ' (recovered from text the parser could not structure)' : ''
             diagnostics.push({
                 range: {
                     start: { line: hit.span.startLine, character: hit.span.startCharacter },
@@ -131,10 +134,13 @@ export async function publishDiagnostics(uri: string, deps: HandlerDeps): Promis
                 },
                 severity,
                 source: 'spw',
-                message: `unresolved reference: ${target}`,
+                message: `unresolved reference: ${target}${provenance}`,
             })
         }
     }
+
+    // 2b. Commit refs in a plan file that name no commit in the repository
+    diagnostics.push(...await commitRefDiagnostics(doc.text, doc.filePath, deps.workspaceRoot))
 
     // 3. Stale projections
     if (deps.config.diagnostics.staleProjections) {
