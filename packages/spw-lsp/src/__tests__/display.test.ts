@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { documentHighlight, hover, inlayHints, workspaceSymbols } from '../handlers/display'
+import { codeLens, documentHighlight, hover, inlayHints, workspaceSymbols } from '../handlers/display'
 import { formContextHover } from '../handlers/form-context'
 import { ServerIndex } from '../server-index'
 import { DEFAULT_CONFIG, type HandlerDeps } from '../types'
@@ -397,5 +397,37 @@ describe('apposition hover and symbols', () => {
     const own = symbols.find((symbol) => symbol.location.uri === TEST_URI)
     // 15 = LSP SymbolKind.String
     expect(own).toMatchObject({ kind: 15, containerName: 'claims' })
+  })
+})
+
+describe('frame and anchor lenses', () => {
+  const text = [
+    '^["frame"]{',
+    '  #:layer #!pragmatics',
+    '  #topic_a #topic_b',
+    '  #>anchor_one',
+    '}',
+  ].join('\n')
+
+  it('a frame lens names what it counts, in the plural where the count is not one', () => {
+    const deps = makeDeps(text)
+    const lenses = codeLens({ textDocument: { uri: TEST_URI } }, deps)
+    const frame = lenses.find((lens) => lens.range.start.line === 0 && (lens.command?.title ?? "").startsWith("\u25c7"))
+    expect(frame?.command?.title).toMatch(/2 #tags/)
+    expect(frame?.command?.title).toMatch(/1 #: lens\b/)
+    expect(frame?.command?.title).toMatch(/1 #! focus\b/)
+    expect(frame?.command?.title).toMatch(/1 #> anchor\b/)
+    expect(frame?.command?.title).not.toMatch(/\btopic\b/)
+  })
+
+  it('incoming refs show once, as the anchor lens, and never as an inlay', async () => {
+    const deps = makeDeps(text, [{ path: '/workspace/other.spw', text: '#>anchor_one\n' }])
+    const lenses = codeLens({ textDocument: { uri: TEST_URI } }, deps)
+    expect(lenses.some((lens) => lens.range.start.line === 3 && /1 file ref/.test(lens.command?.title ?? ''))).toBe(true)
+    const hints = await inlayHints(
+      { textDocument: { uri: TEST_URI }, range: { start: { line: 0, character: 0 }, end: { line: 4, character: 1 } } },
+      deps,
+    )
+    expect(hints.filter((hint) => String(hint.label).includes('incoming'))).toEqual([])
   })
 })

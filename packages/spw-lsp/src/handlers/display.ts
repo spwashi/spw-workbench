@@ -36,6 +36,25 @@ import { scanBracePhrases, countPhrasesById, measureProbesAndSubstrate } from '@
 
 type DisplayAnnotationKind = 'topic' | 'lens' | 'intent' | 'anchor'
 
+/**
+ * What a frame lens counts, singular and plural, named by the syntax a reader
+ * sees: `#tag`, the `#:` lens, `#!` focus and `#>` anchor particles, `##>`
+ * prompt roots, and `~#name()` readings.
+ */
+const KIND_NOUNS: Record<AnnotationKind, readonly [string, string]> = {
+    topic: ['#tag', '#tags'],
+    lens: ['#: lens', '#: lenses'],
+    intent: ['#! focus', '#! focuses'],
+    anchor: ['#> anchor', '#> anchors'],
+    prompt_root: ['##> prompt root', '##> prompt roots'],
+    apposition: ['reading', 'readings'],
+}
+
+function countLabel(kind: AnnotationKind, count: number): string {
+    const [one, many] = KIND_NOUNS[kind]
+    return `${count} ${count === 1 ? one : many}`
+}
+
 const ANNOTATION_RE = /(##>|#!|#:|#>|#)([a-zA-Z_][a-zA-Z0-9_]*)/g
 
 /**
@@ -960,9 +979,9 @@ export function codeLens(params: DocumentParams, deps: HandlerDeps): LspCodeLens
             const frameName = frameMatch[1] || frameMatch[2] || frameMatch[3]
             const inFrame = fileAnnotations.filter(e => e.sectionLabel === frameName)
             if (inFrame.length > 0) {
-                const kindCounts = new Map<string, number>()
+                const kindCounts = new Map<AnnotationKind, number>()
                 for (const entry of inFrame) kindCounts.set(entry.kind, (kindCounts.get(entry.kind) ?? 0) + 1)
-                const summary = [...kindCounts.entries()].map(([k, n]) => `${n} ${k}`).join(', ')
+                const summary = [...kindCounts.entries()].map(([k, n]) => countLabel(k, n)).join(' · ')
                 lenses.push({
                     range: { start: { line: i, character: 0 }, end: { line: i, character: line.length } },
                     command: { title: `\u25c7 ${summary}`, command: '' },
@@ -1209,29 +1228,8 @@ export async function inlayHints(params: InlayHintParams, deps: HandlerDeps): Pr
         }
     }
 
-    // 4) Incoming reference hints on anchor lines
-    const anchors = anchorsByLine(doc.annotations)
-    for (let lineNo = Math.max(0, range.start.line); lineNo <= Math.min(lines.length - 1, range.end.line); lineNo++) {
-        const line = lines[lineNo]
-        const name = anchors.get(lineNo)
-        if (!name) continue
-
-        const refs = deps.serverIndex.lookupAnnotation(name)
-        const otherFiles = refs.filter((entry) => entry.file !== docPath)
-        const fileCount = new Set(otherFiles.map((entry) => entry.file)).size
-        const sourceSummary = summarizeReferenceSources(refs, docPath, deps.workspaceRoot, 2)
-
-        if (fileCount > 0) {
-            hints.push({
-                position: { line: lineNo, character: line.length },
-                label: ` [incoming ${fileCount}f${sourceSummary ? ` \u00b7 ${sourceSummary}` : ''}]`,
-                kind: 2,
-                tooltip: 'Files that reference this anchor.',
-                paddingLeft: true,
-            })
-        }
-        break
-    }
+    // Incoming references have one owner, the anchor code lens; an inlay here
+    // would show the same count twice.
 
     return hints
 }
