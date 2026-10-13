@@ -7,6 +7,9 @@
             "include": "#comments"
         },
         {
+            "include": "#plan-lines"
+        },
+        {
             "include": "#strings"
         },
         {
@@ -47,6 +50,9 @@
         },
         {
             "include": "#punctuation"
+        },
+        {
+            "include": "#identifiers"
         }
     ],
     "repository": {
@@ -57,9 +63,9 @@
                     "match": "//.*$"
                 },
                 {
-                    "comment": "Decorative separator: # ──────",
+                    "comment": "Decorative separator: # ────── or # ======",
                     "name": "comment.line.separator.spw",
-                    "match": "^\\s*#\\s*[─━═─]{4,}.*$"
+                    "match": "^\\s*#(?:\\s*[─━═]{4,}|\\s+={4,}).*$"
                 },
                 {
                     "name": "comment.line.phase-banner.spw",
@@ -71,8 +77,8 @@
                     "match": "^#\\s+(Branch|Started|Status|Author):.*$"
                 },
                 {
-                    "comment": "File header: # wip — slug",
-                    "name": "markup.heading.file-header.spw",
+                    "comment": "File header: # wip — slug (a hash-space line, so a comment first)",
+                    "name": "comment.line.hash.spw markup.heading.file-header.spw",
                     "match": "^#\\s+wip\\s+—.*$"
                 },
                 {
@@ -81,14 +87,9 @@
                     "match": "^\\s*#\\s+[A-Z][A-Z ]+$"
                 },
                 {
-                    "comment": "Hash comment — only lines starting with # followed by space (not #word annotations)",
+                    "comment": "Hash comment: # followed by a space or tab, or # alone. Particles (#> #: #! #[ #word) are not comments.",
                     "name": "comment.line.hash.spw",
-                    "match": "^\\s*#\\s+.*$"
-                },
-                {
-                    "name": "comment.block.spw",
-                    "begin": "/\\*",
-                    "end": "\\*/"
+                    "match": "#(?:[ \\t].*)?$"
                 }
             ]
         },
@@ -97,7 +98,7 @@
                 {
                     "name": "string.quoted.double.spw",
                     "begin": "\"",
-                    "end": "\"",
+                    "end": "\"|$",
                     "beginCaptures": {
                         "0": {
                             "name": "punctuation.definition.string.begin.spw"
@@ -123,7 +124,7 @@
                         },
                         {
                             "name": "punctuation.separator.em-dash.spw",
-                            "match": "\u2014"
+                            "match": "—"
                         },
                         {
                             "name": "meta.string.lab-number.spw",
@@ -151,13 +152,13 @@
                     "begin": "(~)(\")",
                     "beginCaptures": {
                         "1": {
-                            "name": "keyword.operator.sigil.potential.tilde-ref.spw"
+                            "name": "keyword.operator.sigil.potential.tilde-ref.spw keyword.operator.spw.potential"
                         },
                         "2": {
                             "name": "punctuation.definition.string.begin.tilde-ref.spw"
                         }
                     },
-                    "end": "(\")",
+                    "end": "(\")|$",
                     "endCaptures": {
                         "1": {
                             "name": "punctuation.definition.string.end.tilde-ref.spw"
@@ -174,7 +175,7 @@
                     "comment": "Single-quoted string, but not apostrophes in words (01's, Boof's)",
                     "name": "string.quoted.single.spw",
                     "begin": "(?<!\\w)'",
-                    "end": "'",
+                    "end": "'|$",
                     "beginCaptures": {
                         "0": {
                             "name": "punctuation.definition.string.begin.spw"
@@ -300,9 +301,9 @@
                     "match": "\\$\\[\"[^\"]*\"\\]"
                 },
                 {
-                    "comment": "$ sigil — introspection",
-                    "name": "keyword.operator.sigil.introspection.spw",
-                    "match": "\\$(?=[a-zA-Z_\\[])"
+                    "comment": "$ substrate sigil",
+                    "name": "keyword.operator.sigil.introspection.spw keyword.operator.spw.substrate",
+                    "match": "\\$"
                 }
             ]
         },
@@ -400,43 +401,6 @@
                     "match": "\\^\\[\"\\w+\"\\]"
                 },
                 {
-                    "comment": "Stream entries: >>[timestamp] action —",
-                    "name": "meta.stream.entry.spw",
-                    "begin": "(>>)(\\[)([^\\]]+)(\\])\\s+(\\w+)\\s*(—)",
-                    "beginCaptures": {
-                        "1": {
-                            "name": "keyword.operator.stream-out.spw"
-                        },
-                        "2": {
-                            "name": "punctuation.definition.bracket.spw"
-                        },
-                        "3": {
-                            "name": "meta.stream.timestamp.spw"
-                        },
-                        "4": {
-                            "name": "punctuation.definition.bracket.spw"
-                        },
-                        "5": {
-                            "name": "keyword.other.stream-action.spw"
-                        },
-                        "6": {
-                            "name": "punctuation.separator.em-dash.spw"
-                        }
-                    },
-                    "end": "$",
-                    "patterns": [
-                        {
-                            "include": "#strings"
-                        },
-                        {
-                            "include": "#annotations"
-                        },
-                        {
-                            "include": "#sigils"
-                        }
-                    ]
-                },
-                {
                     "name": "variable.other.open-question.spw",
                     "match": "\\?\\[[^\\]]*\\]"
                 },
@@ -460,8 +424,8 @@
                     "match": "(?:\\.\\.|[A-Za-z_@])[A-Za-z0-9_.\\-]*(?:/(?:\\.\\.|[A-Za-z_@*])[A-Za-z0-9_.\\-*]*)+"
                 },
                 {
-                    "name": "keyword.operator.sigil.action.spw",
-                    "match": "!(?=[^bh\\[])|!(?=\\[)"
+                    "name": "keyword.operator.sigil.action.spw keyword.operator.spw.action",
+                    "match": "!(?!=)"
                 },
                 {
                     "comment": "Navigable root path: @docs/index.spw, @spw/harness/*, @here/keyboard/index.ts",
@@ -469,42 +433,52 @@
                     "match": "@[a-zA-Z_][a-zA-Z0-9_]*(?:/(?:\\.\\.|[A-Za-z_*])[A-Za-z0-9_.\\-*]*)+"
                 },
                 {
-                    "name": "keyword.operator.sigil.perspective.spw",
-                    "match": "@[a-zA-Z_][a-zA-Z0-9_.]*"
+                    "name": "keyword.operator.sigil.perspective.spw keyword.operator.spw.perspective",
+                    "match": "@[a-zA-Z_][a-zA-Z0-9_.]*|@"
                 },
                 {
-                    "name": "keyword.operator.sigil.integration.spw",
-                    "match": "\\^[a-zA-Z_][a-zA-Z0-9_]*|\\^(?=[\\[{\"'])"
+                    "name": "keyword.operator.sigil.integration.spw keyword.operator.spw.ascension",
+                    "match": "\\^[a-zA-Z_][a-zA-Z0-9_]*|\\^"
                 },
                 {
-                    "name": "keyword.operator.sigil.wonder.spw",
+                    "name": "keyword.operator.sigil.wonder.spw keyword.operator.spw.wonder",
                     "match": "\\?match\\b|\\?[a-zA-Z_][a-zA-Z0-9_.]*|\\?(?=[^a-zA-Z_])"
                 },
                 {
-                    "name": "keyword.operator.sigil.potential.spw",
-                    "match": "~[a-zA-Z_][a-zA-Z0-9_]*|~(?=[^#a-zA-Z_])|~$"
+                    "name": "keyword.operator.sigil.potential.spw keyword.operator.spw.potential",
+                    "match": "~[a-zA-Z_][a-zA-Z0-9_]*|~(?=[^#>a-zA-Z_])|~$"
                 },
                 {
-                    "name": "keyword.operator.sigil.value.spw",
+                    "name": "keyword.operator.sigil.value.spw keyword.operator.spw.value",
                     "match": "\\*"
                 },
                 {
-                    "name": "keyword.operator.sigil.schema.spw",
+                    "name": "keyword.operator.sigil.schema.spw keyword.operator.spw.vibration",
                     "match": "#[a-zA-Z_][a-zA-Z0-9_]*|#(?=[^a-zA-Z_])"
                 },
                 {
                     "comment": "% measure/observation sigil",
-                    "name": "keyword.operator.sigil.measure.spw",
+                    "name": "keyword.operator.sigil.measure.spw keyword.operator.spw.measure",
                     "match": "%(?=[\\[{a-zA-Z_])|%"
                 },
                 {
-                    "name": "keyword.operator.sigil.subject.spw",
+                    "name": "keyword.operator.sigil.subject.spw keyword.operator.spw.subject",
                     "match": "&\\[[^\\]]+\\]|&[a-zA-Z_][a-zA-Z0-9_]*|&(?=[^a-zA-Z_])"
+                },
+                {
+                    "comment": ". ground operator before a word or brace (.door, }.{, .[ ); tight dots inside a name belong to the identifier",
+                    "name": "keyword.operator.sigil.ground.spw keyword.operator.spw.ground",
+                    "match": "\\.(?=[A-Za-z_{\\[(<])"
                 }
             ]
         },
         "operators": {
             "patterns": [
+                {
+                    "comment": "<> coupling operator",
+                    "name": "keyword.operator.sigil.coupling.spw keyword.operator.spw.coupling",
+                    "match": "<>"
+                },
                 {
                     "name": "keyword.operator.arrow.spw",
                     "match": "=>|->"
@@ -514,7 +488,7 @@
                     "match": "[=!<>]="
                 },
                 {
-                    "name": "keyword.operator.sigil.set.spw",
+                    "name": "keyword.operator.sigil.set.spw keyword.operator.spw.configuration",
                     "match": "="
                 },
                 {
@@ -527,7 +501,7 @@
                 },
                 {
                     "name": "keyword.operator.connector.spw",
-                    "match": "\\.\\."
+                    "match": "\\.\\.|~>"
                 },
                 {
                     "name": "keyword.operator.stream-in.spw",
@@ -548,7 +522,7 @@
                 },
                 {
                     "name": "punctuation.separator.em-dash.spw",
-                    "match": "\u2014"
+                    "match": "—"
                 },
                 {
                     "comment": "Unicode math operators: arrows, relations, set ops, logic",
@@ -575,23 +549,23 @@
         "containers": {
             "patterns": [
                 {
-                    "name": "punctuation.definition.brace.spw",
+                    "name": "punctuation.definition.brace.spw punctuation.definition.spw.definition",
                     "match": "[{}]"
                 },
                 {
-                    "name": "punctuation.definition.bracket.spw",
+                    "name": "punctuation.definition.bracket.spw punctuation.definition.spw.mode",
                     "match": "[\\[\\]]"
                 },
                 {
-                    "name": "punctuation.definition.paren.spw",
+                    "name": "punctuation.definition.paren.spw punctuation.definition.spw.scene",
                     "match": "[()]"
                 },
                 {
-                    "name": "punctuation.definition.angle.open.spw",
+                    "name": "punctuation.definition.angle.open.spw punctuation.definition.spw.concept",
                     "match": "<(?![<=])"
                 },
                 {
-                    "name": "punctuation.definition.angle.close.spw",
+                    "name": "punctuation.definition.angle.close.spw punctuation.definition.spw.concept",
                     "match": "(?<![>=!])>"
                 }
             ]
@@ -625,6 +599,153 @@
                 {
                     "name": "punctuation.definition.fence.spw",
                     "match": "^---$"
+                }
+            ]
+        },
+        "plan-lines": {
+            "patterns": [
+                {
+                    "comment": "Plan stream entry: >>[YYYY-MM-DD HH:MM] type — prose (or the date-only stamp). The lexer owns the rest of the line as text, so the prose carries no code scopes.",
+                    "name": "meta.stream.entry.spw",
+                    "match": "^[ \\t]*(>>)(\\[)(\\d{4}-\\d{2}-\\d{2}(?:[ T]\\d{2}:\\d{2}(?::\\d{2})?)?)(\\])(?:[ \\t]+(?:(observe)|(decide)|(surprise)|(revise)|(blocked)|(taste)|(rebase)|(hygiene)|(implement)|(verify)|(note)|([A-Za-z_][A-Za-z0-9_-]*))(?=[ \\t]*(?:—|:|$)))?(?:[ \\t]*(—))?[ \\t]*(.*)$",
+                    "captures": {
+                        "1": {
+                            "name": "keyword.operator.stream-out.spw"
+                        },
+                        "2": {
+                            "name": "punctuation.definition.bracket.spw"
+                        },
+                        "3": {
+                            "name": "meta.stream.timestamp.spw constant.numeric.date.spw"
+                        },
+                        "4": {
+                            "name": "punctuation.definition.bracket.spw"
+                        },
+                        "5": {
+                            "name": "keyword.other.stream-action.spw.observe"
+                        },
+                        "6": {
+                            "name": "keyword.other.stream-action.spw.decide"
+                        },
+                        "7": {
+                            "name": "keyword.other.stream-action.spw.surprise"
+                        },
+                        "8": {
+                            "name": "keyword.other.stream-action.spw.revise"
+                        },
+                        "9": {
+                            "name": "keyword.other.stream-action.spw.blocked"
+                        },
+                        "10": {
+                            "name": "keyword.other.stream-action.spw.taste"
+                        },
+                        "11": {
+                            "name": "keyword.other.stream-action.spw.rebase"
+                        },
+                        "12": {
+                            "name": "keyword.other.stream-action.spw.hygiene"
+                        },
+                        "13": {
+                            "name": "keyword.other.stream-action.spw.implement"
+                        },
+                        "14": {
+                            "name": "keyword.other.stream-action.spw.verify"
+                        },
+                        "15": {
+                            "name": "keyword.other.stream-action.spw.note"
+                        },
+                        "16": {
+                            "name": "meta.stream.type.other.spw"
+                        },
+                        "17": {
+                            "name": "punctuation.separator.em-dash.spw"
+                        },
+                        "18": {
+                            "name": "meta.stream.prose.spw"
+                        }
+                    }
+                },
+                {
+                    "comment": "Quoted-stamp plan entry: >>[\"YYYY-MM-DD\"] \"type: prose\" — still one text run to the line end. Other stamps (>>[0], >>[t+1]) appear outside plan files, where the lexer reads code.",
+                    "name": "meta.stream.entry.spw",
+                    "match": "^[ \\t]*(>>)(\\[)(\"[^\\]]*)(\\])?(.*)$",
+                    "captures": {
+                        "1": {
+                            "name": "keyword.operator.stream-out.spw"
+                        },
+                        "2": {
+                            "name": "punctuation.definition.bracket.spw"
+                        },
+                        "3": {
+                            "name": "meta.stream.timestamp.spw"
+                        },
+                        "4": {
+                            "name": "punctuation.definition.bracket.spw"
+                        },
+                        "5": {
+                            "name": "meta.stream.prose.spw"
+                        }
+                    }
+                },
+                {
+                    "comment": "Landed commit: .[name](hash): — the scene names the commit; the hash is a commit-ref.",
+                    "name": "meta.commit.landed.spw",
+                    "match": "(\\.)(\\[)([A-Za-z_][A-Za-z0-9_-]*)(\\])(\\()([0-9a-f]{7,40})(\\))(?=[ \\t]*:)",
+                    "captures": {
+                        "1": {
+                            "name": "keyword.operator.sigil.ground.spw keyword.operator.spw.ground"
+                        },
+                        "2": {
+                            "name": "punctuation.definition.bracket.spw punctuation.definition.spw.mode"
+                        },
+                        "3": {
+                            "name": "entity.name.commit.landed.spw"
+                        },
+                        "4": {
+                            "name": "punctuation.definition.bracket.spw punctuation.definition.spw.mode"
+                        },
+                        "5": {
+                            "name": "punctuation.definition.paren.spw punctuation.definition.spw.scene"
+                        },
+                        "6": {
+                            "name": "constant.other.commit-ref.spw"
+                        },
+                        "7": {
+                            "name": "punctuation.definition.paren.spw punctuation.definition.spw.scene"
+                        }
+                    }
+                },
+                {
+                    "comment": "Planned commit: ~[name]: (all-digit names stay commit entries)",
+                    "name": "meta.commit.planned.spw",
+                    "match": "(~)(\\[)((?!\\d+\\])[A-Za-z0-9_][A-Za-z0-9_-]*)(\\])(?=[ \\t]*:)",
+                    "captures": {
+                        "1": {
+                            "name": "keyword.operator.sigil.potential.spw keyword.operator.spw.potential"
+                        },
+                        "2": {
+                            "name": "punctuation.definition.bracket.spw punctuation.definition.spw.mode"
+                        },
+                        "3": {
+                            "name": "entity.name.commit.planned.spw"
+                        },
+                        "4": {
+                            "name": "punctuation.definition.bracket.spw punctuation.definition.spw.mode"
+                        }
+                    }
+                }
+            ]
+        },
+        "identifiers": {
+            "patterns": [
+                {
+                    "comment": "Tight-dot identifier: hinge.frame.key is one identifier",
+                    "name": "meta.identifier.qualified.spw",
+                    "match": "[A-Za-z_][A-Za-z0-9_]*(?:-[A-Za-z0-9_]+)*(?:\\.[A-Za-z_][A-Za-z0-9_]*(?:-[A-Za-z0-9_]+)*)+"
+                },
+                {
+                    "name": "meta.identifier.spw",
+                    "match": "[A-Za-z_][A-Za-z0-9_]*(?:-[A-Za-z0-9_]+)*"
                 }
             ]
         }

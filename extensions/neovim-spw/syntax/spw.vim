@@ -14,11 +14,9 @@
 syntax clear
 syntax case match
 
-" ── Comments ────────────────────────────────────────────────────
-syntax match   spwLineComment   '//.*$'                                 display
-syntax match   spwHashComment   '^\s*#\s\+[^-].*$'                       display
-syntax match   spwPhaseComment  '^\s*#\s*---.*---\s*$'                    display
-syntax region  spwBlockComment  start='/\*' end='\*/'
+" Comments are defined at the end of the item list (see COMMENTS below): when
+" two items start at the same column the one defined last wins, so a comment
+" must come after the `#` sigil rules or `# 1. section` paints as code.
 
 " ── Strings and Phrases ─────────────────────────────────────────
 " Strings with contained highlighting for sigils inside quotes
@@ -64,6 +62,13 @@ syntax match   spwRegister  '@profile:\S\+'                     display
 syntax match   spwRegister  '@region:\S\+'                      display
 syntax match   spwRegister  '@reg:\S\+'                         display
 syntax match   spwRegister  '@ghost:\S*'                        display
+
+" ── TIGHT-DOT NAMES — hinge.frame.key is one identifier ──────────
+" The lexer folds a dot into the identifier when a letter follows it, so the
+" whole run is one group. Deliberately unlinked: it reads as plain text, like a
+" bare word, instead of words split by punctuation. Defined before spwPath so a
+" slash path (a.b/c) still wins at the same column.
+syntax match   spwQualifiedName  '\<\h\w*\%(-\w\+\)*\%(\.\h\w*\%(-\w\+\)*\)\+'  display
 
 " ── PATH ACCESS — word/word (not URL, not comment) ───────────────
 syntax match   spwPath  '[A-Za-z_][A-Za-z0-9_]*\(/[A-Za-z_][A-Za-z0-9_]*\)\+'  display
@@ -113,18 +118,23 @@ syntax match   spwSigWonder  '?\ze[^a-zA-Z_]'             display
 " here lets that match win instead of the bare sigil swallowing the ~ and
 " leaving the quotes to the generic string rule. `<` stays included so a
 " `~<rationale>` capsule still colors its ~.
+" `~>` is the project-join connector, not the potential sigil.
 syntax match   spwSigPotential  '\~[a-zA-Z_][a-zA-Z0-9_]*'  display
-syntax match   spwSigPotential  '\~\ze[^#"a-zA-Z_]'          display
+syntax match   spwSigPotential  '\~\ze[^#>"a-zA-Z_]'         display
 syntax match   spwSigPotential  '\~$'                         display
 
 " * value/observable — collapse to measurement
 syntax match   spwSigValue  '\*'  display
 
 " . ground — separator, path, ground reference
+" Bare dot first so the longer `..` / `...` forms win at the same column; a dot
+" before a word or brace (.door, }.{, .[) is the ground operator. Tight dots
+" inside a name (hinge.frame.key) belong to spwQualifiedName below.
+syntax match   spwDotOp      '\.'                               display
+syntax match   spwGroundOp   '\.\ze[A-Za-z_{\[(<]'              display
 syntax match   spwSpread     '\.\.\.'                           display
 syntax match   spwConnector  '\.\.'                             display
 syntax match   spwRange      '\d\+\.\.\d\+'                     display
-syntax match   spwDotOp      '\.'                               display
 
 " # vibration/schema — resonance, self-reference, meta
 syntax match   spwSigSchema  '#[a-zA-Z_][a-zA-Z0-9_]*'  display
@@ -195,26 +205,51 @@ syntax match   spwFence  '^---$'  display
 " ^["section"] — section headers in wip.spw files
 syntax match   spwSection  '\^\["\w\+"\]'  display
 
-" >>[YYYY-MM-DD HH:MM] type — log entries in stream
-syntax match   spwStreamEntry  '^\s*>>\[.\{-}\]\s\+\w\+\s*—'  display contains=spwStreamType,spwStreamTs
-syntax match   spwStreamType   '\]\s\+\zs\w\+\ze\s*—'        display contained
-syntax match   spwStreamTs     '>>\[\zs.\{-}\ze\]'          display contained
-
-" Stream action keywords (appear after the timestamp)
-syntax keyword spwStreamObserve  observe  contained containedin=spwStreamEntry
-syntax keyword spwStreamDecide   decide   contained containedin=spwStreamEntry
-
 " ?[label] open questions
 syntax match   spwOpenQuestion  '?\[[^\]]*\]'  display
 
 " ~[N] and ~[N..M] commit entries or array ranges
 syntax match   spwCommitEntry  '\~\[\d\+\(\.\.\d\+\)\?\]'  display
 
+" ── PLAN STREAM ENTRIES — >>[YYYY-MM-DD HH:MM] type — prose ───────
+" The lexer (plan-stream.ts) owns the rest of a >>[ line as text, so after the
+" stamp and type nothing is code: sigils, numbers and quotes in the prose stay
+" quiet. Dated and quoted stamps only; >>[0] / >>[t+1] steps live outside plan
+" files, where the lexer reads code, so the ordinary rules keep them.
+" Each part chains to the next with nextgroup; at one column the item defined
+" last wins, so prose comes first and the specific forms after it.
+syntax match   spwStreamMark    '\%(^\s*\)\@<=>>\ze\[\%(\d\{4}-\d\d-\d\d\%([ T]\d\d:\d\d\%(:\d\d\)\=\)\=\]\|\%x22\)'  display nextgroup=spwStreamTs,spwStreamTsDate
+syntax match   spwStreamProse   '\S.*$'               display contained
+syntax match   spwStreamTs      '\[[^\]]*\]\='        display contained nextgroup=spwStreamProse skipwhite
+syntax match   spwStreamTsDate  '\[\d\{4}-\d\d-\d\d\%([ T]\d\d:\d\d\%(:\d\d\)\=\)\=\]'  display contained contains=spwStreamDate nextgroup=spwStreamType,spwStreamTypeOther,spwStreamObserve,spwStreamDecide,spwStreamDash,spwStreamProse skipwhite
+syntax match   spwStreamDate    '\d\{4}-\d\d-\d\d\%([ T]\d\d:\d\d\%(:\d\d\)\=\)\='  display contained
+" A word other than the stream types is not a keyword.
+syntax match   spwStreamTypeOther  '\h[[:alnum:]_-]*\ze\s*\%(—\|:\|$\)'  display contained nextgroup=spwStreamDash,spwStreamProse skipwhite
+syntax match   spwStreamType    '\<\%(observe\|decide\|surprise\|revise\|blocked\|taste\|rebase\|hygiene\|implement\|verify\|note\)\>\ze\s*\%(—\|:\|$\)'  display contained nextgroup=spwStreamDash,spwStreamProse skipwhite
+syntax match   spwStreamObserve '\<observe\>\ze\s*\%(—\|:\|$\)'  display contained nextgroup=spwStreamDash,spwStreamProse skipwhite
+syntax match   spwStreamDecide  '\<decide\>\ze\s*\%(—\|:\|$\)'   display contained nextgroup=spwStreamDash,spwStreamProse skipwhite
+syntax match   spwStreamDash    '—'                   display contained nextgroup=spwStreamProse skipwhite
+
+" ── COMMIT LINES — planned ~[name]: and landed .[name](hash): ─────
+" Lookbehinds, not \zs, so the ~ / . / [ ( before the name keep their own
+" groups and the name still matches after them. The hash is a commit-ref
+" (commit-ref.ts): 7–40 lowercase hex filling the scene.
+syntax match   spwCommitPlanned '\%(\~\[\)\@<=\%(\d\+\]\)\@!\w[[:alnum:]_-]*\ze\]\s*:'           display
+syntax match   spwCommitLanded  '\%(\.\[\)\@<=\h[[:alnum:]_-]*\ze\]([0-9a-f]\{7,40})\s*:'        display
+syntax match   spwCommitRef     '\%(\.\[\h[[:alnum:]_-]*\](\)\@<=[0-9a-f]\{7,40}\ze)\s*:'       display
+
+" ── COMMENTS — last, so they win at their column ─────────────────
+" Lexer (comments.ts): `#` followed by whitespace or the line end is a comment
+" to the end of the line, at line start or after code; `//` likewise. Particles
+" (#> #: #! #[ #word) are not comments. Spw has no block comments.
+syntax match   spwHashComment   '#\%(\s.*\)\=$'                          display
+syntax match   spwPhaseComment  '^\s*#\s*---.*---\s*$'                    display
+syntax match   spwLineComment   '//.*$'                                 display
+
 " ── HIGHLIGHT LINKS ───────────────────────────────────────────────
 
 " Infrastructure
 highlight link spwLineComment    Comment
-highlight link spwBlockComment   Comment
 highlight link spwHashComment    Comment
 highlight link spwString         String
 highlight link spwPhrase         String
@@ -277,11 +312,16 @@ highlight link spwPipe       Delimiter
 " Streams
 highlight link spwStreamIn       SpwBoon
 highlight link spwStreamOut      SpwBoon
-highlight link spwStreamEntry    SpwStream
+highlight link spwStreamMark     SpwBoon
 highlight link spwStreamType     SpwBonk
+highlight link spwStreamTypeOther SpwStream
 highlight link spwStreamTs       SpwStreamTs
+highlight link spwStreamTsDate   SpwStreamTs
+highlight link spwStreamDate     Number
 highlight link spwStreamObserve  SpwBone
 highlight link spwStreamDecide   SpwBoon
+highlight link spwStreamDash     SpwEmDash
+highlight link spwStreamProse    SpwStream
 highlight link spwNRange         SpwBonk
 
 " Contained string elements
@@ -310,11 +350,15 @@ highlight link spwSemicolon    SpwPunct
 highlight link spwFence        Title
 highlight link spwSigSet       SpwOperator    " = bias/assign
 highlight link spwDotOp        SpwPunct
+highlight link spwGroundOp     SpwOperator    " . ground before a word or brace
 
 " WIP constructs
 highlight link spwSection       SpwSection
 highlight link spwOpenQuestion  SpwQuestion
 highlight link spwCommitEntry   SpwCommit
+highlight link spwCommitPlanned SpwCommitPlanned
+highlight link spwCommitLanded  SpwCommit
+highlight link spwCommitRef     SpwCommitRef
 
 " ── FALLBACK highlight definitions (cterm+gui) ───────────────────
 " Core valence pentad — the emotional/cognitive palette (CONTENT layer)
@@ -345,8 +389,11 @@ highlight default SpwPhase     guifg=#d5c4a1 gui=bold,underline  ctermfg=187 cte
 highlight default SpwStream    guifg=#928374 gui=italic    ctermfg=245 cterm=italic
 highlight default SpwStreamTs  guifg=#a89984                ctermfg=246
 
-" Commit and question entries
+" Commit and question entries — landed solid, planned italic, hash underlined
+" like a link (the LSP resolves it)
 highlight default SpwCommit    guifg=#8ec07c                ctermfg=108
+highlight default SpwCommitPlanned guifg=#689d6a gui=italic ctermfg=72 cterm=italic
+highlight default SpwCommitRef guifg=#d5c4a1 gui=underline  ctermfg=187 cterm=underline
 highlight default SpwQuestion  guifg=#fe8019 gui=italic    ctermfg=208 cterm=italic
 
 " Annotation tag flavors
