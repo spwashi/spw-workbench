@@ -28,12 +28,14 @@ describe('stream entry bodies are prose-first', () => {
     ['next ~[first_release], open ?[label]', ['~[first_release]', '?[label]']],
     ['subject &[cli] and ^seed[lexer]', ['&[cli]', '^seed[lexer]']],
     ['measure %style_hold, then !boon.', ['%style_hold', '!boon']],
+    ['see @plan and @typescript-eslint/parser.', ['@plan', '@typescript-eslint/parser']],
+    ['mounted at @root/sub/x.spw, then @scope/*', ['@root/sub/x.spw', '@scope']],
   ])('lexes the figures in %j', (body, figures) => {
     expect(figuresOf(body)).toEqual(figures)
   })
 
-  it('keeps postfix marks, mid-word sigils, paths, versions, scopes and stray quotes as prose', () => {
-    const prose = "what exist? door~ e.g. 2026.10.13-pre.1 ~/air ^9.39.4 @typescript-eslint/parser 50% # heading it's \"unbalanced"
+  it('keeps postfix marks, mid-word sigils, paths, versions and stray quotes as prose', () => {
+    const prose = "what exist? door~ e.g. 2026.10.13-pre.1 ~/air ^9.39.4 me@host 50% # heading it's \"unbalanced"
     expect(figuresOf(prose)).toEqual([])
   })
 

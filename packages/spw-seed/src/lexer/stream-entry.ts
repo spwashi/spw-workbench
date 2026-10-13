@@ -30,8 +30,8 @@ export function entryLineEnd(input: string, offset: number): number {
   return end
 }
 
-/** Sigils that may begin a figure. `@` stays prose: in prose an @ name is as often an npm scope as a root. */
-const FIGURE_SIGILS = '~?.%=&!#*^$'
+/** Sigils that may begin a figure. An @ name is always a root link, an npm scope included. */
+const FIGURE_SIGILS = '~?.%=&!#*^$@'
 /** What may stand before a figure: the figure must begin a word. */
 const WORD_BREAK = /[\s(\[{"'`,;]/
 const NAME_START = /[A-Za-z_]/
@@ -45,8 +45,9 @@ const CLOSERS: Record<string, string> = { '[': ']', '(': ')', '{': '}' }
  *
  * Prefix binds, postfix does not: a sigil begins a figure only at the start of
  * a word and only when a name, bracket, brace or quote follows at once. So
- * `~"path"`, `~[name]`, `.[name](hash)`, `#>anchor`, `$slot` and `=exp[id: x]`
- * are figures, while `exist?`, `door~`, `e.g.`, `~/air` and `^9.3` stay prose.
+ * `~"path"`, `@root/path`, `~[name]`, `.[name](hash)`, `#>anchor`, `$slot` and
+ * `=exp[id: x]` are figures, while `exist?`, `door~`, `e.g.`, `~/air` and `^9.3`
+ * stay prose.
  */
 export function figureEnd(input: string, i: number, bodyStart: number, lineEnd: number): number | null {
   const sigil = input[i]!
@@ -64,6 +65,10 @@ export function figureEnd(input: string, i: number, bodyStart: number, lineEnd: 
   // `.` takes only a bracket: `.agents/plans` and `.spw` are paths in prose.
   const named = sigil !== '.' && NAME_START.test(input[j] ?? '')
   if (named) j = nameEnd(input, j, lineEnd)
+  // A root link carries its path: `@root/sub/x.spw`.
+  if (named && sigil === '@') {
+    while (input[j] === '/' && NAME_BODY.test(input[j + 1] ?? '')) j = nameEnd(input, j + 1, lineEnd)
+  }
   let k = j
   while (k < lineEnd && CLOSERS[input[k]!]) {
     const close = groupEnd(input, k, lineEnd)

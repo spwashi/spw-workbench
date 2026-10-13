@@ -57,21 +57,21 @@
 }
 
 ^["stream"]{
- >> [2026-03-05 19:06] observe — most `audit:*` scripts currently resolve to `scripts/analyzers/spw-marker-audit.ts`, so command names overclaim relative to their output.
- >> [2026-03-05 19:06] observe — `fuzz:complexity`, `fuzz:dead`, and `fuzz:naming` currently resolve to `npm run audit:md`, which makes the profile names misleading.
- >> [2026-03-05 19:06] observe — the marker audit scans `src`, `docs`, `lib`, and `.agents/skills`, but misses `scripts/` and `extensions/`.
- >> [2026-03-05 19:06] observe — older fuzz planning assumed a local ESLint composition surface, but this rewrite snapshot has no local `eslint` dependency or config.
- >> [2026-03-05 19:06] decide — audit commands must describe their coverage and method, and emit machine-readable output suitable for severity ranking and diffs.
- >> [2026-03-05 19:06] decide — `fuzz:*` profiles should map to explicit local stages (`explore`, `stabilize`, `ship`) instead of aliases to unrelated scripts.
- >> [2026-03-05 19:06] taste — prefer command names that expose guarantees, not aspirations.
- >> [2026-03-06 03:02] observe — `docs/contributing/md/common-tasks.md` still documents `npm run test`, `lint:fix`, `lint:layers`, and Vite output even though none reflect the current rewrite surface.
- >> [2026-03-06 03:02] observe — the marker extraction/seed contract shipped in historical commit `07ffc5a`, so audit naming now needs to treat `audit:markers:*` as the stable baseline rather than an implementation detail.
- >> [2026-03-06 03:02] decide — commit 2 should introduce truthful `audit:markers:*`, `audit:ui:*`, and `audit:spw:*` names in `package.json`, then keep legacy names as compatibility aliases only where necessary.
- >> [2026-03-06 03:02] decide — `fuzz:explore`, `fuzz:stabilize`, and `fuzz:ship` should become the documented surface immediately, even if deeper per-lens runners remain a later commit.
- >> [2026-03-05 23:03] verify — `npm run audit:markers:json`, `npm run audit:ui:selectors`, `npm run audit:spw:syntax`, `npm run lint:docs`, `npm run fuzz:explore`, `npm run fuzz:stabilize`, and `npm run build` all pass after the script-map rewrite.
- >> [2026-03-05 23:03] observe — nested `npm run audit:spw:syntax -- --match ...` forwarding is awkward because the inner `lint:spw` script already carries `--`; direct validator invocation is safer for filtered checks until commit 3 revisits the audit shell.
- >> [2026-03-06 05:18] build — added `scripts/analyzers/audit-full.ts` as a small local orchestrator over marker, UI, and `.spw` syntax audits with plain and JSON output.
- >> [2026-03-06 05:18] build — promoted structured JSON entrypoints for UI and `.spw` syntax audits, and normalized `audit:spw:syntax` to invoke the validator directly so filter flags forward cleanly.
+ >>[2026-03-05 19:06] observe — most `audit:*` scripts currently resolve to `scripts/analyzers/spw-marker-audit.ts`, so command names overclaim relative to their output.
+ >>[2026-03-05 19:06] observe — `fuzz:complexity`, `fuzz:dead`, and `fuzz:naming` currently resolve to `npm run audit:md`, which makes the profile names misleading.
+ >>[2026-03-05 19:06] observe — the marker audit scans `src`, `docs`, `lib`, and `.agents/skills`, but misses `scripts/` and `extensions/`.
+ >>[2026-03-05 19:06] observe — older fuzz planning assumed a local ESLint composition surface, but this rewrite snapshot has no local `eslint` dependency or config.
+ >>[2026-03-05 19:06] decide — audit commands must describe their coverage and method, and emit machine-readable output suitable for severity ranking and diffs.
+ >>[2026-03-05 19:06] decide — `fuzz:*` profiles should map to explicit local stages (`explore`, `stabilize`, `ship`) instead of aliases to unrelated scripts.
+ >>[2026-03-05 19:06] taste — prefer command names that expose guarantees, not aspirations.
+ >>[2026-03-06 03:02] observe — `docs/contributing/md/common-tasks.md` still documents `npm run test`, `lint:fix`, `lint:layers`, and Vite output even though none reflect the current rewrite surface.
+ >>[2026-03-06 03:02] observe — the marker extraction/seed contract shipped in historical commit `07ffc5a`, so audit naming now needs to treat `audit:markers:*` as the stable baseline rather than an implementation detail.
+ >>[2026-03-06 03:02] decide — commit 2 should introduce truthful `audit:markers:*`, `audit:ui:*`, and `audit:spw:*` names in `package.json`, then keep legacy names as compatibility aliases only where necessary.
+ >>[2026-03-06 03:02] decide — `fuzz:explore`, `fuzz:stabilize`, and `fuzz:ship` should become the documented surface immediately, even if deeper per-lens runners remain a later commit.
+ >>[2026-03-05 23:03] verify — `npm run audit:markers:json`, `npm run audit:ui:selectors`, `npm run audit:spw:syntax`, `npm run lint:docs`, `npm run fuzz:explore`, `npm run fuzz:stabilize`, and `npm run build` all pass after the script-map rewrite.
+ >>[2026-03-05 23:03] observe — nested `npm run audit:spw:syntax -- --match ...` forwarding is awkward because the inner `lint:spw` script already carries `--`; direct validator invocation is safer for filtered checks until commit 3 revisits the audit shell.
+ >>[2026-03-06 05:18] build — added `scripts/analyzers/audit-full.ts` as a small local orchestrator over marker, UI, and `.spw` syntax audits with plain and JSON output.
+ >>[2026-03-06 05:18] build — promoted structured JSON entrypoints for UI and `.spw` syntax audits, and normalized `audit:spw:syntax` to invoke the validator directly so filter flags forward cleanly.
  >>[2026-10-12 14:33] observe — reconciled against main: ~[1] landed in b28ffcb8, ~[2] in 0921e6f7 (the audit:markers:*, audit:ui:*, audit:spw:* names and fuzz:explore, stabilize, ship), ~[3] in 234aa5c5 (scripts/analyzers/audit-full.ts). ~[4] has not: scripts/analyzers/fuzz-profile-runner.ts does not exist and fuzz:complexity, fuzz:dead, fuzz:naming still alias audit:markers:md while fuzz:boonhonk and fuzz:async alias test:runtime. ~[5] is partial: common-tasks.md is aligned, but spw-craft-quality still lists fuzz:complexity, fuzz:dead, fuzz:naming, fuzz:boonhonk as a groove detector, and 'npm run lint # ESLint', and spw-fix-planning still routes axis-collapse to fuzz:boonhonk.
  >>[2026-10-12 14:33] observe — two earlier observations are stale: the marker audit now scans packages, src, docs, lib, scripts, extensions, and .agents/skills (SCAN_ROOTS in spw-marker-audit.ts; packages added in 1f17c86e), and eslint is a devDependency (eslint ^9.39.4, @typescript-eslint/parser) although no script or config invokes it. audit-full runs only the marker, ui-selectors, and context-panel scans plus spw syntax; it never builds extensions.
  >>[2026-10-12 14:33] revise — open questions renamed and sharpened: ?[full_extensions] asks whether any stage should build extensions (audit-full runs none today), ?[json_shape] asks whether the three audit scripts should emit audit-full's entry shape natively, ?[ui_baseline] notes ui-contract-audit --update only acknowledges and persists nothing. Commits ~[1]..~[3] marked landed; ~[4] and ~[5] rewritten to the aliases and skill lines that remain.
