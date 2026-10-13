@@ -6,6 +6,27 @@ This file is the handoff. Any agent can resume from here without the original se
 
 > **Moved 2026-10-13.** The cut now lives at `.spw/caches/tree/`, and the raw shelf at `.spw/caches/journal/2026-09-30-gemini-shelf/` (plan `caches-living-tree`). Paths below name their old homes. Read them under the new ones, or at the tag `caches-cut/2026.09.30`.
 
+## State as of 2026-10-13
+
+The caches have two layers. Start at `.spw/caches/index.spw`; to add anything, read `.spw/caches/extend.spw`.
+
+| Layer | Holds | Rule |
+|---|---|---|
+| `tree/` | 437 surfaces: the cut, kept true | edit to keep it true; the cut gate passes (0 failing, 19 size warnings) |
+| `journal/` | the gemini shelf (2026-09-30), the 2026 Q4 season run, the cut snapshot, two handoff notes | dated and append-only; a later entry supersedes an earlier one |
+
+- **Roots:** `@caches`, `@tree`, and `@journal` are declared in `.spw/workspace.spw`.
+- **Read-back:** the tag `caches-cut/2026.09.30` holds the dated layout as it was shelved.
+- **The handoff note** (formerly `resume/2026-09-30-direction.spw`) is `journal/2026-09-30-handoff.spw`. Its state frames are superseded by `journal/2026-10-13-handoff.spw`.
+- **Lineage strings** still name raw files by their old `.spw/caches/<topic>/` paths. Those paths hold at the tag, and they become `@journal#anchor` refs once p8 lands (plan `citation-navigation`).
+
+**Next steps for this plan** (the older list below is history):
+1. `~[root_apparatus]`: write `concept-lattice`, `computed-kin`, and `facet-census` under `tree/panels/`, then turn their `^["planned"]` names in `panels/index.spw`, `panels/gap-table.spw`, and `record/information/taxonomy-cautions.spw` back into links.
+2. `~[weave_address_linking]`: the weave over `tree/`.
+3. `~[sweep_gate_zero]`: rerun the harm sweep over the final surface set.
+
+Gate commands: `node --import tsx scripts/analyzers/spw-cut-gate.ts .spw/caches/tree` and `npm run spw -- resolve --from .spw/caches --warn`.
+
 ## Goal
 
 The raw Gemini 3.8 Flash (high) shelf stays in place as provenance (owner commits `5acc5545`, `229aedcf`). A dated cut beside it carries corrected, sourced, faceted surfaces with:
@@ -21,8 +42,8 @@ Taste: claim discipline, honest provenance, legible graph structure.
 ## Owner decisions (do not relitigate)
 
 - **Cut location.** Workbench, `.spw/caches/2026-09-30/` (confirmed 2026-09-30). When the cut lands, update the `^"not_in_this_revision"` frame of `.spw/caches/resume/2026-09-30-direction.spw` so it stays true.
-- **Raw shelf.** Stays, committed. Do not archive or delete it. The cut cites raw files only as quoted lineage strings.
-- **Quarantine.** Nine health and remediation files are quarantined in `.spw/caches/index.spw`. Use them only to produce corrected, sourced, guideline-versioned content.
+- **Raw shelf.** Stays, committed. Do not archive or delete it. The cut cites raw files only as quoted lineage strings. *Revised 2026-10-13: the owner moved it whole into the journal as `2026-09-30-gemini-shelf/`, so it is still committed and nothing was deleted.*
+- **Quarantine.** Nine health and remediation files are quarantined in `.spw/caches/index.spw` (now `journal/2026-09-30-gemini-shelf/index.spw`). Use them only to produce corrected, sourced, guideline-versioned content.
 - **Tool fixes.** Name a wire and a cost for each fix, then apply it to the working tree uncommitted for the owner's Touch ID review.
 - **Product hold** (from the resume note):
   - Refuse a command tour as onboarding. Newcomers land on one fragment door.
@@ -36,7 +57,7 @@ Taste: claim discipline, honest provenance, legible graph structure.
   - New: histories of literate and playback media form factors and their manufacturing.
 - **Production season.** Oct 1 to about Jan 4: post-September reflection, a crescendo, then celebration and reset. Film production and indie-author surfaces should prime it.
 
-## State as of 2026-10-01 06:00
+## State as of 2026-10-01 06:00 (history)
 
 | Workstream | State | Where |
 |---|---|---|

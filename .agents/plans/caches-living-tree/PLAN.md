@@ -39,6 +39,12 @@ Taste note: indexability and thrift. One signal per wire, address by anchor, and
 - **Season:** the 2026 Q4 calendar and trail become a journal entry, and the recurring season forms stay in the tree.
 - **Snapshot tag:** `caches-cut/2026.09.30` on `main@813444dc`. Later snapshots are `caches/YYYY.MM.DD`.
 - **Carried from `caches-cut-2026-09-30`:** the quarantine stands, and host-feature caches are residue.
+- **Handoff:** the journal kind once called `resume` is `handoff` (`3e3fb1fa`), as the default after the owner noted that "resume" reads like résumé. `?[handoff_name]` stays open, and reverting is one commit.
+- **Plugin pass (later 2026-10-13):** the owner chose three things: p8 refs, refs only where they are refs, and journal-aware plugins.
+  - p8 and the refs-only fix go to `citation-navigation` as `~[root_anchor_refs]`, `~[root_anchor_lsp]`, `~[root_anchor_grammar]`, and `~[refs_outside_strings]`.
+  - The journal-aware plugins stay here.
+  - p10's emit derivation is out of this pass.
+  - p9 to p11 wait for the owner's review of their samples.
 
 ## Scope
 
@@ -50,8 +56,12 @@ Taste note: indexability and thrift. One signal per wire, address by anchor, and
   - Moving the season instance into the journal.
   - The root index and extension door, plus the three forward panel refs so the gate passes.
   - Syntax samples p8 to p11, and the `making/authorship/` pilot.
-  - Closed concepts, receipts moved to journal ledgers, and the card trim.
-  - Anchor-addressed refs in the resolver, LSP, and gate after the samples review, then the ref migration.
+  - Closed concepts (p11), receipts moved to journal ledgers (p9), and the card trim (p10), after the owner reviews their samples.
+  - Journal-aware plugins:
+    - an entry shows its date and kind
+    - an edit to an entry after its day warns
+    - a tree surface shows the journal entries that cite it as backlinks
+  - The p8 ref migration inside the caches, after `citation-navigation` lands the resolver and LSP work.
 - **Out of scope:**
   - The raw generation's content.
   - The cut's weave, apparatus, and harm-sweep stages, which stay in `caches-cut-2026-09-30` and run on the new path.
@@ -69,7 +79,8 @@ Taste note: indexability and thrift. One signal per wire, address by anchor, and
 [MOD] .agents/plans/index.spw
 [MOD] .spw/workspace.spw                              — @caches, @tree, @journal roots
 [NEW] .spw/caches/journal/index.spw                   — entry naming, kinds, append-only rule; entries by date
-[NEW] .spw/caches/journal/2026-09-30-resume.spw       — moved from .spw/caches/resume/2026-09-30-direction.spw
+[NEW] .spw/caches/journal/2026-09-30-handoff.spw      — moved from .spw/caches/resume/2026-09-30-direction.spw
+[NEW] .spw/caches/journal/2026-10-13-handoff.spw      — supersedes its state frames
 [NEW] .spw/caches/journal/2026-10-13-cut-snapshot.spw — tag, commit, counts, gate result
 [NEW] .spw/caches/journal/2026-09-30-gemini-shelf/**  — 13 topic folders (207 files) and the old caches index, moved whole
 [NEW] .spw/caches/journal/2026-10-01-season-2026-q4/{calendar,trail}.spw — moved from the cut
@@ -90,8 +101,12 @@ Taste note: indexability and thrift. One signal per wire, address by anchor, and
 [MOD] .agents/plans/{caches-cut-2026-09-30,syntax-hardware-alignment,...}/ — cards and roots only
 [MOD] .agents/plans/syntax-hardware-alignment/syntax-hardware-alignment.spw — proposals p8 to p11
 [NEW] .agents/plans/syntax-hardware-alignment/samples/cut-surface.spw — before and after of one surface
-[MOD] packages/spw-cli/src/resolve.ts, packages/spw-lsp/src/handlers/navigation.ts, packages/spw-lsp/src/server-index.ts — @root#anchor lookup through a directory root's anchor index
-[MOD?] packages/spw-seed/src/lexer/* — only if @root#anchor does not already lex as one figure
+[MOD] packages/spw-lsp/src/server-index.ts           — journal entries indexed with date, kind, and supersedes edge
+[MOD] packages/spw-lsp/src/handlers/display.ts        — entry hover and code lens; backlinks from journal entries to tree surfaces
+[MOD] packages/spw-lsp/src/handlers/analysis.ts       — append-only warning on an entry edited after its day
+[NEW] packages/spw-lsp/src/handlers/journal.ts        — journal reading kept out of display.ts (already over 1400 lines)
+[MOD] packages/spw-lsp/src/__tests__/journal.test.ts  — entry frame, moved-in entries, exemptions, backlinks
+(resolver and LSP work for @root#anchor lives in citation-navigation; see its Files)
 ```
 
 ### Craft guard
@@ -102,28 +117,34 @@ Taste note: indexability and thrift. One signal per wire, address by anchor, and
 
 ## Commits
 
-1. `.[plans]` — caches-living-tree plans the living cut, the journal, and leaner cache syntax (landed `5383dfa2`)
-2. `.[plans]` — caches-living-tree takes the journal into the cache tree, with the raw generation and the season instance as entries
-3. No commit: the owner tags `main@813444dc` as `caches-cut/2026.09.30`.
-4. `#[caches]` — `.spw/caches/journal` holds dated append-only entries; the resume note and the snapshot manifest are its first, and the workspace declares `@caches`, `@tree` and `@journal`
-5. `&[caches]` — the raw generation becomes the journal entry `2026-09-30-gemini-shelf`, moved whole; its index keeps the disclosure and the quarantine, and lineage strings in the cut follow
-6. `&[caches]` — the cut lives at `.spw/caches/tree`, undated; the gate, docs, and plan cards and roots follow
-7. `&[caches]` — the 2026 Q4 calendar and trail become the journal entry `2026-10-01-season-2026-q4`; recurring season forms stay in the tree
-8. `.[caches]` — one root index routes the tree and the journal, an extension door says how to add to each, and the gate passes
-9. `^seed[caches]` — samples for `@tree#anchor` refs, journal receipts, a lean card, and closed concepts, as proposals p8 to p11
-10. `.[caches]` — `making/authorship` rewritten with the sampled forms that parse today
-11. `#[caches]` — concepts become a closed vocabulary and the gate enforces it
-12. `&[caches]` — per-surface receipts move to journal ledgers; each surface keeps as_of and one line that names its ledger
-13. `&[caches]` — cards drop fields the title comment and the sources already carry
-14. `^seed[resolver]` — after the samples review: `@tree#anchor` and `@journal#anchor` resolve in the CLI, the LSP, and the gate
-15. `&[caches]` — refs inside the caches drop their path prefix
+Landed:
+1. `5383dfa2` `.[plans]` — the plan
+2. `5842dcc0` `.[plans]` — the journal moves into the cache tree
+3. Tag `caches-cut/2026.09.30` on `813444dc`
+4. `61252c65` `#[caches]` — the journal opens
+5. `f11e432f` `&[caches]` — the gemini shelf becomes a journal entry
+6. `2a61b1c8` `&[caches]` — the cut becomes `tree/`
+7. `78bd7f56` `&[caches]` — the season instance becomes a journal entry
+8. `3e3fb1fa` `vocab[caches]` — resume becomes handoff
+9. `c796d4a8` `.[caches]` — the root, the door, and a passing gate
+10. `d9d6c019` `^seed[caches]` — samples p8 to p11
 
-The owner reviews the samples between commits 9 and 10.
+Planned (this pass):
+11. `&[lsp]` — `journal_entry_lens`: an entry shows its date and kind; an entry moved in whole shows where it came from
+12. `&[lsp]` — `journal_append_only`: editing an entry after its day warns and names the supersedes path
+13. `&[lsp]` — `journal_backlinks`, after `citation-navigation` `~[root_anchor_refs]`: a tree surface shows the journal entries that cite it
+
+Planned (after the samples review):
+14. `.[caches]` — p9 to p11: the `making/authorship` pilot
+15. `#[caches]` — p11: closed concepts
+16. `&[caches]` — p9: receipts to journal ledgers
+17. `&[caches]` — p10: the card trim (conventions only; emit derivation is out of this pass)
+18. `&[caches]` — p8, after `citation-navigation` `~[root_anchor_lsp]`: refs inside the caches drop their path prefix, and lineage becomes `@journal` anchor refs
 
 Fuzz strategy:
 - **Explore:** after each commit, run the cut gate with `--json`, `spw resolve --from .spw/caches --warn`, and `spw census .spw/caches/tree`, and log the measures to the stream.
 - **Stabilize:** `npm run lint:spw`, `npm run spw:plan:check`, and `npm run fuzz:stabilize`.
-- **Ship:** `npm run fuzz:ship`, plus `test:cli`, `test:lsp`, and `test:seed` with commit 14.
+- **Ship:** `npm run fuzz:ship`, plus `test:lsp` with commits 11 to 13.
 
 ## Agentic Hygiene
 
@@ -137,10 +158,11 @@ Fuzz strategy:
 
 ## Dependencies
 
-None to merge first.
+None to merge first for the journal lens and the append-only warning.
+- **Ordering:** `journal_backlinks` and the p8 migration wait on `citation-navigation` `~[root_anchor_refs]` and `~[root_anchor_lsp]`.
 - **Shares:**
   - `caches-cut-2026-09-30`: its remaining stages run on the new path.
-  - `citation-navigation`: anchor resolution in the LSP.
+  - `citation-navigation`: owns p8 and refs outside strings.
   - `apposition-cache-granules`: cache surfaces.
 - **Feeds:** `syntax-hardware-alignment`, which owns the proposals.
 

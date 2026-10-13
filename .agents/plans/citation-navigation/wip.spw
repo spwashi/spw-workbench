@@ -7,15 +7,16 @@
 #:layer #!pragmatics
 
 @["card"]{
- phase: #planning
+ phase: #active
  gist: "Make an unfamiliar Spw workspace navigable by construct, evidence trail, and resumable inquiry."
- touches: [~"packages/spw-lsp/src/handlers", ~"packages/spw-cli/src/resolve.ts", ~"extensions/vscode-spw/src"]
+ touches: [~"packages/spw-lsp/src/handlers", ~"packages/spw-lsp/src/spw-selector.ts", ~"packages/spw-cli/src/resolve.ts", ~"extensions/vscode-spw/src"]
  entry: ~"./workbench-atlas.spw"
- next: "Fragments and resolve parity have landed; the next move is ~[parser_first_refs] (parser-first selectPathRefs), then the lens peek, once ?[entry] picks the journey."
+ next: "~[root_anchor_refs]: read @root#anchor as a citation in the parser reader and resolve it through workspace roots and the root's anchor index; then ~[root_anchor_lsp], ~[refs_outside_strings], and ~[root_anchor_grammar]."
 }
 
 ^["edges"]{
- shares: [~"../vscode-lsp-roadmap/wip.spw", ~"../lsp-custom-request-completions/wip.spw"]
+ shares: [~"../vscode-lsp-roadmap/wip.spw", ~"../lsp-custom-request-completions/wip.spw", ~"../caches-living-tree/wip.spw"]
+ feeds: [~"../caches-living-tree/wip.spw"]
 }
 
 ^["roots"]{
@@ -44,11 +45,15 @@
  .[resolve_parity](2c082311): "&[cli] — resolve refs against the citing file, then the consumer root"
  .[anchor_line_fragments](861fa214): "&[lsp] — land fragments on their anchor line from the server index"
  .[parser_first_refs](e6c56978): "&[seed] — selectPathRefs reads the parser first and keeps fallbackPathRefs only for a source the parser rejects (routed ask: one_fact_model); verify CLI resolve, diagnostics and links agree on one fixture set"
- ~[lens_reference_peek]: "&[lsp] — code lenses carry a command that opens a peek on the anchor's references, replacing command: '' in display.ts (routed ask: references_that_navigate)"
+ ~[lens_reference_peek]: "&[lsp] — code lenses carry a command that opens a peek on the anchor's references, replacing command: '' in display.ts; their labels count in the plural and name what they count (routed ask: references_that_navigate)"
  ~[route_fragment_targets]: "&[lsp] — resolve routes and a leading slash in fragment targets through splitAnchor and the ServerIndex anchor entries (routed ask: file_navigation, fragments already landed in 861fa214)"
  .[rename_rewrites_citations](56844e6e): "&[lsp] — willRenameFiles rewrites citations from a path refactor kind; opens only after refactor-experiment-lifecycle 4e names that kind (routed ask: move_updates_citations)"
  ~[port_probe_fixtures]: "![lsp] — port the consumer's probe lines that run against this repo into fixtures for parser_first_refs, lens_reference_peek, route_fragment_targets and rename_rewrites_citations before any row is closed"
  ~[consultation_resume_loop]: "&[inquiry] — consultation and resume loop; held until ?[entry] picks a journey"
+ ~[root_anchor_refs]: "&[seed] — p8: a root with a bare fragment, @tree#src_x, is a rootRef in the parser reader (spw-selector.ts drops a Reference without a slash today); spw resolve and the cut gate find its file through the root declared in .spw/workspace.spw and that directory's anchor index; it lands with a retained timing of spw resolve over .spw/caches and of a definition request, before and after, as primed_scrutiny asks"
+ ~[root_anchor_lsp]: "&[lsp] — p8: go-to-definition, hover, diagnostics, and anchor completion for a root with a fragment, with or without a path between them, through the ServerIndex anchor entries; an unresolved anchor names the root it searched"
+ ~[root_anchor_grammar]: "&[extensions] — p8: the VS Code TextMate grammar and semantic tokens and the IntelliJ lexer color @root#anchor as one citation"
+ ~[refs_outside_strings]: "&[lsp] — the rootRef regex fallback (spw-selector.ts, step 3) and the graph and census scanners stop reading refs inside strings and # comments; the fallback runs only for a source the parser rejects, as parser_first_refs made it for pathRefs"
 }
 ^["stream"]{
  >>[2026-09-08 13:08] observe — CLI citation classification exists; LSP fragment lookup reads saved targets.
@@ -69,6 +74,11 @@
  >>[2026-10-12 14:25] observe — selectPathRefs still runs fallbackPathRefs first (spw-selector.ts:301); lens command is still empty in display.ts; no willRenameFiles handler; documentSymbols already returns nested children via outlineFromSource, so the roadmap row calling the outline flat looks stale.
  >>[2026-10-12 15:37] revise — Commits named per the convention in 90c58bbc: 3 landed, 6 planned, 0 dropped.
  >>[2026-10-12 20:09] implement — Landed: parser-first citations (e6c56978) dropped 161 false citations over 1306 files; path moves rewrite citations through willRenameFiles (56844e6e). VS Code lenses open a references peek client-side (99e6d993); the server-side lens command in lens_reference_peek is still planned.
+ >>[2026-10-13 11:35] decide — The owner chose the p8 ref form, a root with a fragment (@tree#src_x), from syntax-hardware-alignment, and routed it with refs outside strings to this plan: parser_first_refs, resolve parity, anchor-line fragments, and rename rewrites already live here. p8 is not grammar invention: the form parses today, so the work is teaching the readers to read it.
+ >>[2026-10-13 11:35] observe — packages/spw-lsp/src/spw-selector.ts reads a parser Reference node only when it holds a slash, so @tree#src_x is dropped; its step-3 rootRef regex reads a root followed by a path anywhere, strings included, and the LSP raised an unresolved-reference warning on such a form quoted inside a plan string on 2026-10-13. The roots it needs, @caches, @tree, and @journal, are declared in .spw/workspace.spw, so a named root is a stated binding, not the file-scoped alias ?[alias_binder] asks about.
+ >>[2026-10-13 11:35] note — Fixture for ~[refs_outside_strings]: a plan string that quotes a root followed by a path must raise no diagnostic, no link, and no graph edge.
+ >>[2026-10-13 11:37] observe — Owner screenshot of this wip.spw in VS Code, 2026-10-13. One: stream lines 59 to 70 render the >> marker and body plain while 71 to 79 carry colored markers, figures, and commit refs, though their bytes match; the apostrophe rule in spw.tmLanguage.json does not explain it, and the split looks like semantic tokens reaching only part of the document. Two: inside entry prose, textDocument/definition, a method name, and a bare repo path both take path color; a bare word with a slash is prose, not a figure. Three: code lenses read 7 topic and 2 topic, without the plural and without saying what a topic counts.
+ >>[2026-10-13 11:37] decide — ~[refs_outside_strings] covers the editors too: a word with a slash in prose or in a string takes no path color in TextMate or semantic tokens. The split rendering of stream lines goes to plan-stream-parse-health, which owns entry reading; the lens label is folded into ~[lens_reference_peek], which already rewrites those lenses in display.ts.
 }
 ^["supporting_documents"]{
  must_ship: [@plan, @atlas, @consultation, @evidence, @contract]
@@ -81,14 +91,14 @@
  ?[outline_gap]: "documentSymbols already returns nested children via outlineFromSource, so what part of the consumer's flat-outline complaint is left, other than routes and leading-slash fragments?"
 }
 ^["cache"]{
- ~#status: "planning"
+ ~#status: "active"
  ~#base_ref: "main@462f6478a78a42be6d2197a7329ab1826b40a7f6"
  ~#hygiene_split: "none"
- ~#files_hot: "packages/spw-lsp/src/handlers/navigation.ts"
- ~#next_commit: "lens_reference_peek"
+ ~#files_hot: "packages/spw-lsp/src/spw-selector.ts, packages/spw-lsp/src/handlers/navigation.ts, packages/spw-lsp/src/handlers/analysis.ts, packages/spw-cli/src/resolve.ts"
+ ~#next_commit: "root_anchor_refs"
  ~#open_count: "5"
  ~#taste_debt: "Editor parity remains unverified."
- ~#last_stream: "2026-10-12 20:09"
+ ~#last_stream: "2026-10-13 11:37"
 }
 ^["done"]{
 }

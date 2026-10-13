@@ -7,11 +7,11 @@
 #:layer #!pragmatics
 
 !["card"]{
- phase: #review
+ phase: #active
  gist: "The caches become two layers, a living tree agents edit to keep true and an append-only journal of what was seen or made on a day, entered from one root and one door, with surfaces that carry less prose and address by anchor."
- touches: [~".spw/caches", ~".spw/workspace.spw", ~"scripts/analyzers/spw-cut-gate.ts"]
+ touches: [~".spw/caches", ~".spw/workspace.spw", ~"scripts/analyzers/spw-cut-gate.ts", ~"packages/spw-lsp/src/handlers"]
  entry: ~"./PLAN.md"
- next: "Owner review of p8 to p11 and samples/cut-surface.spw in syntax-hardware-alignment; then ~[authorship_pilot] with the chosen forms that parse today."
+ next: "Plugin pass: ~[journal_entry_lens] and ~[journal_append_only] now; ~[journal_backlinks] after citation-navigation lands ~[root_anchor_refs]. The p9 to p11 conventions passes wait for the owner review."
 }
 
 ^["edges"]{
@@ -158,10 +158,14 @@
  >>[2026-10-13 11:22] verify — cut gate on .spw/caches/tree passes for the first time: 437 files, 0 failing, 19 size warnings; spw resolve over .spw/caches 10505 of 10505; 654 caches files parse.
  >>[2026-10-13 11:26] implement — Wrote proposals p8 to p11 into syntax-hardware-alignment with measures over the tree: p8 anchor refs remove 356395 characters across 9778 fragment refs, p9 journal receipts remove 5308 lines, p10 a lean card removes title, continuity, audience prose, and proof prose over 394 cards, p11 closed concepts drop 320 singleton tags of 645. samples/cut-surface.spw rewrites author-toolchain with all four: 97 lines and 4037 characters against 108 and 5244, statements and anchors identical, and it parses today.
  >>[2026-10-13 11:26] observe — The root-plus-fragment form parses but is no citation yet: spw select finds only the quoted form, as a file named for the root. The LSP already resolves a root followed by a path through workspace roots, and reads such forms inside strings, so p8 must narrow what it reads, not only widen it.
+ >>[2026-10-13 11:36] decide — The owner chose this pass: p8 refs, refs only where they are refs, and journal-aware plugins; p10 emit derivation is out of it. p8 and refs outside strings go to citation-navigation, which owns selectPathRefs, resolve parity, anchor-line navigation, and rename rewrites; the journal-aware plugins stay here, beside the journal contract they enforce. The p9 to p11 conventions passes wait for the owner review of their samples.
+ >>[2026-10-13 11:36] revise — Commits now name their proposals: concept_vocab is p11, receipts_to_journal p9, card_trim p10, anchor_refs_migrate p8; anchor_refs is dropped for citation-navigation's three root_anchor commits. New: journal_entry_lens, journal_append_only, and journal_backlinks, the last after root_anchor_refs.
+ >>[2026-10-13 11:39] observe — Owner screenshots, 2026-10-13: VS Code counts incoming refs from .tmp and release/wt-pre copies that no longer exist, so journal_backlinks needs apposition-cache-granules' eviction fix before it can claim a backlink is real; nvim shows the hosts already render LSP results inline, so the journal features belong in the LSP, not in one client. .spw/index.spw now routes @caches.
 }
 
 ^["open"]{
  ?[handoff_name]: "handoff is applied as the default for the kind once called resume, in its own vocab commit; keep it, or pick another word and revert that one commit?"
+ ?[samples_review]: "p8 is chosen and routed to citation-navigation; are the p9, p10, and p11 samples in syntax-hardware-alignment the forms the conventions passes should apply?"
  ?[provenance_home]: "tree/provenance holds a review scorecard and errata logs, which record what was found on days; do they move to the journal once refs are anchor-addressed and a move no longer rewrites paths?"
 }
 
@@ -174,25 +178,27 @@
  .[tree_move](2a61b1c8): "&[caches] — the cut lives at .spw/caches/tree, undated; the gate, docs, and plan cards and roots follow"
  .[season_instances](78bd7f56): "&[caches] — the 2026 Q4 calendar and trail become the journal entry 2026-10-01-season-2026-q4; recurring season forms stay in the tree"
  .[handoff_rename](3e3fb1fa): "vocab[caches] — the journal kind once called resume is handoff, and the 2026-09-30 note is 2026-09-30-handoff.spw"
- .[root_door](c796d4a8): ".[caches] — one root index routes the tree and the journal, an extension door says how to add to each, a new resume entry supersedes the 2026-09-30 note, and the gate passes"
- ~[syntax_samples]: "^seed[caches] — samples for @tree#anchor refs, journal receipts, a lean card, and closed concepts, as proposals p8 to p11"
- ~[authorship_pilot]: ".[caches] — making/authorship rewritten with the sampled forms that parse today"
- ~[concept_vocab]: "#[caches] — concepts become a closed vocabulary and the gate enforces it"
- ~[receipts_to_journal]: "&[caches] — per-surface receipts move to journal ledgers; each surface keeps as_of and one line that names its ledger"
- ~[card_trim]: "&[caches] — cards drop fields the title comment and the sources already carry"
- ~[anchor_refs]: "^seed[resolver] — after the owner reviews the samples: @tree#anchor and @journal#anchor resolve in the CLI, the LSP, and the gate"
- ~[anchor_refs_migrate]: "&[caches] — after ~[anchor_refs]: refs inside the caches drop their path prefix"
+ .[root_door](c796d4a8): ".[caches] — one root routes the tree and the journal, an extension door says how to add to each, and the cut gate passes"
+ .[syntax_samples](d9d6c019): "^seed[caches] — samples for @tree#anchor refs, journal receipts, a lean card, and closed concepts, as proposals p8 to p11"
+ ~[journal_entry_lens]: "&[lsp] — journal-aware: a journal entry shows its date and kind from its ^[entry] frame in hover and a code lens, and an entry moved in whole shows where it came from"
+ ~[journal_append_only]: "&[lsp] — journal-aware: an edit to an entry after its day raises a warning that names the supersedes path; the journal index, moves frames, and path fixes the journal made are exempt"
+ ~[journal_backlinks]: "&[lsp] — journal-aware, after citation-navigation ~[root_anchor_refs] and apposition-cache-granules ~[pin_cache_defects]: a tree surface shows the journal entries that cite it, its instances and receipts, as backlinks"
+ ~[authorship_pilot]: ".[caches] — p9 to p11: making/authorship rewritten with the sampled forms that parse today, after the owner reviews them"
+ ~[concept_vocab]: "#[caches] — p11: concepts become a closed vocabulary and the gate enforces it"
+ ~[receipts_to_journal]: "&[caches] — p9: per-surface receipts move to journal ledgers; the #:review axis keeps the summary"
+ ~[card_trim]: "&[caches] — p10: cards drop fields the title comment and the sources already carry; emit derivation is out of the current pass"
+ ~[anchor_refs_migrate]: "&[caches] — p8, after citation-navigation ~[root_anchor_lsp]: refs inside the caches drop their path prefix and lineage becomes @journal anchor refs"
 }
 
 ^["cache"]{
- ~#status: "review: samples p8 to p11 wait for the owner"
+ ~#status: "active: journal-aware plugin pass; p9 to p11 samples wait for the owner"
  ~#base_ref: "main@813444dcd95167de820f9f7480b369717810628b"
  ~#rebased_at: ""
  ~#hygiene_split: "none"
- ~#files_hot: ".spw/caches/index.spw, .spw/caches/tree/contract.spw, scripts/analyzers/spw-cut-gate.ts, .spw/workspace.spw"
- ~#next_commit: "authorship_pilot, after the owner review"
- ~#open_count: "2"
- ~#last_stream: "2026-10-13 11:26"
+ ~#files_hot: "packages/spw-lsp/src/handlers/display.ts, packages/spw-lsp/src/handlers/analysis.ts, packages/spw-lsp/src/server-index.ts, .spw/caches/journal/index.spw"
+ ~#next_commit: "journal_entry_lens"
+ ~#open_count: "3"
+ ~#last_stream: "2026-10-13 11:39"
  ~#taste_debt: "spw-cut-gate.ts is 392 lines and gains journal and concept checks; split it before it passes 600. The gate keeps the name cut; renaming it waits for a vocab commit. season-arc.spw cites 24 dated calendar anchors as examples; a recurring form should reach its runs through ^[instances]."
 }
 
@@ -202,4 +208,5 @@
  ~#resolved(season_home): "Do season files stay in the tree? — the 2026 Q4 instance moves to the journal, the recurring forms stay; evidence: stream 2026-10-13 10:17"
  ~#dropped(cut_move): "superseded by ~[tree_move]: the living layer is named tree"
  ~#dropped(cut_door): "superseded by ~[root_door]: the door sits at the caches root and covers the tree and the journal"
+ ~#dropped(anchor_refs): "routed to citation-navigation as ~[root_anchor_refs], ~[root_anchor_lsp], and ~[root_anchor_grammar], which own selectPathRefs, resolve parity, and anchor-line navigation; the caches migration stays here as ~[anchor_refs_migrate]"
 }

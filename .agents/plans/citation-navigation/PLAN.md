@@ -13,6 +13,12 @@ Make a novel Spw codebase imaginable through structural movement, authored relat
 - **Implementation selection**: audit first, then choose one end-to-end journey. Citation freshness remains a candidate within the larger design.
 - **Out of scope**: automatic agent dispatch, grammar invention, source rewrite before evidence, consumer site changes, mount updates, plugin publishing.
 - Entry: `workbench-atlas.spw`; choose a parcel in `consultation.spw` rather than reading the entire collection.
+- **Named-root anchors (p8, 2026-10-13)**: the owner chose the ref form `@tree#src_x` in `syntax-hardware-alignment`, and it is routed here together with refs outside strings. This is not grammar invention, because the form already parses; the work is reading it.
+  - The parser reader keeps it.
+  - `spw resolve`, the cut gate, and the LSP find its file through the root declared in `.spw/workspace.spw` and that directory's anchor index.
+  - The editors color it as one citation.
+  - The regex fallback and graph scanners stop reading refs inside strings and comments.
+  - First consumer: `.spw/caches` (`@tree`, `@journal`). Its tree migration runs in `caches-living-tree` after these commits land.
 
 ## Files
 
@@ -39,6 +45,16 @@ The original citation slice below is conditional; audit findings choose the impl
 - [NEW] .agents/plans/citation-navigation/PLAN.md
 - [NEW] .agents/plans/citation-navigation/wip.spw
 - [NEW] .agents/plans/citation-navigation/citation-navigation.spw — proposed navigation contract and verification probes.
+
+Named-root anchors (p8) and refs outside strings:
+- [MOD] packages/spw-lsp/src/spw-selector.ts — keep a root with a bare fragment as a rootRef; step-3 regex fallback only for a source the parser rejects
+- [MOD] packages/spw-seed/src (selectPathRefs or its root-ref sibling) — the same reading in the seed, so CLI and LSP agree
+- [MOD] packages/spw-cli/src/resolve.ts — a named_root basis: workspace root, then that directory's anchor index for a bare fragment
+- [MOD] packages/spw-lsp/src/handlers/{navigation,analysis,display}.ts — go-to, diagnostics naming the searched root, hover, anchor completion
+- [MOD] packages/spw-cli/src/corpus-scan.ts — graph and census edges from the parse, not from text inside strings
+- [MOD] scripts/analyzers/spw-cut-gate.ts — resolve @tree and @journal refs and keep per-layer anchor uniqueness
+- [MOD] extensions/vscode-spw/syntaxes/spw.tmLanguage.json, extensions/intellij-spw lexer — one citation scope for @root#anchor
+- [MOD] tests beside each: fixtures for both forms, a root that is a file, a missing anchor, and a root path quoted inside a string
 
 ### Craft guard
 
