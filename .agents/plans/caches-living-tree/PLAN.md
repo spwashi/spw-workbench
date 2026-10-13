@@ -4,7 +4,7 @@ Restructure `.spw/caches` into two layers: a living tree that agents edit to kee
 
 ## Goal
 
-`.spw/caches/2026-09-30/` holds 439 corrected, sourced surfaces. Its date names when it opened, not what it holds. Beside it, 14 raw topic folders fill the caches root. An agent that lands here finds no root index, a 232-line contract, a gate that fails, and a caches index that routes only to the raw shelf.
+`.spw/caches/2026-09-30/` holds 439 corrected, sourced surfaces. Its date names when it opened, not what it holds. Beside it, 13 raw topic folders fill the caches root. An agent that lands here finds no root index, a 232-line contract, a gate that fails, and a caches index that routes only to the raw shelf.
 
 When this plan is done:
 
@@ -71,7 +71,7 @@ Taste note: indexability and thrift. One signal per wire, address by anchor, and
 [NEW] .spw/caches/journal/index.spw                   — entry naming, kinds, append-only rule; entries by date
 [NEW] .spw/caches/journal/2026-09-30-resume.spw       — moved from .spw/caches/resume/2026-09-30-direction.spw
 [NEW] .spw/caches/journal/2026-10-13-cut-snapshot.spw — tag, commit, counts, gate result
-[NEW] .spw/caches/journal/2026-09-30-gemini-shelf/**  — 14 topic folders and the old caches index, moved whole (208 + 1 files)
+[NEW] .spw/caches/journal/2026-09-30-gemini-shelf/**  — 13 topic folders (207 files) and the old caches index, moved whole
 [NEW] .spw/caches/journal/2026-10-01-season-2026-q4/{calendar,trail}.spw — moved from the cut
 [NEW] .spw/caches/journal/<date>-cut-receipts.spw     — receipt ledgers, one per pass date, generated
 [MOD] .spw/caches/index.spw                           — rewritten as the two-layer root
