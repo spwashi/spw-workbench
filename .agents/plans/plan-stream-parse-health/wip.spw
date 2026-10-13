@@ -112,10 +112,11 @@
  >>[2026-10-12 22:34] verify — Corpus negative control over 1361 files, with and without the path: every token outside entry lines unchanged (0 violations, 2226 entry lines changed). Errors 2043 to 441 with the path and 5724 to 441 without; no file gains one, and every file counts the same either way (H5 holds). Active wip.spw pathless health 5/39/26 to 59/11/0 (complete_structured/recovered/invalid); the three with errors left are the spaced >> [ files (H2).
  >>[2026-10-12 22:34] decide — H5 holds, so the plan lens is no longer needed for health: path threading, content detection and the template pragma are dropped. Figure nodes in the AST (path refs reaching the outline and selectPathRefs) and lite figure parity are the next slices.
  >>[2026-10-12 22:34] observe — The bullet grammar already applies the prefix rule at an item's head: a sigil-led .. item parses as an expression, a word-led one as a prose chunk of its tokens. The .. errors come from lexing (apostrophes, em dashes, stray quotes), not from the parser, so .. items are head-decided, not expression-first.
+ >>[2026-10-12 23:48] decide — Creator decided 2026-10-12: entries spelled >> [ with a space are rewritten, not tolerated, and an @ name in prose always reads as a root link, npm scopes included.
+ >>[2026-10-12 23:48] implement — Landed in 940ef67e: @ joins the figure sigils and a root figure carries its path; 58 entry lines in six plans (three active, three archived) lose the space after >>, taking them from 176 errors to 0. Corpus errors 441 to 265, no file gains one; every active wip.spw now parses with 0 errors.
 }
 
 ^["open"]{
- ?[space_tolerance]: "Should the lexer accept >> [ with a space, or should the three files with that spelling be migrated line by line? Stream entries are append-only by schema."
  ?[stamp_kinds]: "Which stamps make an entry: YYYY-MM-DD HH:MM, YYYY-MM-DD, an ordinal? Does an unknown stamp still make an entry, of kind other?"
  ?[backtick_ground]: "A backtick phrase has no marker to choose its ground: `door~` in the quest is a code sample, `full: parse` in a set is a label; does it take its ground from its key, from a mark, or does each reader choose?"
  ?[archive_dialect]: "Archived plans read as historical Spw.b by path, so their stream entries and commit refs lex as ordinary Spw (71 landed lines there split digit-leading hashes); should _archive under .agents/plans keep the plan dialect, or stay historical?"
@@ -136,7 +137,7 @@
  ~[dotdot_prose_recovery]: "^seed[lexer] — a word-led .. item already parses as prose; lex its line as prose with figures, as entry bodies are, so its apostrophes and em dashes stop erroring; a sigil-led item stays an expression and a trailing comment still ends the item"
  ~[sense_loop_steps]: ".[docs] — docs/examples/spw/sense-loop.spw writes its steps as ..[n], since they are a schedule, not an emitted log"
  ~[editor_grammar_parity]: "![editors] — VS Code, IntelliJ and Neovim highlight a line-start entry in every .spw as the lexer reads it; the VS Code grammar fixture already does outside plans"
- ~[spaced_entry_tolerance]: "^seed[lexer] — conditional on ?[space_tolerance]: readPlanStreamEntry accepts a >> [ spelling, with a case in plan-stream.test.ts"
+ .[spaced_entry_migration](940ef67e): "^seed[lexer] — @ names in entry prose read as root links, and spaced >> [ entries are rewritten"
  .[post_fix_tally](866826ff): "^seed[lexer] — stream entries read the same in every dialect, and their bodies are prose with figures"
 }
 
@@ -147,8 +148,8 @@
  ~#hygiene_split: "none"
  ~#files_hot: ""
  ~#next_commit: "entry_figure_nodes"
- ~#open_count: "4"
- ~#last_stream: "2026-10-12 22:34"
+ ~#open_count: "3"
+ ~#last_stream: "2026-10-12 23:48"
  ~#taste_debt: ""
 }
 
@@ -167,6 +168,8 @@
  ~#dropped(thread_path_callsites): "H5 holds: pulse and form-geometry need no path for health; evidence: stream 2026-10-12 22:34, 866826ff"
  ~#dropped(detect_plan_stream): "H5 holds: pathless parse needs no plan-stream detection; evidence: stream 2026-10-12 22:34, 866826ff"
  ~#dropped(template_dialect_pragma): "?[template_pragma] resolved no; evidence: stream 2026-10-12 22:34, 866826ff"
+ ~#resolved(space_tolerance): "Tolerate >> [ in the lexer, or rewrite the files? — rewrite, by the creator; 58 lines in six plans, 176 errors to 0; evidence: stream 2026-10-12 23:48, 940ef67e"
+ ~#dropped(spaced_entry_tolerance): "?[space_tolerance] resolved as a rewrite; evidence: stream 2026-10-12 23:48, 940ef67e"
 }
 
 #>wonder_plan_stream_parse_health_1
