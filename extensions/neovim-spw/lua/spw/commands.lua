@@ -17,6 +17,18 @@ function M.setup()
   if vim.g._spw_lsp_commands_loaded then return end
   vim.g._spw_lsp_commands_loaded = true
 
+  require('spw.commit').setup()
+
+  vim.api.nvim_create_user_command('SpwCommit', function(opts) require('spw.commit').open_command(opts.args) end, {
+    nargs = '?',
+    desc = 'Open the git commit under the cursor (or the one named) as a read-only buffer',
+  })
+
+  vim.api.nvim_create_user_command('SpwCommitFiles', function(opts) require('spw.commit').files_command(opts.args) end, {
+    nargs = '?',
+    desc = 'List the files the commit under the cursor (or the one named) changed in the quickfix list',
+  })
+
   vim.api.nvim_create_user_command('SpwRestart', lsp.restart, {
     desc = 'Restart the Spw LSP server',
   })

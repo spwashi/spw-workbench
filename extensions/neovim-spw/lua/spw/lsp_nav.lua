@@ -63,6 +63,8 @@ function M.locate(client, source, bufnr, cb)
     if err then return cb(nil, err) end
     for _, link in ipairs(result or {}) do
       if link.target and link.range and contains(link.range, params.position) then
+        -- A git hash the server confirmed links to the commit, not to a file.
+        if link.target:match('^spw%-commit:') then return cb({ commit = link.target }) end
         return cb(M.link_location(link.target))
       end
     end
@@ -124,13 +126,18 @@ function M.open(client, source, bufnr, opts)
   opts = opts or {}
   record(bufnr, { spw_nav_path = 'lsp', spw_nav_source = source, spw_nav_result = 'pending' })
   local origin = vim.api.nvim_get_current_win()
-  M.locate(client, source, bufnr, function(location, err)
+  local function finish(location, err)
     if err then
       record(bufnr, { spw_nav_result = 'error' })
       notify('Spw ' .. source .. ' failed: ' .. tostring(err.message or err), vim.log.levels.WARN)
       return
     end
     if vim.api.nvim_win_is_valid(origin) then vim.api.nvim_set_current_win(origin) end
+    if location and location.commit then
+      require('spw.commit').open(location.commit, { split = opts.peek })
+      record(bufnr, { spw_nav_result = 'opened', spw_nav_source = 'commit' })
+      return
+    end
     if not location then
       record(bufnr, { spw_nav_result = 'empty' })
       if opts.peek then
@@ -152,6 +159,15 @@ function M.open(client, source, bufnr, opts)
       open_location(location, client, opts)
       record(bufnr, { spw_nav_result = 'opened' })
     end
+  end
+
+  M.locate(client, source, bufnr, function(location, err)
+    -- A commit hash has no definition; the server links it instead.
+    if not err and not location and source == 'textDocument/definition'
+      and lsp.client_call(client, 'supports_method', 'textDocument/documentLink') then
+      return M.locate(client, 'textDocument/documentLink', bufnr, finish)
+    end
+    finish(location, err)
   end)
 end
 

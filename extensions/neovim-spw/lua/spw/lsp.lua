@@ -121,8 +121,21 @@ end
 ---@param _ any client (unused)
 ---@param bufnr integer
 function M._on_attach(_, bufnr)
-  if vim.lsp.inlay_hint and vim.lsp.inlay_hint.enable then
+  -- Inlay hints stay on by default, as before; `vim.g.spw_lsp_inlay_hints = false` keeps them off.
+  if vim.g.spw_lsp_inlay_hints ~= false and vim.lsp.inlay_hint and vim.lsp.inlay_hint.enable then
     vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+  end
+
+  -- Code lenses (frame counts, anchor refs) are drawn only when refreshed;
+  -- `vim.g.spw_lsp_codelens = false` leaves them off.
+  if vim.g.spw_lsp_codelens ~= false and vim.lsp.codelens and vim.lsp.codelens.refresh then
+    local function refresh() pcall(vim.lsp.codelens.refresh, { bufnr = bufnr }) end
+    refresh()
+    vim.api.nvim_create_autocmd({ 'BufEnter', 'InsertLeave', 'BufWritePost' }, {
+      group = vim.api.nvim_create_augroup('spw_codelens_' .. bufnr, { clear = true }),
+      buffer = bufnr,
+      callback = refresh,
+    })
   end
 
   if vim.g.spw_lsp_folds ~= false and vim.lsp.foldexpr then
@@ -144,6 +157,8 @@ function M._on_attach(_, bufnr)
   map('<localleader>a', nav.code_action_under_cursor,                'Spw: code action under cursor')
   map('<localleader>q', nav.references_to_quickfix,                  'Spw: unresolved refs to quickfix')
   map('<localleader>p', function() nav.peek_ref_under_cursor({ jump_anchor = true }) end, 'Spw: preview reference')
+  map('<localleader>c', function() require('spw.commit').open_command() end, 'Spw: open commit under cursor')
+  map('<localleader>l', function() pcall(vim.lsp.codelens.run) end,     'Spw: run code lens on this line')
   map('K',          vim.lsp.buf.hover,                               'Spw: hover docs')
   map('gr',         vim.lsp.buf.references,                          'Spw: references')
   map('<leader>rn', vim.lsp.buf.rename,                              'Spw: rename symbol')

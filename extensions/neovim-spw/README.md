@@ -65,6 +65,12 @@ vim.g.spw_lsp_keymaps = false
 
 -- Disable LSP-driven folding (keeps syntax folding from ftplugin)
 vim.g.spw_lsp_folds = false
+
+-- Keep inlay hints off at attach (on by default; :SpwInlayHints toggles per buffer)
+vim.g.spw_lsp_inlay_hints = false
+
+-- Leave code lenses undrawn (on by default: frame counts and anchor refs)
+vim.g.spw_lsp_codelens = false
 ```
 
 ## Default keymaps
@@ -88,6 +94,8 @@ create a missing target. Each run records `vim.b.spw_nav_path` (`lsp` | `lua`),
 | `<localleader>a` | Spw code action at cursor (create missing target, or fallback LSP actions) |
 | `<localleader>q` | Populate quickfix with unresolved references in current buffer |
 | `<localleader>p` | Preview reference under cursor and jump to `#anchor` |
+| `<localleader>c` | Open the git commit under the cursor as a read-only buffer |
+| `<localleader>l` | Run the code lens on this line |
 | `gd` | Go to definition |
 | `K` | Hover docs |
 | `gr` | References |
@@ -103,6 +111,8 @@ create a missing target. Each run records `vim.b.spw_nav_path` (`lsp` | `lua`),
 | `:SpwRestart` | Restart the LSP server |
 | `:SpwStop` | Stop the LSP server |
 | `:SpwInlayHints` | Toggle inlay hints for current buffer |
+| `:SpwCommit [hash]` | Open the commit under the cursor (or the one named) as a read-only `git show` buffer |
+| `:SpwCommitFiles [hash]` | List the files that commit changed in the quickfix list |
 | `:SpwOpenRef` | Open reference under cursor and jump to `#anchor` |
 | `:SpwPeekRef` | Preview reference under cursor and jump to `#anchor` |
 | `:SpwRefsQuickfix` | Quickfix list of unresolved references in current buffer |
@@ -193,9 +203,26 @@ vim.g.spw_auto_mkdir = false
 
 On Neovim 0.10+, brace-depth folding is driven by the LSP (`foldexpr=v:lua.vim.lsp.foldexpr()`), replacing the syntax fold. Falls back to `foldmethod=syntax` on older versions. Disable with `vim.g.spw_lsp_folds = false`.
 
+## Git commits
+
+The server links every git hash it confirms as a commit: a landed `.[name](hash)` in a plan, and any 7 to 40 character hash in prose that git knows. In Neovim:
+
+- `gf` on a hash opens the commit when the server has no definition for it, through its document link.
+- `:SpwCommit` (or `<localleader>c`) opens the commit as a read-only buffer named `spw-commit://<hash>?root=<repo>`, with `filetype=git`. With no server attached, it falls back to the word under the cursor, if git confirms it.
+- `:SpwCommitFiles` lists the changed files in the quickfix list.
+- Landed hashes take the `commitRef` semantic token, linked to `@number` unless your colorscheme sets `@lsp.type.commitRef`.
+
+## Code lenses
+
+Code lenses are refreshed on attach, `BufEnter`, `InsertLeave`, and `BufWritePost`. They show frame counts such as `2 #tags · 1 #: lens`, and anchor refs. Run one with `<localleader>l`. Turn them off with `vim.g.spw_lsp_codelens = false`.
+
+## File watching
+
+Neovim sends file events only for watchers a server registers. spw-lsp registers them at `initialized`: every `.spw` file, plus deletes of anything, so a deleted folder drops the files it held from the workspace index.
+
 ## Inlay hints
 
-On Neovim 0.10+, inlay hints are enabled automatically when the LSP attaches. Toggle with `:SpwInlayHints` or directly:
+On Neovim 0.10+, inlay hints are enabled automatically when the LSP attaches. Keep them off with `vim.g.spw_lsp_inlay_hints = false`. Toggle with `:SpwInlayHints` or directly:
 
 ```lua
 vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(), { bufnr = 0 })
@@ -242,6 +269,8 @@ nvim --headless -u NONE -l extensions/neovim-spw/tests/mounted-consumer-smoke.lu
 nvim --headless -u NONE -l extensions/neovim-spw/tests/lsp-route-smoke.lua
 # Instrument builders, then real CLI runs against tests/fixtures/instrument.spw
 nvim --headless -u NONE -l extensions/neovim-spw/tests/instrument-smoke.lua
+# Commit links, the commit buffer and quickfix, code lenses and the inlay setting (git, fake server)
+nvim --headless -u NONE -l extensions/neovim-spw/tests/commit-smoke.lua
 # Opt-in: the LSP path against the real server (needs node deps)
 nvim --headless -u NONE -l extensions/neovim-spw/tests/real-lsp-smoke.lua
 ```
