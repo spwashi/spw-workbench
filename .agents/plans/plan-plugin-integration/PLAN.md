@@ -54,8 +54,30 @@ Plan facts served as standard LSP products, so VS Code, Neovim and IntelliJ rece
 
 Rules: the editor reports drift and never repairs it; `plan:stream` and the human remain the only writers of cache facts.
 
+## Git hashes in VS Code (escalated 2026-10-13)
+
+The owner escalated git-hash support in VS Code, so it is this plan's first slice. Today, in plan files only, a hash in `.[name](hash)` hovers with its subject, date, and files, and a hash git lacks gets an information note (`e6c56978`, `packages/spw-lsp/src/handlers/commit-refs.ts`). Nothing more exists yet:
+- a hash has no color of its own, and nothing opens the commit
+- completion can't land a planned commit
+- hashes outside that form get nothing: journal `commit:` lines, `(hash)` in stream entries, episode scene refs
+
+The slice, in order:
+1. `~[commit_ref_token_type]`: a semantic token type and a TextMate scope.
+2. `~[commit_ref_document_link]`: a link to a `spw-commit:` URI for every hash git holds.
+3. `~[commit_view_vscode]`: the link opens the commit in VS Code's multi-diff view through the built-in Git extension API, or else in a read-only `spw-commit:` document. It never opens an untitled buffer (scorecard bug 7).
+4. `~[commit_ref_beyond_plans]`: the same hover and link for journal, stream, and episode hashes that git confirms, with no color (`?[prose_hashes]`).
+5. `~[commit_ref_vscode_test]`.
+6. `~[land_commit_action]`: completion and a code action that turn `~[name]` into `.[name](hash): "subject"`.
+
+Git calls stay in `commit-refs.ts` for this slice. `local-numbering-vcs` `~[lsp_adapter]` moves them behind the VCS adapter later, and its id pattern widens the hash form to SHA-256 and jj ids. `editor-reading-hierarchy` `~[commit_frame_roles]` uses the token type.
+
 ## Files
 
+[MOD] packages/spw-lsp/src/handlers/commit-refs.ts — document links; hashes beyond plan files
+[MOD] packages/spw-lsp/src/handlers/semantic-tokens.ts, extensions/vscode-spw/syntaxes/spw.tmLanguage.json — commit-ref token type and scope
+[NEW] extensions/vscode-spw/src/commit-view.ts — spw-commit: provider and the Git-extension multi-diff route
+[MOD] extensions/vscode-spw/src/extension.ts, package.json — register the provider and the command
+[NEW] extensions/vscode-spw/src/test/commit-refs.test.ts — hover, token, link, open, completion
 [NEW] .agents/plans/plan-plugin-integration/references/plan-facts.spw (`plan_facts_table`)
 [MOD] packages/spw-lsp/src/handlers/outline.ts (`outline_plan_facts`)
 [MOD] packages/spw-lsp/src/handlers/display.ts (hover, `plan_fact_hover`)
