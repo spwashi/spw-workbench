@@ -45,3 +45,7 @@ It is the installation contract in repo form.
 > An independent consumer can mount the Spw workbench at `.spw/_workbench`, initialize a consumer-owned `.spw/` surface, and resolve parser, runtime, CLI, and LSP behavior through an explicit mount contract.
 
 That is the release surface. Anything broader belongs to a later convenience layer.
+
+## Browser Parser
+
+A site that only needs the parser in the browser can import a dated parser release instead of mounting the workbench. See [parser-release.md](parser-release.md).
