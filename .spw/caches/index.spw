@@ -1,23 +1,51 @@
 # Caches
 #
-# Root of the caches: a living tree kept true, and a journal of what was seen or made on a day.
+# Root of the caches: a living tree that agents keep true, and a journal of what was seen or made on a day.
 
 #>caches_root
 #:layer #!pragmatics
 
 ^["intent"]{
- ~#goal: "One root for every cache surface; the tree is a view over the journal and its sources."
+ ~#goal: "One root for every cache surface; the tree is a view over the journal and the sources it cites."
  ~#taste: "a surface lives in the tree when someone should keep it true, and in the journal when it records a day"
 }
 
-^["layers"]{
- tree: ~"./tree/contract.spw"
- journal: ~"./journal/index.spw"
+^["door"]{
+ extend: ~"./extend.spw#caches_extend"
+ contract: ~"./tree/contract.spw#cut_contract"
+ vocabulary: ~"./tree/vocabulary.spw#cut_vocabulary"
+ exemplar: ~"./tree/physical/materials/water.spw#materials_water"
 }
 
-^["journal_entries"]{
- shelf: ~"./journal/2026-09-30-gemini-shelf/index.spw"
- resume: ~"./journal/2026-09-30-resume.spw"
- season_2026_q4: ~"./journal/2026-10-01-season-2026-q4/index.spw"
- snapshot: ~"./journal/2026-10-13-cut-snapshot.spw"
+^["tree"]{
+ spw: ~"./tree/spw/index.spw"
+ formal: ~"./tree/formal/index.spw"
+ physical: ~"./tree/physical/index.spw"
+ language_and_mind: ~"./tree/language-and-mind/index.spw"
+ living: ~"./tree/living/index.spw"
+ society: ~"./tree/society/index.spw"
+ making: ~"./tree/making/index.spw"
+ record: ~"./tree/record/index.spw"
+ learning: ~"./tree/learning/index.spw"
+ season: ~"./tree/season/index.spw"
+ concepts: ~"./tree/concepts/index.spw"
+ trails: ~"./tree/trails/index.spw"
+ panels: ~"./tree/panels/index.spw"
+ provenance: ~"./tree/provenance/index.spw"
+}
+
+^["journal"]{
+ index: ~"./journal/index.spw#caches_journal"
+ latest_snapshot: ~"./journal/2026-10-13-cut-snapshot.spw#journal_2026_10_13_cut_snapshot"
+ latest_handoff: ~"./journal/2026-10-13-handoff.spw#journal_2026_10_13_handoff"
+}
+
+^["relevance"]{
+ lead: #[ spw, formal, physical, language_and_mind ]
+ support: #[ making, learning, record, living, society, season, concepts, trails, panels ]
+ residue: #[ "spw/hosts", "society/platforms" ]
+ lead_why: "language, mathematics, physics, linguistics, and attention lead; new work goes here first"
+ residue_why: "editor host catalogs and live-platform payout mechanics date fast and do not lead language or performance decisions; they grow only through a named wire and cost"
+ streaming: "making/streaming is support, not residue: streamers are likely first Spw users, and chat torrents need parallel processing"
+ source: "owner decisions carried in .agents/plans/caches-cut-2026-09-30/PLAN.md"
 }

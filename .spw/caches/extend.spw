@@ -1,0 +1,50 @@
+# Extend the Caches
+#
+# How an agent adds to the caches: which layer, what to copy, what to name, which checks to run, and what to record.
+
+#>caches_extend
+#:layer #!pragmatics
+
+^["choose"]{
+ tree: "add to the tree when a later agent should keep the surface true: a field guide, curriculum, glossary, protocol, or comparison"
+ journal: "add to the journal when you record a day: a reading of a source, one run of a recurring form, a review pass, a snapshot, or a handoff"
+ class: "pick a class by the relevance tiers in the caches root; lead classes first; residue grows only through a named wire and cost"
+ branch: "put a leaf in a branch whose index already names its topic; a new branch needs its own index.spw"
+}
+
+^["tree_surface"]{
+ copy: ~"./tree/physical/materials/water.spw#materials_water"
+ rules: ~"./tree/contract.spw#cut_contract"
+ tags: ~"./tree/vocabulary.spw#cut_vocabulary"
+ anchors: "domain slug first, unique across the tree; never rename or reuse one, leave a stub with a supersedes edge instead"
+ sources: "cite a #>src_ anchor in registries/sources; use the registry file your sibling leaves cite, and open a namespace only for a new package"
+ numbers: "a number lives once as a registries/quantities cell in the same namespace, cited with reads: %[ns.key]; no source, no number"
+ route: "name the leaf in its index ^[tree]; add a digest to ^[bundle] only while the index stays small"
+ provenance: "as_of, generator, lineage, and one receipt row per inspection you actually ran, with the care you actually applied"
+ health: "a health, nursing, or physiology surface is reference, never advice, and carries its own ^[scope] frame"
+ hazards: "the contract hazards frame lists the parser traps; the gate catches the rest"
+}
+
+^["journal_entry"]{
+ rules: ~"./journal/index.spw#caches_journal"
+ name: "journal/YYYY-MM-DD-slug.spw, or a YYYY-MM-DD-slug/ folder with an index.spw when the entry has several files"
+ anchor: "#>journal_YYYY_MM_DD_slug, then an ^[entry]{ date, kind } frame; kinds are listed in the journal index"
+ append_only: "never edit an entry after its day; write a new entry with a supersedes edge"
+ list: "add the entry to the journal index ^[entries]"
+}
+
+^["check"]{
+ gate: "node --import tsx scripts/analyzers/spw-cut-gate.ts .spw/caches/tree"
+ links: "npm run spw -- resolve --from .spw/caches --warn"
+ parse: "node --import tsx scripts/analyzers/spw-syntax-validate.ts -- .spw/caches"
+ pass: "the gate reports 0 failing, and resolve reports no unresolved citation you added"
+}
+
+^["avoid"]{
+ never: #[
+  "citing the gemini shelf as a source; it is unreviewed generation, and its index quarantines nine files that could harm a reader",
+  "a number, rate, or percentage without a registry source",
+  "valence words as binding keys, which degrade a whole surface to prose",
+  "routing a dated run as a child of a tree index; cite it in ^[instances]"
+ ]
+}
