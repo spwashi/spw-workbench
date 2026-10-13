@@ -18,6 +18,7 @@ import {
 import { parseCommonFlags } from './args'
 import { formatJsonEnvelope } from './envelope'
 import { printHelpPage } from './help'
+import { resolveCliInput } from './workspace'
 
 
 interface CliArgs {
@@ -128,7 +129,7 @@ export async function runSpwProfileCli(argv: string[] = process.argv): Promise<v
   const reports: Array<Record<string, unknown>> = []
 
   for (const target of args.targets) {
-    const abs = path.resolve(target)
+    const abs = path.resolve(await resolveCliInput(target))
     const rel = relPath(target)
     let source: string
     try {

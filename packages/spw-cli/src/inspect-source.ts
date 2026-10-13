@@ -13,6 +13,7 @@ import {
 } from '@spwashi/spw-seed'
 import { buildEnvelope, formatJsonEnvelope } from './envelope'
 import { emitDetail, emitHeader, emitRecommendations, formatTable, shellArg } from './view'
+import { resolveCliInput } from './workspace'
 
 export const SOURCE_INSPECTION_SURFACE = 'inspect.source/1' as const
 
@@ -293,7 +294,7 @@ async function loadSourceInput(
 ): Promise<{ source: string; file: string }> {
   if (source !== undefined) return { source, file: file ?? '<memory>' }
   if (!file) throw new Error('spw inspect source: expected a file, --stdin, or --text')
-  const abs = path.resolve(file)
+  const abs = path.resolve(await resolveCliInput(file))
   return {
     source: await fs.readFile(abs, 'utf8'),
     file: path.relative(process.cwd(), abs) || path.basename(abs),

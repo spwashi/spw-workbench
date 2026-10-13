@@ -40,7 +40,7 @@ import {
   type AxisContext,
 } from './emit/index'
 import { collectSpwFiles } from './fs-walk'
-import { tryDiscoverSpwWorkspace, resolveWorkspacePath } from './workspace'
+import { tryDiscoverSpwWorkspace, resolveWorkspacePath, resolveCliInput } from './workspace'
 
 const HOST_LIST = EMIT_HOSTS.join('|')
 
@@ -105,7 +105,7 @@ export async function runSpwEmitCli(argv: string[] = process.argv): Promise<void
   }
 
   const workspace = await tryDiscoverSpwWorkspace()
-  const filePath = parsed.file
+  const filePath = parsed.file ? await resolveCliInput(parsed.file) : parsed.file
     ? workspace
       ? await resolveWorkspacePath(workspace, parsed.file)
       : resolve(parsed.file)

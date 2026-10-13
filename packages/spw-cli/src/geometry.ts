@@ -31,7 +31,7 @@ import {
 import { formatJsonEnvelope } from './envelope'
 import { printHelpPage } from './help'
 import { emitDetail, emitHeader, emitNext, formatTable, meta } from './view'
-import { resolveWorkspacePath, tryDiscoverSpwWorkspace } from './workspace'
+import { resolveWorkspacePath, tryDiscoverSpwWorkspace, resolveCliInput } from './workspace'
 
 const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', '_workbench', '.agents'])
 
@@ -226,7 +226,7 @@ async function readStdin(): Promise<string> {
 
 async function collectSpwFiles(target: string, maxFiles: number, out: string[]): Promise<void> {
   if (out.length >= maxFiles) return
-  const abs = path.resolve(target)
+  const abs = path.resolve(await resolveCliInput(target))
   let st
   try {
     st = await fs.stat(abs)

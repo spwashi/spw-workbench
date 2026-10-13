@@ -22,6 +22,7 @@ import {
   type GranularityPlane,
 } from '@spwashi/spw-seed'
 import { printHelpPage } from './help'
+import { resolveCliInput } from './workspace'
 
 interface CiteArgs {
   help: boolean
@@ -212,7 +213,7 @@ async function loadRememberedPath(pointer: string): Promise<string | undefined> 
 }
 
 async function readSource(file: string): Promise<{ path: string; text: string }> {
-  const abs = path.resolve(file)
+  const abs = path.resolve(await resolveCliInput(file))
   const text = await fs.readFile(abs, 'utf8')
   const rel = path.relative(process.cwd(), abs) || file
   return { path: rel, text }

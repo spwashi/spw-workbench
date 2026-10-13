@@ -11,6 +11,7 @@ import process from 'node:process'
 import { runSenseCycle, type SenseCycleStepId } from '@spwashi/spw-runtime'
 import { formatJsonEnvelope } from './envelope'
 import { printHelpPage } from './help'
+import { resolveCliInput } from './workspace'
 
 interface Args {
   help: boolean
@@ -147,7 +148,7 @@ export function printCycleHelp(): void {
 async function readSurface(
   target: string,
 ): Promise<{ path: string; text: string }[]> {
-  const abs = path.resolve(target)
+  const abs = path.resolve(await resolveCliInput(target))
   const st = await fs.stat(abs)
   if (st.isFile()) {
     return [{ path: path.relative(process.cwd(), abs) || abs, text: await fs.readFile(abs, 'utf8') }]

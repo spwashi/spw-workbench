@@ -190,6 +190,33 @@ export function findWorkspaceRoot(workspace: SpwWorkspace, selector: string): Re
  * are readable while traversal beyond that root is rejected. Existing paths
  * are realpath-checked so an undeclared symlink cannot escape its authority.
  */
+/**
+ * The consumer root when this process runs inside that consumer's mounted
+ * .spw/_workbench (npm --prefix .spw/_workbench run spw -- …); otherwise null.
+ */
+export async function mountedConsumerRoot(start: string = process.cwd()): Promise<string | null> {
+  let workspace: SpwWorkspace | null
+  try {
+    workspace = await tryDiscoverSpwWorkspace(start)
+  } catch {
+    return null
+  }
+  if (!workspace) return null
+  const mount = path.join(workspace.consumerRoot, '.spw', '_workbench')
+  if (!(await pathExists(mount))) return null
+  return isWithin(await realPathOrResolved(mount), await realPathOrResolved(start)) ? workspace.consumerRoot : null
+}
+
+/**
+ * A relative input path typed in a mounted run means the consumer root, as the
+ * quick start promises; in any other run the path comes back unchanged.
+ */
+export async function resolveCliInput(target: string, start: string = process.cwd()): Promise<string> {
+  if (path.isAbsolute(target)) return target
+  const root = await mountedConsumerRoot(start)
+  return root ? path.resolve(root, target) : target
+}
+
 export async function resolveWorkspacePath(workspace: SpwWorkspace, selector: string): Promise<string> {
   const resolved = authorizeWorkspacePath(workspace, selector)
   const [realAuthorityRoot, realTarget] = await Promise.all([

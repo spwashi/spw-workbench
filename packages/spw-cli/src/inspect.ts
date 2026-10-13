@@ -52,6 +52,7 @@ import { runSpacingInspection } from './inspect-spacing'
 import { runSourceInspection } from './inspect-source'
 import { parseInspectArgs, type InspectArgs } from './inspect-args'
 import { readStdin } from './stdio'
+import { resolveCliInput } from './workspace'
 
 export function printInspectHelp(): void {
   printHelpPage({
@@ -302,7 +303,7 @@ async function runCache(args: InspectArgs): Promise<void> {
     process.exitCode = 1
     return
   }
-  const abs = path.resolve(file)
+  const abs = path.resolve(await resolveCliInput(file))
   const source = await fs.readFile(abs, 'utf8')
   const rel = path.relative(process.cwd(), abs) || abs
   const channel = args.channel as StabilityChannel
@@ -426,7 +427,7 @@ async function runSession(args: InspectArgs): Promise<void> {
     process.exitCode = 1
     return
   }
-  const abs = path.resolve(file)
+  const abs = path.resolve(await resolveCliInput(file))
   const source = await fs.readFile(abs, 'utf8')
   const rel = path.relative(process.cwd(), abs) || abs
   const session = createHotSession({ channel: args.channel as StabilityChannel })
@@ -506,7 +507,7 @@ async function runStatic(args: InspectArgs): Promise<void> {
 
   const rows: Array<Record<string, unknown>> = []
   for (const t of files.slice(0, args.limit)) {
-    const abs = path.resolve(t)
+    const abs = path.resolve(await resolveCliInput(t))
     let source: string
     try {
       source = await fs.readFile(abs, 'utf8')

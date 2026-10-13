@@ -14,6 +14,7 @@ import {
 } from '@spwashi/spw-seed'
 import { formatJsonEnvelope } from './envelope'
 import { emitDetail, emitHeader, emitRecommendations, formatTable, shellArg } from './view'
+import { resolveCliInput } from './workspace'
 
 export const SPACING_INSPECTION_SURFACE = 'inspect.spacing/1' as const
 
@@ -276,7 +277,7 @@ async function loadSpacingInput(
 ): Promise<{ source: string; file: string }> {
   if (source !== undefined) return { source, file: file ?? '<memory>' }
   if (!file) throw new Error('spw inspect spacing: expected a file, --stdin, or --text')
-  const abs = path.resolve(file)
+  const abs = path.resolve(await resolveCliInput(file))
   return {
     source: await fs.readFile(abs, 'utf8'),
     file: path.relative(process.cwd(), abs) || path.basename(abs),

@@ -8,6 +8,7 @@ import { fingerprintSource, type FormFingerprint } from '@spwashi/spw-seed'
 import { formatJsonEnvelope } from './envelope'
 import { printHelpPage } from './help'
 import { meta } from './view'
+import { resolveCliInput } from './workspace'
 
 interface FingerprintArgs {
   help: boolean
@@ -114,7 +115,7 @@ export async function runSpwFingerprintCli(argv: string[]): Promise<void> {
   try {
     if (args.stdin) source = await readStdin()
     else if (args.expression) source = args.target ?? ''
-    else source = await fs.readFile(args.target!, 'utf8')
+    else source = await fs.readFile(await resolveCliInput(args.target!), 'utf8')
   } catch (error) {
     console.error(`spw fingerprint: ${error instanceof Error ? error.message : String(error)}`)
     process.exitCode = 3
