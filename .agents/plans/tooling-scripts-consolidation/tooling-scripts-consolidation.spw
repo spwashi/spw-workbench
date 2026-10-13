@@ -1,0 +1,85 @@
+# Tooling Scripts Review
+#
+# Every audit and tooling script, what invokes it, what already overlaps it, and whether to keep, consolidate, reintegrate, deprecate, or remove it.
+
+#>tooling_scripts_review
+#:layer #!pragmatics
+
+^["review"]{
+ as_of: "2026-10-13"
+ at: "e1d96002, read-only runs of --help, dry runs, git log, and vitest"
+ scope: "scripts/, .agents/scripts/, .agents/skills/*/scripts/, root and package npm scripts, git hook sources, CLAUDE.md commands"
+}
+
+^["health"]{
+ analyzers: "test:analyzers fails 3 of 34: refactor-check and topography-scan classify an unterminated block comment differently from the parser; test:run does not include it"
+ lsp_smoke: "lsp:smoke passes 20 and fails 2 (textDocument/references times out)"
+ docs_strict: "lint:docs:strict exits 1 on about 3800 regex false positives from spw-path-check.ts"
+ srcdist: "bundle-srcdist.sh tars src, lib, and scripts but not packages, and src/seed files are shims into packages, so the source bundle is broken"
+ fuzz_flags: "poll-review --fuzz and --fuzz-level set an env var nothing reads"
+ dead_check: "run-review.sh checks lib/spw for @/ imports, and lib/spw does not exist; it also warns on current ~# syntax as Gen 2 valence"
+ audit_full: "audit:full takes about 160 s, almost all of it syntax validation"
+ reset_hazard: "spw:reset runs git clean -fd .spw with --force built in, and the local allowlist admits npm run spw:* without a prompt, so an agent can remove uncommitted .spw work"
+}
+
+^["keep"]{
+ hooks: "scripts/pre-commit and scripts/commit-msg (copied by hand into .git/hooks; no install step), scripts/commit-review/*, touchid-authorize.swift"
+ poll_review: ".agents/skills/spw-commit-review/scripts/poll-review.sh and scripts/spw-lib.sh: consumer contract through spw init hooks; spw-lib.sh is 980 lines"
+ bin: "scripts/spw.ts, the bin entry; may move into packages/spw-cli later"
+ caches_gate: "spw-cut-gate.ts and spw-cut-voice.ts: active, invoked by path from .spw/caches/extend.spw; add audit:caches"
+ markers: "spw-marker-audit.ts and marker-schema.ts: scan host code, not Spw"
+ audit_full: "audit-full.ts, minus the UI checks"
+ writerside: "writerside-check.ts"
+ episodes: "spw-episode-corpus.ts: add audit:episodes"
+ release: "scripts/release/*, after the srcdist fix"
+ quest_sync: "extensions/vscode-spw/scripts/sync-quest.ts"
+}
+
+^["consolidate"]{
+ archive_contract: "v020-core-stub-check, v020-runtime-stub-check, v020-lib-architecture-check, runtime-filename-check become one archive-contract-check behind the lint:v020 names"
+ agent_context: "set-agent-context.sh and clear-agent-context.sh become agent-context.sh set and clear"
+ bundle: "bundle-docs, bundle-jsdist, bundle-srcdist, bundle-release share one preamble and become bundle.sh with a part argument"
+}
+
+^["reintegrate"]{
+ path_check: "spw-path-check.ts into spw resolve --warn, whose help already says it replaces the regex"
+ refactor_check: "spw-refactor-check.ts into spw delta --ast; its tests fail today"
+ topography_flow: "spw-topography-scan.ts and spw-flow-scan.ts (603 lines) into spw form; tests fail today"
+ particle_census: "spw-particle-census.ts into spw lint --particles; it still names deixis, case, and mood"
+ review_cluster: "spw-syntax-validate.ts, spw-syntax-review.ts (a second source of profile truth beside seed syntax-stack.ts), and spw-syntax-audit into one spw review; the review script stays as a shim for consumer hooks"
+ plan_agent: "agent-tools.sh, agent-lib.sh (1105 lines), plan-index.ts, and test-agent-tools.sh into spw plan and spw agent; kb prints absolute local paths today"
+ lsp_smoke: "scripts/lsp/smoke-navigation.ts (648 lines) into packages/spw-lsp"
+}
+
+^["deprecate"]{
+ ui_contract: "ui-contract-audit.ts: this repo has no UI layer, and --update does nothing"
+ perturbation: "perturbation-scan.ts: a term-frequency table that does not answer the question semantics-check says it answers"
+ notes_migration: "scripts/migrations/notes-to-appositions.ts: a one-shot migration; becomes a mutate profile or is archived"
+ ui_skill_loaders: "css-experiment-gate.sh and containment-scan.sh scan src/design and src/styles, which are gone"
+ stale_loaders: "privacy-scan.sh and type-audit.sh cite src/infra, src/lang, and src/core, which are gone; fix paths or retire"
+ probe_loop: "spw-operator-lattice probe-loop.sh, a 28-line wrapper; inline it into the skill"
+ lsp_entry_shims: "scripts/lsp/stdio-upstream-bridge.ts and stdio-server.ts: npm run lsp points at the package bridge, and these stay as shims for IntelliJ and the legacy entrypoint"
+ reset: "scripts/spw-reset.sh: destructive; drop the built-in --force first"
+}
+
+^["remove"]{
+ lsp_reexports: "scripts/lsp context, helpers, server-index, spw-selector, types, and nine handler files: one-line re-exports nothing imports"
+}
+
+^["npm_names"]{
+ duplicates: "lint:spw and audit:spw:syntax and audit:spw-garden; lint:docs and lint:writerside; fuzz:types and build; fuzz:explore, fuzz:runtime, fuzz:async, fuzz:boonhonk, and test:runtime; fuzz:all and fuzz:ship; spw:geometry and spw:form; spw:install and spw:init; spwq and spw:select"
+ misnamed: "fuzz:complexity, fuzz:dead, fuzz:naming, and analyze:patterns run the marker audit; lint:changed lints everything; audit:ui:selectors:update updates nothing; fuzz:ship and test:run are called the full suite but skip test:lsp, test:vscode, test:analyzers, and test:parser-release"
+ compat_advertised: "CLAUDE.md still advertises spw:invent, spw:map, spw:skim, spw:surface, spw:analyze, spw:geometry, spw:seq"
+ cited_missing: "lint:layers (16 cites), lint:fix (4), lint:spw:strict (the validate-spw workflow and command)"
+ claude_md: "says lint:docs checks .spw path references, but it runs the Writerside check; says the hook enforces the lib/spw boundary, which does not exist"
+}
+
+^["risks"]{
+ consumer_hooks: "spw init writes consumer hooks that hardcode poll-review.sh and spw-lib.sh, which source run-review.sh and run spw-syntax-review.ts; spw-init-portability.test.ts pins this and jsdist ships both"
+ local_hooks: ".git/hooks holds copies, not links, of the hook sources"
+ intellij: "IntelliJ runs npm run lsp; upstream-bridge.ts names the legacy stdio-server entry"
+ agent_config: "local agent commands use script paths, and the allowlist prefixes are audit, fuzz, lint, spw, and skill scripts; renames outside them start prompting"
+ skills: "skills run and cite alias names, such as craft-check.sh running fuzz:all and audit:md"
+ caches_tree: "extend.spw invokes the cut gate by path, and the tree cites spw-cut-gate.ts by line"
+ plan_index: "plan-index --check fails on missing touches paths; update cards in the same commit as any move"
+}

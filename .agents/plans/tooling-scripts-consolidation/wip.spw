@@ -1,0 +1,127 @@
+# wip — tooling-scripts-consolidation
+# Branch: feature/tooling-scripts-consolidation
+# Started: 2026-10-13
+
+#>plan_tooling_scripts_consolidation
+#:plan #!execution_truth
+#:layer #!pragmatics
+
+!["card"]{
+ phase: #planning
+ gist: "Every script and npm name states what it runs, Spw-native analyzers live inside spw verbs, dead and UI-era scripts are retired behind warnings, and nothing a hook, skill, or mounted consumer runs breaks on the way."
+ touches: [~"scripts", ~".agents/scripts", ~"package.json", ~".agents/skills/spw-commit-review/scripts"]
+ entry: ~"./PLAN.md"
+ next: "~[safe_reset]: spw:reset stops passing --force, lint:spw:strict and test:all exist, and the source bundle includes packages; this removes the one hazard an allowlisted agent could trigger."
+}
+
+^["edges"]{
+ shares: [~"../audit-fuzz-truthfulness/wip.spw", ~"../hygiene-index-consolidation/wip.spw", ~"../plan-tooling-design/wip.spw", ~"../cli-mode-overhaul/wip.spw", ~"../local-numbering-vcs/wip.spw", ~"../caches-living-tree/wip.spw", ~"../citation-navigation/wip.spw"]
+}
+
+^["roots"]{
+ @plan: ~".agents/plans/tooling-scripts-consolidation/PLAN.md"
+ @artifact: ~".agents/plans/tooling-scripts-consolidation/tooling-scripts-consolidation.spw"
+ @package: ~"package.json"
+ @poll_review: ~".agents/skills/spw-commit-review/scripts/poll-review.sh"
+ @agent_lib: ~".agents/scripts/agent-lib.sh"
+}
+
+^["intent"]{
+ ~#goal: "A contributor or agent reads a script name and knows what it runs; one verb owns each Spw-native analysis; the suites called full run everything; and the hooks, skills, and consumer mounts keep working through every step."
+ ~#taste: "truthful names and one home per behavior; shims before removals"
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #service
+ develops: [#naming, #truth, #governance]
+ review_surfaces: [@artifact, @package, @poll_review]
+ snippet_routes: [#query]
+}
+
+^["concept_index"]{
+ primary: [#script_inventory, #truthful_names, #reintegration, #shim]
+ surfaces: [#npm_scripts, #hooks, #skills, #cli_verbs]
+ tensions: [#consumer_contract_vs_cleanup, #allowlist_prefixes, #alias_compat]
+ transfers: [#service, #governance]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? before a move, grep every invoker: npm names, hooks, skills, agent commands, docs, plan touches",
+  "< move one script or cluster per commit, leaving a shim where anything external invokes it",
+  "$ record which names still route through a shim",
+  "^ fold canonical names back into CLAUDE.md, skills, and docs in the same pass",
+  "% keep the commit gate and spw init consumer hooks working at every commit",
+ ]
+ gates: [#hooks_green, #consumer_hooks_green, #index_check_green]
+}
+
+^["risk_model"]{
+ hard_failures: [
+  "the commit gate or a consumer hook sources a moved script and stops reviewing",
+  "a rename leaves the allowlisted prefixes, so agents start prompting or stop running checks"
+ ]
+ soft_failures: [
+  "skills and docs cite an old name for a release",
+  "a reintegrated verb prints different output than the script it replaced"
+ ]
+ non_negotiables: [
+  "spw-syntax-review.ts and poll-review.sh keep working for consumer hooks; they become shims, never vanish",
+  "no destructive script runs with a built-in force flag",
+  "every removal names its replacement in the warning it printed first"
+ ]
+}
+
+^["validation"]{
+ hypotheses: [
+  "H1 test:all exposes the 3 analyzer and 2 smoke failures that test:run hides today",
+  "H2 every npm name that survives describes what it runs",
+  "H3 the reintegrated verbs reproduce the scripts' outputs on one fixture set"
+ ]
+ negative_controls: [
+  "spw-init-portability.test.ts passes at every commit",
+  "a staged commit runs the same gate review before and after"
+ ]
+}
+
+^["stream"]{
+ >>[2026-10-13 12:40] observe — A read-only review of every audit and tooling script found a hazard: spw:reset runs git clean on .spw with force built in, and the local allowlist admits spw npm scripts without a prompt. It also found hidden failures: test:analyzers fails 3 of 34 and lsp:smoke 2 of 22, and neither runs in test:run. And it found breakage: the source bundle omits packages, the poll-review fuzz flags are inert, and the gate still checks a lib/spw that does not exist. Details, per script, in the artifact.
+ >>[2026-10-13 12:40] decide — This plan absorbs audit-fuzz-truthfulness retire_alias_profiles and hygiene-index-consolidation npm_scripts_canonical as ~[truthful_aliases]; the spw plan and agent verbs coordinate with plan-tooling-design; the scripts adapter for version control stays with local-numbering-vcs.
+}
+
+^["open"]{
+ ?[reset_fate]: "Does spw:reset keep a reset at all, behind an explicit confirmation, or leave the npm surface?"
+ ?[hook_install]: "Hooks are copied into .git/hooks by hand; does an install-hooks step land here, or with the commit gate's own plan?"
+ ?[spw_review_shape]: "Is the review cluster one spw review verb with --parse and --landscape, as conventions/cli.spw plans, or two verbs?"
+}
+
+^["commits"]{
+ ~[plan]: ".[plans] — tooling-scripts-consolidation records the scripts review and its commit sequence"
+ ~[safe_reset]: "#[scripts] — spw:reset no longer passes --force, lint:spw:strict and test:all exist, and srcdist bundles packages"
+ ~[pin_analyzers]: "![analyzers] — topography and refactor-check tests match current parse health, and test:analyzers joins the headless suite"
+ ~[gate_dead_checks]: "&[commit-gate] — run-review drops the lib/spw boundary check and the ~# warning, and poll-review fuzz flags either reach eslint or go"
+ ~[truthful_aliases]: "vocab[scripts] — fuzz:complexity, dead, naming, async, and boonhonk, analyze:patterns, lint:changed, and the compat spw names warn and route to truthful names (from audit-fuzz-truthfulness retire_alias_profiles and hygiene-index-consolidation npm_scripts_canonical)"
+ ~[docs_truth]: ".[docs] — CLAUDE.md, skills, agent commands, and docs/contributing cite canonical names; lint:layers and lint:fix cites are resolved"
+ ~[lsp_shims]: "&[lsp] — npm run lsp runs the package bridge, the re-export shims go, and smoke-navigation moves into packages/spw-lsp"
+ ~[archive_check]: "&[analyzers] — the three v020 checks and runtime-filename become one archive-contract-check behind the lint:v020 names"
+ ~[verbs_absorb]: "&[cli] — spw resolve, delta --ast, form, and lint --particles absorb path-check, refactor-check, topography and flow, and particle census, with the npm names routed"
+ ~[spw_review]: "&[cli] — spw review reads seed syntax-stack as the only profile source, and spw-syntax-review.ts stays as a shim for consumer hooks"
+ ~[spw_plan_verbs]: "&[plans] — spw plan and spw agent own init, stream, status, check, index, kb, and vibe; agent-tools.sh dispatches to them; kb stops printing absolute paths; card touches follow"
+ ~[retire_ui]: "&[audit] — ui-contract-audit, perturbation-scan, and the UI-era skill loaders warn, and audit-full drops the UI checks"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@813444dcd95167de820f9f7480b369717810628b"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: "package.json, .agents/skills/spw-commit-review/scripts/poll-review.sh, scripts/commit-review/run-review.sh"
+ ~#next_commit: "safe_reset"
+ ~#open_count: "3"
+ ~#last_stream: "2026-10-13 12:40"
+ ~#taste_debt: "spw-lib.sh (980 lines) and agent-lib.sh (1105 lines) pass the 600-line guard; the spw plan verbs shrink the second"
+}
+
+^["done"]{
+}
