@@ -276,11 +276,30 @@ export function semanticTokens(params: DocumentParams, deps: HandlerDeps): LspSe
                 continue
             }
 
-            // #topic — concept label (type)
-            const topicMatch = rest.match(/^#[a-zA-Z_][a-zA-Z0-9_]*/)
+            // #topic — concept label (type); a digit-led name with a letter (#8800ff, #3d)
+            // is one label as well, like #ff8800, while an all-digit #42 is left alone
+            const topicMatch = rest.match(/^#(?:[a-zA-Z_][a-zA-Z0-9_]*|\d[0-9A-Za-z_]*[A-Za-z_][0-9A-Za-z_]*)/)
             if (topicMatch) {
                 push(lineIndex, col, topicMatch[0].length, TT.type, 0)
                 col += topicMatch[0].length
+                continue
+            }
+
+            // A word is one unit, as the lexer reads it: digits inside a name are
+            // part of the name (q_2026_09_30, p10, v1), not numbers painted in it.
+            if (/[A-Za-z_]/.test(ch)) {
+                col += rest.match(/^[A-Za-z_][A-Za-z0-9_]*/)![0].length
+                continue
+            }
+
+            // A digit-led run with letters is one token too: a number with a
+            // suffix (16px, 20s, 2026q4, 0xff, 03b1fe), unless an underscore
+            // makes it a name (3d_claymorphism_vibrant, 0_0_24_24). A hash-shaped
+            // run is overlaid as hashlike afterwards.
+            const alnumMatch = rest.match(/^\d[0-9A-Za-z_]*[A-Za-z_][0-9A-Za-z_]*/)
+            if (alnumMatch) {
+                if (!alnumMatch[0].includes('_')) push(lineIndex, col, alnumMatch[0].length, TT.number, 0)
+                col += alnumMatch[0].length
                 continue
             }
 

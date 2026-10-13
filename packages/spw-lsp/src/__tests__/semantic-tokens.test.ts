@@ -523,3 +523,33 @@ describe('realistic spw fragments', () => {
     expect(lastToken.line).toBe(4) // } on line 4
   })
 })
+
+describe('words are one unit', () => {
+  const at = (text: string, word: string) => {
+    const start = text.indexOf(word)
+    return tokenize(text).filter((token) => token.char < start + word.length && start < token.char + token.length)
+  }
+
+  it('paints no number inside a name', () => {
+    for (const name of ['q_2026_09_30', 'p10', 'v1', 'x2']) {
+      expect(at(`key: ${name}\n`, name)).toEqual([])
+    }
+  })
+
+  it('reads a digit-led run with letters as one number token', () => {
+    for (const run of ['16px', '20s', '2026q4', '3rd', '1e9', '0xff', '03b1fe']) {
+      const text = `key: ${run}\n`
+      expect(at(text, run)).toEqual([{ line: 0, char: text.indexOf(run), length: run.length, type: TT.number, modifiers: 0 }])
+    }
+  })
+
+  it('reads a digit-led run with an underscore as a name, unpainted', () => {
+    expect(at('key: 3d_claymorphism_vibrant\n', '3d_claymorphism_vibrant')).toEqual([])
+  })
+
+  it('reads #8800ff as one label, as it reads #ff8800, and leaves #42 alone', () => {
+    expect(at('a #8800ff b\n', '#8800ff')).toEqual([{ line: 0, char: 2, length: 7, type: TT.type, modifiers: 0 }])
+    expect(at('a #ff8800 b\n', '#ff8800')).toEqual([{ line: 0, char: 2, length: 7, type: TT.type, modifiers: 0 }])
+    expect(at('a #42 b\n', '#42').some((token) => token.type === TT.type)).toBe(false)
+  })
+})
