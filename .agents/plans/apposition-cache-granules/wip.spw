@@ -12,7 +12,7 @@
  gist: "LSP cache entries die with their document and invalidate per apposition granule, not per file."
  touches: [~"packages/spw-lsp/src/server-index.ts", ~"packages/spw-lsp/src/handlers", ~"packages/spw-seed/src/canonical/apposition-scan.ts"]
  entry: ~"./apposition-cache-granules.spw"
- next: "Pin the document-eviction leak in a failing test. Leave the granule key unset until an apposition is shown to be one wire."
+ next: "~[pin_index_lifetime]: one failing test that a file created under an ignored directory and the files of a deleted folder both stay in the workspace annotation index; keep the granule key unset."
 }
 
 ^["edges"]{
@@ -117,6 +117,7 @@
  >>[2026-10-12 14:29] observe — Commit 6 landed in effect as b8a6949d: scanAppositions in apposition-scan.ts returns name, raw body, span and a body mask hash without a parse. The eviction leak is unfixed on reading: evictStale deletes only documents entries and no leak test exists; no peekDocument exists; server-index.ts is 1302 lines.
  >>[2026-10-12 15:36] revise — Commits named per the convention in 90c58bbc: 2 landed, 9 planned, 0 dropped.
  >>[2026-10-13 11:39] observe — Owner screenshot, 2026-10-13: VS Code shows caches-cut-2026-09-30/wip.spw with 2 incoming file refs from .tmp/headplans and release/wt-pre copies, though neither directory exists on disk and server-index.ts skips release. Index entries outlive their documents and their directories: evidence for ~[pin_cache_defects]. caches-living-tree's journal backlinks are only as true as this eviction.
+ >>[2026-10-13 11:59] revise — The 11:39 entry misdiagnosed the screenshot: the phantom incoming refs come from the workspace annotation index, not from documents outliving their cache. refreshFileAnnotations and saveDocument index paths the walk would skip (server-index.ts 131, 308, 653), and didChangeWatchedFiles drops events without a .spw suffix, so a folder delete prunes nothing (stdio-server.ts 474); .tmp is not ignored. vscode-plugin-performance diagnosed this on 2026-10-12 21:02. The fix moves here as pin_index_lifetime, index_scope_guard, and folder_delete_prefix; pin_cache_defects keeps the document-cache defects.
 }
 
 ^["open"]{
@@ -136,6 +137,9 @@
  ~[reuse_granule_data]: "&[spw-lsp] — reuse derived data when a granule's apposition envelope is unchanged"
  ~[granule_codelens]: "#[spw-lsp] — codeLens surfacing granule tier, volatility, inbound degree, and hash age"
  ~[granule_test_suites]: "![tests] — scan/parse parity, envelope stability, and invalidation-proportionality suites"
+ ~[pin_index_lifetime]: "![lsp] — failing test: a watched create under an ignored directory and a folder delete both leave lookupAnnotation entries (stdio-server.ts 471 to 477)"
+ ~[index_scope_guard]: "&[lsp] — refreshFileAnnotations and saveDocument apply the walk's ignore check, and .tmp joins the ignored directories (server-index.ts 131, 308, 653)"
+ ~[folder_delete_prefix]: "&[lsp] — a watched delete with no .spw suffix drops every indexed file under that path (stdio-server.ts 474)"
 }
 
 ^["cache"]{
@@ -144,9 +148,9 @@
  ~#rebased_at: "2026-08-24"
  ~#hygiene_split: "required — in-flight grammar edits touch types/ast/nodes.ts, where AppositionLabel lives"
  ~#files_hot: "packages/spw-lsp/src/server-index.ts, packages/spw-lsp/src/types.ts, packages/spw-seed/src/types/ast/nodes.ts"
- ~#next_commit: "pin_cache_defects"
+ ~#next_commit: "pin_index_lifetime"
  ~#open_count: "2"
- ~#last_stream: "2026-10-13 11:39"
+ ~#last_stream: "2026-10-13 11:59"
  ~#taste_debt: "two-axis eviction (tier x volatility) is correct and deferred; granule identity must reconcile apposition name, content, structural ancestry, and future shape fingerprints without treating activity metadata as human evidence"
 }
 

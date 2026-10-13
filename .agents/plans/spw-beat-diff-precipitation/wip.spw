@@ -11,7 +11,7 @@
  gist: "LSP cache-tier TTLs are read from the cache.spw tiers authority instead of constants in server-index.ts."
  touches: [~"packages/spw-lsp/src/server-index.ts", ~"packages/spw-lsp/src/workspace-authority.ts", ~".spw/biome/ocean/algos/cache.spw"]
  entry: ~"./PLAN.md"
- next: "Pin the drift in a failing test: server-index WARM_TTL and COLD_TTL must equal ttlBeats of warm and cold in cache.spw ^\"tiers\"."
+ next: "Answer ?[hot_ttl] first; ~[guard_ttl_parity] is a guard that passes today, since WARM_TTL 64 and COLD_TTL 256 already equal cache.spw."
 }
 
 ^["edges"]{
@@ -83,6 +83,7 @@
  >>[2026-10-12 14:32] revise — reconciled commits with the tree: none of ~[1] to ~[4] landed (beat_config, diff_analysis and stateReload appear nowhere; TTLs are constants in server-index.ts). ~[3] superseded by ChangeReport, which pulse.ts, delta.ts and workspace-cache.ts already use. Added disposition question and a ~[5] disposition commit; cache status set to stranded.
  >>[2026-10-12 14:52] decide — User decision 2026-10-12: rescope, do not archive. Live slice is making LSP tier TTLs obey cache.spw tiers authority (8/64/256 declared, 64/256 hardcoded in server-index.ts). Diff layer stays with ChangeReport; stateReload and Neovim listener go dormant.
  >>[2026-10-12 15:24] revise — Commits named per the convention in 90c58bbc: 0 landed, 3 planned, 5 dropped.
+ >>[2026-10-13 11:59] revise — pin_ttl_drift would pass today: WARM_TTL 64 and COLD_TTL 256 (server-index.ts 116 to 117) equal cache.spw; only hot differs, and evictStale never expires hot documents. It becomes guard_ttl_parity; report_tier_ttls makes cacheReflection name its TTLs, visible in VS Code after keep_cache_layers.
 }
 
 ^["open"]{
@@ -94,9 +95,10 @@
 
 ^["commits"]{
  # Landed nothing yet. Rescoped 2026-10-12 (user decision: do not archive). The first plan's commits are recorded in ^["done"] as ~#dropped(name) beside ~#resolved(disposition).
- ~[pin_ttl_drift]: "![lsp] — failing test: server-index WARM_TTL and COLD_TTL equal ttlBeats in cache.spw ^\"tiers\""
  ~[read_tier_ttls]: "&[lsp] — read tier TTLs from the cache.spw authority via workspace-authority; keep 64 and 256 as the fallback"
  ~[reconcile_granule_policy]: ".[plans] — reconcile with apposition-cache-granules so granule policy and tier TTLs share one authority"
+ ~[guard_ttl_parity]: "![lsp] — guard test: WARM_TTL and COLD_TTL equal cache.spw ttlBeats; hot asserted as not enforced"
+ ~[report_tier_ttls]: "&[lsp] — cacheReflection names the TTLs it used and where they came from; VS Code shows them after lsp-custom-request-completions ~[keep_cache_layers]"
 }
 
 ^["cache"]{
@@ -105,9 +107,9 @@
  ~#rebased_at: "2026-10-12"
  ~#hygiene_split: "none"
  ~#files_hot: "packages/spw-lsp/src/server-index.ts,.spw/biome/ocean/algos/cache.spw"
- ~#next_commit: "pin_ttl_drift"
+ ~#next_commit: "guard_ttl_parity"
  ~#open_count: "4"
- ~#last_stream: "2026-10-12 15:24"
+ ~#last_stream: "2026-10-13 11:59"
  ~#taste_debt: ""
 }
 
@@ -118,4 +120,5 @@
  ~#dropped(diff_precipitation_engine): "superseded: a multi-layer object/property/line diff engine in the LSP; ChangeReport in spw-seed canonical/change-report.ts already covers lex and nest-path diffs"
  ~#dropped(neovim_state_reload): "dormant: $spw/stateReload listener and Neovim live register overlay; reheat under a new name only if a consumer needs push reload"
  ~#dropped(disposition_record): "answered by the 2026-10-12 rescope and kept as ~#resolved(disposition); no commit needed"
+ ~#dropped(pin_ttl_drift): "the drift it would pin does not exist: WARM_TTL and COLD_TTL (server-index.ts 116 to 117) equal cache.spw warm and cold, and only hot differs, which evictStale never expires; replaced by ~[guard_ttl_parity]"
 }

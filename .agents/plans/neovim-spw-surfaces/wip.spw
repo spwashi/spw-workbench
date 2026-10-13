@@ -11,7 +11,7 @@
  gist: "Neovim is a builtins-first spw-lsp peer: honest :Spw* wrappers, projected diagnostics, :SpwInspect"
  touches: [~"extensions/neovim-spw/lua/spw", ~"extensions/neovim-spw/tests", ~".spw/tooling/neovim-spw.spw"]
  entry: ~"./PLAN.md"
- next: "Audit advertised through tested states only. New :Spw* wrappers wait on the held method matrix."
+ next: "~[audit_surfaces]: one real-lsp-smoke session records whether the built-in client paints spw-lsp tokens, inlay hints, and lenses, filling the empty Neovim parity cells; CLI-backed :Spw commands are exempt from the method-matrix hold."
 }
 
 ^["edges"]{
@@ -74,6 +74,7 @@
  >>[2026-10-12 15:25] revise — Commits named per the convention in 90c58bbc: 0 landed, 8 planned, 0 dropped.
  >>[2026-10-12 20:09] implement — Landed in 1bb4f68d: navigation and completion ask the attached server first; :SpwInspect, :SpwFingerprint, :SpwMemory, :SpwPerf, :SpwProject and :SpwQuest. The creator's own config was updated so the plugin's module loads and one server attaches.
  >>[2026-10-13 11:39] observe — Owner screenshot, 2026-10-13: nvim on the repo-root index.spw resolves root refs inline as virtual text and shows wonder metric counts; it raises nothing for &[@profile, @docs], where @profile is not a declared root, and the roots still name lib/spw-v0.2.0-alpha and src/seed. Journal-aware features from caches-living-tree land in the LSP so this host gets them without new :Spw wrappers.
+ >>[2026-10-13 11:59] revise — 1bb4f68d landed six CLI-backed :Spw commands while the matrix hold stood; CLI-backed commands are exempt, since they wrap no spw/* method. demote_phantom_wrappers is moot (every called method is handled). The open gaps are the empty Neovim cells for tokens, inlay hints, and lenses in hosts/host-parity-matrix.spw; audit_surfaces fills them and feeds lsp-custom-request-completions capability_matrix.
 }
 
 ^["open"]{
@@ -83,14 +84,13 @@
 }
 
 ^["commits"]{
- ~[audit_surfaces]: "![neovim] *audit[surfaces] — map configured, invoked, observed, tested"
+ ~[audit_surfaces]: "![neovim] *audit[surfaces] — real-lsp-smoke records whether the built-in client paints spw-lsp semantic tokens, inlay hints, and code lenses; results fill lsp-custom-request-completions ~[capability_matrix] (hosts/host-parity-matrix.spw, editor_hosts_parity)"
  ~[audit_mounted_consumer]: "![neovim] *audit[mounted-consumer] — startup, roots, failure behavior"
- ~[demote_phantom_wrappers]: "vocab[neovim] — soft-fail or demote phantom custom-request wrappers"
  ~[readme_health_honesty]: ".[neovim] — README + health honesty for mount/workbench discovery"
  ~[project_mass_diagnostics]: "&[neovim] — project mass/path diagnostics + exact-only code actions (after LSP emits them)"
  ~[plan_statusline_profile]: "^[neovim] — :SpwPlan / optional statusline + reading_profile setting"
  .[project_source_products](1bb4f68d): "&[neovim] — :SpwInspect projects the shared source products (tokens, structure, trace) for a file or a selection through the CLI"
- ~[smoke_contracts]: "![neovim] — smoke for wonder/ref/diagnostic/source-product contracts"
+ ~[smoke_contracts]: "![neovim] — smoke for wonder hover and diagnostics only; lsp-route-smoke.lua and instrument-smoke.lua (1bb4f68d) already cover refs and source products"
  .[lsp_first_navigation](1bb4f68d): "&[neovim] — gf, :SpwOpenRef and completion use the attached LSP and fall back to Lua patterns only when none is attached (answers ?[lua_extractors])"
  .[quest_command](1bb4f68d): "&[neovim] — :SpwQuest opens the quest panels and :SpwQuest check runs spw quest --check on the current line"
 }
@@ -103,10 +103,11 @@
  ~#files_hot: "extensions/neovim-spw/lua/spw/commands.lua, extensions/neovim-spw/lua/spw/lsp.lua, packages/spw-lsp/src/stdio-server.ts"
  ~#next_commit: "audit_surfaces"
  ~#open_count: "3"
- ~#last_stream: "2026-10-13 11:39"
+ ~#last_stream: "2026-10-13 11:59"
  ~#taste_debt: "Source-product transport for unsaved buffers and structural ranges must be earned once across clients; no Lua parser or hidden editor telemetry."
 }
 
 ^["done"]{
  ~#resolved(lua_extractors): "Should navigation.lua and completion.lua defer to the server's definition, documentLink and completion whenever a client is attached, keeping the Lua patterns only as the detached fallback? — yes: navigation and completion use the attached LSP and keep the Lua patterns only when none is attached; evidence: 1bb4f68d"
+ ~#dropped(demote_phantom_wrappers): "moot: Neovim calls eight spw/* methods and the server handles all of them (hosts/lsp-surface.spw, editor_hosts_lsp_callers)"
 }

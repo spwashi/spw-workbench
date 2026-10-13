@@ -11,7 +11,7 @@
  gist: "Hovers show only what reading cannot: true deltas, cross-file facts, and measured mechanics."
  touches: [~"packages/spw-lsp/src/handlers/display.ts", ~"packages/spw-lsp/src/server-index.ts", ~"extensions/vscode-spw/src", ~"extensions/neovim-spw/lua/spw"]
  entry: ~"./spw-garden-geometry.spw"
- next: "Reheat at true_delta_enter: compute true deltaEnter (local minus parent ambient) in DocumentLineContext, with fixtures."
+ next: "Stay dormant for pulses and garden stats; reheat at ~[true_delta_enter]. Hover and inlay work moved to editor-reading-hierarchy."
 }
 
 ^["edges"]{
@@ -89,6 +89,7 @@
  >>[2026-10-12 14:30] observe — measured ServerIndex.openDocument after one warm-up call, one run each on this machine: surface-identity.spw (69 lines) 28 ms, spw-garden-geometry.spw (263 lines) 211 ms, onf.spw (256 lines) 747 ms, PLAN.md (1065 lines) 496 ms. Question analyze_ms answered for now: not cheap enough to show in hover by default; replaced by a wonder about what drives the cost.
  >>[2026-10-12 14:31] revise — convention: resolved questions and landed commits are kept in ^["done"] (resolved(label) and shipped) rather than deleted; ^["commits"] keeps a pointer comment.
  >>[2026-10-12 15:26] revise — Commits named per the convention in 90c58bbc: 1 landed, 9 planned, 1 dropped.
+ >>[2026-10-13 11:59] revise — Hover and inlay work moves to editor-reading-hierarchy: anti_echo_hover joins hover_layers. lens_requests is renamed tick_preview_requests, since lens collides with the lens particle and lens readings; pulse_profiles takes the lsp scope this plan already uses. The plan stays dormant for pulses and garden stats.
 }
 
 ^["open"]{
@@ -101,19 +102,20 @@
  # Deferred slices stay planned after the active three; they wait on the custom-request registry and on ?[profile_syntax] and ?[stats_home].
  .[stage_doctrine](a333db8d): "&[seed,cli,lsp,docs] =integrate[operational-topography] — land coupling/topography engine and plan sync"
  ~[true_delta_enter]: "&[lsp] — true deltaEnter (local minus parent ambient) in DocumentLineContext, with fixtures; deltaBraids is still a copy of localBraids at server-index.ts line 1283"
- ~[anti_echo_hover]: "&[lsp] — anti-echo hover builder, delta-first; the inlay half landed in 2ddc73c9, hover has not changed"
  ~[brace_symmetry_metrics]: "&[lsp] — brace pair table and symmetry metrics (E0/E1) beside the existing balance and depth budget in analysis.ts"
- ~[pulse_profiles]: "#[spw-lsp] — deferred: pulse profiles and spw/pulseRun (scoped beats); blocked on profile_syntax and on a custom-request registry"
- ~[lens_requests]: "^seed[spw-lsp] =request[lens] — deferred: lensPreview then lensApplyTick; edit-bearing ticks must consume parser-owned differential plans"
+ ~[pulse_profiles]: "#[lsp] — deferred: pulse profiles and spw/pulseRun (scoped beats); blocked on profile_syntax and on a custom-request registry"
  ~[garden_stats_request]: "^seed[spw-lsp] =request[garden] — deferred: gardenStats/fileFeatures and grades; blocked on stats_home and the custom-request registry (spw/formContext exists since a999a24f, which was half of the old blocker)"
  ~[vscode_garden_commands]: "&[vscode] — deferred: hover, pulse and lens commands and settings, after pulse_profiles, lens_requests and garden_stats_request"
  ~[neovim_garden_wrappers]: "&[neovim] — deferred: portable wrappers for the same requests, after vscode_garden_commands"
  ~[noodle_session_notes]: "![garden] — deferred: mounted-consumer and E2 noodle session notes"
+ ~[tick_preview_requests]: "^seed[lsp] =request[tick_preview] — deferred: a tick preview, then an apply tick; edit-bearing ticks must consume parser-owned differential plans"
 }
 
 ^["done"]{
  ~#dropped(garden_fixture_pack): "merged into true_delta_enter, anti_echo_hover and brace_symmetry_metrics; each carries its own fixtures"
  ~#resolved(analyze_ms): "Is per-openDocument timing cheap enough to expose in hover mechanics by default? — no: warm openDocument took 28 ms (69 lines) to 747 ms (256-line onf.spw), single runs; evidence: stream 2026-10-12 observe"
+ ~#dropped(anti_echo_hover): "moved to editor-reading-hierarchy ~[hover_layers], with its display.ts 448 to 457 locus and the hover-line hypothesis"
+ ~#dropped(lens_requests): "renamed ~[tick_preview_requests]: lens collides with the lens particle and with lens readings"
 }
 
 ^["cache"]{
@@ -125,7 +127,7 @@
  ~#surfaces: "index, plan, artifact, editor-physics, path-refs, register-token-config, substrate-organelle, phd-domains, org-static-llm, formula-variant"
  ~#next_commit: "true_delta_enter"
  ~#open_count: "2"
- ~#last_stream: "2026-10-12 15:26"
+ ~#last_stream: "2026-10-13 11:59"
  ~#taste_debt: "hover still optimized for completeness; seed differential kernel exists — garden must wait on formContext + registry before gardenStats"
 }
 

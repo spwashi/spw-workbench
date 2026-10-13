@@ -11,7 +11,7 @@
  gist: "Editor plugins read and act on wip.spw plan facts through standard LSP products, one fact model."
  touches: [~"packages/spw-lsp/src/handlers/outline.ts", ~"scripts/plans/plan-index.ts", ~".agents/scripts/agent-lib.sh"]
  entry: ~"./PLAN.md"
- next: "Write references/plan-facts.spw (~[plan_facts_table]): the plan-fact table with source frame, LSP product and owner plan, then answer ?[extractor_home]."
+ next: "~[plan_facts_table]: write references/plan-facts.spw with a column naming which hosts render each LSP product; then answer ?[extractor_home]."
 }
 
 ^["edges"]{
@@ -103,11 +103,11 @@
  >>[2026-10-12 17:02] decide — Creator decided 2026-10-12: the hash syntax .[name](hash): "subject" is the next slice, after release. The plan-only lexer rule comes first (plan-stream-parse-health), then the one-pass conversion (plan-tooling-design), then editor affordances (plan-plugin-integration).
  >>[2026-10-12 20:09] implement — Landed in e6c56978: commit-ref hover and the missing-hash note in plan files. Links, completion and a token type move to commit_ref_links.
  >>[2026-10-12 21:02] decide — Creator asked for completions beyond stamps and types: landing a planned commit from git log (~[land_commit_action], which takes over hash completion from ~[commit_ref_links]), plan-name completion and navigation, schema keys, and stream completion wherever a stream frame is.
+ >>[2026-10-13 11:59] revise — resolved [clock_field]: e6c56978 reads a clock zone from .spw/site.spw or .spw/workspace.spw, else SPW_TZ, else local time. The IntelliJ outline is a Kotlin line reader that never asks the server (hosts/jetbrains-native-features.spw), so cross_editor_check expects it absent. Stream completion here extends the same handler vscode-authoring-probe-loop landed as stream_stamp_completion; coordinate before stream_completion_everywhere.
 }
 
 ^["open"]{
  ?[extractor_home]: "Where does the one plan-fact extractor live: packages/spw-seed (portable, parse-based, LSP and CLI both import it), or scripts/plans/plan-index.ts exported to the LSP? Decides ~[shared_extractor] and whether agent-lib.sh keeps its line grep."
- ?[clock_field]: "Which workspace manifest field declares the stream clock (no field is named clock today), and is it a timezone, a source command, or a fixed offset? Decides whether the stamp completion in vscode-authoring-probe-loop can be standard LSP."
  ?[drift_severity]: "Should open_count and last_stream drift be information or warning, given plan:stream and spw refresh also write them and a stale cache is already reported by plan:check?"
  ?[land_ranking]: "Which commits does landing offer first: HEAD, commits whose sigil and scope match the planned line, or a ranking by subject words? A site commit lands in another repository; does the action read that repository's log?"
  ?[done_in_outline]: "Do ^done entries (~#resolved(label), ~#dropped(name)) appear as outline children, as hover on ?[label] mentions, or both? Decides ~[plan_fact_hover] and what Neovim sees."
@@ -115,7 +115,7 @@
 
 ^["commits"]{
  .[stage_plan](7b4d7b5d): ".[plans] — open four plans: stream parse health, plan tooling, plan plugin integration, and a lukewarm backlog"
- ~[plan_facts_table]: ".[plans] — write references/plan-facts.spw: each plan fact with source frame, LSP product and owner plan"
+ ~[plan_facts_table]: ".[plans] — write references/plan-facts.spw: each plan fact with source frame, LSP product, owner plan, and the hosts that render that product (hosts/host-parity-matrix.spw)"
  ~[shared_extractor]: "&[seed] — one plan-fact extractor; plan-index.ts calls it, with a test that it matches plan:check on every wip.spw"
  ~[outline_plan_facts]: "&[lsp] — outline lists ^cache keys, ~[name] and .[name] commit rows and ^done keys as children of their frames"
  ~[plan_fact_hover]: "&[lsp] — hover on ^cache and card fields and on ~#resolved(label) shows the value, its derivation and the stream stamp"
@@ -127,7 +127,7 @@
  ~[plan_name_navigation]: "&[lsp] — go-to-definition and references for plan names: ~#next_commit, ~#resolved(label), a mention in an entry and another plan's ~\"../x/wip.spw#name\" reach the ~[name], .[name] or ?[label] line (needs directive-lattice ~[plan_name_fragments])"
  ~[schema_key_completion]: "&[lsp] — inside ^[\"cache\"]{ and the card, the keys .agents/plans/_schema/wip.spw declares and the file lacks; phase: # offers the phases; the card glyph offers the lanes"
  ~[stream_completion_everywhere]: "&[lsp] — after plan-stream-parse-health ~[entry_line_all_dialects]: >>[ completes the stamp in any ^[\"stream\"] frame and the next number in an ordinal stream; isPlanStreamFile stops gating it"
- ~[cross_editor_check]: "![plans] — Neovim and IntelliJ receive ~[outline_plan_facts], ~[plan_fact_hover] and ~[drift_diagnostics] with no client code; record what each shows"
+ ~[cross_editor_check]: "![plans] — Neovim and IntelliJ receive ~[plan_fact_hover] and ~[drift_diagnostics] with no client code; the IntelliJ outline is expected absent, since its structure view is a Kotlin line reader that never asks the server (hosts/jetbrains-native-features.spw)"
 }
 
 ^["cache"]{
@@ -137,12 +137,13 @@
  ~#hygiene_split: "none"
  ~#files_hot: ".agents/plans/plan-plugin-integration/PLAN.md, .agents/plans/plan-plugin-integration/wip.spw"
  ~#next_commit: "plan_facts_table"
- ~#open_count: "5"
- ~#last_stream: "2026-10-12 21:02"
+ ~#open_count: "4"
+ ~#last_stream: "2026-10-13 11:59"
  ~#taste_debt: ""
 }
 
 ^["done"]{
  # ~#shipped: []
  # ~#resolved(label): "<question> — <answer>; evidence: <stream stamp | commit | path>"
+ ~#resolved(clock_field): "Which workspace manifest field declares the stream clock (no field is named clock today), and is it a timezone, a source command, or a fixed offset? Decides whether the stamp completion in vscode-authoring-probe-loop can be standard LSP. — answered by e6c56978: plan-stream.ts reads a clock zone from .spw/site.spw or .spw/workspace.spw, else SPW_TZ, else local time; evidence: plan-stream.ts lines 8 to 10 and 27"
 }

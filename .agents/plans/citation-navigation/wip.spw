@@ -45,7 +45,6 @@
  .[resolve_parity](2c082311): "&[cli] — resolve refs against the citing file, then the consumer root"
  .[anchor_line_fragments](861fa214): "&[lsp] — land fragments on their anchor line from the server index"
  .[parser_first_refs](e6c56978): "&[seed] — selectPathRefs reads the parser first and keeps fallbackPathRefs only for a source the parser rejects (routed ask: one_fact_model); verify CLI resolve, diagnostics and links agree on one fixture set"
- ~[lens_reference_peek]: "&[lsp] — code lenses carry a command that opens a peek on the anchor's references, replacing command: '' in display.ts; their labels count in the plural and name what they count (routed ask: references_that_navigate)"
  ~[route_fragment_targets]: "&[lsp] — resolve routes and a leading slash in fragment targets through splitAnchor and the ServerIndex anchor entries (routed ask: file_navigation, fragments already landed in 861fa214)"
  .[rename_rewrites_citations](56844e6e): "&[lsp] — willRenameFiles rewrites citations from a path refactor kind; opens only after refactor-experiment-lifecycle 4e names that kind (routed ask: move_updates_citations)"
  ~[port_probe_fixtures]: "![lsp] — port the consumer's probe lines that run against this repo into fixtures for parser_first_refs, lens_reference_peek, route_fragment_targets and rename_rewrites_citations before any row is closed"
@@ -79,6 +78,7 @@
  >>[2026-10-13 11:35] note — Fixture for ~[refs_outside_strings]: a plan string that quotes a root followed by a path must raise no diagnostic, no link, and no graph edge.
  >>[2026-10-13 11:37] observe — Owner screenshot of this wip.spw in VS Code, 2026-10-13. One: stream lines 59 to 70 render the >> marker and body plain while 71 to 79 carry colored markers, figures, and commit refs, though their bytes match; the apostrophe rule in spw.tmLanguage.json does not explain it, and the split looks like semantic tokens reaching only part of the document. Two: inside entry prose, textDocument/definition, a method name, and a bare repo path both take path color; a bare word with a slash is prose, not a figure. Three: code lenses read 7 topic and 2 topic, without the plural and without saying what a topic counts.
  >>[2026-10-13 11:37] decide — ~[refs_outside_strings] covers the editors too: a word with a slash in prose or in a string takes no path color in TextMate or semantic tokens. The split rendering of stream lines goes to plan-stream-parse-health, which owns entry reading; the lens label is folded into ~[lens_reference_peek], which already rewrites those lenses in display.ts.
+ >>[2026-10-13 11:59] revise — lens_reference_peek is dropped: VS Code's peek landed client-side in 99e6d993, the server command route belongs to vscode-authoring-probe-loop code_lens_commands, and lens labels move to editor-reading-hierarchy frame_lens_units. Path color in prose moves to editor-reading-hierarchy path_color_parsed_only; refs_outside_strings keeps the LSP readers, links, diagnostics, and graph edges.
 }
 ^["supporting_documents"]{
  must_ship: [@plan, @atlas, @consultation, @evidence, @contract]
@@ -98,9 +98,10 @@
  ~#next_commit: "root_anchor_refs"
  ~#open_count: "5"
  ~#taste_debt: "Editor parity remains unverified."
- ~#last_stream: "2026-10-13 11:37"
+ ~#last_stream: "2026-10-13 11:59"
 }
 ^["done"]{
+ ~#dropped(lens_reference_peek): "VS Code's reference peek landed client-side in 99e6d993; the server command route is vscode-authoring-probe-loop ~[code_lens_commands], and lens labels moved to editor-reading-hierarchy ~[frame_lens_units]"
 }
 
 #>wonder_agents_plans_citationnavigation_w_1

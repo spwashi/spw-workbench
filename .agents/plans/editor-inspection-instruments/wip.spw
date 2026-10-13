@@ -10,7 +10,7 @@
  gist: "VS Code, IntelliJ and Neovim each run the same inspection instruments from the CLI: source products, fingerprint, memory, performance and projection"
  touches: [~"extensions/vscode-spw/src/instruments", ~"extensions/intellij-spw/src/main/kotlin/com/spwashi/spw", ~"extensions/neovim-spw/lua/spw"]
  entry: ~"./PLAN.md"
- next: "Land the three editors' instruments together, then compare their outputs on one fixture so no editor answers differently."
+ next: "~[parity_fixture]: one saved file and one selection through all five instruments in each editor, outputs diffed after stripping timings."
 }
 
 ^["edges"]{
@@ -52,6 +52,8 @@
  .[neovim_instruments](1bb4f68d): "&[neovim] — :SpwInspect, :SpwFingerprint, :SpwMemory, :SpwPerf and :SpwProject in scratch splits"
  .[mounted_input_paths](ed606b3a): "&[cli] — a mounted run reads relative input paths from the consumer root, so file instruments work in consumer projects"
  ~[parity_fixture]: "![editors] — one fixture whose instrument outputs every editor prints the same"
+ ~[readonly_reports]: "&[vscode] — instrument reports open through a read-only content provider, so closing them asks nothing (scorecard bug 7; host.ts 57, commands.ts, instruments/commands.ts 215)"
+ ~[buffer_truth_rows]: ".[tooling] — record per editor and instrument whether it reads the saved file, the buffer, or a selection (hosts/jetbrains-instruments.spw guard); answers ?[unsaved_buffers]"
 }
 
 ^["cache"]{
@@ -61,7 +63,7 @@
  ~#files_hot: "extensions/vscode-spw/src/instruments, extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwInstrumentActions.kt, extensions/neovim-spw/lua/spw/instruments.lua"
  ~#next_commit: "parity_fixture"
  ~#open_count: "2"
- ~#last_stream: "2026-10-12 20:09"
+ ~#last_stream: "2026-10-13 11:59"
 }
 
 ^["done"]{
@@ -71,4 +73,5 @@
 ^["stream"]{
  >>[2026-10-12 19:07] decide — Creator asked for editor improvements in syntax highlighting, refactoring, tooling integrations, memory inspection, performance checks, intermediate representation and expression geometry inspection. This plan holds the instrument set the three editors share; highlighting lives in vscode-cognitive-surface, refactoring in refactor-experiment-lifecycle and citation-navigation, server features in their owner plans.
  >>[2026-10-12 20:09] implement — Landed: VS Code 99e6d993, IntelliJ 155cfd57, Neovim 1bb4f68d; all three pair inspect memory with mem list and project through emit ir. ed606b3a made file instruments work in mounted consumers.
+ >>[2026-10-13 11:59] revise — The three editors' instruments landed (99e6d993, 155cfd57, 1bb4f68d); next is the parity fixture. Scorecard bug 7 now sits in this plan's own output path: reports open as dirty untitled documents (host.ts 57 and seven other call sites); readonly_reports owns it.
 }

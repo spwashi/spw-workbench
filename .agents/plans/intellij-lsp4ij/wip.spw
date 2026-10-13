@@ -11,7 +11,7 @@
  gist: "IntelliJ's LSP substrate (native API vs LSP4IJ) is chosen on mounted-consumer evidence before 263"
  touches: [~"extensions/intellij-spw/build.gradle.kts", ~"extensions/intellij-spw/src/main/resources/META-INF/plugin.xml", ~"extensions/intellij-spw/src/main/kotlin/com/spwashi/spw"]
  entry: ~"./PLAN.md"
- next: "Stay on the 263 gate. Compare substrates only after the method matrix is earned; do not start LSP4IJ for parity."
+ next: "~[native_lsp_audit]: on a 263 build, check whether the old LspServerSupportProvider and ProjectWideLspServerDescriptor names still exist; if they do, the gate is a rename, and LSP4IJ is judged only on reach to open-source IntelliJ builds and Android Studio."
 }
 
 ^["edges"]{
@@ -110,6 +110,7 @@
  >>[2026-10-12 12:48] observe — A mounted consumer's editor asks (pin 229aedcf) name no IntelliJ work. Derived consequences are recorded in PLAN.md: LSP-level rows arrive through either substrate, chrome rows are not ported, and the bundled TextMate grammar is a drifting copy that lacks dialect-exp.
  >>[2026-10-12 12:48] decide — The 263 gate and its next step are unchanged. The asks add one column to the method matrix (standard features each substrate surfaces) and no migration reason; no new custom request is earned for them.
  >>[2026-10-12 15:22] revise — Commits named per the convention in 90c58bbc: 0 landed, 4 planned, 0 dropped.
+ >>[2026-10-13 11:59] revise — The caches (hosts/feature-radar.spw, editor_hosts_radar_263_gate) show the 263 gate is a rename in 2026.1.4, with the old names still working; the plugin extends them (SpwLspServerSupportProvider.kt 18, 133). The method matrix cannot gate JetBrains, which calls no spw/* method. Scorecard bugs 3 to 6 are still present and land here; panel_surfaces and custom_server_bridge would copy chrome, against the parity rule in hosts/host-parity-matrix.spw, and stay held.
 }
 
 ^["open"]{
@@ -118,13 +119,19 @@
  ?[configurable_replacement]: "Can LSP4IJ's built-in server settings UI cover work-dir + command fields, or do we need to keep SpwLspConfigurable with a fixed JBTextField approach?"
  ?[tool_window_api]: "Which IntelliJ Platform tool window registration API should the panels use — plugin.xml toolWindow extension point vs runtime registration?"
  ?[substrate_method_coverage]: "Which standard LSP features that mounted-consumer asks lean on (willRenameFiles, command-bearing lenses, progress, document links, >>[ completion) does each substrate surface, so the 263 matrix records them without starting a parity program?"
+ ?[comment_form]: "SpwCommenter writes a hash comment while both language configurations write a slash comment, and the grammar paints hash-space lines as comments since 17b3a4a2; which form does every host write?"
 }
 
 ^["commits"]{
- ~[native_lsp_audit]: "![intellij] *audit[native-lsp] — identify the 263 replacement boundary and compare LSP4IJ"
+ ~[native_lsp_audit]: "![intellij] *audit[native-lsp] — on 263, record whether the old native LSP class names exist and which server features each admitted build paints (hosts/jetbrains-platform.spw feature table; hosts/feature-radar.spw, editor_hosts_radar_263_gate)"
  ~[migrate_to_lsp4ij]: "&[intellij] =migration[lsp4ij] — replace native LSP API with LSP4IJ LanguageServerFactory"
  ~[custom_server_bridge]: "^seed[intellij] — add SpwCustomServer interface and WorkspaceService state caching"
  ~[panel_surfaces]: "&[intellij] =surface[panels] — add annotation panel, workspace atlas panel, context strip widget"
+ ~[rename_native_lsp_api]: "vocab[intellij] — extend LspIntegrationProvider and ProjectWideLspClientDescriptor (SpwLspServerSupportProvider.kt 18 and 133 extend the old names)"
+ ~[fold_hash_rule]: "&[intellij] — the fold builder treats # as a comment only before whitespace, as the lexer does (scorecard bug 3; SpwFoldingBuilder.kt 121)"
+ ~[gutter_nav_handler]: "&[intellij] — anchor gutter markers navigate to references (scorecard bug 6; SpwAnnotationLineMarkerProvider.kt 33)"
+ ~[spellcheck_prose]: "&[intellij] — a spellcheck tokenizer for strings and hash-space prose (scorecard bug 5; SpwSpellcheckingStrategy.kt 9)"
+ ~[commenter_form]: "&[editors] — every host writes the comment form chosen in ?[comment_form] (scorecard bug 4; SpwCommenter.kt 6 against both language-configuration.json files)"
 }
 
 ^["cache"]{
@@ -134,8 +141,8 @@
  ~#hygiene_split: "none"
  ~#files_hot: "extensions/intellij-spw/build.gradle.kts, extensions/intellij-spw/src/main/resources/META-INF/plugin.xml, extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwLspServerSupportProvider.kt, extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/settings/SpwLspConfigurable.kt"
  ~#next_commit: "native_lsp_audit"
- ~#open_count: "4"
- ~#last_stream: "2026-10-12 15:22"
+ ~#open_count: "5"
+ ~#last_stream: "2026-10-13 11:59"
  ~#taste_debt: "Do not migrate for parity or deprecation alone. Before 263, compare the replacement native API and LSP4IJ against the shared mounted resolver, keep semantic ownership in the LSP, and avoid making any panel a second annotation or claim index."
 }
 

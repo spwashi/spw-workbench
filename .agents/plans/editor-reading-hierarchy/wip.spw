@@ -1,0 +1,154 @@
+# wip — editor-reading-hierarchy
+# Branch: feature/editor-reading-hierarchy
+# Started: 2026-10-13
+
+#>plan_editor_reading_hierarchy
+#:plan #!projection_feedback
+#:layer #!pragmatics
+
+@["card"]{
+ phase: #planning
+ gist: "Every editor shows glyphs and errors first, one answer per hover second, and instruments on demand, all drawn from one parse-derived role stream, so a reader can scan a file's topography instead of its chrome."
+ touches: [~"packages/spw-lsp/src/handlers/display.ts", ~"packages/spw-lsp/src/handlers/semantic-tokens.ts", ~"extensions/vscode-spw/syntaxes/spw.tmLanguage.json", ~"extensions/neovim-spw/lua/spw"]
+ entry: ~"./PLAN.md"
+ next: "~[hierarchy_census]: count lenses, inlays, duplicate facts, and tokens painted inside stream prose and # comments per 100 lines on one wip.spw and one theory surface, per profile; every later commit is measured against it."
+}
+
+^["edges"]{
+ supersedes: [~"../vscode-cognitive-surface/wip.spw"]
+ shares: [~"../vscode-editor-contract/wip.spw", ~"../vscode-authoring-probe-loop/wip.spw", ~"../spw-garden-geometry/wip.spw", ~"../vscode-plugin-performance/wip.spw", ~"../plan-plugin-integration/wip.spw", ~"../citation-navigation/wip.spw", ~"../apposition-cache-granules/wip.spw", ~"../neovim-spw-surfaces/wip.spw", ~"../plan-stream-parse-health/wip.spw"]
+ needs: [~"../local-numbering-vcs/wip.spw"]
+}
+
+^["roots"]{
+ @plan: ~".agents/plans/editor-reading-hierarchy/PLAN.md"
+ @artifact: ~".agents/plans/editor-reading-hierarchy/editor-reading-hierarchy.spw"
+ @display: ~"packages/spw-lsp/src/handlers/display.ts"
+ @tokens: ~"packages/spw-lsp/src/handlers/semantic-tokens.ts"
+ @grammar: ~"extensions/vscode-spw/syntaxes/spw.tmLanguage.json"
+ @caches_hosts: ~".spw/caches/tree/spw/hosts/index.spw"
+ @care_ladder: ~".spw/caches/tree/spw/inspection-and-ir.spw#spw_ir_care_mapping"
+}
+
+^["intent"]{
+ ~#goal: "A reader opening any .spw file in VS Code, Neovim, or IntelliJ sees structure and errors first, gets one answer per hover, and reaches counts and instruments only on demand; every lens acts, every marker navigates, and no fact is shown twice."
+ ~#taste: "anti-echo and one role stream: a surface earns space only by showing what the page does not, and every layer reads the same parse"
+}
+
+^["development"]{
+ lane: #projection_feedback
+ ladder: #service
+ develops: [#taste, #interaction, #a11y]
+ review_surfaces: [@artifact, @caches_hosts, @care_ladder]
+ snippet_routes: [#example, #query]
+}
+
+^["concept_index"]{
+ primary: [#visual_hierarchy, #role_stream, #anti_echo, #noise_budget, #care_ladder]
+ surfaces: [#semantic_tokens, #code_lens, #inlay_hints, #hover, #diagnostics, #textmate]
+ tensions: [#chrome_vs_answer, #host_parity_vs_host_idiom, #derived_vs_authored]
+ transfers: [#component, #service]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? rerun the census on the same fixtures before and after each commit",
+  "< remove or relocate one surface per commit; add a surface only with an owner and an action",
+  "$ record lenses, inlays, and duplicate facts per 100 lines in the stream",
+  "^ fold each settled rule into the artifact and the editor contract",
+  "% keep capture mode able to switch every lens and inlay off and back exactly",
+ ]
+ gates: [#anti_echo, #one_owner_per_fact, #honesty_first]
+}
+
+^["parallel_work"]{
+ critical_path: [#hierarchy_census, #honesty_tier, #stream_prose_text]
+ parallelizable: [#frame_lens_units, #resolved_path_hint, #wonder_hint_offscreen, #status_and_palette]
+ shared_hot_files: ["packages/spw-lsp/src/handlers/display.ts", "packages/spw-lsp/src/handlers/semantic-tokens.ts", "extensions/vscode-spw/syntaxes/spw.tmLanguage.json"]
+ merge_risks: [#display_ts_size, #token_legend_drift, #vscode_plugin_performance_overlap]
+ handoff_artifacts: [@plan, @artifact]
+}
+
+^["risk_model"]{
+ hard_failures: [
+  "a token change paints prose again in another host because one layer still reads Spw on its own",
+  "a removed lens or inlay was the only route to a fact some workflow needs"
+ ]
+ soft_failures: [
+  "hosts drift: VS Code gains a fix Neovim and IntelliJ do not show",
+  "display.ts grows past its craft guard while surfaces move"
+ ]
+ recoveries: [
+  "every removal names where the fact still lives (hover, instrument, or command)",
+  "the census runs per host where the host exposes the LSP products"
+ ]
+ non_negotiables: [
+  "errors and omissions are never hidden by a profile",
+  "no status or valence is carried by hue alone",
+  "capture mode restores every surface exactly"
+ ]
+}
+
+^["validation"]{
+ hypotheses: [
+  "H1 lenses and inlays per 100 lines fall by at least half on the census fixtures with no fact lost",
+  "H2 stream prose and inline # comments carry zero painted tokens in every host",
+  "H3 every remaining lens has a unit and an action, and every fact has one owner"
+ ]
+ negative_controls: [
+  "figures, anchors, and commit refs inside stream entries keep their roles",
+  "capture mode toggles off and back with no diff in the surfaces shown"
+ ]
+ demo_path: [
+  "open citation-navigation/wip.spw: stream lines render alike, prose is plain, commits scan by state and derived order",
+  "hover an anchor: one answer, then evidence; the incoming count appears once, as a lens that opens references"
+ ]
+}
+
+^["stream"]{
+ >>[2026-10-13 11:53] observe — Owner screenshots in VS Code and Neovim on 2026-10-13: stream lines with identical bytes render plain in one region and colored in another; a method name and bare paths in prose take path color; frame lenses read 7 topic and 1 lens; incoming refs appear as a lens and again as an inlay, naming deleted worktree copies; a header lens reads pragmatics, runtime, 9^, 27#, d1; every root path carries a resolved-path inlay; every wonder carries [? 3 metrics].
+ >>[2026-10-13 11:53] observe — A reader pass over the caches tree (spw/hosts, inspection-and-ir, tokens-and-roles, practice-modes, plugin-theory, machine-empathy) and the render and tokens studies, checked against code at e1d96002, traced each screenshot finding to code: the grammar leaves stream prose unscoped and colors any word with a slash (tmLanguage.json lines 422 and 608); a decoration mask opens at any apostrophe and runs across lines (surface-decorations.ts 89 to 109); lens and inlay run the same incoming lookup (display.ts 973 to 990, 1212 to 1234); frame lenses have no unit or plural (display.ts 957 to 969); the resolved-path inlay hides only when it equals the written path (display.ts 1105 to 1131); Neovim forces inlay hints on at attach (lsp.lua 124 to 125).
+ >>[2026-10-13 11:53] observe — Honesty gaps sit above the cosmetic ones: lexer errors never reach diagnostics (analysis.ts 53), and the server parses without a file path, so plan dialects are off in the editor (server-index.ts 394).
+ >>[2026-10-13 11:53] decide — The hierarchy the caches argue for becomes this plan's rule: errors and glyphs first, color only for what the parse derives, one hover answer before evidence, counts and instruments on demand, every lens acts, one owner per fact, modes as declared filters over one role stream. vscode-cognitive-surface's hierarchy commits move here; spw-garden-geometry keeps pulses and stats; vscode-editor-contract narrows to the gesture and owner tables.
+ >>[2026-10-13 11:53] decide — The owner noted that the visual hierarchy of plan commits hides useful topography, and that numbered ~[N] lines once scanned by color while text labels are worth keeping. ~[commit_frame_roles] renders a derived ordinal and a state role for each commit line, by the rule in local-numbering-vcs; nothing in the source changes.
+}
+
+^["open"]{
+ ?[bare_path_color]: "In prose, does a word with a slash take no path color at all, or path color only when it names a file that exists in the workspace?"
+ ?[header_banner]: "Does the header banner become plain words answering where am I, or go entirely?"
+}
+
+^["commits"]{
+ ~[plan]: ".[plans] — editor-reading-hierarchy plans one reading hierarchy across editors"
+ ~[hierarchy_census]: "![lsp] — census on one wip.spw and one theory surface: lenses, inlays, and duplicate facts per 100 lines, and tokens painted inside stream prose and # comments, per profile"
+ ~[lexer_errors_first]: "&[lsp] — lexer errors reach diagnostics as the first tier (analysis.ts drops them today)"
+ ~[path_aware_parse]: "&[lsp] — the server parses with the file path, so plan dialects and stream entries read as the CLI reads them"
+ ~[stream_prose_text]: "&[lsp] — the token scanner reads plan streams as entries, so stream prose is text and only figures take a role; the decoration mask stops opening at apostrophes across lines"
+ ~[path_color_parsed_only]: "&[grammar] — path color only on parsed path refs; the word-with-a-slash rule goes, per ?[bare_path_color]"
+ ~[inline_hash_comment]: "&[lsp] — the token scanner treats inline # prose as a comment to the end of the line, as the grammar already does"
+ ~[frame_lens_units]: "&[lsp] — frame lenses name their noun, unit, and plural, or go; the header banner follows ?[header_banner]"
+ ~[one_owner_incoming]: "&[lsp] — incoming refs have one owner, the anchor lens that opens references; the duplicate inlay goes"
+ ~[anchor_trial_off]: "&[lsp] — anchor lenses stop running a runtime trial per anchor; register and phase move behind an instrument"
+ ~[resolved_path_hint]: "&[lsp] — the resolved-path inlay shows only for a parent hop, an alias, a mount, or an unresolved target; depth and incoming inlays obey the frames and annotations settings"
+ ~[wonder_hint_offscreen]: "&[lsp] — the wonder inlay drops counts visible on the page and shows only facts from elsewhere; Neovim stops forcing inlay hints on at attach"
+ ~[hover_layers]: "&[lsp] — hover answers what is under the cursor first, then evidence, then geometry, and never restates the hovered line (from vscode-editor-contract hover_answers_position and spw-garden-geometry anti_echo_hover)"
+ ~[commit_frame_roles]: "&[lsp] — in ^[commits], a label takes a role by state (planned, landed, dropped), a derived ordinal shows before it, the commit id dims, and the description reads as text"
+ ~[profiles_as_modes]: "#[lsp] — reading profiles are declared filters over one role stream, set by one server setting; VS Code capture mode becomes a client of it"
+ ~[status_and_palette]: "&[vscode] — claim status as opt-in glyphs, never hue; a valence palette that passes WCAG AA and drops the hazard label for bane"
+ ~[census_after]: "![lsp] — rerun the census; record the fall in lenses, inlays, duplicates, and painted prose against ~[hierarchy_census]"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@813444dcd95167de820f9f7480b369717810628b"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: "packages/spw-lsp/src/handlers/display.ts, packages/spw-lsp/src/handlers/semantic-tokens.ts, extensions/vscode-spw/syntaxes/spw.tmLanguage.json"
+ ~#next_commit: "hierarchy_census"
+ ~#open_count: "2"
+ ~#last_stream: "2026-10-13 11:53"
+ ~#taste_debt: "display.ts is over 1400 lines; moved hover and inlay builders should land in their own modules"
+}
+
+^["done"]{
+}
