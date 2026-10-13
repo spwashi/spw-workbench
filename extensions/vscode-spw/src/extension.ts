@@ -6,14 +6,17 @@ import {
   type ServerOptions,
 } from 'vscode-languageclient/node'
 import { AnnotationIndex } from './annotation-index'
+import { registerCaptureMode } from './capture/capture-mode'
 import { createSpwContext } from './context'
 import { registerContextStrip } from './context-strip'
+import { codeLensMiddleware, registerCodeLensControls } from './lsp/code-lens-middleware'
 import { createSpwCustomRequestClient } from './lsp/custom-requests'
 import { registerSpwNavigation } from './navigation'
 import { SIGIL_SEMANTICS } from './semantics'
 import { registerConceptsTreeView } from './views/concepts-tree'
 import { registerWorkspaceAtlasView } from './views/workspace-tree'
 import { registerSpwCommands } from './commands'
+import { registerSpwCliInstruments } from './instruments/cli-instruments'
 import { registerSpwInstrumentCommands } from './instruments/commands'
 import { ProbeCache } from './instruments/probe-cache'
 import { registerQuestWalkthrough } from './quest/walkthrough'
@@ -55,6 +58,9 @@ export function activate(context: vscode.ExtensionContext): void {
     }),
     ...registerSpwCommands(client, requests),
     ...registerSpwInstrumentCommands(client, requests, probeCache),
+    ...registerSpwCliInstruments(),
+    ...registerCodeLensControls(client),
+    ...registerCaptureMode(context),
     ...registerQuestWalkthrough(context),
   ]
 
@@ -109,7 +115,7 @@ function createClientOptions(): LanguageClientOptions {
         unresolvedRefs: cfg.get<string>('diagnostics.unresolvedRefs', 'warning'),
       },
     },
-    middleware: undefined,
+    middleware: codeLensMiddleware(),
   }
 }
 

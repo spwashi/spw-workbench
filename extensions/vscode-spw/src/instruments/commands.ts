@@ -1,14 +1,10 @@
-import { execFile } from 'node:child_process'
 import * as vscode from 'vscode'
 import type { LanguageClient } from 'vscode-languageclient/node'
 import type { SpwCacheLayerCard, SpwCustomRequestClient } from '../lsp/custom-requests'
 import type { ProbeCache, ProbeCacheReadState, ProbeCacheSnapshot } from './probe-cache'
-import {
-  cliProcess,
-  refactorPlanInvocation,
-  resolveSpwCliHost,
-  type SpwCliProcess,
-} from './cli-invocation'
+import { cliProcess, refactorPlanInvocation } from './cli-invocation'
+import { activeSpwEditor, activeWorkspaceFolder, resolveCliHostFor, showInstrument } from './host'
+import { CliCancelledError, firstLine, runCli } from './run-cli'
 
 interface GeometryResult {
   braces: {
@@ -200,16 +196,8 @@ export function registerSpwInstrumentCommands(
       const spec = await promptRenameSpec()
       if (!spec) return
 
-      const configuredToolRoot = vscode.workspace
-        .getConfiguration('spw', folder.uri)
-        .get<string>('cli.toolRoot', '')
-      const host = await resolveSpwCliHost(folder.uri.fsPath, configuredToolRoot)
-      if (!host) {
-        void vscode.window.showErrorMessage(
-          'Spw corpus planning requires an npm `spw` script in the workspace, mounted `.spw/_workbench`, or spw.cli.toolRoot.',
-        )
-        return
-      }
+      const host = await resolveCliHostFor(folder, 'Spw corpus planning')
+      if (!host) return
 
       const process = cliProcess(host, refactorPlanInvocation(spec))
       try {
@@ -221,6 +209,9 @@ export function registerSpwInstrumentCommands(
           },
           (_progress, token) => runCli(process, token),
         )
+        if (output.exitCode !== 0) {
+          throw new Error(firstLine(output.stderr) || `the CLI exited with code ${output.exitCode}`)
+        }
         const doc = await vscode.workspace.openTextDocument({ content: output.stdout, language: 'json' })
         await vscode.window.showTextDocument(doc, { preview: true, viewColumn: vscode.ViewColumn.Beside })
         void vscode.window.showInformationMessage(
@@ -240,38 +231,9 @@ export function registerSpwInstrumentCommands(
   ]
 }
 
-function activeSpwEditor(): vscode.TextEditor | undefined {
-  const editor = vscode.window.activeTextEditor
-  if (!editor || editor.document.languageId !== 'spw') {
-    void vscode.window.showInformationMessage('Open a .spw file first.')
-    return undefined
-  }
-  return editor
-}
-
-function activeWorkspaceFolder(): vscode.WorkspaceFolder | undefined {
-  const editor = vscode.window.activeTextEditor
-  const folder = editor && vscode.workspace.getWorkspaceFolder(editor.document.uri)
-    || vscode.workspace.workspaceFolders?.[0]
-  if (!folder) void vscode.window.showInformationMessage('Open a workspace folder first.')
-  return folder
-}
-
 function receiptLine(state: ProbeCacheReadState, version: number): string {
   const source = state === 'hit' ? 'VS Code probe cache' : 'LSP live document'
   return `source: ${source} · buffer version: ${version} · client cache: ${state}`
-}
-
-async function showInstrument(
-  lines: string[],
-  language: string,
-  beside = true,
-): Promise<void> {
-  const doc = await vscode.workspace.openTextDocument({ content: lines.join('\n'), language })
-  await vscode.window.showTextDocument(doc, {
-    preview: true,
-    ...(beside ? { viewColumn: vscode.ViewColumn.Beside } : {}),
-  })
 }
 
 async function promptRenameSpec(): Promise<string | undefined> {
@@ -293,40 +255,5 @@ async function promptRenamePart(title: string, prompt: string): Promise<string |
     validateInput: value => !value.trim() || /[=\r\n]/.test(value)
       ? 'Use a non-empty name without = or line breaks.'
       : undefined,
-  })
-}
-
-interface CliOutput {
-  stdout: string
-  durationMs: number
-}
-
-class CliCancelledError extends Error {}
-
-function runCli(process: SpwCliProcess, token: vscode.CancellationToken): Promise<CliOutput> {
-  return new Promise((resolve, reject) => {
-    const startedAt = Date.now()
-    let cancelled = false
-    const child = execFile(
-      process.command,
-      process.arguments,
-      { cwd: process.cwd, encoding: 'utf8', maxBuffer: 10 * 1024 * 1024, timeout: 120_000 },
-      (error, stdout, stderr) => {
-        cancellation.dispose()
-        if (cancelled) {
-          reject(new CliCancelledError('Spw corpus plan cancelled.'))
-          return
-        }
-        if (error) {
-          reject(new Error(stderr.trim().split('\n')[0] || error.message))
-          return
-        }
-        resolve({ stdout, durationMs: Date.now() - startedAt })
-      },
-    )
-    const cancellation = token.onCancellationRequested(() => {
-      cancelled = true
-      child.kill()
-    })
   })
 }
