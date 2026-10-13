@@ -7,11 +7,11 @@
 #:layer #!pragmatics
 
 !["card"]{
- phase: #planning
- gist: "Stream lines read as prose in every .spw file and dialect, so parse health measures structure however a file is parsed."
- touches: [~"packages/spw-seed/src/lexer/plan-stream.ts", ~"packages/spw-seed/src/lexer/tokenize.ts", ~"packages/spw-seed/src/experimental/syntax-catalog.ts", ~"docs/theory/spw", ~"packages/spw-seed/src/canonical/topography-probe.ts", ~".agents/plans/_schema/wip-template.spw"]
+ phase: #active
+ gist: "Line items (.. and >>) read the same in every dialect and carry mixed phrases, so parse health measures structure however a file is parsed."
+ touches: [~"packages/spw-seed/src/lexer/stream-entry.ts", ~"packages/spw-seed/src/lexer/tokenize.ts", ~"packages/spw-seed/src/experimental/syntax-catalog.ts", ~"docs/theory/spw", ~"packages/spw-seed/src/canonical/topography-probe.ts", ~".agents/plans/_schema/wip-template.spw"]
  entry: ~"./PLAN.md"
- next: "~[hostile_prose_fixture], now with no path given; then ~[stream_line_census] over the 13 files outside plans, the negative control for ~[entry_line_all_dialects]."
+ next: "~[entry_figure_nodes]: entry bodies carry figure nodes so path refs in entries reach the outline and selectPathRefs; then ~[dotdot_prose_recovery]."
 }
 
 ^["edges"]{
@@ -21,7 +21,7 @@
 
 ^["roots"]{
  @plan: ~".agents/plans/plan-stream-parse-health/PLAN.md"
- @lexer_rule: ~"packages/spw-seed/src/lexer/plan-stream.ts"
+ @lexer_rule: ~"packages/spw-seed/src/lexer/stream-entry.ts"
  @lexer_test: ~"packages/spw-seed/src/parser/plan-stream.test.ts"
  @health: ~"packages/spw-seed/src/canonical/topography-probe.ts"
  @dialect: ~"packages/spw-seed/src/dialect/syntax-stack.ts"
@@ -32,7 +32,7 @@
 }
 
 ^["intent"]{
- ~#goal: "A >>[stamp] type — prose line is a construct of the language, not of plan files: it reads as one entry in every dialect, so neither a caller's path nor a pragma decides whether stream prose is an error."
+ ~#goal: "A line item is a construct of the language, not of plan files: a >> entry reads as one utterance in every dialect and a .. item as one statement, so neither a caller's path nor a pragma decides whether a sentence is an error."
  ~#was: "Parse health on plan files should report structure, not stream prose; the lexer owned a >>[ line only under Spw.p, and the health probe parses without the path."
  ~#taste: "measure the thing, not the lens: a health verdict must not depend on whether the caller remembered to pass a path"
 }
@@ -107,56 +107,66 @@
  >>[2026-10-12 17:21] implement — Landed in 8ae9d35e: commit refs in plan files lex as one identifier marked commit_ref; 301 landed lines in 67 plans now read .[name](hash): subject; seed 824, cli 292, build clean, total parse errors over 280 .agents files unchanged at 1724.
  >>[2026-10-12 21:02] decide — Creator asked to re-evaluate the plan-only boundary. Stream lines appear in 13 .spw files outside plans (saga templates with ordinal stamps, prompt logs, a docs example) and misparse there: sense-loop.spw 6 errors, portrait.prompt.spw 3. The hard failure narrows from the tokens of a non-plan file to the tokens of any line that is not a line-start >>[ entry; the plan now leads with ~[entry_line_all_dialects] behind a census fixture, and path threading and content detection wait on H5.
  >>[2026-10-12 21:02] observe — template-fill.ts fills ${name} by regex over raw text, so a prose entry body costs the saga templates nothing. syntax-profile-stack.spw writes entries inline after a frame brace. server-index.ts refreshFileAnnotations also parses without a path.
+ >>[2026-10-12 22:13] decide — Creator settled the reading 2026-10-12 (docs/theory/spw/line-items.spw): a line item is a line-start marker, an optional [mode] and a body to the newline. >> emits an utterance and is read prose-first; .. states a Spw item and is read expression-first; ..[n] numbers steps, >>[n] shapes a future log, $[n] points. A body is a mixed phrase, prose and expressions, and the marker chooses the ground; inside prose a sigil begins an expression only at a word start with a name, bracket, brace or quote after it, so prefix binds and postfix stays prose. The newline ends a body and plays ; between items. Of 716 .. lines most are structured Spw (bindings, 97 path refs, 179 trailing comments), so .. keeps its expression reading.
+ >>[2026-10-12 22:34] implement — Landed in 866826ff: a line-start >> entry with no << open owns its line in every dialect; its body lexes as TEXT around figures (a sigil at a word start with a name, bracket, brace or quote after it), each figure through the ordinary matchers; commit refs stay plan-only; lite/scan.ts follows the same entry rule; theory in docs/theory/spw/line-items.spw; =exp ids phrase.line_item and phrase.mixed_reading registered.
+ >>[2026-10-12 22:34] verify — Corpus negative control over 1361 files, with and without the path: every token outside entry lines unchanged (0 violations, 2226 entry lines changed). Errors 2043 to 441 with the path and 5724 to 441 without; no file gains one, and every file counts the same either way (H5 holds). Active wip.spw pathless health 5/39/26 to 59/11/0 (complete_structured/recovered/invalid); the three with errors left are the spaced >> [ files (H2).
+ >>[2026-10-12 22:34] decide — H5 holds, so the plan lens is no longer needed for health: path threading, content detection and the template pragma are dropped. Figure nodes in the AST (path refs reaching the outline and selectPathRefs) and lite figure parity are the next slices.
+ >>[2026-10-12 22:34] observe — The bullet grammar already applies the prefix rule at an item's head: a sigil-led .. item parses as an expression, a word-led one as a prose chunk of its tokens. The .. errors come from lexing (apostrophes, em dashes, stray quotes), not from the parser, so .. items are head-decided, not expression-first.
 }
 
 ^["open"]{
- ?[detect_vs_thread]: "After ~[entry_line_all_dialects], does pathless parse still need the plan lens? Stream prose no longer does; commit refs stay plan-only, so path threading and content detection matter only if H5 finds errors left on them."
- ?[detect_rule]: "If content detection, what is the narrowest signature: a ^[stream] frame header followed by a >>[ line at line start, or a #:plan marker? Which one misfires on docs that quote an example entry?"
  ?[space_tolerance]: "Should the lexer accept >> [ with a space, or should the three files with that spelling be migrated line by line? Stream entries are append-only by schema."
- ?[template_pragma]: "Should wip-template.spw and plan:init stamp an at-dialect Spw.p pragma so new plans are right with no code change? Six of 78 wip.spw files already carry it."
- ?[old_quoted_entries]: "Older entries of the form >>[date] with a quoted string already parse; do they stay as they are, given the append-only rule?"
- ?[body_reading]: "Is an entry body plain prose, or prose with refs lexed inside it (@root, ~\"path\", $slot, ~[name], ?[label], .[name](hash))? Template filling is textual either way; the refs matter for highlighting and go-to-definition."
  ?[stamp_kinds]: "Which stamps make an entry: YYYY-MM-DD HH:MM, YYYY-MM-DD, an ordinal? Does an unknown stamp still make an entry, of kind other?"
- ?[ordinal_beats]: "A dated entry is a log line and append-only; is an ordinal entry a beat in a script that may be edited and renumbered, and may a tool renumber it?"
- ?[inline_entries]: "Theory docs write entries inline, ^[\"stream\"]{ >>[2026-07-27] note - … }; does an entry need a line of its own, or may it follow a frame's opening brace?"
- ?[entry_scope]: "Every stream line found outside plans sits in a ^[…]{ } frame (stream or loop), except the VS Code grammar fixture; is the rule line-start anywhere, or line-start inside a frame?"
+ ?[backtick_ground]: "A backtick phrase has no marker to choose its ground: `door~` in the quest is a code sample, `full: parse` in a set is a label; does it take its ground from its key, from a mark, or does each reader choose?"
  ?[archive_dialect]: "Archived plans read as historical Spw.b by path, so their stream entries and commit refs lex as ordinary Spw (71 landed lines there split digit-leading hashes); should _archive under .agents/plans keep the plan dialect, or stay historical?"
 }
 
 ^["commits"]{
  .[commit_ref_fixture](8ae9d35e): "![seed] — failing fixture: in a plan file, .[name](551bb419): \"subject\" lexes the digit-leading hash as one token, and the same text outside a plan file lexes as it does today"
  .[commit_ref_token](8ae9d35e): "^seed[lexer] — plan files only (Spw.p): a run of 7 to 40 lowercase hex filling a ( ) lexes as one commit-ref token, gated like readPlanStreamEntry"
- ~[hostile_prose_fixture]: "![seed] — failing fixture: snapshotTopography of a ^[stream] frame holding >>[stamp] lines with hyphen, em dash, apostrophe and unbalanced quote is not invalid, with no path given (topography-probe.test.ts)"
- ~[stream_line_census]: "![seed] — fixture over every line-start >>[ outside .agents: 13 files with their dialect, tokens and errors today (sense-loop.spw 6, portrait.prompt.spw 3); the negative control for ~[entry_line_all_dialects]"
- ~[stream_line_theory]: ".[theory] — docs/theory/spw/stream-lines.spw: an entry appended to its frame; a dated stamp is a log line, an ordinal a beat; the body is prose; how >>[ sits beside << >> streams"
- ~[register_stream_entry]: "#[experimental] — =exp[id: stream.entry_line] registered as proposed in SYNTAX_CATALOG, citing the theory note"
- ~[entry_line_all_dialects]: "^seed[lexer] — readPlanStreamEntry runs in every dialect, not only under planStream; the census errors go to 0, every other token is byte-identical, plan-stream.test.ts is unchanged"
- ~[stamp_kinds]: "vocab[seed] — conditional on ?[stamp_kinds]: an entry states its stamp kind (time, day, ordinal, other) so the LSP and writers stop re-deriving it"
- ~[entry_body_refs]: "^seed[lexer] — conditional on ?[body_reading]: refs inside an entry body lex as their own tokens within the prose"
+ .[hostile_prose_fixture](866826ff): "^seed[lexer] — stream entries read the same in every dialect, and their bodies are prose with figures"
+ .[stream_line_census](866826ff): "^seed[lexer] — stream entries read the same in every dialect, and their bodies are prose with figures"
+ .[stream_line_theory](866826ff): "^seed[lexer] — stream entries read the same in every dialect, and their bodies are prose with figures"
+ .[register_stream_entry](866826ff): "^seed[lexer] — stream entries read the same in every dialect, and their bodies are prose with figures"
+ .[entry_line_all_dialects](866826ff): "^seed[lexer] — stream entries read the same in every dialect, and their bodies are prose with figures"
+ ~[stamp_kinds]: "vocab[seed] — conditional on ?[stamp_kinds]: an item states its mode's kind (time, day, position, other) so the LSP and writers stop re-deriving it"
+ ~[entry_figure_nodes]: "^seed[parser] — an entry body becomes prose chunks and figure nodes in the AST, so path refs in entries reach the outline and selectPathRefs, the 19 archived entries that hold them included"
+ ~[lite_entry_figures]: "^seed[lite] — lite/scan.ts lexes figures inside entry bodies as the full lexer does, within the lite.min.js budget"
+ .[entry_body_refs](866826ff): "^seed[lexer] — stream entries read the same in every dialect, and their bodies are prose with figures"
+ ~[dotdot_prose_recovery]: "^seed[lexer] — a word-led .. item already parses as prose; lex its line as prose with figures, as entry bodies are, so its apostrophes and em dashes stop erroring; a sigil-led item stays an expression and a trailing comment still ends the item"
+ ~[sense_loop_steps]: ".[docs] — docs/examples/spw/sense-loop.spw writes its steps as ..[n], since they are a schedule, not an emitted log"
  ~[editor_grammar_parity]: "![editors] — VS Code, IntelliJ and Neovim highlight a line-start entry in every .spw as the lexer reads it; the VS Code grammar fixture already does outside plans"
  ~[spaced_entry_tolerance]: "^seed[lexer] — conditional on ?[space_tolerance]: readPlanStreamEntry accepts a >> [ spelling, with a case in plan-stream.test.ts"
- ~[topography_path_option]: "vocab[seed] — conditional on ?[detect_vs_thread]: snapshotTopography accepts optional path and dialect; resolves the same stack parse already resolves; default call is unchanged"
- ~[thread_path_callsites]: "&[cli] — conditional on ?[detect_vs_thread]: pulse.ts and form-geometry.ts pass the repo-relative path at their snapshotTopography call sites; fixture: pulse tally on a copied wip fixture is stable under a prose edit"
- ~[detect_plan_stream]: "^seed[dialect] — likely dropped by ~[entry_line_all_dialects]; conditional on ?[detect_vs_thread]: detectDialect reads a plan-stream signature so pathless parse (stdin, LSP) picks Spw.p; negative control over docs that quote an entry"
- ~[template_dialect_pragma]: ".[plans] — conditional on ?[template_pragma]: stamp the dialect pragma in wip-template.spw and the plan:init scaffold; a plan:stream round-trip case in test-agent-tools.sh"
- ~[post_fix_tally]: "![plans] — record the post-fix health tally over every wip.spw in the stream and compare with the baseline in this plan"
+ .[post_fix_tally](866826ff): "^seed[lexer] — stream entries read the same in every dialect, and their bodies are prose with figures"
 }
 
 ^["cache"]{
- ~#status: "planning"
+ ~#status: "active"
  ~#base_ref: "main@551bb419"
  ~#rebased_at: ""
  ~#hygiene_split: "none"
  ~#files_hot: ""
- ~#next_commit: "hostile_prose_fixture"
- ~#open_count: "11"
- ~#last_stream: "2026-10-12 21:02"
+ ~#next_commit: "entry_figure_nodes"
+ ~#open_count: "4"
+ ~#last_stream: "2026-10-12 22:34"
  ~#taste_debt: ""
 }
 
 ^["done"]{
  # ~#shipped: []
  # ~#resolved(label): "<question> — <answer>; evidence: <stream stamp | commit | path>"
+ ~#resolved(entry_scope): "Line start anywhere, or line start inside a frame? — prefix position with no << open; line start is the lexer's proxy, and a frame is not required; evidence: stream 2026-10-12 22:13, docs/theory/spw/line-items.spw"
+ ~#resolved(inline_entries): "May an entry follow a frame's opening brace? — only with its own terminator: a body to the newline would take the closing brace, so an inline entry is a quoted one; evidence: stream 2026-10-12 22:13, docs/theory/spw/line-items.spw"
+ ~#resolved(old_quoted_entries): "Do older quoted entries stay as they are? — yes; a quoted body is the inline-capable form of an entry; evidence: stream 2026-10-12 22:13, docs/theory/spw/line-items.spw"
+ ~#resolved(ordinal_beats): "Are ordinal entries editable beats? — >>[n] is the shape of a log a run will write (saga templates); steps to perform are ..[n] and may be renumbered; dated entries stay append-only; evidence: stream 2026-10-12 22:13, docs/theory/spw/line-items.spw"
+ ~#resolved(body_reading): "Plain prose, or prose with refs? — a mixed phrase: >> bodies prose-first, .. bodies expression-first; inside prose a sigil at a word start with a name, bracket, brace or quote after it begins an expression; evidence: stream 2026-10-12 22:13, docs/theory/spw/line-items.spw"
+ ~#resolved(detect_vs_thread): "Does pathless parse still need the plan lens? — no; with entries read in every dialect every file counts the same errors with and without its path (H5); evidence: stream 2026-10-12 22:34, 866826ff"
+ ~#resolved(detect_rule): "What signature would content detection read? — none is needed, since detection is dropped; evidence: stream 2026-10-12 22:34, 866826ff"
+ ~#resolved(template_pragma): "Should new plans carry an at-dialect Spw.p pragma? — no; entries read in every dialect, and commit refs raise no errors without the plan lens; evidence: stream 2026-10-12 22:34, 866826ff"
+ ~#dropped(topography_path_option): "H5 holds: snapshotTopography gives the with-path verdict with no path; evidence: stream 2026-10-12 22:34, 866826ff"
+ ~#dropped(thread_path_callsites): "H5 holds: pulse and form-geometry need no path for health; evidence: stream 2026-10-12 22:34, 866826ff"
+ ~#dropped(detect_plan_stream): "H5 holds: pathless parse needs no plan-stream detection; evidence: stream 2026-10-12 22:34, 866826ff"
+ ~#dropped(template_dialect_pragma): "?[template_pragma] resolved no; evidence: stream 2026-10-12 22:34, 866826ff"
 }
 
 #>wonder_plan_stream_parse_health_1

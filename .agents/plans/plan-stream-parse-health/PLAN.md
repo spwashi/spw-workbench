@@ -10,6 +10,8 @@ The gap is upstream of the lexer: `snapshotTopography(source)` in `topography-pr
 
 Re-evaluated 2026-10-12 at the creator's prompt: stream lines also appear in 13 `.spw` files outside plans (saga templates with ordinal stamps, prompt logs, a docs example), and there they misparse (`sense-loop.spw` 6 errors, `portrait.prompt.spw` 3). The boundary that protects other constructs is the line, not the file: a line-start `>>[` entry reads the same in every dialect, and every other token stays byte-identical. The earlier hard failure, "alters the tokens of a non-plan file", guarded the plan-only fix and is narrowed to that line.
 
+Landed 866826ff (option g, with the reading in `docs/theory/spw/line-items.spw`): entries read in every dialect and their bodies are prose with figures. Over 1361 files every token outside entry lines is unchanged, errors fell from 2043 to 441, and every file counts the same errors with and without its path, so H5 holds and options (d), (e) and (f) are dropped. Next: figure nodes in the AST (`entry_figure_nodes`), then `..` items (`dotdot_prose_recovery`).
+
 Taste note:
 - correctness / naming: a health verdict is a measurement; it must not change with the caller's lens.
 
@@ -49,7 +51,7 @@ Recommended order (revised): (g) first, behind a census fixture; then (d) and (e
 [MOD] packages/spw-cli/src/pulse.ts (call sites only; the file is already over the 600-line guard, so no new logic goes there)
 [MOD] packages/spw-seed/src/canonical/form-geometry.ts (call sites only)
 [MOD] packages/spw-seed/src/dialect/detect.ts (conditional, `detect_plan_stream`)
-[MOD] packages/spw-seed/src/lexer/plan-stream.ts (conditional, `spaced_entry_tolerance`)
+[MOD] packages/spw-seed/src/lexer/stream-entry.ts (was plan-stream.ts; conditional, `spaced_entry_tolerance`)
 [MOD] .agents/plans/_schema/wip-template.spw, .agents/scripts/agent-lib.sh (conditional, `template_dialect_pragma`)
 [NEW] a topography-probe test file for the fixture
 [DEL] (none)
