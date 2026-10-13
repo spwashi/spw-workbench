@@ -21,43 +21,57 @@ import java.util.concurrent.TimeUnit
 @Service(Service.Level.PROJECT)
 internal class SpwCliRunner(private val project: Project) {
     fun run(invocation: SpwCliInvocation) {
+        run(SpwCliSequence.of(invocation))
+    }
+
+    /** Runs each step in order; the first cancel, timeout, or failure stops the sequence and names its step. */
+    fun run(sequence: SpwCliSequence) {
         val host = resolveHost() ?: return
-        val commandLine = GeneralCommandLine(invocation.command(host.toolRoot))
-            .withWorkDirectory(host.consumerRoot.toString())
 
-        ProgressManager.getInstance().run(object : Task.Backgroundable(project, invocation.title, true) {
+        ProgressManager.getInstance().run(object : Task.Backgroundable(project, sequence.title, true) {
             override fun run(indicator: ProgressIndicator) {
-                indicator.text = invocation.arguments.joinToString(" ")
                 val startedAt = System.nanoTime()
+                val captures = mutableListOf<SpwCliCapture>()
                 try {
-                    val output = CapturingProcessHandler(commandLine)
-                        .runProcessWithProgressIndicator(indicator, PROCESS_TIMEOUT_MS)
-                    val durationMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startedAt)
+                    for (step in sequence.steps) {
+                        indicator.text = step.summary()
+                        val commandLine = GeneralCommandLine(step.command(host.toolRoot))
+                            .withWorkDirectory(host.consumerRoot.toString())
+                        val output = CapturingProcessHandler(commandLine)
+                            .runProcessWithProgressIndicator(indicator, PROCESS_TIMEOUT_MS)
+                        val label = stepLabel(sequence, step)
 
-                    when {
-                        output.isCancelled -> notify(
-                            "${invocation.title} cancelled after ${durationMs}ms.",
-                            NotificationType.INFORMATION,
-                        )
-                        output.isTimeout -> notify(
-                            "${invocation.title} exceeded ${PROCESS_TIMEOUT_MS / 1000}s. Run the same CLI form in a terminal to inspect a larger corpus.",
-                            NotificationType.WARNING,
-                        )
-                        output.exitCode != 0 -> notify(
-                            buildFailureMessage(invocation, output.stderr, output.exitCode),
-                            NotificationType.ERROR,
-                        )
-                        else -> present(invocation, output.stdout, durationMs)
+                        val stop: Pair<String, NotificationType>? = when {
+                            output.isCancelled ->
+                                "$label cancelled after ${elapsedMs(startedAt)}ms." to NotificationType.INFORMATION
+                            output.isTimeout ->
+                                "$label exceeded ${PROCESS_TIMEOUT_MS / 1000}s. Run the same CLI form in a terminal to inspect a larger corpus." to
+                                    NotificationType.WARNING
+                            output.exitCode != 0 ->
+                                buildFailureMessage(label, output.stderr, output.exitCode) to NotificationType.ERROR
+                            else -> null
+                        }
+                        if (stop != null) {
+                            notify(stop.first, stop.second)
+                            return
+                        }
+                        captures += SpwCliCapture(output.stdout, output.stderr)
                     }
+                    present(sequence, sequence.document(captures), elapsedMs(startedAt))
                 } catch (error: Exception) {
                     notify(
-                        "${invocation.title} could not start: ${error.message ?: error.javaClass.simpleName}. Check Node/npm and the Spw LSP working-directory setting.",
+                        "${sequence.title} could not start: ${error.message ?: error.javaClass.simpleName}. Check Node/npm and the Spw LSP working-directory setting.",
                         NotificationType.ERROR,
                     )
                 }
             }
         })
     }
+
+    private fun elapsedMs(startedAt: Long): Long = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startedAt)
+
+    private fun stepLabel(sequence: SpwCliSequence, step: SpwCliInvocation): String =
+        if (sequence.steps.size == 1) sequence.title else "${sequence.title} (${step.summary()})"
 
     private fun resolveHost(): SpwCliHost? {
         val consumerRoot = project.basePath?.let(Path::of)?.toAbsolutePath()?.normalize()
@@ -85,28 +99,27 @@ internal class SpwCliRunner(private val project: Project) {
         return SpwCliHost(consumerRoot, toolRoot)
     }
 
-    private fun present(invocation: SpwCliInvocation, stdout: String, durationMs: Long) {
-        val content = stdout.ifBlank { "(Spw returned no output.)\n" }
+    private fun present(sequence: SpwCliSequence, content: String, durationMs: Long) {
         ApplicationManager.getApplication().invokeLater {
             if (project.isDisposed) return@invokeLater
-            val fileType = FileTypeManager.getInstance().getFileTypeByExtension(invocation.output.extension)
+            val fileType = FileTypeManager.getInstance().getFileTypeByExtension(sequence.output.extension)
             val resultFile = LightVirtualFile(
-                "${invocation.title}.${invocation.output.extension}",
+                "${sequence.title}.${sequence.output.extension}",
                 fileType,
                 content,
             ).also { it.isWritable = false }
             FileEditorManager.getInstance(project).openFile(resultFile, true)
             notify(
-                "${invocation.title} completed in ${durationMs}ms · source: CLI · effect: read-only.",
+                "${sequence.title} completed in ${durationMs}ms · source: CLI · effect: read-only.",
                 NotificationType.INFORMATION,
             )
         }
     }
 
-    private fun buildFailureMessage(invocation: SpwCliInvocation, stderr: String, exitCode: Int): String {
-        val detail = stderr.trim().lineSequence().firstOrNull()?.take(240)
+    private fun buildFailureMessage(label: String, stderr: String, exitCode: Int): String {
+        val detail = stderr.trim().lineSequence().firstOrNull()?.takeIf(String::isNotBlank)?.take(240)
             ?: "No error detail was returned."
-        return "${invocation.title} exited $exitCode: $detail"
+        return "$label exited $exitCode: $detail"
     }
 
     private fun notify(message: String, type: NotificationType) {
