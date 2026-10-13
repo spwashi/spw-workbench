@@ -11,7 +11,7 @@
  gist: "Every script and npm name states what it runs, Spw-native analyzers live inside spw verbs, dead and UI-era scripts are retired behind warnings, and nothing a hook, skill, or mounted consumer runs breaks on the way."
  touches: [~"scripts", ~".agents/scripts", ~"package.json", ~".agents/skills/spw-commit-review/scripts"]
  entry: ~"./PLAN.md"
- next: "~[safe_reset]: spw:reset stops passing --force, lint:spw:strict and test:all exist, and the source bundle includes packages; this removes the one hazard an allowlisted agent could trigger."
+ next: "~[suite_and_bundle]: lint:spw:strict and test:all exist and the source bundle includes packages; then ~[pin_analyzers]."
 }
 
 ^["edges"]{
@@ -88,17 +88,18 @@
 ^["stream"]{
  >>[2026-10-13 12:40] observe — A read-only review of every audit and tooling script found a hazard: spw:reset runs git clean on .spw with force built in, and the local allowlist admits spw npm scripts without a prompt. It also found hidden failures: test:analyzers fails 3 of 34 and lsp:smoke 2 of 22, and neither runs in test:run. And it found breakage: the source bundle omits packages, the poll-review fuzz flags are inert, and the gate still checks a lib/spw that does not exist. Details, per script, in the artifact.
  >>[2026-10-13 12:40] decide — This plan absorbs audit-fuzz-truthfulness retire_alias_profiles and hygiene-index-consolidation npm_scripts_canonical as ~[truthful_aliases]; the spw plan and agent verbs coordinate with plan-tooling-design; the scripts adapter for version control stays with local-numbering-vcs.
+ >>[2026-10-13 17:16] implement — Landed cdbb6912: npm run spw:reset previews what it would discard and exits 1; only bash scripts/spw-reset.sh --force discards, and the dev.ts hint names the forced script. A probe file in .spw survived the npm script. lint:spw:strict, test:all, and the source bundle move to suite_and_bundle. resolved [reset_fate].
 }
 
 ^["open"]{
- ?[reset_fate]: "Does spw:reset keep a reset at all, behind an explicit confirmation, or leave the npm surface?"
  ?[hook_install]: "Hooks are copied into .git/hooks by hand; does an install-hooks step land here, or with the commit gate's own plan?"
  ?[spw_review_shape]: "Is the review cluster one spw review verb with --parse and --landscape, as conventions/cli.spw plans, or two verbs?"
 }
 
 ^["commits"]{
  ~[plan]: ".[plans] — tooling-scripts-consolidation records the scripts review and its commit sequence"
- ~[safe_reset]: "#[scripts] — spw:reset no longer passes --force, lint:spw:strict and test:all exist, and srcdist bundles packages"
+ .[safe_reset](cdbb6912): "#[scripts] — npm run spw:reset only previews; discarding .spw work takes bash scripts/spw-reset.sh --force"
+ ~[suite_and_bundle]: "#[scripts] — lint:spw:strict and test:all exist, and srcdist bundles packages; split from safe_reset, which landed the reset alone"
  ~[pin_analyzers]: "![analyzers] — topography and refactor-check tests match current parse health, and test:analyzers joins the headless suite"
  ~[gate_dead_checks]: "&[commit-gate] — run-review drops the lib/spw boundary check and the ~# warning, and poll-review fuzz flags either reach eslint or go"
  ~[truthful_aliases]: "vocab[scripts] — fuzz:complexity, dead, naming, async, and boonhonk, analyze:patterns, lint:changed, and the compat spw names warn and route to truthful names (from audit-fuzz-truthfulness retire_alias_profiles and hygiene-index-consolidation npm_scripts_canonical)"
@@ -117,11 +118,12 @@
  ~#rebased_at: ""
  ~#hygiene_split: "none"
  ~#files_hot: "package.json, .agents/skills/spw-commit-review/scripts/poll-review.sh, scripts/commit-review/run-review.sh"
- ~#next_commit: "safe_reset"
- ~#open_count: "3"
- ~#last_stream: "2026-10-13 12:40"
+ ~#next_commit: "suite_and_bundle"
+ ~#open_count: "2"
+ ~#last_stream: "2026-10-13 17:16"
  ~#taste_debt: "spw-lib.sh (980 lines) and agent-lib.sh (1105 lines) pass the 600-line guard; the spw plan verbs shrink the second"
 }
 
 ^["done"]{
+ ~#resolved(reset_fate): "Does spw:reset keep a reset at all, behind an explicit confirmation, or leave the npm surface? — it keeps a reset behind an explicit flag: npm run spw:reset previews what would be discarded and exits, and only bash scripts/spw-reset.sh --force discards; the owner asked for the fix on 2026-10-13, landed in cdbb6912"
 }

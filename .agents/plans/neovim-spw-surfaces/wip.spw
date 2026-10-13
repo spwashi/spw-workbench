@@ -75,6 +75,7 @@
  >>[2026-10-12 20:09] implement — Landed in 1bb4f68d: navigation and completion ask the attached server first; :SpwInspect, :SpwFingerprint, :SpwMemory, :SpwPerf, :SpwProject and :SpwQuest. The creator's own config was updated so the plugin's module loads and one server attaches.
  >>[2026-10-13 11:39] observe — Owner screenshot, 2026-10-13: nvim on the repo-root index.spw resolves root refs inline as virtual text and shows wonder metric counts; it raises nothing for &[@profile, @docs], where @profile is not a declared root, and the roots still name lib/spw-v0.2.0-alpha and src/seed. Journal-aware features from caches-living-tree land in the LSP so this host gets them without new :Spw wrappers.
  >>[2026-10-13 11:59] revise — 1bb4f68d landed six CLI-backed :Spw commands while the matrix hold stood; CLI-backed commands are exempt, since they wrap no spw/* method. demote_phantom_wrappers is moot (every called method is handled). The open gaps are the empty Neovim cells for tokens, inlay hints, and lenses in hosts/host-parity-matrix.spw; audit_surfaces fills them and feeds lsp-custom-request-completions capability_matrix.
+ >>[2026-10-13 17:16] implement — Landed 198f6875 and bdd48943 at the owner's request for Neovim parity with the VS Code commit work, without a slot reserved first. The server now registers file watchers with any client that takes dynamic registration; headless Neovim against the real server receives both watchers. In Neovim, gf follows a commit link when there is no definition; :SpwCommit opens a read-only git show buffer named spw-commit://; :SpwCommitFiles fills the quickfix list; code lenses refresh on attach and edits; vim.g.spw_lsp_inlay_hints and vim.g.spw_lsp_codelens turn those off; commitRef links to @number. commit-smoke.lua fails at gf and at code lenses with main's lsp_nav.lua and lsp.lua.
 }
 
 ^["open"]{
@@ -93,6 +94,8 @@
  ~[smoke_contracts]: "![neovim] — smoke for wonder hover and diagnostics only; lsp-route-smoke.lua and instrument-smoke.lua (1bb4f68d) already cover refs and source products"
  .[lsp_first_navigation](1bb4f68d): "&[neovim] — gf, :SpwOpenRef and completion use the attached LSP and fall back to Lua patterns only when none is attached (answers ?[lua_extractors])"
  .[quest_command](1bb4f68d): "&[neovim] — :SpwQuest opens the quest panels and :SpwQuest check runs spw quest --check on the current line"
+ .[server_file_watchers](198f6875): "&[lsp] — the server registers its file watchers with every client that takes dynamic registration, so Neovim reports .spw changes and folder deletes too"
+ .[commit_links_and_lenses](bdd48943): "&[neovim] — commit links open in Neovim, code lenses draw, and inlay hints and the commitRef color are configurable"
 }
 
 ^["cache"]{
@@ -103,7 +106,7 @@
  ~#files_hot: "extensions/neovim-spw/lua/spw/commands.lua, extensions/neovim-spw/lua/spw/lsp.lua, packages/spw-lsp/src/stdio-server.ts"
  ~#next_commit: "audit_surfaces"
  ~#open_count: "3"
- ~#last_stream: "2026-10-13 11:59"
+ ~#last_stream: "2026-10-13 17:16"
  ~#taste_debt: "Source-product transport for unsaved buffers and structural ranges must be earned once across clients; no Lua parser or hidden editor telemetry."
 }
 
