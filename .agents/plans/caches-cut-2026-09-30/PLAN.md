@@ -4,6 +4,8 @@ Turn the generated `.spw/caches` shelf into a dated, sourced, addressable refere
 
 This file is the handoff. Any agent can resume from here without the original session.
 
+> **Moved 2026-10-13.** The cut now lives at `.spw/caches/tree/`, and the raw shelf at `.spw/caches/journal/2026-09-30-gemini-shelf/` (plan `caches-living-tree`). Paths below name their old homes. Read them under the new ones, or at the tag `caches-cut/2026.09.30`.
+
 ## Goal
 
 The raw Gemini 3.8 Flash (high) shelf stays in place as provenance (owner commits `5acc5545`, `229aedcf`). A dated cut beside it carries corrected, sourced, faceted surfaces with:

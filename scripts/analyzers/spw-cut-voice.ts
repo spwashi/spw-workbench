@@ -6,7 +6,7 @@
  * arcs well-formed. Split from spw-cut-gate.ts so each file has one reason
  * to change.
  *
- * @see .spw/caches/2026-09-30/contract.spw — ^["legibility"] ^["voice"] ^["marginalia"] ^["arcs"]
+ * @see .spw/caches/tree/contract.spw — ^["legibility"] ^["voice"] ^["marginalia"] ^["arcs"]
  * @see .agents/plans/caches-cut-2026-09-30/references/studies/render-synthesis.md — §2.3 check table
  */
 

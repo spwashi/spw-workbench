@@ -2,7 +2,7 @@
 /**
  * Spw Cut Gate
  *
- * Checks a dated reference cut (e.g. .spw/caches/2026-09-30/) against its
+ * Checks the caches tree (.spw/caches/tree/) against its
  * own contract: parse health, header axes drawn from the cut's closed
  * vocabularies, anchors that bind and stay unique, links that resolve to a
  * file and an anchor, lenses and depths from the declared sets, metric
@@ -15,7 +15,7 @@
  * Usage:
  *   node --import tsx scripts/analyzers/spw-cut-gate.ts <cut-dir> [--json] [--emit] [--quiet]
  *
- * @see .spw/caches/2026-09-30/contract.spw — the rules this gate enforces
+ * @see .spw/caches/tree/contract.spw — the rules this gate enforces
  * @see scripts/plans/plan-index.ts — controlled-vocabulary precedent
  */
 
