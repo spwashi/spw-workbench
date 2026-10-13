@@ -1,0 +1,102 @@
+# Author Toolchain
+#
+# Drafting, editing, formatting, validation, and delivery tools crossed with the file formats a book must reach, with MOBI marked retired.
+
+// Sample for proposals p8 to p11: .spw/caches/tree/making/authorship/author-toolchain.spw rewritten.
+// Every line parses with the current lexer. The @tree and @journal citations do not resolve yet;
+// p8 names the selector and resolver work. Claim statements, anchors, the matrix, the try kit,
+// and the wonder are byte-identical to the tree surface.
+
+#>authorship_toolchain
+#:layer #!pragmatics
+#:domain #!authorship
+#:form #!comparison
+#:level #!practitioner
+#:audience #!makers
+#:review #!spot_checked
+#:valence #!bone
+#:era #!current
+
+^"emit"{
+ ~#claim: "A book reaches readers as EPUB 3, KPF, or a print PDF; MOBI is retired at KDP, and every tool is a path to one of those formats."
+ ~#proof: [ @tree#src_creator_epub33, @tree#src_creator_kdp_formats, @tree#src_creator_kdp_mobi ]
+ ~#door: "Validate one EPUB with the try kit, then place formatting in the manuscript DAG."
+ cold_open: "Every tool is a path to a format, and the format is what readers receive."
+}
+
+^"provenance"{
+ as_of: "2026-09-30"
+ generator: "gemini-3.8-flash-high"
+ revised_by: "claude-opus-5.5"
+ lineage: [ @journal#spw_cache_indie_author_tools ]
+ checked: "the EPUB 3.3 Recommendation date of 2026-01-13 re-read on the W3C page on 2026-10-02"
+ corrections: #[
+  "MOBI is retired at KDP: reflowable uploads ended 2021-08-01 and fixed-layout uploads ended 2025-03-18",
+  "the raw listed Kindle mobi sideloading as current; delivery tools now hand readers EPUB or Kindle-ready files",
+  "the claim that two tools raised indie presentation to parity with a large publisher is reframed as a question",
+  "beat-sheet templates are credited to their authors",
+  "fact check 2026-10-02: the EPUB 3.0 date now cites the IDPF page, which gives approval effective 2011-10-11"
+ ]
+}
+
+^["edges"]{
+ feeds: [ @tree#authorship_manuscript_dag ]
+ see: [ @tree#media_carriers_streaming ]
+}
+
+^["concepts"]{
+ primary: [ #file_format, #backlist ]
+ transfers: [ #dated_receipt ]
+ tensions: [ #platform_dependence ]
+}
+
+^["formats"]{
+ #>authorship_toolchain_epub
+ ^["epub3"]{
+  #:claim #!settled
+  statement: "EPUB 3.3 is a W3C Recommendation that packages HTML, CSS, SVG, and other resources in one container; EPUB began at the IDPF, which approved EPUB 3.0 in October 2011."
+  sources: [ @tree#src_creator_epub33, @tree#src_creator_idpf_epub30 ]
+  as_of: "Recommendation version of 2026-01-13, read on 2026-10-02"
+ }
+ #>authorship_toolchain_kpf
+ ^["kpf"]{
+  #:claim #!settled
+  statement: "KDP accepts DOC and DOCX, EPUB, and Kindle Package Format files from Kindle Create among its eBook manuscript formats."
+  source: @tree#src_creator_kdp_formats
+  as_of: "2026-10-02"
+  ^["limits"]{
+   holds: "the KDP formats page as read on 2026-10-02"
+   fails: "that page still lists MOBI beside its fixed-layout cutoff note; the MOBI FAQ below governs"
+  }
+ }
+ #>authorship_toolchain_mobi
+ ^["mobi_retired"]{
+  #:claim #!settled
+  statement: "KDP stopped accepting MOBI for reflowable eBooks on 2021-08-01 and for fixed-layout eBooks on 2025-03-18, pointing authors to EPUB, DOCX, or KPF."
+  source: @tree#src_creator_kdp_mobi
+  superseded_practice: "upload a MOBI built with a converter"
+ }
+ print_pdf: "print interiors go to print services as PDF; trim, bleed, and font embedding rules verify per service"
+}
+
+// ^["matrix"], ^["credits"], and the try kit's materials and steps are unchanged; only refs change.
+
+^["try"]{
+ #>authorship_toolchain_try
+ ^["validate_epub"]{
+  materials: [ "a computer with Java", "the current EPUBCheck release", "an EPUB exported from any tool" ]
+  steps: << "export one chapter as EPUB" ; "run EPUBCheck on the file" ; "read the first error and find its line" ; "fix it in the source tool" ; "export and check again" >>
+  time: .{ n: 30, unit: "minutes" }
+  safety: "none worth naming; work on a copy of the manuscript"
+  shows: @tree#authorship_toolchain_epub
+ }
+}
+
+#>authorship_toolchain_parity_q
+?["Did one-source formatting tools move reader complaints from layout to story?"]{
+ #:depth #!stylistic ~#lens(craft practice)
+ #:claim #!speculative
+ ~#hypothesis: "As template formatting spread, the share of reader reviews that mention layout defects fell."
+ !probe{ "code a sample of one-star reviews for layout complaints by publication year" =id[p_creator_toolchain_parity] =kind[census] }
+ @tree#authorship_toolchain_kpf ~#neighbor(nearest)
+}

@@ -1,6 +1,7 @@
 // Syntax - Hardware - Alignment
 //
-// Seven proposed syntax moves, each staged as a commented sample exhibit.
+// Proposed syntax moves, each staged as a commented sample exhibit: p1 to p7
+// from the shelf audit, p8 to p11 from the caches living tree (2026-10-13).
 // Organizing metaphor: a header stack is a bus transaction — deixis is the
 // address lines, case the control lines, mood the flag/strobe, aspect the
 // latched (volatile) state, $%[...] the readback register. Every proposal is
@@ -134,10 +135,85 @@
  ~#gate_hook: "lens/depth vocabulary checks collapse into a single site"
 }
 
+// ── Proposal 8: anchor-addressed refs (@root#anchor) ─────────────────────
+// A ref spells the path to an anchor that is already unique in its layer.
+// A named root plus a fragment addresses the anchor; the root's anchor index
+// finds the file. Moves stop rewriting citations. Composes with p6.
+//
+//  before: source: ~"(a relative path to the registry file)#src_creator_epub33"
+//  after:  source: @tree#src_creator_epub33
+//  after:  lineage: [ @journal#spw_cache_indie_author_tools ]
+
+^["p8_anchor_refs"]{
+ ~#status: "proposed; the owner chose the root-plus-fragment form on 2026-10-13"
+ ~#removes: "path-in-ref duplication: 9778 fragment refs in the caches tree, 356395 characters, about 7 percent of the tree"
+ ~#lexes_today: "a root with a fragment, with or without a path between them, parses without error, but selectPathRefs and spw resolve do not read them as citations"
+ ~#needs: "pathRefs, or a root-ref kind, for both forms; named-root lookup through .spw/workspace.spw in resolve, the LSP, and the cut gate; for a directory root with a bare fragment, a lookup in that directory's anchor index"
+ ~#lsp_today: "the LSP already resolves a root followed by a path through workspace roots and reports one it cannot find; it also reads such forms inside strings, which p8 must not inherit"
+ ~#gate_hook: "anchor uniqueness per layer is already enforced; resolve gains a named_root basis"
+ ~#play: "move or split a file and no citation changes; go-to-definition lands on the anchor line through the server anchor index"
+}
+
+// ── Proposal 9: receipts as journal ledgers ─────────────────────────────
+// Every surface repeats ^["receipts"] rows that are the same for a whole
+// pass. A journal entry records the pass once and lists the surfaces by
+// file anchor; the #:review axis keeps the summary. Composes with p4 if a
+// one-line pointer is wanted: #~checked(@journal#journal_2026_10_02_receipts).
+//
+#   ^["receipts"]{ ^["r1"]{ event: #generated ... } ... ^["r6"]{ ... } }   // removed
+#   journal/2026-10-02-receipts.spw: ^["rows"]{ ^["fact_checked"]{ ... files: [ @tree#authorship_toolchain ] } }
+
+^["p9_journal_receipts"]{
+ ~#status: "proposed"
+ ~#removes: "5308 lines of per-surface receipt frames, about 6 percent of the tree's lines"
+ ~#lexes_today: "yes; the ledger sample parses"
+ ~#needs: "p8 for file-anchor lists; a gate check that each #:review value matches the highest-care passing row naming the surface"
+ ~#play: "the LSP reference graph shows a surface's receipts as backlinks; a pass is reviewed as one entry instead of 437 diffs"
+ ~#extends: "the same move turns as_of and checked strings into journal observations a claim cites"
+}
+
+// ── Proposal 10: a lean card ────────────────────────────────────────────
+// The emit card restates the title comment, spells its proof as prose that
+// names the sources the claims already cite, and writes the audience as a
+// free phrase. Title and continuity derive; proof becomes refs; audience
+// becomes a closed facet.
+//
+#   ~#title: "Author Toolchain"                                  // derived from the title comment
+#   continuity: "Author Toolchain | every tool is a path"        // derived: title and the cold_open up to its first comma
+#   ~#proof: [ @tree#src_creator_epub33, @tree#src_creator_kdp_mobi ]
+#   #:audience #!makers
+
+^["p10_lean_card"]{
+ ~#status: "proposed"
+ ~#removes: "title 12327 characters, continuity 20817, audience prose 32438, proof prose 63381, over 394 cards"
+ ~#lexes_today: "yes"
+ ~#needs: "emit derives title and continuity when absent; vocabulary gains a closed audience set; the gate stops requiring the derived fields"
+ ~#keeps: "claim, door, and cold_open, which no tool can derive"
+}
+
+// ── Proposal 11: closed concepts ────────────────────────────────────────
+// Every other axis draws from a closed set; concepts do not, so half the
+// tags name one file and index nothing.
+//
+#   vocabulary.spw  ^["concepts"]{ set: #[ backlist, dated_receipt, feedback, file_format, ... ] }
+
+^["p11_closed_concepts"]{
+ ~#status: "proposed"
+ ~#removes: "320 of 645 concept tags that occur once"
+ ~#lexes_today: "yes; a conventions change"
+ ~#needs: "a concept set in vocabulary.spw from the 325 recurring tags; each singleton maps to a recurring tag or is dropped; the gate fails a tag outside the set"
+ ~#play: "every concept is a hub with at least two surfaces, so a concept query always returns a comparison"
+}
+
+// Samples: samples/cut-surface.spw rewrites one tree surface with p8 to p11
+// (97 lines and 4037 characters against 108 and 5244, statements and anchors
+// identical); samples/receipts-ledger.spw is one p9 journal entry.
+
 ^["next_steps"]{
  ~[1]: "lexer/parser spike for #!route(...) payload and #~ evidential aim"
  ~[2]: "cut-gate additions: S0-probe verb lint, $%[… = …] latch diffing, #~derived staleness check"
  ~[3]: "wonder probe about the proposals in src/lang/seeds/probes/ — evolve syntax through the repo's own research loop"
+ ~[4]: "owner review of p8 to p11 and their samples; caches-living-tree carries the conventions passes and the resolver work after it"
 }
 
 #>wonder_syntax_hardware_alignment_1

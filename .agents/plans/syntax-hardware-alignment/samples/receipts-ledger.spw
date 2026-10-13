@@ -1,0 +1,32 @@
+# Receipts 2026-10-02
+#
+# One pass of inspections over the caches tree, recorded once in the journal instead of in every surface it touched.
+
+// Sample for proposal p9: a journal receipts entry. A row names an inspection once
+// and lists the surfaces it covered by file anchor. A surface no longer carries a
+// ^["receipts"] frame; its #:review axis summarizes the highest care a passing row
+// reports, and the LSP reference graph gives the backlinks from a surface to its rows.
+
+#>journal_2026_10_02_receipts
+#:layer #!reference
+
+^["entry"]{
+ date: "2026-10-02"
+ kind: #receipts
+ pass: "creators-and-platforms writer, check, and fix stages"
+}
+
+^["rows"]{
+ ^["revised"]{
+  event: #revised, agent: "claude-opus-5.5 writer", care: #audit, outcome: #corrected
+  files: [ @tree#authorship_toolchain, @tree#authorship_manuscript_dag ]
+ }
+ ^["gated"]{
+  event: #gated, agent: "spw-cut-gate", care: #skim, outcome: #pass
+  files: [ @tree#authorship_toolchain, @tree#authorship_manuscript_dag ]
+ }
+ ^["fact_checked"]{
+  event: #fact_checked, agent: "claude-opus-5.5 fact-checker", care: #adversarial, outcome: #corrected
+  files: [ @tree#authorship_toolchain ]
+ }
+}
