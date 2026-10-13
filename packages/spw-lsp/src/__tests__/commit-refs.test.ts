@@ -10,13 +10,20 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import {
+  COMMIT_REF_STRATEGY,
+  allCommitRefsIn,
+  citedRefsIn,
   commitExists,
   commitRefDiagnostics,
+  commitRefLinks,
   commitRefsIn,
+  commitUri,
+  confirmCommits,
   hoverCommitRef,
   isPlanStreamFile,
   resetCommitRefCaches,
 } from '../handlers/commit-refs'
+import { SEMANTIC_TOKENS_LEGEND, semanticTokens } from '../handlers/semantic-tokens'
 import { publishDiagnostics } from '../handlers/analysis'
 import { hover } from '../handlers/display'
 import { ServerIndex } from '../server-index'
@@ -119,9 +126,15 @@ describe('hover', () => {
     expect(result?.contents.value).toContain('not in this repository')
   })
 
-  it('stays out of the way off the hash and outside plan files', async () => {
+  it('stays out of the way off the hash', async () => {
     expect(await hoverCommitRef(planText(), planPath(repo), { line: 1, character: 4 }, repo)).toBeNull()
-    expect(await hoverCommitRef(planText(), path.join(repo, 'notes.spw'), { line: 1, character: HASH_COLUMN }, repo)).toBeNull()
+  })
+
+  it('outside plan files, hovers a cited hash only once git confirms it names a commit', async () => {
+    const notes = path.join(repo, 'notes.spw')
+    const confirmed = await hoverCommitRef(planText(), notes, { line: 1, character: HASH_COLUMN }, repo)
+    expect(confirmed?.contents.value).toContain('land the notes')
+    expect(await hoverCommitRef(planText(), notes, { line: 2, character: 12 }, repo)).toBeNull()
   })
 
   it('answers through the hover handler first', async () => {
@@ -175,5 +188,76 @@ describe('diagnostics', () => {
     await publishDiagnostics(`file://${planPath(repo)}`, deps)
     expect(published.filter((d) => d.source === 'spw-plan').map((d) => d.message))
       .toEqual([`commit ${MISSING} is not in this repository`])
+  })
+})
+
+describe('the hash resolution strategy', () => {
+  it('landed refs claim a commit and take the token; cited hashes wait for git and stay uncolored', () => {
+    expect(COMMIT_REF_STRATEGY.landed).toEqual({ confirmBeforeShowing: false, diagnoseMissing: true, token: true })
+    expect(COMMIT_REF_STRATEGY.cited).toEqual({ confirmBeforeShowing: true, diagnoseMissing: false, token: false })
+  })
+
+  it('cites any 7 to 40 hex run with a digit and a letter that stands on its own', () => {
+    const text = [
+      'landed in e6c5697 and (abc1234) today; journal commit: "813444dc"',
+      'not: deadbeef 20261013 #ff8800aa ./abc1234f.spw x-abc12345-y abc1234g v1.abc1234',
+    ].join('\n')
+    expect(citedRefsIn(text).map((ref) => ref.hash)).toEqual(['e6c5697', 'abc1234', '813444dc'])
+    expect(citedRefsIn(text)[0]).toMatchObject({ source: 'cited', range: { start: { line: 0, character: 10 } } })
+  })
+
+  it('in a plan file, a landed hash is read once, as landed', () => {
+    const refs = allCommitRefsIn(planText(), planPath(repo))
+    expect(refs.map((ref) => `${ref.source}:${ref.hash}`)).toEqual([`landed:${hash}`, `landed:${MISSING}`])
+  })
+})
+
+describe('batched confirmation', () => {
+  it('asks git once for many hashes: a commit, a missing hash, and an unknown repository', async () => {
+    const verdicts = await confirmCommits(repo, [hash, MISSING, hash])
+    expect(verdicts.get(hash)).toBe(true)
+    expect(verdicts.get(MISSING)).toBe(false)
+    expect((await confirmCommits(outside, [hash])).get(hash)).toBeNull()
+  })
+})
+
+describe('links', () => {
+  it('links every hash git confirms to its full name, landed or cited, and nothing else', async () => {
+    const full = git(['rev-parse', 'HEAD'])
+    const notes = path.join(repo, 'notes.spw')
+    const cited = await commitRefLinks(`see ${hash} and ${MISSING}\n`, notes, repo)
+    expect(cited).toEqual([{
+      range: { start: { line: 0, character: 4 }, end: { line: 0, character: 4 + hash.length } },
+      target: commitUri(repo, full),
+      tooltip: 'Open commit',
+    }])
+    const landed = await commitRefLinks(planText(), planPath(repo), repo)
+    expect(landed.map((link) => link.range.start.line)).toEqual([1])
+    expect(await commitRefLinks(`see ${hash}\n`, path.join(outside, 'x.spw'), outside)).toEqual([])
+  })
+
+  it('names the repository and the full hash in the link target', () => {
+    expect(commitUri('/r o/x', 'abc1234')).toBe('spw-commit:/abc1234?root=%2Fr%20o%2Fx')
+  })
+})
+
+describe('semantic tokens', () => {
+  it('a landed hash is one commitRef token, replacing the pieces the scanner read', () => {
+    const uri = `file://${planPath(repo)}`
+    const serverIndex = new ServerIndex(repo)
+    serverIndex.openDocument(uri, planPath(repo), planText(), 1)
+    const { data } = semanticTokens({ textDocument: { uri } }, { serverIndex } as unknown as HandlerDeps)
+    const commitRef = SEMANTIC_TOKENS_LEGEND.tokenTypes.indexOf('commitRef')
+    const absolute: Array<{ line: number; char: number; length: number; type: number }> = []
+    let line = 0
+    let char = 0
+    for (let i = 0; i < data.length; i += 5) {
+      line += data[i]!
+      char = data[i] === 0 ? char + data[i + 1]! : data[i + 1]!
+      absolute.push({ line, char, length: data[i + 2]!, type: data[i + 3]! })
+    }
+    const onHash = absolute.filter((token) => token.line === 1 && token.char < HASH_COLUMN + hash.length && HASH_COLUMN < token.char + token.length)
+    expect(onHash).toEqual([{ line: 1, char: HASH_COLUMN, length: hash.length, type: commitRef }])
+    expect(absolute.filter((token) => token.type === commitRef).map((token) => token.line)).toEqual([1, 2])
   })
 })

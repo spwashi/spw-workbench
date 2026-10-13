@@ -15,6 +15,7 @@ import type {
     HandlerDeps,
 } from '../types'
 import { escapeRegex, splitAnchor, stripAnchor } from '../helpers'
+import { commitRefLinks } from './commit-refs'
 
 function referenceSearchNeedles(hit: { kind: string; root?: string; target: string }, targetPath: string): string[] {
     const needles = new Set<string>()
@@ -117,7 +118,7 @@ export async function definition(params: DefinitionParams, deps: HandlerDeps): P
 export async function documentLinks(
     params: DocumentParams,
     deps: HandlerDeps,
-): Promise<Array<{ range: LspRange; target: string }>> {
+): Promise<Array<{ range: LspRange; target: string; tooltip?: string }>> {
     const uri = params?.textDocument?.uri
     if (!uri) return []
 
@@ -128,7 +129,7 @@ export async function documentLinks(
 
     const doc = deps.serverIndex.getDocument(uri)
     const hits = doc?.selectorHits ?? selectPathRefs(source)
-    const links: Array<{ range: LspRange; target: string }> = []
+    const links: Array<{ range: LspRange; target: string ; tooltip?: string }> = []
     // One reader per request: refs that share a target share its lookup.
     // Index only: a listing runs on every edit and must not parse its targets.
     const anchorLine = anchorLineReader(deps, { parse: false })
@@ -153,6 +154,9 @@ export async function documentLinks(
             target: `${deps.uriFromPath(targetPath)}${suffix}`,
         })
     }
+
+    // Git hashes the repository confirms open the commit they name.
+    links.push(...await commitRefLinks(source, docPath, deps.workspaceRoot))
 
     return links
 }

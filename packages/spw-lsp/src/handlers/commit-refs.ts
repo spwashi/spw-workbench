@@ -1,15 +1,21 @@
 /**
- * Commit refs — the hash a plan file names as a landed commit's scene.
+ * Commit refs — git hashes a .spw file names, and what each one earns.
  *
- * In a plan stream (`.agents/plans/**\/wip.spw`, dialect Spw.p) the lexer keeps
- * the hash in `.[name](551bb419):` as one IDENTIFIER of kind `commit_ref`.
- * Hover reads that commit from the repository — subject, author date, the
- * files it changed — and a hash the repository does not hold earns an
- * information diagnostic. Every other surface is left as it was.
+ * Two sources, one strategy table (COMMIT_REF_STRATEGY):
+ * - landed: in a plan stream (`.agents/plans/**\/wip.spw`, dialect Spw.p) the
+ *   lexer keeps the hash in `.[name](551bb419):` as one IDENTIFIER of kind
+ *   `commit_ref`. The line claims a commit, so it hovers even when git cannot
+ *   find it, a missing hash is an information diagnostic, and the hash takes
+ *   the commitRef semantic token.
+ * - cited: any 7 to 40 hex run elsewhere in a .spw file — a journal `commit:`
+ *   line, `(e6c56978)` in a stream entry, a receipt's `at 651b535b`. Hex words
+ *   are common, so a cited hash earns a hover and a link only once git
+ *   confirms it names a commit, and it never takes a color.
  *
- * Git runs in the workspace root, bounded by a timeout. A commit, once read,
- * cannot change, so it is cached by hash; a hash git could not find may still
- * land (a fetch, a rebase), so that answer is only kept for a short while.
+ * Git runs in the workspace root, bounded by a timeout, and many hashes are
+ * confirmed by one `git cat-file --batch-check`. A commit, once read, cannot
+ * change, so it is cached by hash; a hash git could not find may still land
+ * (a fetch, a rebase), so that answer is only kept for a short while.
  */
 
 import { execFile } from 'node:child_process'
@@ -28,10 +34,34 @@ const GIT_MAX_BUFFER = 1024 * 1024
 const GIT_CONCURRENCY = 4
 /** Plan files whose commit refs are remembered between requests. */
 const REF_CACHE_LIMIT = 64
+/** Cited hashes read from one file before the rest are left unread. */
+const CITED_LIMIT = 400
+
+/** Where a hash was found; COMMIT_REF_STRATEGY says what it earns there. */
+export type CommitRefSource = 'landed' | 'cited'
+
+export interface CommitRefRule {
+  /** Whether git must confirm the hash before it hovers or links. */
+  confirmBeforeShowing: boolean
+  /** Whether a hash git does not hold is reported as an information diagnostic. */
+  diagnoseMissing: boolean
+  /** Whether the hash takes the commitRef semantic token. */
+  token: boolean
+}
+
+/**
+ * The hash resolution strategy, as data. Every caller reads this table, so a
+ * new place to find hashes is one reader in READERS and one row here.
+ */
+export const COMMIT_REF_STRATEGY: Readonly<Record<CommitRefSource, CommitRefRule>> = {
+  landed: { confirmBeforeShowing: false, diagnoseMissing: true, token: true },
+  cited: { confirmBeforeShowing: true, diagnoseMissing: false, token: false },
+}
 
 export interface CommitRef {
   hash: string
   range: LspRange
+  source: CommitRefSource
 }
 
 export interface CommitFileChange {
@@ -80,7 +110,7 @@ function positionAt(starts: number[], offset: number): LspPosition {
   return { line: lo, character: offset - starts[lo] }
 }
 
-/** Every commit ref in a plan file, with its exact range; none elsewhere. */
+/** Every landed commit ref in a plan file, with its exact range; none elsewhere. */
 export function commitRefsIn(text: string, filePath: string | null | undefined): CommitRef[] {
   if (!filePath || !isPlanStreamFile(filePath)) return []
   const cached = refCache.get(filePath)
@@ -95,16 +125,64 @@ export function commitRefsIn(text: string, filePath: string | null | undefined):
   const starts = lineStarts(text)
   const refs = tokens
     .filter((token) => token.type === 'IDENTIFIER' && token.kind === 'commit_ref')
-    .map((token) => ({
+    .map((token): CommitRef => ({
       hash: token.value,
       range: {
         start: positionAt(starts, token.span.start.offset),
         end: positionAt(starts, token.span.end.offset),
       },
+      source: 'landed',
     }))
 
   if (refCache.size >= REF_CACHE_LIMIT) refCache.clear()
   refCache.set(filePath, { text, refs })
+  return refs
+}
+
+/**
+ * A cited hash: 7 to 40 lowercase hex, not glued to a word, a path, a `#`
+ * colour or anchor, or a hyphenated id, with at least one digit and one
+ * letter, so neither a date nor a hex word like `deadbeef` is a candidate.
+ */
+const CITED_HASH = /(?<![0-9A-Za-z_#./\\-])[0-9a-f]{7,40}(?![0-9A-Za-z_/\\-])/g
+
+/** Candidate hashes anywhere in a file's text; git decides which are commits. */
+export function citedRefsIn(text: string): CommitRef[] {
+  const starts = lineStarts(text)
+  const refs: CommitRef[] = []
+  for (const match of text.matchAll(CITED_HASH)) {
+    const hash = match[0]
+    if (!/\d/.test(hash) || !/[a-f]/.test(hash)) continue
+    const offset = match.index ?? 0
+    refs.push({
+      hash,
+      range: { start: positionAt(starts, offset), end: positionAt(starts, offset + hash.length) },
+      source: 'cited',
+    })
+    if (refs.length >= CITED_LIMIT) break
+  }
+  return refs
+}
+
+function overlaps(a: LspRange, b: LspRange): boolean {
+  if (a.start.line !== b.start.line) return false
+  return a.start.character < b.end.character && b.start.character < a.end.character
+}
+
+/** How each source reads its hashes from a file, in the order sources are consulted. */
+const READERS: ReadonlyArray<readonly [CommitRefSource, (text: string, filePath: string | null | undefined) => CommitRef[]]> = [
+  ['landed', commitRefsIn],
+  ['cited', (text) => citedRefsIn(text)],
+]
+
+/** Every hash a file names, earlier sources first; a later source never reclaims a range. */
+export function allCommitRefsIn(text: string, filePath: string | null | undefined): CommitRef[] {
+  const refs: CommitRef[] = []
+  for (const [, read] of READERS) {
+    for (const ref of read(text, filePath)) {
+      if (!refs.some((known) => overlaps(known.range, ref.range))) refs.push(ref)
+    }
+  }
   return refs
 }
 
@@ -124,10 +202,10 @@ interface GitAnswer {
   stdout: string
 }
 
-function runGit(args: string[], cwd: string): Promise<GitAnswer> {
+function runGit(args: string[], cwd: string, input?: string): Promise<GitAnswer> {
   return new Promise((resolve) => {
     try {
-      execFile(
+      const child = execFile(
         'git',
         args,
         { cwd, timeout: GIT_TIMEOUT_MS, maxBuffer: GIT_MAX_BUFFER, encoding: 'utf8', windowsHide: true },
@@ -141,6 +219,10 @@ function runGit(args: string[], cwd: string): Promise<GitAnswer> {
           resolve({ code, stdout: stdout ?? '' })
         },
       )
+      if (input !== undefined) {
+        child.stdin?.on('error', () => { /* git exited early; the callback reports it */ })
+        child.stdin?.end(input)
+      }
     } catch {
       resolve({ code: null, stdout: '' })
     }
@@ -152,6 +234,8 @@ const existenceChecks = new Map<string, Promise<boolean | null>>()
 const presentCommits = new Set<string>()
 const missingSince = new Map<string, number>()
 const readCommits = new Map<string, CommitInfo>()
+/** Full object name of each hash git confirmed, so a link names one commit for good. */
+const fullNames = new Map<string, string>()
 
 function cacheKey(root: string, hash: string): string {
   return `${root}\0${hash}`
@@ -203,6 +287,53 @@ async function askExists(root: string, hash: string, key: string): Promise<boole
   return false
 }
 
+/**
+ * Whether each hash names a commit in the repository at `root`, asked of git
+ * in one process. A hash git calls ambiguous, or any hash when git cannot
+ * answer, maps to null: neither a commit nor a known absence.
+ */
+export async function confirmCommits(root: string, hashes: readonly string[]): Promise<Map<string, boolean | null>> {
+  const verdicts = new Map<string, boolean | null>()
+  const unknown: string[] = []
+  for (const hash of new Set(hashes)) {
+    const key = cacheKey(root, hash)
+    const missingAt = missingSince.get(key)
+    if (presentCommits.has(key)) verdicts.set(hash, true)
+    else if (missingAt !== undefined && Date.now() - missingAt < MISSING_TTL_MS) verdicts.set(hash, false)
+    else unknown.push(hash)
+  }
+  if (unknown.length === 0) return verdicts
+  if (!await isWorkTree(root)) {
+    for (const hash of unknown) verdicts.set(hash, null)
+    return verdicts
+  }
+
+  const answer = await runGit(['cat-file', '--batch-check=%(objectname) %(objecttype)'], root, `${unknown.join('\n')}\n`)
+  const lines = answer.code === 0 ? answer.stdout.split('\n') : []
+  unknown.forEach((hash, index) => {
+    const key = cacheKey(root, hash)
+    const [name, type] = (lines[index] ?? '').trim().split(' ')
+    if (type === 'commit' && name) {
+      presentCommits.add(key)
+      missingSince.delete(key)
+      fullNames.set(key, name)
+      verdicts.set(hash, true)
+    } else if (type === 'missing' || (type && type !== 'ambiguous')) {
+      // Missing, or an object that is not a commit (a blob or a tree).
+      missingSince.set(key, Date.now())
+      verdicts.set(hash, false)
+    } else {
+      verdicts.set(hash, null)
+    }
+  })
+  return verdicts
+}
+
+/** The full object name git gave for a confirmed hash, or the hash as written. */
+export function fullCommitName(root: string, hash: string): string {
+  return fullNames.get(cacheKey(root, hash)) ?? readCommits.get(cacheKey(root, hash))?.hash ?? hash
+}
+
 function parseCount(value: string | undefined): number | null {
   const count = Number(value)
   return Number.isInteger(count) ? count : null
@@ -243,6 +374,7 @@ export function resetCommitRefCaches(): void {
   presentCommits.clear()
   missingSince.clear()
   readCommits.clear()
+  fullNames.clear()
 }
 
 // ── Presenting ──────────────────────────────────────────────────
@@ -281,15 +413,22 @@ export function formatCommitHover(ref: CommitRef, info: CommitInfo): string {
   return lines.join('\n')
 }
 
-/** Hover for the commit ref under the cursor in a plan file; null elsewhere. */
+/**
+ * Hover for the hash under the cursor: a landed ref always answers, saying so
+ * when git lacks it; a cited hash answers only when git confirms a commit.
+ */
 export async function hoverCommitRef(
   text: string,
   filePath: string | null | undefined,
   position: LspPosition,
   workspaceRoot: string,
 ): Promise<LspHover | null> {
-  const ref = commitRefAt(commitRefsIn(text, filePath), position)
+  const ref = commitRefAt(allCommitRefsIn(text, filePath), position)
   if (!ref) return null
+  if (COMMIT_REF_STRATEGY[ref.source].confirmBeforeShowing) {
+    const verdict = (await confirmCommits(workspaceRoot, [ref.hash])).get(ref.hash)
+    if (verdict !== true) return null
+  }
 
   const info = await readCommit(workspaceRoot, ref.hash)
   let value: string
@@ -304,13 +443,36 @@ export async function hoverCommitRef(
   return { contents: { kind: 'markdown', value }, range: ref.range }
 }
 
+/** The URI a commit link opens: the full object name, and the repository it lives in. */
+export function commitUri(root: string, fullHash: string): string {
+  return `spw-commit:/${fullHash}?root=${encodeURIComponent(root)}`
+}
+
+/**
+ * A link for every hash git confirms as a commit, landed or cited. A landed
+ * ref git lacks keeps its information note and gets no link; a cited hash git
+ * does not confirm stays plain text.
+ */
+export async function commitRefLinks(
+  text: string,
+  filePath: string | null | undefined,
+  workspaceRoot: string,
+): Promise<Array<{ range: LspRange; target: string; tooltip: string }>> {
+  const refs = allCommitRefsIn(text, filePath)
+  if (refs.length === 0) return []
+  const verdicts = await confirmCommits(workspaceRoot, refs.map((ref) => ref.hash))
+  return refs.flatMap((ref) => verdicts.get(ref.hash) === true
+    ? [{ range: ref.range, target: commitUri(workspaceRoot, fullCommitName(workspaceRoot, ref.hash)), tooltip: 'Open commit' }]
+    : [])
+}
+
 /** An information diagnostic for each commit ref the repository does not hold. */
 export async function commitRefDiagnostics(
   text: string,
   filePath: string | null | undefined,
   workspaceRoot: string,
 ): Promise<LspDiagnostic[]> {
-  const refs = commitRefsIn(text, filePath)
+  const refs = allCommitRefsIn(text, filePath).filter((ref) => COMMIT_REF_STRATEGY[ref.source].diagnoseMissing)
   if (refs.length === 0) return []
 
   // A long plan cites dozens of commits; ask git a few at a time.

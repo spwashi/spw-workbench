@@ -15,6 +15,7 @@
  *   6  keyword     — ^-framing, *, %, $%[, @dialect, ##>-anchors
  *   7  comment     — //-comments
  *   8  number      — numerics, times, fractions
+ *   9  commitRef   — a landed commit's hash in a plan file, .[name](hash)
  *
  * Token modifiers (bit flags, matching MODIFIERS order):
  *   0  declaration   — frame/anchor, brace open, =exp, ^seed
@@ -29,6 +30,7 @@
  */
 
 import type { DocumentParams, HandlerDeps } from '../types'
+import { COMMIT_REF_STRATEGY, commitRefsIn } from './commit-refs'
 
 // ── Token type / modifier indices ──────────────────────────────
 
@@ -42,6 +44,7 @@ const TT = {
     keyword:  6,
     comment:  7,
     number:   8,
+    commitRef: 9,
 } as const
 
 const TM = {
@@ -99,7 +102,7 @@ export interface LspSemanticTokens {
 // ── Legend (exported for capability declaration) ────────────────
 
 export const SEMANTIC_TOKENS_LEGEND = {
-    tokenTypes: ['operator', 'type', 'variable', 'property', 'function', 'string', 'keyword', 'comment', 'number'],
+    tokenTypes: ['operator', 'type', 'variable', 'property', 'function', 'string', 'keyword', 'comment', 'number', 'commitRef'],
     tokenModifiers: ['declaration', 'definition', 'readonly', 'deprecated', 'modification', 'async'],
 }
 
@@ -114,18 +117,12 @@ export function semanticTokens(params: DocumentParams, deps: HandlerDeps): LspSe
     if (text === null) return { data: [] }
 
     const lines = text.split('\n')
-    const data: number[] = []
-
-    let prevLine = 0
-    let prevChar = 0
+    /** Tokens at absolute positions; commit refs overlay them before encoding. */
+    const tokens: AbsoluteToken[] = []
 
     function push(line: number, char: number, length: number, tokenType: number, tokenModifiers: number): void {
         if (length <= 0) return
-        const deltaLine = line - prevLine
-        const deltaChar = deltaLine === 0 ? char - prevChar : char
-        data.push(deltaLine, deltaChar, length, tokenType, tokenModifiers)
-        prevLine = line
-        prevChar = char
+        tokens.push({ line, char, length, type: tokenType, modifiers: tokenModifiers })
     }
 
     for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
@@ -451,5 +448,54 @@ export function semanticTokens(params: DocumentParams, deps: HandlerDeps): LspSe
         }
     }
 
-    return { data }
+    return { data: encodeTokens(overlayCommitRefs(tokens, text, doc?.filePath)) }
+}
+
+// ── Commit refs and encoding ────────────────────────────────────
+
+interface AbsoluteToken {
+    line: number
+    char: number
+    length: number
+    type: number
+    modifiers: number
+}
+
+/**
+ * A landed commit's hash in a plan file is one commitRef token. The scanner
+ * reads it in pieces (a number, then letters); those pieces give way to it.
+ */
+function overlayCommitRefs(tokens: AbsoluteToken[], text: string, filePath: string | undefined): AbsoluteToken[] {
+    const refs = commitRefsIn(text, filePath).filter((ref) => COMMIT_REF_STRATEGY[ref.source].token)
+    if (refs.length === 0) return tokens
+    const covered = (token: AbsoluteToken) => refs.some((ref) =>
+        ref.range.start.line === token.line &&
+        token.char < ref.range.end.character &&
+        ref.range.start.character < token.char + token.length)
+    const overlaid = tokens.filter((token) => !covered(token))
+    for (const ref of refs) {
+        overlaid.push({
+            line: ref.range.start.line,
+            char: ref.range.start.character,
+            length: ref.range.end.character - ref.range.start.character,
+            type: TT.commitRef,
+            modifiers: 0,
+        })
+    }
+    return overlaid.sort((a, b) => a.line - b.line || a.char - b.char)
+}
+
+/** LSP relative encoding: each token's line and start are deltas from the one before. */
+function encodeTokens(tokens: AbsoluteToken[]): number[] {
+    const data: number[] = []
+    let prevLine = 0
+    let prevChar = 0
+    for (const token of tokens) {
+        const deltaLine = token.line - prevLine
+        const deltaChar = deltaLine === 0 ? token.char - prevChar : token.char
+        data.push(deltaLine, deltaChar, token.length, token.type, token.modifiers)
+        prevLine = token.line
+        prevChar = token.char
+    }
+    return data
 }

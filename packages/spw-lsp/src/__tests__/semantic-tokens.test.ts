@@ -66,9 +66,10 @@ function tokenize(text: string) {
 // ── Legend ──────────────────────────────────────────────────────
 
 describe('SEMANTIC_TOKENS_LEGEND', () => {
-  it('declares 9 token types (includes number for path-fit coloring)', () => {
-    expect(SEMANTIC_TOKENS_LEGEND.tokenTypes).toHaveLength(9)
+  it('declares 10 token types (number for path-fit coloring, commitRef for landed hashes)', () => {
+    expect(SEMANTIC_TOKENS_LEGEND.tokenTypes).toHaveLength(10)
     expect(SEMANTIC_TOKENS_LEGEND.tokenTypes).toContain('number')
+    expect(SEMANTIC_TOKENS_LEGEND.tokenTypes.at(-1)).toBe('commitRef')
   })
 
   it('declares 6 token modifiers', () => {
