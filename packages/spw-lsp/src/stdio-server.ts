@@ -231,6 +231,10 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
             },
             workspace: {
               workspaceFolders: { supported: false, changeNotifications: false },
+              fileOperations: { willRename: { filters: [
+                { scheme: 'file', pattern: { glob: '**/*.spw', matches: 'file' } },
+                { scheme: 'file', pattern: { glob: '**/*', matches: 'folder' } },
+              ] } },
             },
             experimental: {
               spw: {
@@ -315,6 +319,10 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
 
       case 'textDocument/rename':
         sendResult(id, await _rename(message.params, deps))
+        return
+
+      case 'workspace/willRenameFiles':
+        sendResult(id, await (await import('./handlers/rename-files')).willRenameFiles(message.params, deps))
         return
 
       case 'textDocument/foldingRange':

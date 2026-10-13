@@ -612,6 +612,16 @@ export {
 } from './semantic-edit'
 
 export {
+  renamePaths,
+  rewriteCitationForMoves,
+  mayCitePathMoves,
+  mapThroughMoves,
+  type PathMove,
+  type PathRenameContext,
+  type CitationForm,
+} from './path-rename'
+
+export {
   deriveMark,
   countOps,
   latestTimestamp,

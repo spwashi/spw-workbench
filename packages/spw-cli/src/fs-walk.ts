@@ -53,8 +53,34 @@ export async function collectSpwFiles(
   }
   if (!stat.isDirectory()) return []
 
-  const out = await walk(abs, ignore)
+  const out = await walk(abs, ignore, isCorpusSpw)
   return out.sort()
+}
+
+/** Whether a file is an authored .spw surface the corpus walks. */
+function isCorpusSpw(name: string, full: string): boolean {
+  return name.endsWith('.spw') && !shouldSkipCorpusSurface(name) && !shouldSkipCorpusSurface(full)
+}
+
+/**
+ * Collect files with any of `extensions` under `root`, skipping the same
+ * directories the .spw walk skips. For files the parser does not own
+ * (Markdown, HTML) that a refactor still needs to look at.
+ */
+export async function collectFilesByExtension(
+  root: string,
+  extensions: readonly string[],
+  options: CollectSpwFilesOptions = {},
+): Promise<string[]> {
+  const ignore = options.ignore
+    ?? (options.includeInfrastructure ? new Set(['.git']) : DEFAULT_IGNORED_DIRS)
+  const accept = (name: string): boolean => extensions.some(ext => name.toLowerCase().endsWith(ext))
+  const abs = path.resolve(root)
+  const stat = await fs.stat(abs).catch(() => null)
+  if (!stat) return []
+  if (stat.isFile()) return accept(path.basename(abs)) ? [abs] : []
+  if (!stat.isDirectory()) return []
+  return (await walk(abs, ignore, accept)).sort()
 }
 
 /** Skip `.spw/gen` wholesale when walking under a `.spw` tree. */
@@ -65,7 +91,11 @@ function skipDirectory(dir: string, entryName: string, ignore: ReadonlySet<strin
   return false
 }
 
-async function walk(dir: string, ignore: ReadonlySet<string>): Promise<string[]> {
+async function walk(
+  dir: string,
+  ignore: ReadonlySet<string>,
+  accept: (name: string, full: string) => boolean,
+): Promise<string[]> {
   const entries = await fs.readdir(dir, { withFileTypes: true }).catch(() => [])
 
   const results = await Promise.all(
@@ -73,12 +103,11 @@ async function walk(dir: string, ignore: ReadonlySet<string>): Promise<string[]>
       if (entry.name.startsWith('.') && entry.name !== '.spw') return []
       if (entry.isDirectory()) {
         if (skipDirectory(dir, entry.name, ignore)) return []
-        return walk(path.join(dir, entry.name), ignore)
+        return walk(path.join(dir, entry.name), ignore, accept)
       }
-      if (entry.isFile() && entry.name.endsWith('.spw')) {
+      if (entry.isFile()) {
         const full = path.join(dir, entry.name)
-        if (shouldSkipCorpusSurface(entry.name) || shouldSkipCorpusSurface(full)) return []
-        return [full]
+        return accept(entry.name, full) ? [full] : []
       }
       return []
     }),

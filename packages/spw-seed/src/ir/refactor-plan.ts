@@ -4,6 +4,10 @@
  * This is the reviewable product hosts already open. Selection hashes,
  * parent plans, worktree apply, and rebase remain named omissions until that
  * lifecycle lands — they are not silently implied by JSON.
+ *
+ * A path rename re-aims citations but never moves the file: the card carries
+ * the move as a command to run, and lists links in files the parser does not
+ * own (Markdown, HTML) rather than editing them.
  */
 
 import type { EffectGrade } from '../canonical/differential'
@@ -19,7 +23,7 @@ export const REFACTOR_PLAN_OMISSIONS = [
 ] as const
 
 export type RefactorPlanMode = 'plan' | 'write'
-export type RefactorRenameKind = 'mark' | 'anchor' | 'case' | 'mood'
+export type RefactorRenameKind = 'mark' | 'anchor' | 'case' | 'mood' | 'path'
 
 export interface RefactorPlanRuleCard {
   id: string
@@ -35,6 +39,25 @@ export interface RefactorPlanFileCard {
   wrote: boolean
 }
 
+/** A move the plan assumes; the host runs `command`, the refactor never does. */
+export interface RefactorPlanMoveCard {
+  /** Consumer-root-relative. */
+  from: string
+  /** Consumer-root-relative. */
+  to: string
+  kind: 'file' | 'directory'
+  /** `pending` until the path sits at `to`; a `moved` card's command is already spent. */
+  state: 'pending' | 'moved'
+  command: string
+}
+
+/** A line in a file the parser does not own that names a moved path. Listed, never edited. */
+export interface RefactorPlanUnownedLink {
+  file: string
+  line: number
+  text: string
+}
+
 export interface RefactorPlanCard {
   surface: typeof REFACTOR_PLAN_SURFACE
   mode: RefactorPlanMode
@@ -47,6 +70,8 @@ export interface RefactorPlanCard {
   omitted: readonly string[]
   next: string[]
   report: RefactorPlanFileCard[]
+  moves: RefactorPlanMoveCard[]
+  unowned: RefactorPlanUnownedLink[]
 }
 
 export interface BuildRefactorPlanCardInput {
@@ -56,6 +81,8 @@ export interface BuildRefactorPlanCardInput {
   totalConflicts: number
   report: RefactorPlanFileCard[]
   renameSpecs?: string[]
+  moves?: RefactorPlanMoveCard[]
+  unowned?: RefactorPlanUnownedLink[]
 }
 
 export function buildRefactorPlanCard(input: BuildRefactorPlanCardInput): RefactorPlanCard {
@@ -64,6 +91,10 @@ export function buildRefactorPlanCard(input: BuildRefactorPlanCardInput): Refact
   const next: string[] = []
   if (!input.write && input.totalEdits > 0 && input.renameSpecs?.length) {
     next.push(`spw refactor . ${input.renameSpecs.map(spec => `--rename ${spec}`).join(' ')} --write`)
+  }
+  const moves = input.moves ?? []
+  for (const move of moves) {
+    if (move.state === 'pending') next.push(move.command)
   }
 
   return {
@@ -78,5 +109,7 @@ export function buildRefactorPlanCard(input: BuildRefactorPlanCardInput): Refact
     omitted: [...REFACTOR_PLAN_OMISSIONS],
     next,
     report: input.report,
+    moves,
+    unowned: input.unowned ?? [],
   }
 }

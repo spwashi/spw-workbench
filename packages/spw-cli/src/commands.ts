@@ -390,7 +390,7 @@ export const COMMANDS: CommandSpec[] = [
   {
     name: 'refactor',
     group: 'shape',
-    summary: 'Plan structural mark renames across a corpus',
+    summary: 'Plan structural mark renames and path moves across a corpus',
     printHelp: () => printRefactorHelp(),
     run: (invoked, args) => runSpwRefactorCli(argv(invoked, args)),
   },

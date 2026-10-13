@@ -31,6 +31,29 @@ describe('spw.refactor.plan/1', () => {
     expect(card.next[0]).not.toContain('--json')
   })
 
+  it('offers a pending move as a command and carries unowned links unedited', () => {
+    const card = buildRefactorPlanCard({
+      write: false,
+      rules: [],
+      totalEdits: 1,
+      totalConflicts: 0,
+      renameSpecs: ['path:docs/old.spw=docs/new.spw'],
+      report: [],
+      moves: [
+        { from: 'docs/old.spw', to: 'docs/new.spw', kind: 'file', state: 'pending', command: 'mv docs/old.spw docs/new.spw' },
+        { from: 'notes', to: 'archive/notes', kind: 'directory', state: 'moved', command: 'mv notes archive/notes' },
+      ],
+      unowned: [{ file: 'README.md', line: 3, text: '[old](docs/old.spw)' }],
+    })
+
+    expect(card.next).toEqual([
+      'spw refactor . --rename path:docs/old.spw=docs/new.spw --write',
+      'mv docs/old.spw docs/new.spw',
+    ])
+    expect(card.moves).toHaveLength(2)
+    expect(card.unowned).toEqual([{ file: 'README.md', line: 3, text: '[old](docs/old.spw)' }])
+  })
+
   it('raises effect only when the plan actually wrote', () => {
     const card = buildRefactorPlanCard({
       write: true,
