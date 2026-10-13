@@ -472,8 +472,13 @@ function handleNotification(message: JsonRpcRequest): void {
       const changes = Array.isArray(message.params?.changes) ? message.params.changes : []
       for (const change of changes as Array<{ uri: string; type: number }>) {
         const filePath = pathFromUri(change.uri)
-        if (!filePath || !filePath.endsWith('.spw')) continue
-        void serverIndex.refreshFileAnnotations(filePath)
+        if (!filePath) continue
+        if (filePath.endsWith('.spw')) {
+          void serverIndex.refreshFileAnnotations(filePath)
+        } else if (change.type === 3) {
+          // A deleted folder arrives as one event for the folder, none for its files.
+          serverIndex.forgetFilesUnder(filePath)
+        }
       }
       return
     }

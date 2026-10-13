@@ -128,7 +128,8 @@ const DEFAULT_FORMAT_OPTIONS = {
 } as const
 
 
-const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', 'release', '.claude', '_workbench'])
+/** Directories the workspace index never holds: VCS, builds, worktree copies, and scratch. */
+const IGNORED_DIRS = new Set(['.git', 'node_modules', 'dist', 'release', '.claude', '_workbench', '.tmp'])
 
 // ── Sigil semantics ─────────────────────────────────────────────
 
@@ -308,6 +309,12 @@ export class ServerIndex {
   saveDocument(uri: string): void {
     const doc = this.documents.get(uri)
     if (!doc) return
+
+    // A file the workspace walk skips stays out of the workspace index, even when saved.
+    if (!this.inIndexScope(doc.filePath)) {
+      this.forgetFile(doc.filePath)
+      return
+    }
 
     // Reindex annotations and frames for this file in the workspace index
     this.removeAnnotationsForFile(doc.filePath)
@@ -650,8 +657,46 @@ export class ServerIndex {
     }
   }
 
+  /**
+   * Whether a file belongs in the workspace index: no directory between the
+   * workspace root and the file is one the walk skips. A file outside the root
+   * keeps the old behaviour and is indexed when opened.
+   */
+  inIndexScope(filePath: string): boolean {
+    const rel = path.relative(this.workspaceRoot, filePath)
+    if (!rel || rel.startsWith('..') || path.isAbsolute(rel)) return true
+    return !rel.split(path.sep).slice(0, -1).some((segment) => IGNORED_DIRS.has(segment))
+  }
+
+  /** Drop one file's annotations, frames, citations, and selector definitions. */
+  private forgetFile(filePath: string): void {
+    this.removeAnnotationsForFile(filePath)
+    this.removeFramesForFile(filePath)
+    this.citationsByFile.delete(filePath)
+    for (const [name, def] of this.selectorDefs) {
+      if (def.file === filePath) this.selectorDefs.delete(name)
+    }
+  }
+
+  /** Drop every indexed file under a directory that was deleted; returns how many. */
+  forgetFilesUnder(dirPath: string): number {
+    const prefix = dirPath.endsWith(path.sep) ? dirPath : dirPath + path.sep
+    const files = new Set([...this.annotationsByFile.keys(), ...this.framesByFile.keys(), ...this.citationsByFile.keys()])
+    let count = 0
+    for (const file of files) {
+      if (!file.startsWith(prefix)) continue
+      this.forgetFile(file)
+      count += 1
+    }
+    return count
+  }
+
   /** Re-read a file from disk and refresh its annotation and frame index entries. */
   async refreshFileAnnotations(filePath: string): Promise<void> {
+    if (!this.inIndexScope(filePath)) {
+      this.forgetFile(filePath)
+      return
+    }
     try {
       const text = await fs.readFile(filePath, 'utf8')
       this.removeAnnotationsForFile(filePath)
