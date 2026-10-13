@@ -27,6 +27,7 @@ import { hover as _hover, documentSymbols as _documentSymbols, workspaceSymbols 
 import { completion as _completion, formatting as _formatting, rangeFormatting as _rangeFormatting, codeAction as _codeAction } from './handlers/editing'
 import { definition as _definition, documentLinks as _documentLinks, references as _references, prepareRename as _prepareRename, rename as _rename } from './handlers/navigation'
 import { semanticTokens as _semanticTokens, SEMANTIC_TOKENS_LEGEND } from './handlers/semantic-tokens'
+import { isClientReply, watchedFilesRegistration } from './watched-files'
 import {
   workspaceManifestV1 as _workspaceManifestV1,
   workspaceTemperature as _workspaceTemperature,
@@ -64,6 +65,8 @@ const ctx = new ServerContext(process.cwd())
 let WORKSPACE_ROOT = ctx.workspaceRoot
 let SHUTDOWN = ctx.shutdown
 let incoming = Buffer.alloc(0)
+/** The capabilities the client declared at initialize; read once more at initialized. */
+let clientCapabilities: unknown = null
 let serverIndex: ServerIndex
 let CONFIG: Required<SpwConfig> = ctx.config
 
@@ -193,6 +196,7 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
     switch (message.method) {
       case 'initialize': {
         const requestedRoot = parseWorkspaceRoot(message.params)
+        clientCapabilities = message.params?.capabilities ?? null
         WORKSPACE_ROOT = await discoverWorkspaceConsumerPath(requestedRoot)
         ctx.workspaceRoot = WORKSPACE_ROOT
         CONFIG = await loadConfig(WORKSPACE_ROOT, message.params?.initializationOptions)
@@ -421,7 +425,13 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
 function handleNotification(message: JsonRpcRequest): void {
   switch (message.method) {
     case 'initialized':
+    {
+      // Clients that only send the file events a server registers (Neovim) get the same
+      // watchers VS Code used to register for itself.
+      const registration = watchedFilesRegistration(clientCapabilities)
+      if (registration) ctx.sendRequest('client/registerCapability', registration)
       return
+    }
 
     case 'exit':
       process.exit(SHUTDOWN ? 0 : 1)
@@ -531,7 +541,10 @@ function processIncoming(): void {
       continue
     }
 
-    if (typeof message.id !== 'undefined') {
+    if (isClientReply(message)) {
+      // The client answering a request the server sent; nothing waits on it.
+      continue
+    } else if (typeof message.id !== 'undefined') {
       void handleRequest(message)
     } else {
       handleNotification(message)

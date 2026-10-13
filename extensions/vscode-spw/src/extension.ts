@@ -105,11 +105,7 @@ function createClientOptions(): LanguageClientOptions {
   return {
     documentSelector: [{ scheme: 'file', language: 'spw' }],
     synchronize: {
-      fileEvents: [
-        vscode.workspace.createFileSystemWatcher('**/*.spw'),
-        // A deleted folder raises one event for the folder and none for the .spw files it held.
-        vscode.workspace.createFileSystemWatcher('**/*', true, true, false),
-      ],
+      // File watchers come from the server (client/registerCapability), the same set every client gets.
       configurationSection: 'spw',
     },
     initializationOptions: {

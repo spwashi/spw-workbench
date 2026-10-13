@@ -66,6 +66,13 @@ export class ServerContext {
         this.send({ jsonrpc: '2.0', method, params } as any)
     }
 
+    private nextServerRequest = 1
+
+    /** A request to the client. String ids never collide with a client's numeric ones; replies are not awaited. */
+    sendRequest(method: string, params: any): void {
+        this.send({ jsonrpc: '2.0', id: `spw-server-${this.nextServerRequest++}`, method, params } as any)
+    }
+
     // ── Logging ─────────────────────────────────────────────────
 
     log(message: string): void {

@@ -12,7 +12,7 @@ import {
 
 interface RpcMessage {
   jsonrpc: '2.0'
-  id?: number
+  id?: number | string
   method?: string
   params?: unknown
   result?: unknown
@@ -26,6 +26,8 @@ class TestLspClient {
     reject(error: Error): void
   }>()
   private incoming = Buffer.alloc(0)
+  /** Every message the server sent, in order, including its own requests to the client. */
+  readonly received: RpcMessage[] = []
   private nextId = 1
   private stderr = ''
 
@@ -76,6 +78,11 @@ class TestLspClient {
     this.send({ jsonrpc: '2.0', method, params })
   }
 
+  /** Answer a request the server sent. */
+  reply(id: number | string, result: unknown): void {
+    this.send({ jsonrpc: '2.0', id, result })
+  }
+
   async close(): Promise<void> {
     if (this.child.exitCode !== null) return
     try {
@@ -107,6 +114,7 @@ class TestLspClient {
         this.incoming.subarray(bodyStart, bodyEnd).toString('utf8'),
       ) as RpcMessage
       this.incoming = this.incoming.subarray(bodyEnd)
+      this.received.push(message)
       if (typeof message.id === 'number') {
         const pending = this.pending.get(message.id)
         this.pending.delete(message.id)
@@ -266,6 +274,61 @@ describe('workspace stdio integration', () => {
       })
     } finally {
       await activeClient?.close()
+      activeClient = null
+      await fs.rm(tempRoot, { recursive: true, force: true })
+    }
+  }, 15_000)
+})
+
+describe('watched files over stdio', () => {
+  async function startServer(capabilities: unknown): Promise<{ client: TestLspClient; tempRoot: string }> {
+    const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'spw-lsp-watch-'))
+    const bundledServer = path.join(tempRoot, 'spw-lsp.mjs')
+    await build({
+      entryPoints: [path.join(process.cwd(), 'packages', 'spw-lsp', 'src', 'stdio-server.ts')],
+      bundle: true,
+      platform: 'node',
+      format: 'esm',
+      outfile: bundledServer,
+      tsconfig: path.join(process.cwd(), 'tsconfig.base.json'),
+    })
+    const client = new TestLspClient(bundledServer, tempRoot)
+    activeClient = client
+    const initialized = await client.request('initialize', { processId: process.pid, rootUri: pathToFileURL(tempRoot).toString(), capabilities })
+    expect(initialized.error).toBeUndefined()
+    client.notify('initialized', {})
+    return { client, tempRoot }
+  }
+
+  it('registers .spw watchers and folder deletes for a client that takes dynamic registration, and ignores its reply', async () => {
+    const { client, tempRoot } = await startServer({ workspace: { didChangeWatchedFiles: { dynamicRegistration: true } } })
+    try {
+      await client.request('workspace/symbol', { query: 'x' })
+      const registrations = client.received.filter((message) => message.method === 'client/registerCapability')
+      expect(registrations).toHaveLength(1)
+      expect(registrations[0]!.params).toMatchObject({
+        registrations: [{
+          method: 'workspace/didChangeWatchedFiles',
+          registerOptions: { watchers: [{ globPattern: '**/*.spw' }, { globPattern: '**/*', kind: 4 }] },
+        }],
+      })
+      client.reply(registrations[0]!.id!, null)
+      await client.request('workspace/symbol', { query: 'x' })
+      expect(client.received.filter((message) => message.id === registrations[0]!.id && message.error)).toEqual([])
+    } finally {
+      await client.close()
+      activeClient = null
+      await fs.rm(tempRoot, { recursive: true, force: true })
+    }
+  }, 15_000)
+
+  it('registers nothing for a client that does not take dynamic registration', async () => {
+    const { client, tempRoot } = await startServer({})
+    try {
+      await client.request('workspace/symbol', { query: 'x' })
+      expect(client.received.some((message) => message.method === 'client/registerCapability')).toBe(false)
+    } finally {
+      await client.close()
       activeClient = null
       await fs.rm(tempRoot, { recursive: true, force: true })
     }
