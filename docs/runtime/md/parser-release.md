@@ -38,3 +38,17 @@ Every script exports a frozen `SPW_PARSER_BUILD` stamp: `package`, `version`, `c
 - Published files never change. If a rebuild's bytes differ from what an offset already holds, the build is refused and suggests the next free offset. A re-cut takes a new offset.
 - Rebuilding the same offset from the same clean revision produces identical bytes and does nothing.
 - `manifest.json` points at the release's newest offset and never moves back to an older one.
+
+## Prereleases
+
+A prerelease is a build of one revision, cut before its release day so it can be tried in production without becoming anyone's default.
+
+```bash
+npm run bundle:parser -- --pre --target 2026.10.26
+```
+
+- It writes `release/parser/pre/<12-hex revision>/` with the same layout as a release, at offset `00`. The revision is its identity, so there is one cut per revision.
+- `manifest.json` names `release: "pre/<revision>"` and carries `prerelease: { target }`, the release day it is headed for. Every stamp carries `prerelease: true`.
+- The same rules hold as for releases: a dirty tree is refused unless `--allow-dirty`, which marks the build dirty, and published bytes never change. Rebuilding the same revision is a no-op; if a changed toolchain makes the bytes differ, the build is refused until that prerelease folder is removed on purpose.
+- Promotion is a fresh cut, not a rename: on release day, `--release YYYY.MM.DD` from the same revision produces files whose stamps name the release. The manifests' revisions match.
+- spw.quest serves prereleases at `/parser/pre/<revision>/` and `/parser/next.js`, never through `/parser/latest.js` or the release index, and keeps them out of git: they deploy from the working tree and can be pruned.

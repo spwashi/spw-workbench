@@ -45,7 +45,7 @@
  # Unresolved questions. When resolved: log in stream, then move to ^["done"] as ~#resolved(label).
  ?[grammar_version]: "The manifest's grammar field carries the spw-seed package version because seed has no grammar version of its own; should seed export one that changes only when the grammar does?"
  ?[more_variants]: "Which consumer would import a lexer-only or reader-kit variant? Each variant is a promise to keep cutting it every release."
- ?[storage]: "Worker static assets hold a year of releases; at what size do releases move to R2 with only the manifests kept in git?"
+ ?[storage]: "Releases sit in git-tracked worker assets and prereleases deploy from gitignored assets; at what size do releases move to R2 with only the manifests kept in git, and should prereleases move there first so any machine can deploy them?"
  ?[import_integrity]: "Integrity covers script and modulepreload tags but not import statements; should the release page recommend an import map, and which browsers honor its integrity section?"
 }
 
@@ -55,6 +55,9 @@
  ~[quest_parser_routes]: "+[quest] (site repo) — spw.quest serves /parser/ from worker static assets with immutable caching, CORS, a latest redirect and a 404 that lists what exists"
  ~[first_release]: "+[quest] (site repo) — carry release 2026.10.13 from the workbench into spw.quest's assets and verify every hash"
  ~[stamp_matches_manifest]: "![release] — a test holds each file's SPW_PARSER_BUILD stamp to the manifest revision, release, offset, variant and form"
+ ~[prerelease_builder]: "#[release] — bundle:parser --pre cuts pre/<revision>/ with the release layout, a prerelease manifest naming its target day, and prerelease stamps"
+ ~[prerelease_routes]: "+[quest] (site repo) — /parser/pre/<revision>/ and /parser/next.js from gitignored assets, never through latest.js; carry with prune"
+ ~[production_parser_switch]: "+[quest] (site repo) — ?parser=next|latest|pre/<revision>|<day> runs that parser in the guide for one visitor, with a banner naming the build"
 }
 
 ^["cache"]{
@@ -64,7 +67,7 @@
  ~#files_hot: "scripts/release/build-parser-release.ts, package.json"
  ~#next_commit: "quest_parser_routes"
  ~#open_count: "4"
- ~#last_stream: "2026-10-12 20:09"
+ ~#last_stream: "2026-10-12 20:17"
 }
 
 ^["done"]{
@@ -74,4 +77,5 @@
 ^["stream"]{
  >>[2026-10-12 19:07] decide — Creator asked to proceed with versioned parser releases on spw.quest: release first, variant and form as declared axes, the offset owned by the release, immutable dated paths, moving aliases, a manifest with revision, hashes and sizes, and CORS for /parser/. The workbench builds; spw.quest publishes.
  >>[2026-10-12 20:09] implement — Landed in 17b0d6d7: bundle:parser. spw.quest routes are built and tested in the site repo, uncommitted; the first release waits for a clean pushed revision.
+ >>[2026-10-12 20:17] decide — Creator asked to prepare prereleases that can be tested in production. A prerelease is keyed by revision at pre/<rev12>/ with the release layout; spw.quest serves it from gitignored assets at /parser/pre/ and /parser/next.js, never through latest.js, and a ?parser= switch on the guide runs it for one visitor.
 }

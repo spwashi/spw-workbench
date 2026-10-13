@@ -71,6 +71,8 @@ export interface ParserBuildStamp {
   variant: ParserVariant
   form: ParserForm
   dirty?: true
+  /** Present on prerelease builds, which carry no release day of their own. */
+  prerelease?: true
 }
 
 export interface ParserReleaseScriptEntry {
@@ -110,6 +112,8 @@ export interface ParserReleaseManifest {
   release: string
   offset: string
   dirty?: true
+  /** Present on prereleases: release is pre/<revision>, and target names the release day it is headed for. */
+  prerelease?: { target?: string }
   workbench: { package: string; version: string; revision: string }
   grammar: string
   default: { variant: 'full'; form: 'min'; path: string }
@@ -122,6 +126,10 @@ export interface ParserReleaseOptions {
   allowDirty: boolean
   /** Directory that holds `<release>/` folders. Defaults to release/parser. */
   outRoot: string
+  /** Cut a prerelease keyed by revision (pre/<revision>/) instead of a release day. */
+  pre?: boolean
+  /** The release day a prerelease is headed for, YYYY.MM.DD. */
+  target?: string
 }
 
 interface VariantSpec {
@@ -240,6 +248,7 @@ function stampFor(
     variant: spec.variant,
     form,
     ...(provenance.dirty ? { dirty: true as const } : {}),
+    ...(options.pre ? { prerelease: true as const } : {}),
   }
 }
 
@@ -353,6 +362,7 @@ function buildManifest(
     release: options.release,
     offset: options.offset,
     ...(provenance.dirty ? { dirty: true as const } : {}),
+    ...(options.pre ? { prerelease: options.target ? { target: options.target } : {} } : {}),
     workbench: {
       package: provenance.packageName,
       version: provenance.version,
@@ -406,6 +416,14 @@ async function guardImmutable(
     const existing = await readIfPresent(path.join(releaseDir, entry.path))
     if (existing && !existing.equals(bytes)) differing.push(entry.path)
   }
+  if (differing.length > 0 && options.pre) {
+    throw new Error(
+      `prerelease ${options.release} is already published and these files would change:\n` +
+        differing.map((p) => `    ${p}`).join('\n') +
+        `\n  A prerelease names one revision; the same revision built twice should match. ` +
+        `If the toolchain changed on purpose, remove ${options.release}/ and cut it again.`,
+    )
+  }
   if (differing.length > 0) {
     const next = await nextFreeOffset(releaseDir)
     const advice =
@@ -436,11 +454,23 @@ export interface ParserReleaseResult {
   contents: Map<string, Buffer>
 }
 
-export async function buildParserRelease(options: ParserReleaseOptions): Promise<ParserReleaseResult> {
-  const problem = validateReleaseName(options.release) ?? validateOffset(options.offset)
-  if (problem) throw new Error(problem)
+export async function buildParserRelease(requested: ParserReleaseOptions): Promise<ParserReleaseResult> {
+  let options = requested
+  if (options.pre) {
+    if (options.release) throw new Error('--pre names its build from the revision (pre/<revision>); drop --release')
+    if (options.offset !== '00') throw new Error('a prerelease has one cut per revision; drop --offset')
+    const target = options.target === undefined ? null : validateReleaseName(options.target)
+    if (target) throw new Error(`--target: ${target}`)
+  } else {
+    if (options.target !== undefined) throw new Error('--target only applies to --pre')
+    const problem = validateReleaseName(options.release) ?? validateOffset(options.offset)
+    if (problem) throw new Error(problem)
+  }
 
   const provenance = await readProvenance(options.allowDirty)
+  if (options.pre) {
+    options = { ...options, release: `pre/${provenance.revision.slice(0, STAMP_COMMIT_LENGTH)}` }
+  }
   const planned = await planFiles(provenance, options)
   const manifest = buildManifest(provenance, options, planned)
   const releaseDir = path.join(options.outRoot, options.release)
@@ -479,11 +509,14 @@ function formatSizeReport(result: ParserReleaseResult): string {
 // ── CLI ─────────────────────────────────────────────────────────────────────
 
 const USAGE = `Usage: npm run bundle:parser -- --release YYYY.MM.DD [--offset NN] [--allow-dirty] [--out DIR]
+       npm run bundle:parser -- --pre [--target YYYY.MM.DD] [--allow-dirty] [--out DIR]
 
   --release YYYY.MM.DD  release day (required)
   --offset NN           two-digit cut within the release (default 00); a re-cut takes a new offset
   --allow-dirty         build from a dirty tree; manifest and stamps say "dirty": true
-  --out DIR             directory holding <release>/ folders (default release/parser)`
+  --out DIR             directory holding <release>/ folders (default release/parser)
+  --pre                 cut a prerelease at pre/<revision>/ instead of a release day
+  --target YYYY.MM.DD   with --pre: the release day this prerelease is headed for`
 
 function parseArgs(argv: string[]): ParserReleaseOptions | 'help' {
   const options: ParserReleaseOptions = { release: '', offset: '00', allowDirty: false, outRoot: DEFAULT_OUT_ROOT }
@@ -510,11 +543,17 @@ function parseArgs(argv: string[]): ParserReleaseOptions | 'help' {
       case '--allow-dirty':
         options.allowDirty = true
         break
+      case '--pre':
+        options.pre = true
+        break
+      case '--target':
+        options.target = value()
+        break
       default:
         throw new Error(`unknown argument "${argv[i]}"\n\n${USAGE}`)
     }
   }
-  if (!options.release) throw new Error(`--release is required\n\n${USAGE}`)
+  if (!options.release && !options.pre) throw new Error(`--release or --pre is required\n\n${USAGE}`)
   return options
 }
 

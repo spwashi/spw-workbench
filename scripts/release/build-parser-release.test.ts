@@ -301,3 +301,52 @@ describe('bundle:parser immutability and refusals', () => {
     }
   })
 })
+
+describe('bundle:parser --pre', () => {
+  let outRoot: string
+  let revision: string
+
+  before(async () => {
+    outRoot = await makeTempRoot('pre')
+    revision = (await execFileAsync('git', ['rev-parse', 'HEAD'], { cwd: rootDir })).stdout.trim()
+  })
+
+  after(async () => {
+    await fs.rm(outRoot, { recursive: true, force: true })
+  })
+
+  it('cuts pre/<revision>/ with the release layout, a prerelease manifest and prerelease stamps', async () => {
+    const run = await runBuilder(['--pre', '--target', '2026.10.26', '--allow-dirty', '--out', outRoot])
+    assert.equal(run.code, 0, run.stderr)
+    const key = `pre/${revision.slice(0, 12)}`
+    const manifest = await readManifest(path.join(outRoot, key))
+    assert.equal(manifest.release, key)
+    assert.equal(manifest.offset, '00')
+    assert.deepEqual(manifest.prerelease, { target: '2026.10.26' })
+    assert.equal(manifest.workbench.revision, revision)
+    const full = await import(pathToFileURL(path.join(outRoot, key, 'full/00.min.js')).href)
+    const stamp = full.SPW_PARSER_BUILD as ParserBuildStamp
+    assert.equal(stamp.release, key)
+    assert.equal(stamp.prerelease, true)
+    assert.equal(full.parse('~door').success, true)
+    const alias = await fs.readFile(path.join(outRoot, key, '00.js'))
+    assert.ok(alias.equals(await fs.readFile(path.join(outRoot, key, 'full/00.min.js'))))
+  })
+
+  it('re-runs the same revision as a no-op', async () => {
+    const run = await runBuilder(['--pre', '--target', '2026.10.26', '--allow-dirty', '--out', outRoot])
+    assert.equal(run.code, 0, run.stderr)
+  })
+
+  it('refuses --release, --offset and a malformed --target beside --pre, and --target without it', async () => {
+    for (const args of [
+      ['--pre', '--release', RELEASE],
+      ['--pre', '--offset', '01'],
+      ['--pre', '--target', '2026.13.40'],
+      ['--release', RELEASE, '--target', '2026.10.26'],
+    ]) {
+      const run = await runBuilder([...args, '--allow-dirty', '--out', outRoot])
+      assert.notEqual(run.code, 0, args.join(' '))
+    }
+  })
+})
