@@ -2,53 +2,60 @@
 
 A parser release is a dated, immutable set of browser parser builds cut from one workbench revision. The workbench builds it; spw.quest serves it for other sites to import.
 
+## Names
+
+Every cut is a folder named for a release day, in one of three shapes:
+
+| Name | Kind | Cut with |
+|------|------|----------|
+| `2026.10.13` | release | `--release 2026.10.13` |
+| `2026.10.13-pre.N` | prerelease, tried before the day | `--pre --target 2026.10.13` |
+| `2026.10.13-patch.N` | patch, a fix to a published day | `--patch --target 2026.10.13` |
+
+Within a day the order is `pre.1 … pre.N`, then the release, then `patch.1 … patch.N`; across days, by day. This is not semver's order (semver would sort `-patch.N` before the day), so spw.quest orders names itself.
+
 ## Command
 
 ```bash
-npm run bundle:parser -- --release 2026.10.13 [--offset 00] [--allow-dirty] [--out DIR]
-npm run test:parser-release     # node:test: builds into a temp dir and checks the contract
+npm run bundle:parser -- --release YYYY.MM.DD [--allow-dirty] [--out DIR]
+npm run bundle:parser -- --pre --target YYYY.MM.DD [--allow-dirty] [--out DIR]
+npm run bundle:parser -- --patch --target YYYY.MM.DD [--allow-dirty] [--out DIR]
+npm run test:parser-release     # node:test: builds into temp dirs and checks the contract
 ```
 
-- `--release` is a calendar day written `YYYY.MM.DD`.
-- `--offset` is a two-digit cut within that release (default `00`).
+- `--release` is a calendar day written `YYYY.MM.DD`. A day is cut once.
+- `--pre` and `--patch` take the day from `--target` and number the cut among that day's cuts of the same kind. The same revision cut again keeps its number; any other revision takes the next one.
 - `--allow-dirty` builds from an uncommitted tree; the manifest and every stamp then say `"dirty": true`. Without it, a dirty tree is refused.
 - `--out` replaces the default `release/parser` root (gitignored).
 
 ## Layout
 
 ```
-release/parser/<release>/
-  full/<offset>.min.js          parse, parseExpression, SPW_PARSER_BUILD (minified, no map)
-  full/<offset>.debug.js        same exports, unminified
-  full/<offset>.debug.js.map    external map, linked by a relative sourceMappingURL
-  lite/<offset>.min.js          the scanner (packages/spw-seed/src/lite.ts) + SPW_PARSER_BUILD
-  lite/<offset>.debug.js(.map)
-  <offset>.js                   alias: byte-identical to full/<offset>.min.js
-  manifest.json                 schema spw.parser-release/1
+release/parser/<name>/
+  parser.js             the default: byte-identical to full.min.js
+  full.min.js           parse, parseExpression, SPW_PARSER_BUILD (minified, no map)
+  full.debug.js         same exports, unminified
+  full.debug.js.map     external map, linked by a relative sourceMappingURL
+  lite.min.js           the scanner (packages/spw-seed/src/lite.ts) + SPW_PARSER_BUILD
+  lite.debug.js(.map)
+  manifest.json         schema spw.parser-release/2
 ```
 
-`full` keeps the export surface of the site's old `spw-workbench-parser.js` bundle, so existing imports keep working. `lite` must fit a budget of 5 KiB minified: the 4 KiB scanner budget from `build-js-dist.ts` plus room for the banner and stamp.
+`full` keeps the export surface of the site's old `spw-workbench-parser.js` bundle, so existing imports keep working. `lite.min.js` must fit 5 KiB: the 4 KiB scanner budget from `build-js-dist.ts` plus room for the banner and stamp.
 
-Every script exports a frozen `SPW_PARSER_BUILD` stamp: `package`, `version`, `commit` (12 hex), `source`, `release`, `offset`, `variant`, `form`, and `dirty` when it applies. The alias is the same bytes as `full/<offset>.min.js`, so its stamp says `full`/`min`.
+Every script exports a frozen `SPW_PARSER_BUILD` stamp: `package`, `version`, `commit` (12 hex), `source`, `release` (the folder name), `variant`, `form`, and `prerelease: true`, `patch: true` or `dirty: true` when they apply. `parser.js` is the same bytes as `full.min.js`, so its stamp says `full`/`min`.
 
-`manifest.json` names the release, its current offset, the workbench package, version and 40-hex revision, the `spw-seed` version as `grammar`, the default file, and one entry per file (maps and the alias included) with `bytes`, `sha256` and an SRI `integrity` (`sha384-…`).
+`manifest.json` names the cut (`name`, `kind`, `day`, and `pre` or `patch` as a number), the workbench package, version and 40-hex revision, the `spw-seed` version as `grammar`, the default file (`parser.js`), and one entry per file (maps and the alias included) with `bytes`, `sha256` and an SRI `integrity` (`sha384-…`).
 
 ## Immutability
 
-- Published files never change. If a rebuild's bytes differ from what an offset already holds, the build is refused and suggests the next free offset. A re-cut takes a new offset.
-- Rebuilding the same offset from the same clean revision produces identical bytes and does nothing.
-- `manifest.json` points at the release's newest offset and never moves back to an older one.
+- Published files never change. If a rebuild's bytes differ from what a name already holds, the build is refused. For a release day, the refusal says to cut a patch.
+- Rebuilding the same name from the same clean revision produces identical bytes and does nothing.
+- A prerelease is not promoted by renaming: on release day, `--release YYYY.MM.DD` from the same revision cuts files whose stamps name the release. The manifests' revisions match.
 
-## Prereleases
+## On spw.quest
 
-A prerelease is a build of one revision, cut before its release day so it can be tried in production without becoming anyone's default.
-
-```bash
-npm run bundle:parser -- --pre --target 2026.10.26
-```
-
-- It writes `release/parser/pre/<12-hex revision>/` with the same layout as a release, at offset `00`. The revision is its identity, so there is one cut per revision.
-- `manifest.json` names `release: "pre/<revision>"` and carries `prerelease: { target }`, the release day it is headed for. Every stamp carries `prerelease: true`.
-- The same rules hold as for releases: a dirty tree is refused unless `--allow-dirty`, which marks the build dirty, and published bytes never change. Rebuilding the same revision is a no-op; if a changed toolchain makes the bytes differ, the build is refused until that prerelease folder is removed on purpose.
-- Promotion is a fresh cut, not a rename: on release day, `--release YYYY.MM.DD` from the same revision produces files whose stamps name the release. The manifests' revisions match.
-- spw.quest serves prereleases at `/parser/pre/<revision>/` and `/parser/next.js`, never through `/parser/latest.js` or the release index, and keeps them out of git: they deploy from the working tree and can be pruned.
+- `/parser/<name>/` serves any cut; dated paths cache for a year.
+- `/parser/latest.js` is the newest release or patch; `/parser/next.js` is the newest prerelease. Both are short-cached and for trying, not for importing.
+- Releases and patches are tracked in the site's git; prereleases deploy from gitignored assets and can be pruned.
+- `?parser=next|latest|<name>` on the guide runs that parser for one visitor.

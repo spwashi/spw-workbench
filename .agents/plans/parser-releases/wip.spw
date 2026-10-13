@@ -10,7 +10,7 @@
  gist: "Every release day cuts a dated, immutable set of browser parser builds with a manifest, and spw.quest serves them for other sites to import"
  touches: [~"scripts/release", ~"docs/runtime/md"]
  entry: ~"./PLAN.md"
- next: "~[release_builder]: npm run bundle:parser -- --release 2026.10.13 writes release/parser/2026.10.13 with full and lite variants, min and debug forms, an alias and a manifest."
+ next: "~[release_names]: land the /2 names, then cut 2026.10.13-pre.1 from the pushed revision for spw.quest to serve at /parser/next.js."
 }
 
 ^["edges"]{
@@ -27,15 +27,18 @@
 
 ^["intent"]{
  ~#goal: "A parser another site can import by a path that never changes, with the workbench revision, sizes and hashes stated beside it"
- ~#taste: "a few fixed rules instead of many paths: the offset belongs to the release, published files never change, only aliases move"
+ ~#taste: "a few fixed rules instead of many paths: a name is a day with at most one suffix, published files never change, only aliases move"
 }
 
 ^["layout"]{
- index = "/parser/ and /parser/index.json: every release, newest first"
- release = "/parser/<YYYY.MM.DD>/ and manifest.json: what was cut together from one workbench revision"
- file = "/parser/<release>/<variant>/<offset>.<form>.js, with a .map beside each debug form"
- alias = "/parser/<release>/<offset>.js: the same bytes as the default variant and form"
- latest = "/parser/latest.js: a short-cached redirect to the newest alias; for trying, not for importing"
+ names = #[ `YYYY.MM.DD: the release, cut once`, `YYYY.MM.DD-pre.N: tried before the day`, `YYYY.MM.DD-patch.N: a fix to a published day` ]
+ order = "within a day pre.N, then the release, then patch.N; across days by day; spw.quest orders names itself, since semver would put -patch.N before the day"
+ index = "/parser/ and /parser/index.json: every release and patch, newest first"
+ cut = "/parser/<name>/ and manifest.json: what was cut together from one workbench revision"
+ file = "/parser/<name>/<variant>.<form>.js, with a .map beside each debug form"
+ alias = "/parser/<name>/parser.js: the same bytes as full.min.js"
+ latest = "/parser/latest.js: a short-cached redirect to the newest release or patch; for trying, not for importing"
+ next = "/parser/next.js: the same for the newest prerelease"
  variants = #[ `full: parse, parseExpression, SPW_PARSER_BUILD`, `lite: the scanner, size-capped` ]
  forms = #[ `min`, `debug (with a source map)` ]
  headers = "dated paths cache for a year and never change; CORS open, cross-origin resource policy, text/javascript"
@@ -54,10 +57,11 @@
  .[release_builder](17b0d6d7): "#[release] — npm run bundle:parser cuts full and lite in min and debug forms with an alias and a spw.parser-release/1 manifest; refuses a dirty tree and refuses to rewrite a published release"
  ~[quest_parser_routes]: "+[quest] (site repo) — spw.quest serves /parser/ from worker static assets with immutable caching, CORS, a latest redirect and a 404 that lists what exists"
  ~[first_release]: "+[quest] (site repo) — carry release 2026.10.13 from the workbench into spw.quest's assets and verify every hash"
- ~[stamp_matches_manifest]: "![release] — a test holds each file's SPW_PARSER_BUILD stamp to the manifest revision, release, offset, variant and form"
- ~[prerelease_builder]: "#[release] — bundle:parser --pre cuts pre/<revision>/ with the release layout, a prerelease manifest naming its target day, and prerelease stamps"
- ~[prerelease_routes]: "+[quest] (site repo) — /parser/pre/<revision>/ and /parser/next.js from gitignored assets, never through latest.js; carry with prune"
- ~[production_parser_switch]: "+[quest] (site repo) — ?parser=next|latest|pre/<revision>|<day> runs that parser in the guide for one visitor, with a banner naming the build"
+ .[prerelease_builder](a6d69642): "#[release] — bundle:parser --pre cuts a prerelease keyed by revision, ready to try in production"
+ ~[release_names]: "#[release] — spw.parser-release/2: one folder per name, YYYY.MM.DD, -pre.N or -patch.N, holding parser.js, full and lite in min and debug; no offsets"
+ ~[stamp_matches_manifest]: "![release] — a test holds each file's SPW_PARSER_BUILD stamp to the manifest revision, name, kind, variant and form"
+ ~[prerelease_routes]: "+[quest] (site repo) — /parser/<day>-pre.N/ and /parser/next.js from gitignored assets, never through latest.js; carry with prune"
+ ~[production_parser_switch]: "+[quest] (site repo) — ?parser=next|latest|<name> runs that parser in the guide for one visitor, with a banner naming the build"
 }
 
 ^["cache"]{
@@ -65,9 +69,9 @@
  ~#base_ref: "main@77599452"
  ~#rebased_at: "2026-10-12"
  ~#files_hot: "scripts/release/build-parser-release.ts, package.json"
- ~#next_commit: "quest_parser_routes"
+ ~#next_commit: "release_names"
  ~#open_count: "4"
- ~#last_stream: "2026-10-12 20:17"
+ ~#last_stream: "2026-10-12 20:35"
 }
 
 ^["done"]{
@@ -78,4 +82,6 @@
  >>[2026-10-12 19:07] decide — Creator asked to proceed with versioned parser releases on spw.quest: release first, variant and form as declared axes, the offset owned by the release, immutable dated paths, moving aliases, a manifest with revision, hashes and sizes, and CORS for /parser/. The workbench builds; spw.quest publishes.
  >>[2026-10-12 20:09] implement — Landed in 17b0d6d7: bundle:parser. spw.quest routes are built and tested in the site repo, uncommitted; the first release waits for a clean pushed revision.
  >>[2026-10-12 20:17] decide — Creator asked to prepare prereleases that can be tested in production. A prerelease is keyed by revision at pre/<rev12>/ with the release layout; spw.quest serves it from gitignored assets at /parser/pre/ and /parser/next.js, never through latest.js, and a ?parser= switch on the guide runs it for one visitor.
+ >>[2026-10-12 20:35] decide — Creator found pre/<revision> awkward and settled the names: a release YYYY.MM.DD is cut once, a prerelease is YYYY.MM.DD-pre.N and a fix to a published day is YYYY.MM.DD-patch.N, numbered per day and kind with the same revision keeping its number. Offsets are gone; each folder holds parser.js, full and lite in min and debug forms, and a spw.parser-release/2 manifest.
+ >>[2026-10-12 20:35] implement — Builder, tests (19 pass) and docs/runtime/md/parser-release.md moved to /2 as ~[release_names]; .[prerelease_builder](a6d69642) marked landed. The site agent carries the same names into spw.quest routes, ordering pre.N, the release, then patch.N.
 }

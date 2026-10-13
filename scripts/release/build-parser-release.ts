@@ -1,23 +1,25 @@
 #!/usr/bin/env tsx
 /**
- * Versioned browser parser release — `npm run bundle:parser -- --release YYYY.MM.DD`.
+ * Versioned browser parser release — `npm run bundle:parser -- --release YYYY.MM.DD`
+ * or a prerelease — `npm run bundle:parser -- --pre --target YYYY.MM.DD`.
  *
- * Cuts one dated, immutable set of browser parser builds from one workbench
- * revision and writes a `spw.parser-release/1` manifest beside them:
+ * Cuts one immutable set of browser parser builds from one workbench revision
+ * and writes a `spw.parser-release/2` manifest beside them:
  *
- *   release/parser/<release>/
- *     full/<offset>.min.js            parse, parseExpression, SPW_PARSER_BUILD (minified)
- *     full/<offset>.debug.js(.map)    same exports, unminified, external source map
- *     lite/<offset>.min.js            the scanner (packages/spw-seed/src/lite.ts) + stamp
- *     lite/<offset>.debug.js(.map)
- *     <offset>.js                     alias: the same bytes as full/<offset>.min.js
- *     manifest.json                   the release's current offset, sizes and hashes
+ *   release/parser/<name>/            YYYY.MM.DD, YYYY.MM.DD-pre.N or YYYY.MM.DD-patch.N
+ *     parser.js                       the default: the same bytes as full.min.js
+ *     full.min.js                     parse, parseExpression, SPW_PARSER_BUILD (minified)
+ *     full.debug.js(.map)             same exports, unminified, external source map
+ *     lite.min.js                     the scanner (packages/spw-seed/src/lite.ts) + stamp
+ *     lite.debug.js(.map)
+ *     manifest.json                   name, kind, revision, sizes and hashes
  *
  * Rules: a dirty working tree is refused unless --allow-dirty (which marks the
- * manifest and every stamp `dirty: true`); published files never change, so a
- * rebuild whose bytes differ from what an offset already holds is refused —
- * a re-cut takes a new offset. The manifest points at the newest offset and
- * never moves backward.
+ * manifest and every stamp `dirty: true`); published files never change. A
+ * release day is cut once; a fix to it is a patch, YYYY.MM.DD-patch.N. A
+ * prerelease is named for the day it targets, YYYY.MM.DD-pre.N. Within a day,
+ * pre.N comes before the release and patch.N after it. The same revision cut
+ * again as the same kind keeps its number and changes nothing.
  *
  * The full variant keeps the export surface of the site's
  * `scripts/build-spw-literal-parser.mjs` bundle (including its `source` stamp
@@ -40,9 +42,9 @@ const execFileAsync = promisify(execFile)
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const DEFAULT_OUT_ROOT = path.join(rootDir, 'release', 'parser')
 
-export const PARSER_RELEASE_SCHEMA = 'spw.parser-release/1'
+export const PARSER_RELEASE_SCHEMA = 'spw.parser-release/2'
 const RELEASE_PATTERN = /^(\d{4})\.(\d{2})\.(\d{2})$/
-const OFFSET_PATTERN = /^\d{2}$/
+const SUFFIXED_NAME_PATTERN = /^(\d{4}\.\d{2}\.\d{2})-(pre|patch)\.([1-9]\d*)$/
 const REVISION_PATTERN = /^[0-9a-f]{40}$/
 /** The stamp's commit is the short form the site bundle already used. */
 const STAMP_COMMIT_LENGTH = 12
@@ -67,12 +69,13 @@ export interface ParserBuildStamp {
   commit: string
   source: string
   release: string
-  offset: string
   variant: ParserVariant
   form: ParserForm
   dirty?: true
   /** Present on prerelease builds, which carry no release day of their own. */
   prerelease?: true
+  /** Present on a patch of a published release day. */
+  patch?: true
 }
 
 export interface ParserReleaseScriptEntry {
@@ -109,27 +112,45 @@ export type ParserReleaseFileEntry =
 
 export interface ParserReleaseManifest {
   schema: typeof PARSER_RELEASE_SCHEMA
-  release: string
-  offset: string
+  /** YYYY.MM.DD, YYYY.MM.DD-pre.N or YYYY.MM.DD-patch.N. */
+  name: string
+  kind: ParserCutKind
+  /** The release day: the day itself, the day a prerelease targets, or the day a patch fixes. */
+  day: string
+  /** A prerelease's number among the prereleases of its day. */
+  pre?: number
+  /** A patch's number among the patches of its day. */
+  patch?: number
   dirty?: true
-  /** Present on prereleases: release is pre/<revision>, and target names the release day it is headed for. */
-  prerelease?: { target?: string }
   workbench: { package: string; version: string; revision: string }
   grammar: string
   default: { variant: 'full'; form: 'min'; path: string }
   files: ParserReleaseFileEntry[]
 }
 
+export type ParserCutKind = 'release' | 'prerelease' | 'patch'
+
 export interface ParserReleaseOptions {
-  release: string
-  offset: string
+  /** The release day, YYYY.MM.DD. Omitted for a prerelease or a patch. */
+  release?: string
   allowDirty: boolean
-  /** Directory that holds `<release>/` folders. Defaults to release/parser. */
+  /** Directory that holds `<name>/` folders. Defaults to release/parser. */
   outRoot: string
-  /** Cut a prerelease keyed by revision (pre/<revision>/) instead of a release day. */
+  /** Cut a prerelease named for --target instead of a release. */
   pre?: boolean
-  /** The release day a prerelease is headed for, YYYY.MM.DD. */
+  /** Cut a patch of the published release day named by --target. */
+  patch?: boolean
+  /** With --pre, the day it is headed for; with --patch, the day it fixes. YYYY.MM.DD. */
   target?: string
+}
+
+/** What a cut is called and where it lands, settled before anything is built. */
+interface CutName {
+  name: string
+  kind: ParserCutKind
+  day: string
+  pre?: number
+  patch?: number
 }
 
 interface VariantSpec {
@@ -187,11 +208,6 @@ export function validateReleaseName(release: string): string | null {
   return real ? null : `release "${release}" is not a calendar date`
 }
 
-/** An offset is two digits, owned by its release; returns an error or null. */
-export function validateOffset(offset: string): string | null {
-  return OFFSET_PATTERN.test(offset) ? null : `offset "${offset}" must be two digits, like 00`
-}
-
 // ── provenance ──────────────────────────────────────────────────────────────
 
 async function git(args: string[]): Promise<string> {
@@ -232,23 +248,18 @@ async function readProvenance(allowDirty: boolean): Promise<Provenance> {
   }
 }
 
-function stampFor(
-  provenance: Provenance,
-  spec: VariantSpec,
-  form: ParserForm,
-  options: ParserReleaseOptions,
-): ParserBuildStamp {
+function stampFor(provenance: Provenance, spec: VariantSpec, form: ParserForm, cut: CutName): ParserBuildStamp {
   return {
     package: provenance.packageName,
     version: provenance.version,
     commit: provenance.revision.slice(0, STAMP_COMMIT_LENGTH),
     source: spec.source,
-    release: options.release,
-    offset: options.offset,
+    release: cut.name,
     variant: spec.variant,
     form,
     ...(provenance.dirty ? { dirty: true as const } : {}),
-    ...(options.pre ? { prerelease: true as const } : {}),
+    ...(cut.kind === 'prerelease' ? { prerelease: true as const } : {}),
+    ...(cut.kind === 'patch' ? { patch: true as const } : {}),
   }
 }
 
@@ -259,11 +270,11 @@ async function bundleVariant(
   form: ParserForm,
   stamp: ParserBuildStamp,
 ): Promise<{ code: Buffer; map?: Buffer }> {
-  const fileName = `${stamp.offset}.${form}.js`
+  const fileName = `${spec.variant}.${form}.js`
   const dirtyNote = stamp.dirty ? ' (dirty tree)' : ''
   const banner =
     `/* ${stamp.package} v${stamp.version} @ ${stamp.commit}${dirtyNote} · ` +
-    `parser release ${stamp.release}/${stamp.offset} · ${stamp.variant} ${form}. ` +
+    `parser ${stamp.release} · ${stamp.variant} ${form}. ` +
     'Generated by npm run bundle:parser; do not edit. */'
 
   const result = await build({
@@ -304,15 +315,15 @@ async function bundleVariant(
   }
 }
 
-async function planFiles(provenance: Provenance, options: ParserReleaseOptions): Promise<PlannedFile[]> {
+async function planFiles(provenance: Provenance, cut: CutName): Promise<PlannedFile[]> {
   const planned: PlannedFile[] = []
   let defaultBytes: Buffer | undefined
 
   for (const spec of VARIANTS) {
     for (const form of FORMS) {
-      const stamp = stampFor(provenance, spec, form, options)
+      const stamp = stampFor(provenance, spec, form, cut)
       const { code, map } = await bundleVariant(spec, form, stamp)
-      const scriptPath = `${spec.variant}/${options.offset}.${form}.js`
+      const scriptPath = `${spec.variant}.${form}.js`
       planned.push({ entry: { path: scriptPath, variant: spec.variant, form }, bytes: code })
       if (map) {
         planned.push({
@@ -332,15 +343,15 @@ async function planFiles(provenance: Provenance, options: ParserReleaseOptions):
 
   if (!defaultBytes) throw new Error('the default variant (full min) was not built')
   planned.push({
-    entry: { path: `${options.offset}.js`, alias: defaultPathFor(options.offset) },
+    entry: { path: DEFAULT_ALIAS_PATH, alias: DEFAULT_FILE_PATH },
     bytes: defaultBytes,
   })
   return planned
 }
 
-function defaultPathFor(offset: string): string {
-  return `full/${offset}.min.js`
-}
+/** The default file and the alias that carries the same bytes. */
+const DEFAULT_FILE_PATH = 'full.min.js'
+const DEFAULT_ALIAS_PATH = 'parser.js'
 
 // ── manifest ────────────────────────────────────────────────────────────────
 
@@ -352,24 +363,22 @@ function digest(bytes: Buffer): { bytes: number; sha256: string; integrity: stri
   }
 }
 
-function buildManifest(
-  provenance: Provenance,
-  options: ParserReleaseOptions,
-  planned: PlannedFile[],
-): ParserReleaseManifest {
+function buildManifest(provenance: Provenance, cut: CutName, planned: PlannedFile[]): ParserReleaseManifest {
   return {
     schema: PARSER_RELEASE_SCHEMA,
-    release: options.release,
-    offset: options.offset,
+    name: cut.name,
+    kind: cut.kind,
+    day: cut.day,
+    ...(cut.pre !== undefined ? { pre: cut.pre } : {}),
+    ...(cut.patch !== undefined ? { patch: cut.patch } : {}),
     ...(provenance.dirty ? { dirty: true as const } : {}),
-    ...(options.pre ? { prerelease: options.target ? { target: options.target } : {} } : {}),
     workbench: {
       package: provenance.packageName,
       version: provenance.version,
       revision: provenance.revision,
     },
     grammar: provenance.grammar,
-    default: { variant: 'full', form: 'min', path: defaultPathFor(options.offset) },
+    default: { variant: 'full', form: 'min', path: DEFAULT_ALIAS_PATH },
     files: planned.map(({ entry, bytes }) => ({ ...entry, ...digest(bytes) }) as ParserReleaseFileEntry),
   }
 }
@@ -385,64 +394,65 @@ async function readIfPresent(filePath: string): Promise<Buffer | null> {
   }
 }
 
-/** The next two-digit offset no published full/min file holds. */
-async function nextFreeOffset(releaseDir: string): Promise<string> {
-  let names: string[] = []
-  try {
-    names = await fs.readdir(path.join(releaseDir, 'full'))
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
-  }
-  const taken = names
-    .map((name) => /^(\d{2})\.min\.js$/.exec(name)?.[1])
-    .filter((offset): offset is string => offset !== undefined)
-    .map(Number)
-  const next = taken.length > 0 ? Math.max(...taken) + 1 : 0
-  return String(next).padStart(2, '0')
-}
-
 /**
- * Refuse to change anything an offset already published, and refuse to move
- * the manifest back to an older offset. Identical bytes are not a change, so
- * re-running a cut from the same clean revision is a no-op, not an error.
+ * Refuse to change anything a cut already published. Identical bytes are not
+ * a change, so re-running a cut from the same clean revision is a no-op.
  */
-async function guardImmutable(
-  releaseDir: string,
-  options: ParserReleaseOptions,
-  planned: PlannedFile[],
-): Promise<void> {
+async function guardImmutable(releaseDir: string, cut: CutName, planned: PlannedFile[]): Promise<void> {
   const differing: string[] = []
   for (const { entry, bytes } of planned) {
     const existing = await readIfPresent(path.join(releaseDir, entry.path))
     if (existing && !existing.equals(bytes)) differing.push(entry.path)
   }
-  if (differing.length > 0 && options.pre) {
-    throw new Error(
-      `prerelease ${options.release} is already published and these files would change:\n` +
-        differing.map((p) => `    ${p}`).join('\n') +
-        `\n  A prerelease names one revision; the same revision built twice should match. ` +
-        `If the toolchain changed on purpose, remove ${options.release}/ and cut it again.`,
-    )
-  }
-  if (differing.length > 0) {
-    const next = await nextFreeOffset(releaseDir)
-    const advice =
-      validateOffset(next) === null ? `cut again with --offset ${next}` : 'this release has no offsets left; cut a new release day'
-    throw new Error(
-      `release ${options.release} offset ${options.offset} is already published and these files would change:\n` +
-        differing.map((p) => `    ${p}`).join('\n') +
-        `\n  Published files never change; ${advice}.`,
-    )
-  }
+  if (differing.length === 0) return
+  const why =
+    cut.kind === 'release'
+      ? `A published day never changes; cut the fix as a patch with --patch --target ${cut.day} (or try it first with --pre).`
+      : `A ${cut.kind} names one revision, and the same revision should build the same bytes. ` +
+        `If the toolchain changed on purpose, remove ${cut.name}/ and cut it again.`
+  throw new Error(
+    `${cut.name} is already published and these files would change:\n` +
+      differing.map((p) => `    ${p}`).join('\n') +
+      `\n  ${why}`,
+  )
+}
 
-  const manifestBytes = await readIfPresent(path.join(releaseDir, 'manifest.json'))
-  if (!manifestBytes) return
-  const current = (JSON.parse(manifestBytes.toString('utf8')) as Partial<ParserReleaseManifest>).offset
-  if (typeof current === 'string' && validateOffset(current) === null && Number(current) > Number(options.offset)) {
-    throw new Error(
-      `release ${options.release} already points at offset ${current}; the manifest never moves back to ${options.offset}.`,
-    )
+/**
+ * A prerelease or a patch is numbered among the cuts of its kind for its day.
+ * The same revision (and the same dirty mark) keeps the number it already has;
+ * any other revision takes the next number.
+ */
+async function suffixedName(
+  outRoot: string,
+  kind: 'prerelease' | 'patch',
+  day: string,
+  provenance: Provenance,
+): Promise<CutName> {
+  const suffix = kind === 'prerelease' ? 'pre' : 'patch'
+  const counted = (n: number): CutName =>
+    kind === 'prerelease'
+      ? { name: `${day}-pre.${n}`, kind, day, pre: n }
+      : { name: `${day}-patch.${n}`, kind, day, patch: n }
+  let names: string[] = []
+  try {
+    names = await fs.readdir(outRoot)
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
   }
+  let highest = 0
+  for (const name of names) {
+    const match = SUFFIXED_NAME_PATTERN.exec(name)
+    if (!match || match[1] !== day || match[2] !== suffix) continue
+    const n = Number(match[3])
+    highest = Math.max(highest, n)
+    const manifestBytes = await readIfPresent(path.join(outRoot, name, 'manifest.json'))
+    if (!manifestBytes) continue
+    const manifest = JSON.parse(manifestBytes.toString('utf8')) as Partial<ParserReleaseManifest>
+    if (manifest.workbench?.revision === provenance.revision && Boolean(manifest.dirty) === provenance.dirty) {
+      return counted(n)
+    }
+  }
+  return counted(highest + 1)
 }
 
 // ── cut ─────────────────────────────────────────────────────────────────────
@@ -454,28 +464,32 @@ export interface ParserReleaseResult {
   contents: Map<string, Buffer>
 }
 
-export async function buildParserRelease(requested: ParserReleaseOptions): Promise<ParserReleaseResult> {
-  let options = requested
-  if (options.pre) {
-    if (options.release) throw new Error('--pre names its build from the revision (pre/<revision>); drop --release')
-    if (options.offset !== '00') throw new Error('a prerelease has one cut per revision; drop --offset')
-    const target = options.target === undefined ? null : validateReleaseName(options.target)
-    if (target) throw new Error(`--target: ${target}`)
+export async function buildParserRelease(options: ParserReleaseOptions): Promise<ParserReleaseResult> {
+  if (options.pre && options.patch) throw new Error('choose one of --pre and --patch')
+  if (options.pre || options.patch) {
+    const flag = options.pre ? '--pre' : '--patch'
+    if (options.release) throw new Error(`${flag} is named for its target day; drop --release`)
+    if (!options.target) {
+      throw new Error(`${flag} needs --target YYYY.MM.DD, the day it is ${options.pre ? 'headed for' : 'fixing'}`)
+    }
+    const problem = validateReleaseName(options.target)
+    if (problem) throw new Error(`--target: ${problem}`)
   } else {
-    if (options.target !== undefined) throw new Error('--target only applies to --pre')
-    const problem = validateReleaseName(options.release) ?? validateOffset(options.offset)
+    if (options.target !== undefined) throw new Error('--target only applies to --pre or --patch')
+    const problem = validateReleaseName(options.release ?? '')
     if (problem) throw new Error(problem)
   }
 
   const provenance = await readProvenance(options.allowDirty)
-  if (options.pre) {
-    options = { ...options, release: `pre/${provenance.revision.slice(0, STAMP_COMMIT_LENGTH)}` }
-  }
-  const planned = await planFiles(provenance, options)
-  const manifest = buildManifest(provenance, options, planned)
-  const releaseDir = path.join(options.outRoot, options.release)
+  const cut: CutName =
+    options.pre || options.patch
+      ? await suffixedName(options.outRoot, options.pre ? 'prerelease' : 'patch', options.target!, provenance)
+      : { name: options.release!, kind: 'release', day: options.release! }
+  const planned = await planFiles(provenance, cut)
+  const manifest = buildManifest(provenance, cut, planned)
+  const releaseDir = path.join(options.outRoot, cut.name)
 
-  await guardImmutable(releaseDir, options, planned)
+  await guardImmutable(releaseDir, cut, planned)
 
   for (const { entry, bytes } of planned) {
     const target = path.join(releaseDir, entry.path)
@@ -492,7 +506,7 @@ function formatSizeReport(result: ParserReleaseResult): string {
   const { manifest, contents } = result
   const width = Math.max(...manifest.files.map((file) => file.path.length))
   const head =
-    `spw parser release ${manifest.release}/${manifest.offset} · ` +
+    `spw parser ${manifest.kind} ${manifest.name} · ` +
     `${manifest.workbench.package} v${manifest.workbench.version} @ ${manifest.workbench.revision.slice(0, STAMP_COMMIT_LENGTH)}` +
     (manifest.dirty ? ' (dirty)' : '')
   const rows = manifest.files.map((file) => {
@@ -508,18 +522,20 @@ function formatSizeReport(result: ParserReleaseResult): string {
 
 // ── CLI ─────────────────────────────────────────────────────────────────────
 
-const USAGE = `Usage: npm run bundle:parser -- --release YYYY.MM.DD [--offset NN] [--allow-dirty] [--out DIR]
-       npm run bundle:parser -- --pre [--target YYYY.MM.DD] [--allow-dirty] [--out DIR]
+const USAGE = `Usage: npm run bundle:parser -- --release YYYY.MM.DD [--allow-dirty] [--out DIR]
+       npm run bundle:parser -- --pre --target YYYY.MM.DD [--allow-dirty] [--out DIR]
+       npm run bundle:parser -- --patch --target YYYY.MM.DD [--allow-dirty] [--out DIR]
 
-  --release YYYY.MM.DD  release day (required)
-  --offset NN           two-digit cut within the release (default 00); a re-cut takes a new offset
+  --release YYYY.MM.DD  cut the release for that day; a day is cut once
+  --pre                 cut a prerelease named <target>-pre.N, before the day's release
+  --patch               cut a patch named <target>-patch.N, after the day's release
+  --target YYYY.MM.DD   with --pre, the day it is headed for; with --patch, the day it fixes
+                        (the same revision keeps its number)
   --allow-dirty         build from a dirty tree; manifest and stamps say "dirty": true
-  --out DIR             directory holding <release>/ folders (default release/parser)
-  --pre                 cut a prerelease at pre/<revision>/ instead of a release day
-  --target YYYY.MM.DD   with --pre: the release day this prerelease is headed for`
+  --out DIR             directory holding <name>/ folders (default release/parser)`
 
 function parseArgs(argv: string[]): ParserReleaseOptions | 'help' {
-  const options: ParserReleaseOptions = { release: '', offset: '00', allowDirty: false, outRoot: DEFAULT_OUT_ROOT }
+  const options: ParserReleaseOptions = { allowDirty: false, outRoot: DEFAULT_OUT_ROOT }
   for (let i = 0; i < argv.length; i += 1) {
     const [flag, inline] = argv[i].split(/=(.*)/s, 2)
     const value = (): string => {
@@ -534,9 +550,6 @@ function parseArgs(argv: string[]): ParserReleaseOptions | 'help' {
       case '--release':
         options.release = value()
         break
-      case '--offset':
-        options.offset = value()
-        break
       case '--out':
         options.outRoot = path.resolve(value())
         break
@@ -546,6 +559,9 @@ function parseArgs(argv: string[]): ParserReleaseOptions | 'help' {
       case '--pre':
         options.pre = true
         break
+      case '--patch':
+        options.patch = true
+        break
       case '--target':
         options.target = value()
         break
@@ -553,7 +569,9 @@ function parseArgs(argv: string[]): ParserReleaseOptions | 'help' {
         throw new Error(`unknown argument "${argv[i]}"\n\n${USAGE}`)
     }
   }
-  if (!options.release && !options.pre) throw new Error(`--release or --pre is required\n\n${USAGE}`)
+  if (!options.release && !options.pre && !options.patch) {
+    throw new Error(`--release, --pre or --patch is required\n\n${USAGE}`)
+  }
   return options
 }
 
