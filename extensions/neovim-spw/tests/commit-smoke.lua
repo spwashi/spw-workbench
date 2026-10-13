@@ -103,6 +103,7 @@ H.assert_true(vim.api.nvim_buf_get_name(0):find('^spw%-commit://' .. full) ~= ni
 
 -- 6. The commitRef token reads in the number color unless a colorscheme says otherwise.
 H.assert_eq(vim.api.nvim_get_hl(0, { name = '@lsp.type.commitRef' }).link, '@number', 'commitRef links to @number')
+H.assert_eq(vim.api.nvim_get_hl(0, { name = '@lsp.type.hashlike' }).link, '@number', 'hashlike links to @number')
 
 vim.fn.delete(repo, 'rf')
 print('All neovim-spw commit tests passed!')

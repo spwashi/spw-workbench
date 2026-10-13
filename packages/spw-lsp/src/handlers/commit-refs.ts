@@ -45,8 +45,14 @@ export interface CommitRefRule {
   confirmBeforeShowing: boolean
   /** Whether a hash git does not hold is reported as an information diagnostic. */
   diagnoseMissing: boolean
-  /** Whether the hash takes the commitRef semantic token. */
-  token: boolean
+  /**
+   * The semantic token the hash takes, chosen by form and never by git, so a
+   * file's tokens never wait on a git call: a landed ref is a commitRef, and
+   * any other hash-shaped run is a hashlike whether or not git knows it.
+   */
+  token: 'commitRef' | 'hashlike'
+  /** Whether a hover over a hash git does not hold says so. */
+  explainMissing: boolean
 }
 
 /**
@@ -54,8 +60,8 @@ export interface CommitRefRule {
  * new place to find hashes is one reader in READERS and one row here.
  */
 export const COMMIT_REF_STRATEGY: Readonly<Record<CommitRefSource, CommitRefRule>> = {
-  landed: { confirmBeforeShowing: false, diagnoseMissing: true, token: true },
-  cited: { confirmBeforeShowing: true, diagnoseMissing: false, token: false },
+  landed: { confirmBeforeShowing: false, diagnoseMissing: true, token: 'commitRef', explainMissing: true },
+  cited: { confirmBeforeShowing: true, diagnoseMissing: false, token: 'hashlike', explainMissing: true },
 }
 
 export interface CommitRef {
@@ -141,10 +147,11 @@ export function commitRefsIn(text: string, filePath: string | null | undefined):
 
 /**
  * A cited hash: 7 to 40 lowercase hex, not glued to a word, a path, a `#`
- * colour or anchor, or a hyphenated id, with at least one digit and one
- * letter, so neither a date nor a hex word like `deadbeef` is a candidate.
+ * colour, a sigil (so no `#>name` anchor or `$slot`), or a hyphenated id,
+ * with at least one digit and one letter, so neither a date nor a hex word
+ * like `deadbeef` is a candidate.
  */
-const CITED_HASH = /(?<![0-9A-Za-z_#./\\-])[0-9a-f]{7,40}(?![0-9A-Za-z_/\\-])/g
+const CITED_HASH = /(?<![0-9A-Za-z_#./\\>!$@~%-])[0-9a-f]{7,40}(?![0-9A-Za-z_/\\-])/g
 
 /** Candidate hashes anywhere in a file's text; git decides which are commits. */
 export function citedRefsIn(text: string): CommitRef[] {
@@ -414,8 +421,9 @@ export function formatCommitHover(ref: CommitRef, info: CommitInfo): string {
 }
 
 /**
- * Hover for the hash under the cursor: a landed ref always answers, saying so
- * when git lacks it; a cited hash answers only when git confirms a commit.
+ * Hover for the hash under the cursor: a commit git holds shows its subject,
+ * date, and files; a hash git does not hold says so; when git cannot answer,
+ * a landed ref says that and a cited hash stays quiet.
  */
 export async function hoverCommitRef(
   text: string,
@@ -425,8 +433,15 @@ export async function hoverCommitRef(
 ): Promise<LspHover | null> {
   const ref = commitRefAt(allCommitRefsIn(text, filePath), position)
   if (!ref) return null
-  if (COMMIT_REF_STRATEGY[ref.source].confirmBeforeShowing) {
+  const rule = COMMIT_REF_STRATEGY[ref.source]
+  if (rule.confirmBeforeShowing) {
     const verdict = (await confirmCommits(workspaceRoot, [ref.hash])).get(ref.hash)
+    if (verdict === false && rule.explainMissing) {
+      return {
+        contents: { kind: 'markdown', value: `**hash-shaped \`${ref.hash}\`** — not a commit in this repository` },
+        range: ref.range,
+      }
+    }
     if (verdict !== true) return null
   }
 

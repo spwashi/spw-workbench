@@ -16,6 +16,7 @@
  *   7  comment     — //-comments
  *   8  number      — numerics, times, fractions
  *   9  commitRef   — a landed commit's hash in a plan file, .[name](hash)
+ *  10  hashlike    — any other standalone hash-shaped run, whether or not git knows it
  *
  * Token modifiers (bit flags, matching MODIFIERS order):
  *   0  declaration   — frame/anchor, brace open, =exp, ^seed
@@ -30,7 +31,7 @@
  */
 
 import type { DocumentParams, HandlerDeps } from '../types'
-import { COMMIT_REF_STRATEGY, commitRefsIn } from './commit-refs'
+import { COMMIT_REF_STRATEGY, allCommitRefsIn, type CommitRef } from './commit-refs'
 
 // ── Token type / modifier indices ──────────────────────────────
 
@@ -45,6 +46,7 @@ const TT = {
     comment:  7,
     number:   8,
     commitRef: 9,
+    hashlike: 10,
 } as const
 
 const TM = {
@@ -102,7 +104,7 @@ export interface LspSemanticTokens {
 // ── Legend (exported for capability declaration) ────────────────
 
 export const SEMANTIC_TOKENS_LEGEND = {
-    tokenTypes: ['operator', 'type', 'variable', 'property', 'function', 'string', 'keyword', 'comment', 'number', 'commitRef'],
+    tokenTypes: ['operator', 'type', 'variable', 'property', 'function', 'string', 'keyword', 'comment', 'number', 'commitRef', 'hashlike'],
     tokenModifiers: ['declaration', 'definition', 'readonly', 'deprecated', 'modification', 'async'],
 }
 
@@ -462,23 +464,47 @@ interface AbsoluteToken {
 }
 
 /**
- * A landed commit's hash in a plan file is one commitRef token. The scanner
- * reads it in pieces (a number, then letters); those pieces give way to it.
+ * Every hash the strategy reads is one token: a landed ref a commitRef, any
+ * other hash-shaped run a hashlike. The scanner reads a hash in pieces (a
+ * number, then letters), and a cited hash can sit inside a string or comment;
+ * a token the hash overlaps is cut around it, so what surrounds it keeps its
+ * own role.
  */
 function overlayCommitRefs(tokens: AbsoluteToken[], text: string, filePath: string | undefined): AbsoluteToken[] {
-    const refs = commitRefsIn(text, filePath).filter((ref) => COMMIT_REF_STRATEGY[ref.source].token)
+    const refs = allCommitRefsIn(text, filePath)
     if (refs.length === 0) return tokens
-    const covered = (token: AbsoluteToken) => refs.some((ref) =>
-        ref.range.start.line === token.line &&
-        token.char < ref.range.end.character &&
-        ref.range.start.character < token.char + token.length)
-    const overlaid = tokens.filter((token) => !covered(token))
+    const byLine = new Map<number, CommitRef[]>()
+    for (const ref of refs) {
+        const line = byLine.get(ref.range.start.line)
+        if (line) line.push(ref)
+        else byLine.set(ref.range.start.line, [ref])
+    }
+    const overlaid: AbsoluteToken[] = []
+    for (const token of tokens) {
+        const lineRefs = byLine.get(token.line)
+        if (!lineRefs) {
+            overlaid.push(token)
+            continue
+        }
+        let pieces = [{ start: token.char, end: token.char + token.length }]
+        for (const ref of lineRefs) {
+            const cutStart = ref.range.start.character
+            const cutEnd = ref.range.end.character
+            pieces = pieces.flatMap((piece) => piece.end <= cutStart || cutEnd <= piece.start
+                ? [piece]
+                : [
+                    ...(piece.start < cutStart ? [{ start: piece.start, end: cutStart }] : []),
+                    ...(cutEnd < piece.end ? [{ start: cutEnd, end: piece.end }] : []),
+                ])
+        }
+        for (const piece of pieces) overlaid.push({ ...token, char: piece.start, length: piece.end - piece.start })
+    }
     for (const ref of refs) {
         overlaid.push({
             line: ref.range.start.line,
             char: ref.range.start.character,
             length: ref.range.end.character - ref.range.start.character,
-            type: TT.commitRef,
+            type: TT[COMMIT_REF_STRATEGY[ref.source].token],
             modifiers: 0,
         })
     }

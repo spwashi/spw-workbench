@@ -134,7 +134,9 @@ describe('hover', () => {
     const notes = path.join(repo, 'notes.spw')
     const confirmed = await hoverCommitRef(planText(), notes, { line: 1, character: HASH_COLUMN }, repo)
     expect(confirmed?.contents.value).toContain('land the notes')
-    expect(await hoverCommitRef(planText(), notes, { line: 2, character: 12 }, repo)).toBeNull()
+    const shaped = await hoverCommitRef(planText(), notes, { line: 2, character: 12 }, repo)
+    expect(shaped?.contents.value).toBe(`**hash-shaped \`${MISSING}\`** — not a commit in this repository`)
+    expect(await hoverCommitRef(planText(), path.join(outside, 'notes.spw'), { line: 2, character: 12 }, outside)).toBeNull()
   })
 
   it('answers through the hover handler first', async () => {
@@ -192,9 +194,13 @@ describe('diagnostics', () => {
 })
 
 describe('the hash resolution strategy', () => {
-  it('landed refs claim a commit and take the token; cited hashes wait for git and stay uncolored', () => {
-    expect(COMMIT_REF_STRATEGY.landed).toEqual({ confirmBeforeShowing: false, diagnoseMissing: true, token: true })
-    expect(COMMIT_REF_STRATEGY.cited).toEqual({ confirmBeforeShowing: true, diagnoseMissing: false, token: false })
+  it('landed refs claim a commit and take commitRef; cited hashes take hashlike and wait for git to link', () => {
+    expect(COMMIT_REF_STRATEGY.landed).toEqual({ confirmBeforeShowing: false, diagnoseMissing: true, token: 'commitRef', explainMissing: true })
+    expect(COMMIT_REF_STRATEGY.cited).toEqual({ confirmBeforeShowing: true, diagnoseMissing: false, token: 'hashlike', explainMissing: true })
+  })
+
+  it('a hex run glued to a sigil is a name, not a hash', () => {
+    expect(citedRefsIn('#>abc1234 #!abc1234 $abc1234 @abc1234 ~abc1234 %abc1234 (abc1234)').map((ref) => ref.hash)).toEqual(['abc1234'])
   })
 
   it('cites any 7 to 40 hex run with a digit and a letter that stands on its own', () => {
@@ -259,5 +265,44 @@ describe('semantic tokens', () => {
     const onHash = absolute.filter((token) => token.line === 1 && token.char < HASH_COLUMN + hash.length && HASH_COLUMN < token.char + token.length)
     expect(onHash).toEqual([{ line: 1, char: HASH_COLUMN, length: hash.length, type: commitRef }])
     expect(absolute.filter((token) => token.type === commitRef).map((token) => token.line)).toEqual([1, 2])
+  })
+})
+
+describe('hashlike tokens', () => {
+  function tokensOf(text: string, filePath: string): Array<{ line: number; char: number; length: number; type: string }> {
+    const uri = `file://${filePath}`
+    const serverIndex = new ServerIndex(repo)
+    serverIndex.openDocument(uri, filePath, text, 1)
+    const { data } = semanticTokens({ textDocument: { uri } }, { serverIndex } as unknown as HandlerDeps)
+    const out: Array<{ line: number; char: number; length: number; type: string }> = []
+    let line = 0
+    let char = 0
+    for (let i = 0; i < data.length; i += 5) {
+      line += data[i]!
+      char = data[i] === 0 ? char + data[i + 1]! : data[i + 1]!
+      out.push({ line, char, length: data[i + 2]!, type: SEMANTIC_TOKENS_LEGEND.tokenTypes[data[i + 3]!]! })
+    }
+    return out
+  }
+
+  it('a hash-shaped run outside a plan is one hashlike token, whether or not git knows it', () => {
+    const line = '    ~<1>[begin_syntax](ebcde35): "&[foo] — syntax highlighting for hashes"'
+    const tokens = tokensOf(`${line}\n`, path.join(repo, 'tmp.spw'))
+    const at = line.indexOf('ebcde35')
+    expect(tokens.filter((token) => token.char < at + 7 && at < token.char + token.length)).toEqual([
+      { line: 0, char: at, length: 7, type: 'hashlike' },
+    ])
+  })
+
+  it('a hashlike inside a string cuts the string around it, so the rest keeps its color', () => {
+    const line = 'note: "landed at 651b535b today"'
+    const tokens = tokensOf(`${line}\n`, path.join(repo, 'notes.spw'))
+    const at = line.indexOf('651b535b')
+    const open = line.indexOf('"')
+    expect(tokens.filter((token) => token.char >= open)).toEqual([
+      { line: 0, char: open, length: at - open, type: 'string' },
+      { line: 0, char: at, length: 8, type: 'hashlike' },
+      { line: 0, char: at + 8, length: line.length - at - 8, type: 'string' },
+    ])
   })
 })

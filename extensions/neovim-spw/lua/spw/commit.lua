@@ -198,9 +198,11 @@ function M.files_command(hash)
   M.link_under_cursor(run)
 end
 
---- The commitRef semantic token reads in the number color unless a colorscheme says otherwise.
+--- Hash tokens read in the number color unless a colorscheme says otherwise:
+--- commitRef for a landed commit, hashlike for any other hash-shaped run.
 function M.link_highlight()
   vim.api.nvim_set_hl(0, '@lsp.type.commitRef', { link = '@number', default = true })
+  vim.api.nvim_set_hl(0, '@lsp.type.hashlike', { link = '@number', default = true })
 end
 
 function M.setup()

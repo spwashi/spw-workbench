@@ -210,7 +210,7 @@ The server links every git hash it confirms as a commit: a landed `.[name](hash)
 - `gf` on a hash opens the commit when the server has no definition for it, through its document link.
 - `:SpwCommit` (or `<localleader>c`) opens the commit as a read-only buffer named `spw-commit://<hash>?root=<repo>`, with `filetype=git`. With no server attached, it falls back to the word under the cursor, if git confirms it.
 - `:SpwCommitFiles` lists the changed files in the quickfix list.
-- Landed hashes take the `commitRef` semantic token, linked to `@number` unless your colorscheme sets `@lsp.type.commitRef`.
+- Landed hashes take the `commitRef` semantic token, and any other hash-shaped run (7 to 40 hex characters with a digit and a letter) takes `hashlike`, whether or not git knows it. Both link to `@number` unless your colorscheme sets `@lsp.type.commitRef` or `@lsp.type.hashlike`. Hovering a hashlike git does not hold says it is not a commit here.
 
 ## Code lenses
 
