@@ -72,13 +72,13 @@
  >>[2026-10-12 12:48] observe — A mounted consumer's editor asks (pin 229aedcf) name no Neovim work. Derived projections are in PLAN.md: LSP-level rows arrive through native mechanisms, chrome rows are not ported. navigation.lua and completion.lua extract citations and aliases with Lua patterns, the client-side twin of the server regex-first disagreement the consumer measured.
  >>[2026-10-12 12:48] decide — No new :Spw wrappers or custom requests follow from these asks; the held method matrix still governs. The next step is unchanged.
  >>[2026-10-12 15:25] revise — Commits named per the convention in 90c58bbc: 0 landed, 8 planned, 0 dropped.
+ >>[2026-10-12 20:09] implement — Landed in 1bb4f68d: navigation and completion ask the attached server first; :SpwInspect, :SpwFingerprint, :SpwMemory, :SpwPerf, :SpwProject and :SpwQuest. The creator's own config was updated so the plugin's module loads and one server attaches.
 }
 
 ^["open"]{
  ?[statusline]: "Ship optional statusline.lua helper or document lualine snippet only?"
  ?[probe_method]: "Earn spw/probe vs encode probe results only as diagnostics?"
  ?[source_product_transport]: "Should unsaved and range inspection use one earned LSP request, a shared stdin envelope, or both over the same SourceProduct contract?"
- ?[lua_extractors]: "Should navigation.lua and completion.lua defer to the server's definition, documentLink and completion whenever a client is attached, keeping the Lua patterns only as the detached fallback?"
 }
 
 ^["commits"]{
@@ -88,8 +88,10 @@
  ~[readme_health_honesty]: ".[neovim] — README + health honesty for mount/workbench discovery"
  ~[project_mass_diagnostics]: "&[neovim] — project mass/path diagnostics + exact-only code actions (after LSP emits them)"
  ~[plan_statusline_profile]: "^[neovim] — :SpwPlan / optional statusline + reading_profile setting"
- ~[project_source_products]: "&[neovim] — project shared source products for file, block, and selection inspection"
+ .[project_source_products](1bb4f68d): "&[neovim] — :SpwInspect projects the shared source products (tokens, structure, trace) for a file or a selection through the CLI"
  ~[smoke_contracts]: "![neovim] — smoke for wonder/ref/diagnostic/source-product contracts"
+ .[lsp_first_navigation](1bb4f68d): "&[neovim] — gf, :SpwOpenRef and completion use the attached LSP and fall back to Lua patterns only when none is attached (answers ?[lua_extractors])"
+ .[quest_command](1bb4f68d): "&[neovim] — :SpwQuest opens the quest panels and :SpwQuest check runs spw quest --check on the current line"
 }
 
 ^["cache"]{
@@ -99,10 +101,11 @@
  ~#hygiene_split: "none"
  ~#files_hot: "extensions/neovim-spw/lua/spw/commands.lua, extensions/neovim-spw/lua/spw/lsp.lua, packages/spw-lsp/src/stdio-server.ts"
  ~#next_commit: "audit_surfaces"
- ~#open_count: "4"
- ~#last_stream: "2026-10-12 15:25"
+ ~#open_count: "3"
+ ~#last_stream: "2026-10-12 20:09"
  ~#taste_debt: "Source-product transport for unsaved buffers and structural ranges must be earned once across clients; no Lua parser or hidden editor telemetry."
 }
 
 ^["done"]{
+ ~#resolved(lua_extractors): "Should navigation.lua and completion.lua defer to the server's definition, documentLink and completion whenever a client is attached, keeping the Lua patterns only as the detached fallback? — yes: navigation and completion use the attached LSP and keep the Lua patterns only when none is attached; evidence: 1bb4f68d"
 }

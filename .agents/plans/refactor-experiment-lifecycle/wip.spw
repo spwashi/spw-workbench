@@ -426,6 +426,7 @@
  >>[2026-10-12 14:36] observe — measured plan-only spw refactor --rename mark:present=presentX --json (no --write; git status clean afterwards): .spw (788 .spw files) took 112 s wall for 24 edits in 24 files, docs (149 files) took 17 s for 15 edits, so roughly 0.12 to 0.14 s per file, one run each, and node startup is included.
  >>[2026-10-12 14:36] revise — reconciled with code: ~[1] landed; the types half of ~[2] landed as the review card in 75d8f9d2 (packages/spw-seed/src/ir/refactor-plan.ts, 82 lines, still lists selection_hashes, parent_plan, worktree_apply and rebase as omissions), refactor-plan.test.ts has two tests and none for stale hash, conflict or compose. Questions subcommand_shape (answered by the 2026-07-27 decide: extend the refactor CLI) and lsp_when (~[9] is already an optional follow-on) resolved into done; remaining questions sharpened; wonders 2, 3 and 5 replaced by one per-file-cost wonder; ~[6] sigil corrected to &[cli].
  >>[2026-10-12 15:27] revise — Commits named per the convention in 90c58bbc: 2 landed, 8 planned, 0 dropped.
+ >>[2026-10-12 20:09] implement — Landed in 56844e6e: spw refactor --rename path:from=to, and the server answers willRenameFiles with the same plan as a WorkspaceEdit.
 }
 
 ^["open"]{
@@ -447,7 +448,8 @@
  ~[worktree_episode_apply]: "&[cli] — worktree apply (l1) and episode commit helper"
  ~[bias_plan_compile]: "#[cli] — bias/experiment surface compiles to a plan"
  ~[experiment_docs_matrix]: ".[docs] — refactor-experiment and pulse-mutate matrix"
- ~[lsp_workspace_edit]: "#[lsp] — WorkspaceEdit from plan (optional follow-on)"
+ .[lsp_workspace_edit](56844e6e): "#[lsp] — WorkspaceEdit from the refactor plan, first for willRenameFiles"
+ .[path_rename_kind](56844e6e): "&[cli,seed] — spw refactor --rename path:from=to plans citation rewrites from parser pathRefs when a file or folder moves; unowned links listed, plan-only by default"
 }
 
 ^["cache"]{
@@ -458,7 +460,7 @@
  ~#files_hot: "packages/spw-cli/src/refactor.ts, packages/spw-seed/src/canonical/semantic-edit.ts, packages/spw-cli/src/envelope.ts"
  ~#next_commit: "selection_hash_check"
  ~#open_count: "6"
- ~#last_stream: "2026-10-12 15:27"
+ ~#last_stream: "2026-10-12 20:09"
  ~#taste_debt: "hash_basis and partial_apply undecided — block apply-workspace design until resolved"
  ~#phase: "pre-flight"
  ~#related_plans: "curiosity-mutation-ergonomics, measure-invariant-generalization, form-geometry-editor, vscode-lsp-roadmap"

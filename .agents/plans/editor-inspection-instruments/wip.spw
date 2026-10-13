@@ -1,0 +1,74 @@
+# wip — editor-inspection-instruments
+# Started: 2026-10-12
+
+#>plan_editor_inspection_instruments
+#:plan #!projection_feedback
+#:layer #!pragmatics
+
+@["card"]{
+ phase: #active
+ gist: "VS Code, IntelliJ and Neovim each run the same inspection instruments from the CLI: source products, fingerprint, memory, performance and projection"
+ touches: [~"extensions/vscode-spw/src/instruments", ~"extensions/intellij-spw/src/main/kotlin/com/spwashi/spw", ~"extensions/neovim-spw/lua/spw"]
+ entry: ~"./PLAN.md"
+ next: "Land the three editors' instruments together, then compare their outputs on one fixture so no editor answers differently."
+}
+
+^["edges"]{
+ supersedes: [~"../_archive/editor-cli-instruments/wip.spw"]
+ shares: [~"../neovim-spw-surfaces/wip.spw", ~"../vscode-authoring-probe-loop/wip.spw", ~"../intellij-lsp4ij/wip.spw", ~"../vscode-lsp-roadmap/wip.spw"]
+}
+
+^["roots"]{
+ @plan: ~".agents/plans/editor-inspection-instruments/PLAN.md"
+ @canon: ~".spw/tooling/editor-instruments.spw"
+ @inspect: ~"packages/spw-cli/src/inspect-source.ts"
+ @fingerprint: ~"packages/spw-cli/src/fingerprint.ts"
+ @mem: ~"packages/spw-cli/src/mem.ts"
+}
+
+^["intent"]{
+ ~#goal: "Intermediate representations, expression geometry, memory and cost are one command away in every editor, and every editor shows the same receipt"
+ ~#taste: "the CLI owns the answer; each editor only chooses where to show it"
+}
+
+^["instruments"]{
+ inspect_source = "spw inspect source <file> --through tokens|structure|trace, or --text for a selection: the progressive source products"
+ fingerprint = "spw fingerprint --expr on a selection or line: node counts, the expression's geometry"
+ memory = "spw inspect memory and spw mem status: what the runtime keeps"
+ performance = "spw query --selector pathRefs --count --stats over the file's folder: walk and parse cost"
+ projection = "a read-only, file-backed spw emit projection into an intermediate form"
+}
+
+^["open"]{
+ # Unresolved questions. When resolved: log in stream, then move to ^["done"] as ~#resolved(label).
+ ?[unsaved_buffers]: "File-backed instruments read the saved file; should every instrument take stdin so an unsaved buffer and a selection read the same as a file?"
+ ?[receipt_parity]: "How is parity checked: one fixture whose instrument outputs the three editors must print identically, or a per-editor snapshot?"
+}
+
+^["commits"]{
+ # Named, in order. Planned ~[name]; landed .[name](hash). Names are never reused.
+ .[vscode_instruments](99e6d993): "&[vscode] — Inspect Source, Fingerprint Selection, Inspect Memory, Check Performance and Show Projection commands"
+ .[intellij_instruments](155cfd57): "&[intellij] — the same five instruments as actions beside Form, Stack, Cache, Rename and Refactor Plan"
+ .[neovim_instruments](1bb4f68d): "&[neovim] — :SpwInspect, :SpwFingerprint, :SpwMemory, :SpwPerf and :SpwProject in scratch splits"
+ .[mounted_input_paths](ed606b3a): "&[cli] — a mounted run reads relative input paths from the consumer root, so file instruments work in consumer projects"
+ ~[parity_fixture]: "![editors] — one fixture whose instrument outputs every editor prints the same"
+}
+
+^["cache"]{
+ ~#status: "active"
+ ~#base_ref: "main@77599452"
+ ~#rebased_at: "2026-10-12"
+ ~#files_hot: "extensions/vscode-spw/src/instruments, extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwInstrumentActions.kt, extensions/neovim-spw/lua/spw/instruments.lua"
+ ~#next_commit: "parity_fixture"
+ ~#open_count: "2"
+ ~#last_stream: "2026-10-12 20:09"
+}
+
+^["done"]{
+ # Local history: written incrementally, finalized at merge.
+}
+
+^["stream"]{
+ >>[2026-10-12 19:07] decide — Creator asked for editor improvements in syntax highlighting, refactoring, tooling integrations, memory inspection, performance checks, intermediate representation and expression geometry inspection. This plan holds the instrument set the three editors share; highlighting lives in vscode-cognitive-surface, refactoring in refactor-experiment-lifecycle and citation-navigation, server features in their owner plans.
+ >>[2026-10-12 20:09] implement — Landed: VS Code 99e6d993, IntelliJ 155cfd57, Neovim 1bb4f68d; all three pair inspect memory with mem list and project through emit ir. ed606b3a made file instruments work in mounted consumers.
+}

@@ -1,0 +1,77 @@
+# wip — parser-releases
+# Started: 2026-10-12
+
+#>plan_parser_releases
+#:plan #!execution_truth
+#:layer #!pragmatics
+
+!["card"]{
+ phase: #active
+ gist: "Every release day cuts a dated, immutable set of browser parser builds with a manifest, and spw.quest serves them for other sites to import"
+ touches: [~"scripts/release", ~"docs/runtime/md"]
+ entry: ~"./PLAN.md"
+ next: "~[release_builder]: npm run bundle:parser -- --release 2026.10.13 writes release/parser/2026.10.13 with full and lite variants, min and debug forms, an alias and a manifest."
+}
+
+^["edges"]{
+ feeds: [~"../onboarding-quest/wip.spw"]
+ shares: [~"../mounted-consumer-tooling/wip.spw", ~"../ecosystem-surface-governance/wip.spw"]
+}
+
+^["roots"]{
+ @plan: ~".agents/plans/parser-releases/PLAN.md"
+ @jsdist: ~"scripts/release/build-js-dist.ts"
+ @lite: ~"packages/spw-seed/src/lite.ts"
+ @parser: ~"packages/spw-seed/src/parser.ts"
+}
+
+^["intent"]{
+ ~#goal: "A parser another site can import by a path that never changes, with the workbench revision, sizes and hashes stated beside it"
+ ~#taste: "a few fixed rules instead of many paths: the offset belongs to the release, published files never change, only aliases move"
+}
+
+^["layout"]{
+ index = "/parser/ and /parser/index.json: every release, newest first"
+ release = "/parser/<YYYY.MM.DD>/ and manifest.json: what was cut together from one workbench revision"
+ file = "/parser/<release>/<variant>/<offset>.<form>.js, with a .map beside each debug form"
+ alias = "/parser/<release>/<offset>.js: the same bytes as the default variant and form"
+ latest = "/parser/latest.js: a short-cached redirect to the newest alias; for trying, not for importing"
+ variants = #[ `full: parse, parseExpression, SPW_PARSER_BUILD`, `lite: the scanner, size-capped` ]
+ forms = #[ `min`, `debug (with a source map)` ]
+ headers = "dated paths cache for a year and never change; CORS open, cross-origin resource policy, text/javascript"
+}
+
+^["open"]{
+ # Unresolved questions. When resolved: log in stream, then move to ^["done"] as ~#resolved(label).
+ ?[grammar_version]: "The manifest's grammar field carries the spw-seed package version because seed has no grammar version of its own; should seed export one that changes only when the grammar does?"
+ ?[more_variants]: "Which consumer would import a lexer-only or reader-kit variant? Each variant is a promise to keep cutting it every release."
+ ?[storage]: "Worker static assets hold a year of releases; at what size do releases move to R2 with only the manifests kept in git?"
+ ?[import_integrity]: "Integrity covers script and modulepreload tags but not import statements; should the release page recommend an import map, and which browsers honor its integrity section?"
+}
+
+^["commits"]{
+ # Named, in order. Planned ~[name]; landed .[name](hash). Names are never reused.
+ .[release_builder](17b0d6d7): "#[release] — npm run bundle:parser cuts full and lite in min and debug forms with an alias and a spw.parser-release/1 manifest; refuses a dirty tree and refuses to rewrite a published release"
+ ~[quest_parser_routes]: "+[quest] (site repo) — spw.quest serves /parser/ from worker static assets with immutable caching, CORS, a latest redirect and a 404 that lists what exists"
+ ~[first_release]: "+[quest] (site repo) — carry release 2026.10.13 from the workbench into spw.quest's assets and verify every hash"
+ ~[stamp_matches_manifest]: "![release] — a test holds each file's SPW_PARSER_BUILD stamp to the manifest revision, release, offset, variant and form"
+}
+
+^["cache"]{
+ ~#status: "active"
+ ~#base_ref: "main@77599452"
+ ~#rebased_at: "2026-10-12"
+ ~#files_hot: "scripts/release/build-parser-release.ts, package.json"
+ ~#next_commit: "quest_parser_routes"
+ ~#open_count: "4"
+ ~#last_stream: "2026-10-12 20:09"
+}
+
+^["done"]{
+ # Local history: written incrementally, finalized at merge.
+}
+
+^["stream"]{
+ >>[2026-10-12 19:07] decide — Creator asked to proceed with versioned parser releases on spw.quest: release first, variant and form as declared axes, the offset owned by the release, immutable dated paths, moving aliases, a manifest with revision, hashes and sizes, and CORS for /parser/. The workbench builds; spw.quest publishes.
+ >>[2026-10-12 20:09] implement — Landed in 17b0d6d7: bundle:parser. spw.quest routes are built and tested in the site repo, uncommitted; the first release waits for a clean pushed revision.
+}

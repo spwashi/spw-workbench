@@ -43,10 +43,10 @@
  .[design_atlas](14b4b477): ".[plans] — design construct navigation and collaborative inquiry"
  .[resolve_parity](2c082311): "&[cli] — resolve refs against the citing file, then the consumer root"
  .[anchor_line_fragments](861fa214): "&[lsp] — land fragments on their anchor line from the server index"
- ~[parser_first_refs]: "&[seed] — selectPathRefs reads the parser first and keeps fallbackPathRefs only for a source the parser rejects (routed ask: one_fact_model); verify CLI resolve, diagnostics and links agree on one fixture set"
+ .[parser_first_refs](e6c56978): "&[seed] — selectPathRefs reads the parser first and keeps fallbackPathRefs only for a source the parser rejects (routed ask: one_fact_model); verify CLI resolve, diagnostics and links agree on one fixture set"
  ~[lens_reference_peek]: "&[lsp] — code lenses carry a command that opens a peek on the anchor's references, replacing command: '' in display.ts (routed ask: references_that_navigate)"
  ~[route_fragment_targets]: "&[lsp] — resolve routes and a leading slash in fragment targets through splitAnchor and the ServerIndex anchor entries (routed ask: file_navigation, fragments already landed in 861fa214)"
- ~[rename_rewrites_citations]: "&[lsp] — willRenameFiles rewrites citations from a path refactor kind; opens only after refactor-experiment-lifecycle 4e names that kind (routed ask: move_updates_citations)"
+ .[rename_rewrites_citations](56844e6e): "&[lsp] — willRenameFiles rewrites citations from a path refactor kind; opens only after refactor-experiment-lifecycle 4e names that kind (routed ask: move_updates_citations)"
  ~[port_probe_fixtures]: "![lsp] — port the consumer's probe lines that run against this repo into fixtures for parser_first_refs, lens_reference_peek, route_fragment_targets and rename_rewrites_citations before any row is closed"
  ~[consultation_resume_loop]: "&[inquiry] — consultation and resume loop; held until ?[entry] picks a journey"
 }
@@ -68,6 +68,7 @@
  >>[2026-10-12 14:25] revise — Reconciled commits against history (14b4b477, 2c082311, 861fa214 landed) and routed the vscode-lsp-roadmap consumer asks: parser-first selectPathRefs, lens peek, routes and leading slash, willRenameFiles, probe fixtures; alias binder kept as a question.
  >>[2026-10-12 14:25] observe — selectPathRefs still runs fallbackPathRefs first (spw-selector.ts:301); lens command is still empty in display.ts; no willRenameFiles handler; documentSymbols already returns nested children via outlineFromSource, so the roadmap row calling the outline flat looks stale.
  >>[2026-10-12 15:37] revise — Commits named per the convention in 90c58bbc: 3 landed, 6 planned, 0 dropped.
+ >>[2026-10-12 20:09] implement — Landed: parser-first citations (e6c56978) dropped 161 false citations over 1306 files; path moves rewrite citations through willRenameFiles (56844e6e). VS Code lenses open a references peek client-side (99e6d993); the server-side lens command in lens_reference_peek is still planned.
 }
 ^["supporting_documents"]{
  must_ship: [@plan, @atlas, @consultation, @evidence, @contract]
@@ -84,10 +85,10 @@
  ~#base_ref: "main@462f6478a78a42be6d2197a7329ab1826b40a7f6"
  ~#hygiene_split: "none"
  ~#files_hot: "packages/spw-lsp/src/handlers/navigation.ts"
- ~#next_commit: "parser_first_refs"
+ ~#next_commit: "lens_reference_peek"
  ~#open_count: "5"
  ~#taste_debt: "Editor parity remains unverified."
- ~#last_stream: "2026-10-12 15:37"
+ ~#last_stream: "2026-10-12 20:09"
 }
 ^["done"]{
 }
