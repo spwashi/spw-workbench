@@ -205,6 +205,25 @@
  ~#play: "every concept is a hub with at least two surfaces, so a concept query always returns a comparison"
 }
 
+// ── Proposal 12: a word is one token ───────────────────────────────────
+// The lexer reads a letter-led word whole (q_2026_09_30, abc1234) but splits
+// a digit-led one into a number and a name (16px, 2026q4, 551bb419,
+// 3d_claymorphism_vibrant). The editor joined them in 8c745561 without
+// touching the parse; this proposal is the lexer half.
+//
+//  before: 16px -> NUMBER(16) IDENTIFIER(px); 551bb419 -> NUMBER(551) IDENTIFIER(bb419)
+//  after:  one token per run, its kind read from its shape
+
+^["p12_alnum_words"]{
+ ~#status: "proposed; the owner felt alphanumerics should be tokenized together (2026-10-13)"
+ ~#census: "1328 .spw files: 79 digit-led runs split in code (40 number with unit such as 20s and 16px, 29 digit-led names such as 3d_claymorphism_vibrant, 7 short hex such as 4c, 3 hash-shaped such as 551bb419); 2218 names with digits already lex whole; no #-hex color appears outside a string"
+ ~#kinds: "a digit-led run lexes as one token whose kind comes from its shape: hash (7 to 64 lowercase hex with a letter), hex (0x prefix or short hex), unit (digits then letters, such as 16px), name (anything with an underscore)"
+ ~#hashes: "a hash kind in the lexer lets the CLI, the gate, and every client read hash-shaped runs the way the LSP strategy already does, instead of by a regex of its own"
+ ~#hex_codes: "colors live in strings, so they stay text to the lexer; an editor color provider can show swatches for #rgb, #rrggbb, and #rrggbbaa inside strings; a bare #8800ff stays a #tag, as #ff8800 is"
+ ~#open: "does a unit-kind run stay a NUMBER (with the unit as a property) or become a name, given the canon spelling 48<hours> for quantities; does a digit-led name keep IDENTIFIER"
+ ~#needs: "a corpus negative control like 866826ff's: outside the 79 runs, every token is unchanged"
+}
+
 // Samples: samples/cut-surface.spw rewrites one tree surface with p8 to p11
 // (97 lines and 4037 characters against 108 and 5244, statements and anchors
 // identical); samples/receipts-ledger.spw is one p9 journal entry.
