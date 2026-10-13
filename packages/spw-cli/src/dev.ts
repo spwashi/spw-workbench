@@ -95,7 +95,7 @@ async function pollOnce(): Promise<void> {
 export async function runSpwDevCli(): Promise<void> {
   const exists = await fs.stat(ROOT).then(() => true).catch(() => false)
   if (!exists) {
-    console.error('spw-dev: .spw directory not found. Run npm run spw:reset after creating tracked .spw files.')
+    console.error('spw-dev: .spw directory not found. Create tracked .spw files, or restore them with: bash scripts/spw-reset.sh --force')
     process.exitCode = 1
     return
   }
