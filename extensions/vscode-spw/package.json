@@ -97,6 +97,10 @@
                 "title": "Spw: Restart Language Server"
             },
             {
+                "command": "spw.openCommitChanges",
+                "title": "Spw: Open Commit Changes"
+            },
+            {
                 "command": "spw.inspectGeometry",
                 "title": "Spw: Inspect Form"
             },
@@ -309,6 +313,13 @@
                 "path": "./snippets/spw.json"
             }
         ],
+        "semanticTokenTypes": [
+            {
+                "id": "commitRef",
+                "superType": "number",
+                "description": "A landed commit's git hash in a plan file"
+            }
+        ],
         "semanticTokenScopes": [
             {
                 "language": "spw",
@@ -333,7 +344,8 @@
                     "keyword.definition": [ "keyword.control.dialect.spw", "entity.name.tag.dialect.spw" ],
                     "keyword.readonly": [ "keyword.operator.collapse.spw" ],
                     "comment": [ "comment.line.spw" ],
-                    "number": [ "constant.numeric.spw" ]
+                    "number": [ "constant.numeric.spw" ],
+                    "commitRef": [ "constant.numeric.commit-ref.spw" ]
                 }
             }
         ],
@@ -359,7 +371,18 @@
             ]
         },
         "menus": {
+            "editor/title": [
+                {
+                    "command": "spw.openCommitChanges",
+                    "when": "resourceScheme == spw-commit",
+                    "group": "navigation"
+                }
+            ],
             "commandPalette": [
+                {
+                    "command": "spw.openCommitChanges",
+                    "when": "resourceScheme == spw-commit"
+                },
                 {
                     "command": "spw.inspectSource",
                     "when": "editorLangId == spw"

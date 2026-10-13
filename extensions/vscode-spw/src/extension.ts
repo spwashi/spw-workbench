@@ -7,6 +7,7 @@ import {
 } from 'vscode-languageclient/node'
 import { AnnotationIndex } from './annotation-index'
 import { registerCaptureMode } from './capture/capture-mode'
+import { registerCommitView } from './commit-view'
 import { createSpwContext } from './context'
 import { registerContextStrip } from './context-strip'
 import { codeLensMiddleware, registerCodeLensControls } from './lsp/code-lens-middleware'
@@ -39,6 +40,7 @@ export function activate(context: vscode.ExtensionContext): void {
   })
 
   void annotationIndex.activate()
+  registerCommitView(context)
 
   const probeCache = new ProbeCache(readSurfaceConfig().probeCacheMs)
 
