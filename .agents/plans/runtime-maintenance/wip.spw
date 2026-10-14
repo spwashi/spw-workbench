@@ -67,11 +67,11 @@
  >>[2026-10-13 22:04] note — Branches waiting to merge on 2026-10-13: feature/reader-bundle adds seed's browser-safe reader entry, which node_free_seed_root extends to the whole seed index.
  >>[2026-10-13 22:33] note — From the module-trees survey: land split_hot_session as session/hot/ (the four hot-session files plus the pointer store), so the 18-file session/ reads as two concerns; site-install.ts holds mount resolution, which runtime_node_subpath should name.
  >>[2026-10-13 22:57] implement — Landed on feature/browser-workbench: node_free_seed_root (0bf89a77) and runtime_node_subpath (900e2b9c). Seed and the runtime hash with canonical/content-hash.ts sha256Hex, a synchronous SHA-256 over UTF-8 bytes whose digests equal node:crypto's, so no stored hash moved and ?[persisted_hashes] is not yet forced. one_hash_module now has its home in content-hash.ts; the FNV hashes over UTF-16 units still wait for it.
+ >>[2026-10-13 23:16] implement — Landed on feature/reader-form-context: one_hash_module (eb34e6c3) gives seed textHash, 16 hex of SHA-256 over UTF-8 bytes; hashString, geometry cards, and transform preconditions use it, the two FNV hashes are gone, and range-transform's no-op slice ends; the runtime spells its three hashes as textHash (7509cbb8). SHA-256 costs 110 ms over the 9.5 MB corpus against 53 ms for FNV. Resolved ?[persisted_hashes].
 }
 
 ^["open"]{
  # Unresolved questions. When resolved: log in stream, then move to ^["done"] as ~#resolved(label).
- ?[persisted_hashes]: "When one hash function replaces the copies, do cache keys and session handles drop once and rebuild, while anything a person authored keeps its old hash with a receipt naming the new one?"
  ?[public_surface]: "Do runtime exports reached only through the package root count as a consumer contract, so a prune needs a deprecation release, or are mounted consumers held to documented exports?"
 }
 
@@ -83,7 +83,7 @@
  ~[runtime_value_module]: "vocab[runtime] — state/runtime-value.ts holds the value algebra (clone, merge, magnitude), record and frame guards, and nowIso for register-bank and the interpreter; the two magnitude formulas reconcile or are named for their difference"
  ~[split_register_bank]: "&[runtime] — register-bank.ts splits into the bank, a memory-budget facade, coupling, and marks with liminality, keeping the RegisterBank surface"
  ~[split_hot_session]: "&[runtime] — hot-session.ts moves its cite, follow, and collapse pointer store beside it, so evaluate and inspect stand alone; coordinated with fragment-pointers"
- ~[one_hash_module]: "&[seed] — one synchronous hash over raw utf8 bytes replaces the sha256-to-16 copies and the UTF-16 FNV readers, and range-transform contentHash stops slicing past its length; persisted hashes follow ?[persisted_hashes]"
+ .[one_hash_module](eb34e6c3): "&[seed] — one content hash: hashString, geometry cards, and transform preconditions take 16 hex of SHA-256 over UTF-8 bytes, and the CLI's own sha256 copies use seed's"
  .[node_free_seed_root](0bf89a77): "&[seed] — seed hashes with a synchronous SHA-256 over UTF-8 bytes and leaves node:crypto, so its whole package bundles for a browser"
  .[runtime_node_subpath](900e2b9c): "&[runtime] — the runtime root is portable: hashing moves to seed's SHA-256, and mount resolution and composition evaluation move to @spwashi/spw-runtime/node"
  ~[interpreter_handlers]: "&[runtime] — the evaluate switch becomes a handler table keyed by node kind, one handler per sigil family"
@@ -97,11 +97,12 @@
  ~#hygiene_split: "none"
  ~#files_hot: "packages/spw-runtime/src/state/register-bank.ts, packages/spw-runtime/src/session/hot-session.ts"
  ~#next_commit: "legacy_tests_home"
- ~#open_count: "2"
- ~#last_stream: "2026-10-13 22:57"
+ ~#open_count: "1"
+ ~#last_stream: "2026-10-13 23:16"
  ~#taste_debt: "register-bank.ts is 899 lines, past the 600-line guard; hot-session.ts has 17 imports, past the 12-import guard"
 }
 
 ^["done"]{
  # Local history: written incrementally, finalized at merge.
+ ~#resolved(persisted_hashes): "When one hash function replaces the copies, do cache keys and session handles drop once and rebuild, while anything a person authored keeps its old hash with a receipt naming the new one? — moot in practice: no tracked file stores an FNV digest (searched 2026-10-13), so the changed values live only in memory and in the ignored .spw/gen/session cache, which rebuilds as the recommended default said; the sha256 callers kept identical digests"
 }
