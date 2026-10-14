@@ -245,6 +245,8 @@ describe('bundle:parser --allow-dirty into a temp directory', () => {
         parse: (text: string) => { success: boolean }
         highlightHtml: (text: string) => string
         anchors: (text: string) => Array<{ name: string }>
+        formAt: (text: string, caret: { line: number; character: number }) => { label: string | null } | null
+        formHover: (text: string, caret: { line: number; character: number }) => string | null
       }>(path.join(releaseDir, `workbench.${form}.js`))
       assert.equal(workbench.runSpw('!["hello"]').success, true)
       assert.equal(typeof workbench.createHotSession, 'function')
@@ -253,6 +255,8 @@ describe('bundle:parser --allow-dirty into a temp directory', () => {
       assert.equal(workbench.parse(text).success, true)
       assert.deepEqual(workbench.anchors(text).map((anchor) => anchor.name), ['door'])
       assert.match(workbench.highlightHtml(text), /spw-keyword/)
+      assert.equal(workbench.formAt('^["door"]{ hinge }', { line: 0, character: 2 })?.label, 'door')
+      assert.match(workbench.formHover('^["door"]{ hinge }', { line: 0, character: 2 }) ?? '', /Form coupling/)
     }
   })
 

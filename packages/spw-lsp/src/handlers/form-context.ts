@@ -55,6 +55,9 @@ export interface MobilityCandidate {
   range?: LspRange
 }
 
+/** What form context reads from a document: its text, its parse, and its identity. */
+export type FormContextSource = Pick<DocumentState, 'uri' | 'text' | 'version' | 'parseResult'>
+
 export interface FormContextAtPosition {
   uri: string
   revision: number
@@ -251,7 +254,7 @@ function buildMobilityCandidates(
  * Assemble caret-local form context from a parsed document.
  */
 export function assembleFormContext(
-  doc: DocumentState,
+  doc: FormContextSource,
   position: LspPosition,
 ): FormContextAtPosition | null {
   const source = doc.text

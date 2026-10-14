@@ -14,7 +14,7 @@
  *     lite.debug.js(.map)
  *     reader.min.js                   roles, outline, anchors, highlightHtml + parse (packages/spw-lsp/src/reader.ts)
  *     reader.debug.js(.map)
- *     workbench.min.js                seed's whole API, the runtime (runSpw, hot sessions), and the reader
+ *     workbench.min.js                seed's whole API, the runtime (runSpw, hot sessions), the reader, and caret form context
  *     workbench.debug.js(.map)
  *     manifest.json                   name, kind, revision, sizes and hashes
  *
@@ -189,11 +189,12 @@ const VARIANTS: readonly VariantSpec[] = [
     variant: 'workbench',
     // Everything portable: seed and the runtime reach no node built-in, and the
     // runtime's node-only surface lives at @spwashi/spw-runtime/node, left out here.
-    source: 'packages/spw-seed/src/index.ts + packages/spw-runtime/src/index.ts + packages/spw-lsp/src/reader.ts',
+    source: 'packages/spw-seed/src/index.ts + packages/spw-runtime/src/index.ts + packages/spw-lsp/src/reader.ts + packages/spw-lsp/src/form-reader.ts',
     exports: [
       `export * from './packages/spw-seed/src/index.ts';`,
       `export * from './packages/spw-runtime/src/index.ts';`,
       `export { roles, outline, anchors, highlightHtml } from './packages/spw-lsp/src/reader.ts';`,
+      `export { formAt, formHover } from './packages/spw-lsp/src/form-reader.ts';`,
     ].join('\n'),
   },
 ]
