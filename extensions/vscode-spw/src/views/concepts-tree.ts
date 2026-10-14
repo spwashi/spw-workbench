@@ -17,7 +17,7 @@ import * as vscode from 'vscode'
 import type { SpwContext } from '../context'
 import type { AnnotationEntry } from '../annotation-index'
 import { KIND_PHASE, KIND_PREFIX, annotationLabel, bucketByPhase, conceptKey } from './annotation-kinds'
-import { distinctPlaces, entryRow, type RowKnown } from './entry-place'
+import { distinctPlaces, entryRow, type Place, type RowKnown } from './entry-place'
 
 // ── Core types ──────────────────────────────────────────────────
 
@@ -43,8 +43,8 @@ interface ConceptEntryNode {
   entry: AnnotationEntry
   /** What the row's ancestors already say, so the row says something else. */
   known: RowKnown
-  /** The path segments that tell this row apart from its siblings. */
-  place: string
+  /** The file name that tells this row apart from its siblings, and the folder it sits in. */
+  place: Place
 }
 
 /** Co-occurring concept — appears in same file(s) as parent concept */
@@ -676,7 +676,7 @@ function entryNodes(entries: AnnotationEntry[], groupKind: GroupNodeKind): Conce
       kind: 'entry',
       entry,
       known: GROUP_KNOWS[groupKind],
-      place: places.get(rel.get(entry)!) ?? rel.get(entry)!,
+      place: places.get(rel.get(entry)!) ?? { name: rel.get(entry)!, folder: '' },
     }))
 }
 
