@@ -1,0 +1,65 @@
+# Fragment Pointers
+#
+# A selection becomes a pointer you can cite, tile into another block, or collapse to its value; and Spw source is read as a metamaterial: what a fragment does comes from its arrangement and its boundary, not only from its text.
+
+#>fragment_pointers
+#:layer #!semantics
+
+^["question"]{
+ asked: "If I compile the current selection to bytecode, can I reference or embed it in another script or block?"
+ then: "Consider how this relates to source code as a metamaterial."
+ as_of: "2026-10-13, at 138d2a28"
+ selection: "tmp.spw lines 8 to 10: a #!preprocess focus over two ~<N>[label](hash) commit lines, one a placeholder hash (00000000)"
+}
+
+#>fragment_pointers_today
+^["today"]{
+ cite: "spw cite <file> prints a spw.geometry.bc/1 card and a pointer @bc:<hash>; spw follow resolves it, and --collapse evaluates (* @bc) when the channel allows (packages/spw-cli/src/cite.ts)"
+ hash: "the pointer hashes the text, not the shape: compileGeometryBytecode sets contentHash to FNV-1a 64 over prepared.original (packages/spw-seed/src/canonical/geometric-resonance.ts 236 and 286)"
+ mislabel: "the cite card prints that hash as mask, and cite.ts 160 says pointer is mask interop only; the help text says contentHash, which is what it is"
+ shape: "the shape is the card's body: opCounts, opVector over SIGIL_CHARS, braceKinds, maxDepth, deepLines, flowRoles, unitCount, scheduleCount, biasAxisCount; bytecodeOpSimilarity compares two bodies by cosine"
+ input: "a whole file only; no --stdin, --expr, or --range, though spw fingerprint and Fingerprint Selection already take a selection"
+ store: "--remember writes a handle under .spw/gen/session, which git ignores, mapping the hash back to a path; nothing keeps the text, so the pointer drifts when the file changes and dangles on every other clone"
+ parse: "the parser reads @bc:3635905ec3dbeece as a binding of root bc to NUMBER 3635905 followed by IDENTIFIER ec3dbeece; @bc#3635905ec3dbeece loses the fragment to a ProseChunk; a letter-led fragment such as @bc#ec3dbeece3635905 survives"
+ editor: "the LSP's cited-hash reader matches the run after @bc: (a colon is not in its lookbehind), asks git, and paints it hashlike with the hover not a commit in this repository"
+ embed: "the working embed today is an anchor and a transclusion: #>name on a frame, then ={ ~\"file.spw#name\" } in a bundle, projected by spw expand"
+ hashes: "three functions name content: FNV in the geometry card, hashString in the LSP server index, and git blob oids; refactor-experiment-lifecycle ?[hash_basis] is deciding the selection hash basis"
+ canon: "canon-rewrite-v2 deferred a soft @bc:tag index and refused soft tags as product identity and resonance as a cache hit; VM bytecode is a non-goal in docs/runtime/spw/runtime-foundation.spw"
+}
+
+#>fragment_pointers_material
+^["material_model"]{
+ reading: "a metamaterial gets its properties from the geometry of its cells and how they tile, not from its base substance; read a Spw fragment the same way"
+ composition: "the text itself; the content hash names it; identity is exact, and any byte changes it"
+ cell: "the fragment's form, the geometry card body; it classes fragments by similarity and never names one"
+ boundary: "what the fragment leaves for its host to bind: ${slots}, $payload, refs it cites, anchors it declares, and placeholder hashes such as (00000000)"
+ coupling: "how a fragment enters a host: cite moves no material, tile copies it into the host's lattice, collapse substitutes its evaluated value"
+ effective: "properties measured on the host after coupling: resonance, measure, depth bands; brace-physics already says boon plus bane is tense material, not a packet sum"
+ homogenize: "GeometryField aggregates cells across a workspace without re-tokenizing; pointers make each cell an addressable unit of that field"
+ living_frozen: "an anchor ref is living, like the caches tree; a content pointer is a frozen cut, like a journal entry; labels are identity there and hashes are identity here"
+ deformation: "a format pass changes composition and keeps the cell; a rename changes the boundary; a new operator changes the cell; each edit class says which pointer breaks and which lookup finds the fragment again"
+}
+
+^["couplings"]{
+ cite: .{ form: "a pointer in place", moves: "nothing", host_changes: "a link, a hover, a definition", follow: "spw follow" }
+ tile: .{ form: "a pointer inside ={ } in a bundle", moves: "the fragment's text", host_changes: "the host's cells and boundary; measured before and after", follow: "spw expand" }
+ collapse: .{ form: "(* @bc) under channel law", moves: "the evaluated value", host_changes: "one value in place of a form", follow: "spw follow --collapse" }
+}
+
+^["claims"]{
+ h1: "A pointer keyed by raw bytes plus a cell card lets spw cite --like find a moved or reformatted fragment by shape and boundary where exact lookup fails"
+ h2: "Tiling a fragment changes the host's resonance in ways the fragment's own card does not predict; if tiling is additive on the fixtures, the effective layer is decoration and the plan drops it"
+ h3: "The boundary list predicts expand failures (an unbound slot, a ref that leaves its root) before expansion runs"
+}
+
+^["negative_controls"]{
+ whole_file: "spw cite on a whole file prints the same hash before and after the selection inputs land"
+ lexer: "p12's corpus control: outside the 79 digit-led runs, every token is unchanged"
+ prose: "a pointer quoted inside a string raises no link, no diagnostic, and no graph edge (citation-navigation refs_outside_strings)"
+}
+
+^["refusals"]{
+ identity: "a cell, a resonance, or a similarity score never names a fragment; only the content hash does"
+ vm: "a pointer does not promise executable bytecode; collapse evaluates through the runtime that exists"
+ authored: "spw cite never rewrites authored files; inserting a pointer is an editor action the author takes"
+}
