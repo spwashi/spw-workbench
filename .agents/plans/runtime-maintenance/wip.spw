@@ -66,6 +66,7 @@
  >>[2026-10-13 21:30] decide — The owner asked for runtime refactoring and maintenance planning. This plan holds the moves no plan owned; the stages split goes to precipitate-model-alignment, the package DAG check stays with refactor-import-sprawl, and sigil-table convergence with audit-ui-data-models.
  >>[2026-10-13 22:04] note — Branches waiting to merge on 2026-10-13: feature/reader-bundle adds seed's browser-safe reader entry, which node_free_seed_root extends to the whole seed index.
  >>[2026-10-13 22:33] note — From the module-trees survey: land split_hot_session as session/hot/ (the four hot-session files plus the pointer store), so the 18-file session/ reads as two concerns; site-install.ts holds mount resolution, which runtime_node_subpath should name.
+ >>[2026-10-13 22:57] implement — Landed on feature/browser-workbench: node_free_seed_root (0bf89a77) and runtime_node_subpath (900e2b9c). Seed and the runtime hash with canonical/content-hash.ts sha256Hex, a synchronous SHA-256 over UTF-8 bytes whose digests equal node:crypto's, so no stored hash moved and ?[persisted_hashes] is not yet forced. one_hash_module now has its home in content-hash.ts; the FNV hashes over UTF-16 units still wait for it.
 }
 
 ^["open"]{
@@ -83,8 +84,8 @@
  ~[split_register_bank]: "&[runtime] — register-bank.ts splits into the bank, a memory-budget facade, coupling, and marks with liminality, keeping the RegisterBank surface"
  ~[split_hot_session]: "&[runtime] — hot-session.ts moves its cite, follow, and collapse pointer store beside it, so evaluate and inspect stand alone; coordinated with fragment-pointers"
  ~[one_hash_module]: "&[seed] — one synchronous hash over raw utf8 bytes replaces the sha256-to-16 copies and the UTF-16 FNV readers, and range-transform contentHash stops slicing past its length; persisted hashes follow ?[persisted_hashes]"
- ~[node_free_seed_root]: "&[seed] — the seed index reaches no node built-in: nest-path, stencil, and patch use the hash module and self-mass uses TextEncoder; a test bundles the index for a browser"
- ~[runtime_node_subpath]: "&[runtime] — site-install and composition-eval move behind a ./node export, so the runtime root is portable"
+ .[node_free_seed_root](0bf89a77): "&[seed] — seed hashes with a synchronous SHA-256 over UTF-8 bytes and leaves node:crypto, so its whole package bundles for a browser"
+ .[runtime_node_subpath](900e2b9c): "&[runtime] — the runtime root is portable: hashing moves to seed's SHA-256, and mount resolution and composition evaluation move to @spwashi/spw-runtime/node"
  ~[interpreter_handlers]: "&[runtime] — the evaluate switch becomes a handler table keyed by node kind, one handler per sigil family"
  ~[prune_dead_exports]: "&[runtime] — exports with no importer beyond the barrels (33 of 98 in the spot check) are dropped or marked internal, after ?[public_surface]"
 }
@@ -97,7 +98,7 @@
  ~#files_hot: "packages/spw-runtime/src/state/register-bank.ts, packages/spw-runtime/src/session/hot-session.ts"
  ~#next_commit: "legacy_tests_home"
  ~#open_count: "2"
- ~#last_stream: "2026-10-13 22:33"
+ ~#last_stream: "2026-10-13 22:57"
  ~#taste_debt: "register-bank.ts is 899 lines, past the 600-line guard; hot-session.ts has 17 imports, past the 12-import guard"
 }
 
