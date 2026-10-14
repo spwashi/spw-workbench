@@ -11,7 +11,7 @@
  gist: "A selection becomes a pointer that names its exact text, carries its form and boundary in a card, and resolves wherever Spw is read, so a fragment can be cited, tiled into another block, or collapsed to its value."
  touches: [~"packages/spw-cli/src/cite.ts", ~"packages/spw-seed/src/canonical/geometric-resonance.ts", ~"packages/spw-cli/src/expand.ts", ~"packages/spw-lsp/src/handlers/commit-refs.ts", ~"extensions/vscode-spw/src/instruments", ~"extensions/neovim-spw/lua/spw"]
  entry: ~"./fragment-pointers.spw"
- next: "~[cite_selection]: spw cite reads --stdin, --expr, and --range file:L1-L2, and its card calls the hash content, not mask; then the owner settles ?[pointer_form] and ?[fragment_store]."
+ next: "~[cite_selection]: spw cite reads --stdin, --expr, and --range file:L1-L2, and its card calls the hash content, not mask; ~[cell_boundary] can go beside it."
 }
 
 ^["edges"]{
@@ -64,23 +64,21 @@
  >>[2026-10-13 18:59] observe — The owner asked whether a selection can be compiled to bytecode and referenced or embedded elsewhere. spw cite and follow exist for whole files: the pointer hashes the text (FNV-1a 64 over the source), the card body holds the form, and the card mislabels the hash as mask. No selection input, no tracked store, and no reader in source: the parser splits @bc:3635905ec3dbeece into a number and an identifier, and @bc#3635905ec3dbeece loses its fragment. Today's embed is an anchor plus ={ ~"file#name" } and spw expand.
  >>[2026-10-13 18:59] decide — The owner asked for a plan and for a reading of source code as a metamaterial. The artifact reads a fragment as composition (content hash, identity), cell (geometry card, similarity), boundary (what the host must bind), and coupling (cite, tile, collapse), with three falsifiable claims; H2 decides whether the effective-property layer stays.
  >>[2026-10-13 18:59] note — A pointer in source needs p12 (a hash kind in the lexer) from syntax-hardware-alignment, and its hash basis should be the one refactor-experiment-lifecycle ?[hash_basis] chooses, so the two plans settle that question together.
+ >>[2026-10-13 19:17] decide — The owner accepted all three: pointers are spelled @bc#<hash> and read by the p8 reader, fragments live in a tracked .spw/bc/<hash>.spw, and one hash over raw utf8 bytes serves pointers, refactor selections, and the LSP index. Note for the shared function: portableHash today hashes UTF-16 code units (charCodeAt), not utf8 bytes, so a non-ASCII fragment would hash differently from git or a byte-level hash.
 }
 
 ^["open"]{
  # Unresolved questions. When resolved: log in stream, then move to ^["done"] as ~#resolved(label).
- ?[pointer_form]: "How is a pointer spelled in source: @bc:<hash> (the card's spelling, which parses as a binding today), @bc#<hash> (p8's root with a fragment: the store is a declared root and the hash its anchor, so one reader serves both), or a string ~\"bc:<hash>\"?"
- ?[fragment_store]: "Where does a cited fragment's text live so a pointer resolves on any clone: the ignored .spw/gen/session (local only, as today), a tracked store such as .spw/bc/<hash>.spw holding text, card, and origin, or git blob objects (already content-addressed and confirmed through cat-file, but pruned by gc unless a ref holds them)?"
- ?[hash_unity]: "Do cite pointers, refactor selections, and the LSP index share one content hash function, decided with refactor-experiment-lifecycle ?[hash_basis] (the caches argue for raw bytes)?"
 }
 
 ^["commits"]{
  # Named, in order. Planned ~[name]; landed .[name](hash). Names are never reused.
- ~[plan]: ".[plans] — fragment-pointers stages selection pointers and reads source as a metamaterial"
+ .[plan](a124b66a): ".[plans] — fragment-pointers stages selection pointers and reads source as a metamaterial"
  ~[cite_selection]: "&[cli] — spw cite reads --stdin, --expr, and --range file:L1-L2; the card prints the hash as content, not mask, and cite.ts drops the mask-interop comment"
  ~[cell_boundary]: "&[seed] — the geometry card lists a fragment's boundary: slots, cited refs, declared anchors, and placeholder hashes it leaves unbound (H3)"
  ~[cite_like]: "&[cli] — spw cite --like <pointer> ranks fragments by cell similarity and shared boundary, never as identity (H1)"
- ~[fragment_store]: "&[cli] — spw cite --keep writes the fragment to the store ?[fragment_store] picks, and a lint finds every pointer in authored files the store cannot resolve"
- ~[pointer_reader]: "&[lsp] — a pointer is a reader row beside landed and cited commit hashes: hover shows the fragment and its card, go-to opens it, an unresolved pointer names the store it searched; needs p12 and ?[pointer_form]"
+ ~[fragment_store]: "&[cli] — spw cite --keep writes .spw/bc/<hash>.spw (text, card, origin), .spw/workspace.spw declares @bc, and a lint finds every pointer in authored files the store cannot resolve"
+ ~[pointer_reader]: "&[lsp] — @bc#<hash> is read as a citation by the p8 root-with-fragment reader: hover shows the fragment and its card, go-to opens it, an unresolved pointer names the store it searched; needs p12"
  ~[pointer_tile]: "&[cli] — spw expand tiles a pointer inside ={ } as it tiles an anchor ref, and reports the host's measure and resonance before and after (H2)"
  ~[cite_selection_editors]: "&[extensions] — Cite Selection in VS Code and :SpwCite in Neovim copy or insert the pointer, beside Fingerprint Selection"
 }
@@ -92,11 +90,14 @@
  ~#hygiene_split: "none"
  ~#files_hot: "packages/spw-cli/src/cite.ts, packages/spw-seed/src/canonical/geometric-resonance.ts"
  ~#next_commit: "cite_selection"
- ~#open_count: "3"
- ~#last_stream: "2026-10-13 18:59"
+ ~#open_count: "0"
+ ~#last_stream: "2026-10-13 19:17"
  ~#taste_debt: "geometric-resonance.ts is past the 600-line guard; the boundary scan belongs in its own module"
 }
 
 ^["done"]{
  # Local history: written incrementally, finalized at merge.
+ ~#resolved(pointer_form): "How is a pointer spelled in source: @bc:<hash> (the card's spelling, which parses as a binding today), @bc#<hash> (p8's root with a fragment: the store is a declared root and the hash its anchor, so one reader serves both), or a string ~\"bc:<hash>\"? — @bc#<hash>, the p8 root with a fragment: the store is a declared root and the hash its anchor, so one reader serves roots and pointers (owner, 2026-10-13)"
+ ~#resolved(fragment_store): "Where does a cited fragment's text live so a pointer resolves on any clone: the ignored .spw/gen/session (local only, as today), a tracked store such as .spw/bc/<hash>.spw holding text, card, and origin, or git blob objects (already content-addressed and confirmed through cat-file, but pruned by gc unless a ref holds them)? — a tracked .spw/bc/<hash>.spw holding text, card, and origin; git blobs were set aside because gc prunes blobs no ref holds (owner, 2026-10-13)"
+ ~#resolved(hash_unity): "Do cite pointers, refactor selections, and the LSP index share one content hash function, decided with refactor-experiment-lifecycle ?[hash_basis] (the caches argue for raw bytes)? — one function over raw utf8 bytes serves cite pointers, refactor selections, and the LSP index; it resolves refactor-experiment-lifecycle ?[hash_basis] the same way (owner, 2026-10-13)"
 }
