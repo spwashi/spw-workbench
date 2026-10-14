@@ -38,10 +38,21 @@ release/parser/<name>/
   full.debug.js.map     external map, linked by a relative sourceMappingURL
   lite.min.js           the scanner (packages/spw-seed/src/lite.ts) + SPW_PARSER_BUILD
   lite.debug.js(.map)
+  reader.min.js         roles, outline, anchors, highlightHtml, parse, parseExpression + SPW_PARSER_BUILD
+  reader.debug.js(.map)
   manifest.json         schema spw.parser-release/2
 ```
 
 `full` keeps the export surface of the site's old `spw-workbench-parser.js` bundle, so existing imports keep working. `lite.min.js` must fit 5 KiB: the 4 KiB scanner budget from `build-js-dist.ts` plus room for the banner and stamp.
+
+`reader` is what the editor reads from one file, as functions a page can call (packages/spw-lsp/src/reader.ts):
+
+- `roles(text, { path })`: the role stream the language server sends as semantic tokens, one `{ line, char, length, role, modifiers }` per token, 0-based. A `path` under `.agents/plans/` reads landed commit refs as `commitRef`; any other hash-shaped run is `hashlike`.
+- `outline(text)`: the document symbols the editor shows.
+- `anchors(text)`: each `#>name` and where the parser binds it.
+- `highlightHtml(text, { classPrefix })`: the file as escaped HTML, each role a span with classes such as `spw-keyword spw-declaration`. A site styles the classes; no colours are baked in.
+
+The build points `@spwashi/spw-seed` at `packages/spw-seed/src/reader.ts`, the slice of seed that never reaches a node built-in. Anything needing the workspace, git or the runtime (cross-file definitions, commit links, plan streams, probes) stays with the language server. `packages/spw-lsp/src/__tests__/reader.test.ts` holds the reader to the server, token for token, and fails if a node built-in reaches it.
 
 Every script exports a frozen `SPW_PARSER_BUILD` stamp: `package`, `version`, `commit` (12 hex), `source`, `release` (the folder name), `variant`, `form`, and `prerelease: true`, `patch: true` or `dirty: true` when they apply. `parser.js` is the same bytes as `full.min.js`, so its stamp says `full`/`min`.
 

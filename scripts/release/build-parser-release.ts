@@ -12,6 +12,8 @@
  *     full.debug.js(.map)             same exports, unminified, external source map
  *     lite.min.js                     the scanner (packages/spw-seed/src/lite.ts) + stamp
  *     lite.debug.js(.map)
+ *     reader.min.js                   roles, outline, anchors, highlightHtml + parse (packages/spw-lsp/src/reader.ts)
+ *     reader.debug.js(.map)
  *     manifest.json                   name, kind, revision, sizes and hashes
  *
  * Rules: a dirty working tree is refused unless --allow-dirty (which marks the
@@ -60,7 +62,7 @@ const LITE_SCANNER_BUDGET_BYTES = 4096
 const PROVENANCE_ALLOWANCE_BYTES = 1024
 const LITE_MIN_BUDGET_BYTES = LITE_SCANNER_BUDGET_BYTES + PROVENANCE_ALLOWANCE_BYTES
 
-export type ParserVariant = 'full' | 'lite'
+export type ParserVariant = 'full' | 'lite' | 'reader'
 export type ParserForm = 'min' | 'debug'
 
 export interface ParserBuildStamp {
@@ -158,6 +160,8 @@ interface VariantSpec {
   source: string
   /** Entry module body; the stamp export is appended per form. */
   exports: string
+  /** Module substitutions for this variant only, as esbuild aliases. */
+  alias?: Readonly<Record<string, string>>
 }
 
 const VARIANTS: readonly VariantSpec[] = [
@@ -170,6 +174,14 @@ const VARIANTS: readonly VariantSpec[] = [
     variant: 'lite',
     source: 'packages/spw-seed/src/lite.ts',
     exports: `export * from './packages/spw-seed/src/lite.ts';`,
+  },
+  {
+    variant: 'reader',
+    source: 'packages/spw-lsp/src/reader.ts',
+    exports: `export * from './packages/spw-lsp/src/reader.ts';`,
+    // The editor's reading functions import seed by package name; the reader
+    // build gives them seed's browser-safe slice, so no node built-in comes along.
+    alias: { '@spwashi/spw-seed': './packages/spw-seed/src/reader.ts' },
   },
 ]
 
@@ -303,6 +315,7 @@ async function bundleVariant(
     banner: { js: banner },
     logLevel: 'silent',
     tsconfig: path.join(rootDir, 'tsconfig.json'),
+    ...(spec.alias ? { alias: { ...spec.alias } } : {}),
   })
 
   const code = result.outputFiles.find((file) => file.path.endsWith('.js'))

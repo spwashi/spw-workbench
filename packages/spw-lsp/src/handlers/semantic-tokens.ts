@@ -31,7 +31,7 @@
  */
 
 import type { DocumentParams, HandlerDeps } from '../types'
-import { COMMIT_REF_STRATEGY, allCommitRefsIn, type CommitRef } from './commit-refs'
+import { COMMIT_REF_STRATEGY, allCommitRefsIn, type CommitRef } from './commit-ref-forms'
 
 // ── Token type / modifier indices ──────────────────────────────
 
@@ -118,6 +118,15 @@ export function semanticTokens(params: DocumentParams, deps: HandlerDeps): LspSe
     const text = doc?.text ?? null
     if (text === null) return { data: [] }
 
+    return { data: encodeTokens(roleTokens(text, doc?.filePath)) }
+}
+
+/**
+ * The role stream: every token of a file at its absolute position, with commit
+ * refs overlaid. Text in, tokens out, with no server state, so the parser
+ * release ships the same roles the editor paints.
+ */
+export function roleTokens(text: string, filePath?: string | null): AbsoluteToken[] {
     const lines = text.split('\n')
     /** Tokens at absolute positions; commit refs overlay them before encoding. */
     const tokens: AbsoluteToken[] = []
@@ -469,12 +478,13 @@ export function semanticTokens(params: DocumentParams, deps: HandlerDeps): LspSe
         }
     }
 
-    return { data: encodeTokens(overlayCommitRefs(tokens, text, doc?.filePath)) }
+    return overlayCommitRefs(tokens, text, filePath ?? undefined)
 }
 
 // ── Commit refs and encoding ────────────────────────────────────
 
-interface AbsoluteToken {
+/** A token at its line and character, before LSP relative encoding. */
+export interface AbsoluteToken {
     line: number
     char: number
     length: number

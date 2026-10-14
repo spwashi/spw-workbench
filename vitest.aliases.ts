@@ -1,8 +1,10 @@
 import path from 'node:path'
 
+// A subpath comes before its package: an alias also matches what starts with it plus a slash.
 export const vitestWorkspaceAlias = {
-  '@spwashi/spw-seed': path.resolve(__dirname, 'packages/spw-seed/src/index.ts'),
   '@spwashi/spw-seed/parser': path.resolve(__dirname, 'packages/spw-seed/src/parser.ts'),
+  '@spwashi/spw-seed/reader': path.resolve(__dirname, 'packages/spw-seed/src/reader.ts'),
+  '@spwashi/spw-seed': path.resolve(__dirname, 'packages/spw-seed/src/index.ts'),
   '@spwashi/spw-runtime': path.resolve(__dirname, 'packages/spw-runtime/src/index.ts'),
   '@spwashi/spw-runtime/pipeline': path.resolve(__dirname, 'packages/spw-runtime/src/pipeline.ts'),
   '@spwashi/spw-runtime/substrate': path.resolve(__dirname, 'packages/spw-runtime/src/substrate.ts'),

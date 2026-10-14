@@ -5,7 +5,7 @@
  * directories with --allow-dirty and holds what it writes to the
  * spw.parser-release/2 contract: manifest digests match the files, parser.js is
  * the default bytes, every stamp names the manifest revision, the full bundle
- * parses and the lite bundle scans, a published day never changes, and
+ * parses, the lite bundle scans, the reader bundle reads a file as the editor does, a published day never changes, and
  * prereleases and patches are numbered by their day.
  *
  * node:test rather than vitest on purpose: the bundles are imported by Node's
@@ -121,6 +121,9 @@ describe('bundle:parser --allow-dirty into a temp directory', () => {
         'lite.min.js',
         'lite.debug.js',
         'lite.debug.js.map',
+        'reader.min.js',
+        'reader.debug.js',
+        'reader.debug.js.map',
         'parser.js',
       ],
     )
@@ -150,7 +153,7 @@ describe('bundle:parser --allow-dirty into a temp directory', () => {
 
   it('stamps every script with the manifest revision, release name, variant and form', async () => {
     const scripts = manifest.files.filter((file) => file.path.endsWith('.js'))
-    assert.equal(scripts.length, 5)
+    assert.equal(scripts.length, 7)
     for (const file of scripts) {
       const { SPW_PARSER_BUILD: stamp } = await importBundle<{ SPW_PARSER_BUILD: ParserBuildStamp }>(
         path.join(releaseDir, file.path),
@@ -205,8 +208,32 @@ describe('bundle:parser --allow-dirty into a temp directory', () => {
     }
   })
 
+  it('reader reads a frame the way the editor does: roles, outline, anchors and HTML', async () => {
+    for (const form of ['min', 'debug']) {
+      const reader = await importBundle<{
+        roles: (text: string) => Array<{ line: number; char: number; length: number; role: string; modifiers: string[] }>
+        outline: (text: string) => Array<{ name: string }>
+        anchors: (text: string) => Array<{ name: string; line: number; char: number }>
+        highlightHtml: (text: string) => string
+        parse: (text: string) => { success: boolean }
+      }>(path.join(releaseDir, `reader.${form}.js`))
+      const text = '#>door\n^["door"]{ hinge: "<oak>" }'
+      assert.equal(reader.parse(text).success, true)
+      const roles = reader.roles(text)
+      assert.ok(roles.some((span) => span.role === 'keyword' && span.line === 1 && span.char === 0), 'the ^ of the frame is a keyword')
+      assert.ok(roles.some((span) => span.role === 'operator' && span.modifiers.includes('declaration')), 'an opening bracket is a declaring operator')
+      assert.ok(roles.some((span) => span.role === 'string' && span.line === 1), 'the value is a string')
+      assert.deepEqual(reader.anchors(text), [{ name: 'door', line: 0, char: 0 }])
+      assert.ok(reader.outline(text).length > 0, 'the outline names the frame')
+      const html = reader.highlightHtml(text)
+      assert.match(html, /<span class="spw-keyword spw-declaration">\^<\/span>/)
+      assert.ok(html.includes('&lt;oak&gt;'), 'text inside a span is escaped')
+      assert.equal(html.replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&amp;/g, '&'), text)
+    }
+  })
+
   it('links debug forms to sibling maps with repo-relative sources and leaves min forms unmapped', async () => {
-    for (const variant of ['full', 'lite']) {
+    for (const variant of ['full', 'lite', 'reader']) {
       const debug = await fs.readFile(path.join(releaseDir, `${variant}.debug.js`), 'utf8')
       assert.match(debug, new RegExp(`\\n//# sourceMappingURL=${variant}\\.debug\\.js\\.map\\n?$`))
       const map = JSON.parse(await fs.readFile(path.join(releaseDir, `${variant}.debug.js.map`), 'utf8'))
