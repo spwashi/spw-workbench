@@ -13,7 +13,7 @@
 
 import {
   interconnectSummary,
-  sha256Hex,
+  textHash,
   type InterconnectGraph,
 } from '@spwashi/spw-seed'
 import { createHotSession, type HotRuntimeSession } from './hot-session'
@@ -100,7 +100,7 @@ export interface SenseCycleResult {
 }
 
 function hash(text: string): string {
-  return sha256Hex(text).slice(0, 16)
+  return textHash(text)
 }
 
 function cardFromInspect(

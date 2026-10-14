@@ -6,7 +6,7 @@
 
 import {
   parse,
-  sha256Hex,
+  textHash,
   scanFlowProtocol,
   type DialectId,
   type GeometricResonanceReport,
@@ -105,7 +105,7 @@ export interface HotInspectRecord {
 }
 
 export function hashContent(source: string): string {
-  return sha256Hex(source).slice(0, 16)
+  return textHash(source)
 }
 
 /** Prefer path receipt preparedHash when present (same algorithm as prepare). */
