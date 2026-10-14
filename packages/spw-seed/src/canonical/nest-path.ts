@@ -13,7 +13,7 @@
  * @see packages/spw-seed/src/types/coupling.ts
  */
 
-import { createHash } from 'node:crypto'
+import { sha256Hex } from './content-hash'
 import { parse } from '../parser'
 import { getNodeChildren } from '../instrumentation/audit'
 import type { ASTNode } from '../types/ast'
@@ -88,7 +88,7 @@ const KIND_GLYPH: Record<NestPathKind, NestPathGlyph> = {
 }
 
 function shortHash(s: string): string {
-  return createHash('sha256').update(s).digest('hex').slice(0, 12)
+  return sha256Hex(s).slice(0, 12)
 }
 
 function tokenValue(tok: unknown): string | undefined {

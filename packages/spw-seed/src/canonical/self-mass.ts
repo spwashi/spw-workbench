@@ -27,6 +27,7 @@
 
 import { parse } from '../parser'
 import type { Span } from '../types'
+import { utf8ByteLength } from './content-hash'
 
 /** A number this surface declares about its subject. */
 export interface DeclaredMeasure {
@@ -201,7 +202,7 @@ export function measureMass(text: string): MeasuredMass {
   }
   return {
     lines,
-    bytes: Buffer.byteLength(text, 'utf8'),
+    bytes: utf8ByteLength(text),
   }
 }
 

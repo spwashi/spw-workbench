@@ -978,3 +978,6 @@ export {
   type QuestStep,
   type ReaderMark,
 } from './learn'
+
+// Content hashing: synchronous and browser-safe, the same digest node:crypto gives
+export { sha256Hex, sha256HexBytes, utf8ByteLength } from './canonical/content-hash'

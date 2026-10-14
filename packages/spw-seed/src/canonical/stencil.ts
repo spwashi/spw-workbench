@@ -20,7 +20,7 @@
  * @see packages/spw-seed/src/canonical/patch.ts
  */
 
-import { createHash } from 'node:crypto'
+import { sha256Hex } from './content-hash'
 import { extractBraceProjection } from './brace-projection'
 import { scanNestPaths } from './nest-path'
 import {
@@ -89,7 +89,7 @@ export interface StencilMaskGate {
 }
 
 function shortId(parts: string): string {
-  return createHash('sha256').update(parts).digest('hex').slice(0, 12)
+  return sha256Hex(parts).slice(0, 12)
 }
 
 /** Cut the form mask from a surface (parse-backed brace + nest). */

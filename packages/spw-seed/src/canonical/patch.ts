@@ -20,7 +20,7 @@
  * @see docs/theory/spw/operational-field.spw
  */
 
-import { createHash } from 'node:crypto'
+import { sha256Hex } from './content-hash'
 import { parse } from '../parser'
 import { matchAll } from '../query/match'
 import type { SpwPattern } from '../query/types'
@@ -138,7 +138,7 @@ export interface FilePatchTarget {
 }
 
 function hashSource(s: string): string {
-  return createHash('sha256').update(s).digest('hex')
+  return sha256Hex(s)
 }
 
 function shortHash(s: string): string {
