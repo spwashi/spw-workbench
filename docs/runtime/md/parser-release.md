@@ -40,6 +40,8 @@ release/parser/<name>/
   lite.debug.js(.map)
   reader.min.js         roles, outline, anchors, highlightHtml, parse, parseExpression + SPW_PARSER_BUILD
   reader.debug.js(.map)
+  workbench.min.js      seed's whole API, the runtime (runSpw, hot sessions), and the reader + SPW_PARSER_BUILD
+  workbench.debug.js(.map)
   manifest.json         schema spw.parser-release/2
 ```
 
@@ -52,7 +54,9 @@ release/parser/<name>/
 - `anchors(text)`: each `#>name` and where the parser binds it.
 - `highlightHtml(text, { classPrefix })`: the file as escaped HTML, each role a span with classes such as `spw-keyword spw-declaration`. A site styles the classes; no colours are baked in.
 
-The build points `@spwashi/spw-seed` at `packages/spw-seed/src/reader.ts`, the slice of seed that never reaches a node built-in. Anything needing the workspace, git or the runtime (cross-file definitions, commit links, plan streams, probes) stays with the language server. `packages/spw-lsp/src/__tests__/reader.test.ts` holds the reader to the server, token for token, and fails if a node built-in reaches it.
+`workbench` is everything that runs without node: seed's whole package (parsing, formatting, fingerprints, geometry, measures, quests), the runtime's root (`runSpw`, `createHotSession`, the pipeline), and the reader functions. Seed hashes with a synchronous SHA-256 over UTF-8 bytes (`sha256Hex`, the same digest node:crypto gives), so no stored hash changed when seed left node:crypto. The runtime's filesystem surface, mount resolution and composition evaluation, lives at `@spwashi/spw-runtime/node` and stays out. About 411 KB minified, 125 KB gzipped; `reader` stays the small choice for a page that only highlights.
+
+The reader build points `@spwashi/spw-seed` at `packages/spw-seed/src/reader.ts`, the slice of seed that never reaches a node built-in. Anything needing the workspace, git or the runtime (cross-file definitions, commit links, plan streams, probes) stays with the language server. `packages/spw-lsp/src/__tests__/reader.test.ts` holds the reader to the server, token for token, and fails if a node built-in reaches it.
 
 Every script exports a frozen `SPW_PARSER_BUILD` stamp: `package`, `version`, `commit` (12 hex), `source`, `release` (the folder name), `variant`, `form`, and `prerelease: true`, `patch: true` or `dirty: true` when they apply. `parser.js` is the same bytes as `full.min.js`, so its stamp says `full`/`min`.
 

@@ -14,6 +14,8 @@
  *     lite.debug.js(.map)
  *     reader.min.js                   roles, outline, anchors, highlightHtml + parse (packages/spw-lsp/src/reader.ts)
  *     reader.debug.js(.map)
+ *     workbench.min.js                seed's whole API, the runtime (runSpw, hot sessions), and the reader
+ *     workbench.debug.js(.map)
  *     manifest.json                   name, kind, revision, sizes and hashes
  *
  * Rules: a dirty working tree is refused unless --allow-dirty (which marks the
@@ -62,7 +64,7 @@ const LITE_SCANNER_BUDGET_BYTES = 4096
 const PROVENANCE_ALLOWANCE_BYTES = 1024
 const LITE_MIN_BUDGET_BYTES = LITE_SCANNER_BUDGET_BYTES + PROVENANCE_ALLOWANCE_BYTES
 
-export type ParserVariant = 'full' | 'lite' | 'reader'
+export type ParserVariant = 'full' | 'lite' | 'reader' | 'workbench'
 export type ParserForm = 'min' | 'debug'
 
 export interface ParserBuildStamp {
@@ -182,6 +184,17 @@ const VARIANTS: readonly VariantSpec[] = [
     // The editor's reading functions import seed by package name; the reader
     // build gives them seed's browser-safe slice, so no node built-in comes along.
     alias: { '@spwashi/spw-seed': './packages/spw-seed/src/reader.ts' },
+  },
+  {
+    variant: 'workbench',
+    // Everything portable: seed and the runtime reach no node built-in, and the
+    // runtime's node-only surface lives at @spwashi/spw-runtime/node, left out here.
+    source: 'packages/spw-seed/src/index.ts + packages/spw-runtime/src/index.ts + packages/spw-lsp/src/reader.ts',
+    exports: [
+      `export * from './packages/spw-seed/src/index.ts';`,
+      `export * from './packages/spw-runtime/src/index.ts';`,
+      `export { roles, outline, anchors, highlightHtml } from './packages/spw-lsp/src/reader.ts';`,
+    ].join('\n'),
   },
 ]
 

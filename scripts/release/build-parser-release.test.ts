@@ -5,7 +5,8 @@
  * directories with --allow-dirty and holds what it writes to the
  * spw.parser-release/2 contract: manifest digests match the files, parser.js is
  * the default bytes, every stamp names the manifest revision, the full bundle
- * parses, the lite bundle scans, the reader bundle reads a file as the editor does, a published day never changes, and
+ * parses, the lite bundle scans, the reader bundle reads a file as the editor does,
+ * the workbench bundle runs a program and hashes as node:crypto does, a published day never changes, and
  * prereleases and patches are numbered by their day.
  *
  * node:test rather than vitest on purpose: the bundles are imported by Node's
@@ -124,6 +125,9 @@ describe('bundle:parser --allow-dirty into a temp directory', () => {
         'reader.min.js',
         'reader.debug.js',
         'reader.debug.js.map',
+        'workbench.min.js',
+        'workbench.debug.js',
+        'workbench.debug.js.map',
         'parser.js',
       ],
     )
@@ -153,7 +157,7 @@ describe('bundle:parser --allow-dirty into a temp directory', () => {
 
   it('stamps every script with the manifest revision, release name, variant and form', async () => {
     const scripts = manifest.files.filter((file) => file.path.endsWith('.js'))
-    assert.equal(scripts.length, 7)
+    assert.equal(scripts.length, 9)
     for (const file of scripts) {
       const { SPW_PARSER_BUILD: stamp } = await importBundle<{ SPW_PARSER_BUILD: ParserBuildStamp }>(
         path.join(releaseDir, file.path),
@@ -232,8 +236,28 @@ describe('bundle:parser --allow-dirty into a temp directory', () => {
     }
   })
 
+  it('workbench runs a program, hashes as node:crypto does, and reads a file', async () => {
+    for (const form of ['min', 'debug']) {
+      const workbench = await importBundle<{
+        runSpw: (source: string) => { success: boolean }
+        createHotSession: unknown
+        sha256Hex: (text: string) => string
+        parse: (text: string) => { success: boolean }
+        highlightHtml: (text: string) => string
+        anchors: (text: string) => Array<{ name: string }>
+      }>(path.join(releaseDir, `workbench.${form}.js`))
+      assert.equal(workbench.runSpw('!["hello"]').success, true)
+      assert.equal(typeof workbench.createHotSession, 'function')
+      const text = '#>door été ^["door"]{ hinge: "oak" }'
+      assert.equal(workbench.sha256Hex(text), createHash('sha256').update(text).digest('hex'))
+      assert.equal(workbench.parse(text).success, true)
+      assert.deepEqual(workbench.anchors(text).map((anchor) => anchor.name), ['door'])
+      assert.match(workbench.highlightHtml(text), /spw-keyword/)
+    }
+  })
+
   it('links debug forms to sibling maps with repo-relative sources and leaves min forms unmapped', async () => {
-    for (const variant of ['full', 'lite', 'reader']) {
+    for (const variant of ['full', 'lite', 'reader', 'workbench']) {
       const debug = await fs.readFile(path.join(releaseDir, `${variant}.debug.js`), 'utf8')
       assert.match(debug, new RegExp(`\\n//# sourceMappingURL=${variant}\\.debug\\.js\\.map\\n?$`))
       const map = JSON.parse(await fs.readFile(path.join(releaseDir, `${variant}.debug.js.map`), 'utf8'))
