@@ -20,6 +20,7 @@
  * @see packages/spw-seed/src/ir/slices.ts FormIR / ResonanceIR
  */
 
+import { textHash } from './content-hash'
 import { inspectGeometry, type GeometryReport } from './geometry-inspect'
 import { SIGIL_CHARS } from './geometry-inspect-sigils'
 import { scanFlowProtocol, type FlowProtocolModule, type FlowUnit } from './flow-protocol'
@@ -232,17 +233,6 @@ export type ResonanceDetector = (ctx: ResonanceDetectionContext) => GeometricRes
 
 // ── Bytecode build ────────────────────────────────────────────────
 
-/** FNV-1a 64-bit hex — pure JS, portable across seed consumers (no node:crypto). */
-function portableHash(text: string): string {
-  let h = 0xcbf29ce484222325n
-  const prime = 0x100000001b3n
-  for (let i = 0; i < text.length; i++) {
-    h ^= BigInt(text.charCodeAt(i))
-    h = (h * prime) & 0xffffffffffffffffn
-  }
-  return h.toString(16).padStart(16, '0')
-}
-
 function topOperators(report: GeometryReport, n = 8): Array<{ op: string; count: number }> {
   return report.operators
     .map(r => ({ op: r.sigil, count: r.count }))
@@ -283,7 +273,7 @@ export function compileGeometryBytecode(
   const opVector = SIGIL_CHARS.map(s => opCounts[s] ?? 0)
   return {
     version: 'spw.geometry.bc/1',
-    contentHash: portableHash(source),
+    contentHash: textHash(source),
     opCounts,
     opVector,
     braceKinds: braceKindsMap(geometry),

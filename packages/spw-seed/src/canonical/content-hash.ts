@@ -6,8 +6,9 @@
  * `createHash('sha256').update(text).digest('hex')`, so moving seed and the
  * runtime off node:crypto changes no stored hash, and both bundle for a browser.
  *
- * runtime-maintenance ~[one_hash_module] makes this the one home for content
- * hashes; until it lands, the FNV hashes elsewhere stay as they are.
+ * It is the one home for content hashes (runtime-maintenance ~[one_hash_module]):
+ * a short hash is a prefix of the same SHA-256, so every reader of the same
+ * bytes gets the same name, in node or in a browser.
  */
 
 const encoder = new TextEncoder()
@@ -85,4 +86,12 @@ export function sha256HexBytes(bytes: Uint8Array): string {
 /** SHA-256 of a string's UTF-8 bytes, as 64 lowercase hex characters. */
 export function sha256Hex(text: string): string {
   return sha256HexBytes(encoder.encode(text))
+}
+
+/** Hex characters in a short content hash: 64 bits of the SHA-256. */
+export const TEXT_HASH_LENGTH = 16
+
+/** The short content hash: the first `length` hex characters of the text's SHA-256. */
+export function textHash(text: string, length: number = TEXT_HASH_LENGTH): string {
+  return sha256Hex(text).slice(0, length)
 }

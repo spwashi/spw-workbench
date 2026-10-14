@@ -1,7 +1,7 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { createHash } from 'node:crypto'
+import { sha256HexBytes } from '@spwashi/spw-seed'
 import { parseCommonFlags } from './args'
 import { printHelpPage } from './help'
 
@@ -251,9 +251,7 @@ async function collectFiles(rootDir: string, options?: { ignoreTopLevel?: string
 
 async function sha256File(filePath: string): Promise<string> {
   const buf = await fs.readFile(filePath)
-  const hash = createHash('sha256')
-  hash.update(buf)
-  return hash.digest('hex')
+  return sha256HexBytes(buf)
 }
 
 async function buildDumpEntries(baseDir: string, relFiles: string[]): Promise<DumpFileEntry[]> {

@@ -10,6 +10,7 @@
  */
 
 import { hashString } from './canonicalize'
+import { textHash } from './content-hash'
 import {
   applyEdits,
   type EffectGrade,
@@ -73,7 +74,7 @@ const FRAGMENT_OFFSET = /^#@offset=(\d+)\.\.(\d+)$/i
  * Content hash for write preconditions (stable hex, not crypto-grade secret).
  */
 export function contentHash(source: string): string {
-  return hashString(source).slice(0, 16)
+  return textHash(source)
 }
 
 /**

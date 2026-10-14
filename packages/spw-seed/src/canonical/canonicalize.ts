@@ -12,6 +12,8 @@
  *   migrateSlashComments   — rewrite borrowed `//` line comments to `#` light
  */
 
+import { textHash } from './content-hash'
+
 export interface CanonicalOptions {
   /** Normalize all line endings to \n */
   normalizeNewlines: boolean
@@ -582,16 +584,11 @@ export function canonicalize(
 }
 
 /**
- * Lightweight, deterministic string hash (FNV-1a 32-bit).
- * Not cryptographically secure; suitable for change detection.
+ * The short content hash of a string: 16 hex characters of its UTF-8 SHA-256,
+ * the same as textHash. Kept under this name for its many callers; it was a
+ * 32-bit FNV over UTF-16 units until the hashes became one.
  */
 export function hashString(value: string): string {
-  let hash = 0x811c9dc5
-  for (let i = 0; i < value.length; i++) {
-    hash ^= value.charCodeAt(i)
-    hash = (hash * 0x01000193) >>> 0
-  }
-  // Return hex padded to 8 characters
-  return hash.toString(16).padStart(8, '0')
+  return textHash(value)
 }
 

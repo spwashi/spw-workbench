@@ -2,7 +2,10 @@ import { createHash } from 'node:crypto'
 import path from 'node:path'
 import { build } from 'esbuild'
 import { describe, expect, it } from 'vitest'
-import { sha256Hex, sha256HexBytes, utf8ByteLength } from './content-hash'
+import { TEXT_HASH_LENGTH, sha256Hex, sha256HexBytes, textHash, utf8ByteLength } from './content-hash'
+import { hashString } from './canonicalize'
+import { compileGeometryBytecode } from './geometric-resonance'
+import { contentHash } from './range-transform'
 
 const node = (text: string): string => createHash('sha256').update(text).digest('hex')
 
@@ -31,6 +34,27 @@ describe('content hash', () => {
     expect(sha256Hex(big)).toBe(node(big))
     const bytes = new Uint8Array([0, 255, 128, 64, 1])
     expect(sha256HexBytes(bytes)).toBe(createHash('sha256').update(bytes).digest('hex'))
+  })
+})
+
+describe('one content hash', () => {
+  it('is a prefix of the SHA-256 of the text, 16 hex characters by default', () => {
+    const text = '~#lens(living system) 😀'
+    expect(textHash(text)).toBe(node(text).slice(0, TEXT_HASH_LENGTH))
+    expect(textHash(text)).toHaveLength(16)
+    expect(textHash(text, 12)).toBe(node(text).slice(0, 12))
+  })
+
+  it('names the same bytes the same way across seed: hashString, geometry cards, and transform preconditions', () => {
+    const source = '#>door\n^["door"]{ hinge: "été" }'
+    expect(hashString(source)).toBe(textHash(source))
+    expect(compileGeometryBytecode(source).contentHash).toBe(textHash(source))
+    expect(contentHash(source)).toBe(textHash(source))
+  })
+
+  it('hashes bytes, not UTF-16 units: an astral character and its escapes do not collide', () => {
+    expect(hashString('😀')).toBe(node('😀').slice(0, 16))
+    expect(hashString('😀')).not.toBe(hashString('\ud83d'))
   })
 })
 

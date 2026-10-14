@@ -980,4 +980,4 @@ export {
 } from './learn'
 
 // Content hashing: synchronous and browser-safe, the same digest node:crypto gives
-export { sha256Hex, sha256HexBytes, utf8ByteLength } from './canonical/content-hash'
+export { TEXT_HASH_LENGTH, sha256Hex, sha256HexBytes, textHash, utf8ByteLength } from './canonical/content-hash'

@@ -15,8 +15,7 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { createHash } from 'node:crypto'
-import type { ChangeReport, Patch, Stencil } from '@spwashi/spw-seed'
+import { sha256Hex, type ChangeReport, type Patch, type Stencil } from '@spwashi/spw-seed'
 import {
   formatChangeReportSpw,
   formatPatchSpw,
@@ -65,7 +64,7 @@ export interface CliCacheIndex {
 const memoryByCwd = new Map<string, Map<string, CliCacheEntry>>()
 
 function shortId(parts: string): string {
-  return createHash('sha256').update(parts).digest('hex').slice(0, 12)
+  return sha256Hex(parts).slice(0, 12)
 }
 
 export function cliCacheDir(cwd: string = process.cwd()): string {

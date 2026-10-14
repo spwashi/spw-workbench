@@ -10,7 +10,6 @@
  * mtime/size change, link-model bump, or root table edit forces a fresh scan.
  */
 
-import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
@@ -18,6 +17,7 @@ import {
   CORPUS_PRODUCT_SCHEMA,
   CORPUS_PRODUCT_VERSION,
   formatCorpusProductSpw,
+  sha256Hex,
   type CorpusProduct,
 } from '@spwashi/spw-seed'
 import type { CorpusScanResult } from './corpus-scan'
@@ -88,7 +88,7 @@ export function fingerprintCorpusKey(parts: CorpusMemoKeyParts): string {
       .sort()
       .map(k => [k, parts.fileStats[k]]),
   })
-  return createHash('sha256').update(payload).digest('hex').slice(0, 24)
+  return sha256Hex(payload).slice(0, 24)
 }
 
 export function getCorpusMemoStats(): CorpusMemoStats {

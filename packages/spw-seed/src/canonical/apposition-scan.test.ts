@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { lex } from '../lexer'
+import { TEXT_HASH_LENGTH } from './content-hash'
 import { appositionParts } from '../lexer/matchers/apposition'
 import {
   appositionSpectrum,
@@ -29,7 +30,7 @@ describe('scanAppositions', () => {
     expect(lattice.cells[3]!.form).toBe('colon')
     expect(lattice.cells[3]!.name).toBe('label')
     expect(lattice.cells[3]!.body).toBe('value')
-    expect(lattice.cells[0]!.mask).toHaveLength(8)
+    expect(lattice.cells[0]!.mask).toHaveLength(TEXT_HASH_LENGTH)
   })
 
   it('reports ~#name: annotations as a distinct colon species', () => {
