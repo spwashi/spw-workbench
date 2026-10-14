@@ -29,6 +29,28 @@ Landed in the first slice:
 
 Next slices are proposals in `relationship-contours.spw` `^["predictable"]`.
 
+Spirit contours slice (added 2026-10-13; frame `^["spirit_contours"]`):
+
+- The Workspace view's Spirit section becomes a contour: a masked, weighted count measured against a ground, printed with a receipt of what it left out.
+- The owner moved the default mapping from annotation kinds to operators: the seven phased sigils in `SIGIL_SEMANTICS`, counted from the AST. `.` (ground) and `=` (binding) are shown beside the cycle, not on it.
+- Commits, in order:
+  1. `spirit_census_seed`, after geometric-analysis-tooling's `ast_operator_census`
+  2. `spirit_request`
+  3. `spirit_view`
+  4. `spirit_slices`
+  5. `concept_spirit`
+  6. `spirit_pins`, after fragment-pointers
+- It also takes two questions the archived vscode-cognitive-surface left open, `cross_surface_copy` and `expert_joy`.
+
+```
+[NEW] packages/spw-seed/src/canonical/spirit-census.ts — rows, masks, weights, projection, lift, receipt
+[MOD] packages/spw-lsp/src/server-index.ts, packages/spw-lsp/src/handlers — spw/spirit request
+[NEW] packages/spw-cli/src/spirit.ts — spw spirit
+[MOD] extensions/vscode-spw/src/views/workspace-tree.ts, annotation-kinds.ts — render the census; the kind-to-phase tally goes
+[MOD] extensions/neovim-spw/lua/spw/instruments.lua — :SpwSpirit
+[MOD] .spw/workspace.spw — ^["spirit"] slices
+```
+
 ### Craft guard
 
 plan-index.ts is ~520 lines with 4 imports (under the 600-line guard); split card reading from index rendering before adding another mode. agent-lib.sh is already ~1100 lines — card helpers were added as two small functions rather than a new mode.

@@ -9,13 +9,14 @@
 ^["card"]{
  phase: #active
  gist: "Give each kind of reader a first move; make every surface answer the same question alike."
- touches: [~"scripts/plans", ~".agents/plans/_schema", ~"packages/spw-cli/src/resolve.ts", ~"packages/spw-seed/src/canonical/derived-marks.ts"]
+ touches: [~"scripts/plans", ~".agents/plans/_schema", ~"packages/spw-cli/src/resolve.ts", ~"packages/spw-seed/src/canonical/derived-marks.ts", ~"extensions/vscode-spw/src/views", ~"packages/spw-lsp/src/server-index.ts"]
  entry: ~"./relationship-contours.spw"
- next: "Trial the glance card on .spw/caches/tree/spw/doors/index.spw, one row per door naming the question its fragment answers; then decide ?[glance_pattern]."
+ next: "Spirit contours: ~[spirit_census_seed] once geometric-analysis-tooling ~[ast_operator_census] lands, since the owner moved the default mapping to operators on 2026-10-13; the glance trial on .spw/caches/tree/spw/doors/index.spw waits behind it."
 }
 
 ^["edges"]{
- shares: [~"../plan-ecology-clustering/wip.spw", ~"../citation-navigation/wip.spw"]
+ needs: [~"../geometric-analysis-tooling/wip.spw"]
+ shares: [~"../plan-ecology-clustering/wip.spw", ~"../citation-navigation/wip.spw", ~"../editor-reading-hierarchy/wip.spw", ~"../vscode-workspace-atlas/wip.spw", ~"../fragment-pointers/wip.spw", ~"../directive-lattice/wip.spw", ~"../audit-ui-data-models/wip.spw"]
 }
 
 ^["roots"]{
@@ -24,6 +25,11 @@
  @index: ~"../index.spw"
  @schema: ~"../_schema/wip.spw"
  @generator: ~"../../../scripts/plans/plan-index.ts"
+ @spirit: ~"./relationship-contours.spw#relationship_contours_spirit"
+ @spirit_view: ~"../../../extensions/vscode-spw/src/views/workspace-tree.ts"
+ @sigils: ~"../../../packages/spw-lsp/src/server-index.ts"
+ @spirit_sequence: ~"../../../docs/design/spw/spirit-sequence.spw"
+ @cognitive_archive: ~"../_archive/vscode-cognitive-surface/wip.spw"
 }
 
 ^["intent"]{
@@ -56,12 +62,19 @@
  >>[2026-10-12 14:31] revise — convention: resolved questions and landed commits are kept in ^["done"] (resolved(label) and shipped) rather than deleted; ^["commits"] keeps a pointer comment.
  >>[2026-10-12 15:27] revise — Commits named per the convention in 90c58bbc: 5 landed, 2 planned, 0 dropped.
  >>[2026-10-13 12:11] revise — resolve_with_path dropped: since 866826ff a path changes no verdict. The glance trial gets a target, the doors index in the caches tree, which already has the guess-then-check shape. The loose fragment matching in resolve moves to citation-navigation as resolve_anchor_strict.
+ >>[2026-10-13 19:49] observe — Spirit, in the Workspace view, tallies annotation kinds as phases: a lens counts as wonder, an intent as action. A census of tracked .spw found 57k particles, 66% in the caches tree and 46% on lines repeated word for word across files (#:layer #!pragmatics in 708), so Potential always dominates and the count is mostly template. The archived vscode-cognitive-surface left seven open questions that no live plan picked up.
+ >>[2026-10-13 19:50] decide — The owner moved Spirit's default mapping to operators: the seven phased sigils of SIGIL_SEMANTICS, counted from the AST, with . ground and = binding shown off the cycle. The owner also wondered about pinning expressions. This plan takes spirit as a contour: a masked, weighted view measured against a ground, with a receipt, so it reads alike in every editor and the CLI. See the spirit_contours frame in the artifact.
+ >>[2026-10-13 19:50] revise — Added six spirit commits (census in seed, one request for editors and CLI, the view, slices in the workspace, per-concept spirit, pins) and four questions. Routed the archived plan's questions: cross_surface_copy and expert_joy here; capture_decorations to editor-reading-hierarchy; primary_questions and surface_taxonomy are answered by editor-reading-hierarchy's tiers; diff_semantics rides with vscode-editor-contract diff_observation_contract; your_surface_corrections lapses with the archive.
 }
 
 ^["open"]{
  ?[glance_pattern]: "Which non-plan surface (a skill, a docs spine, a registry) gets the first glance card, so the pattern can be promoted to .spw/patterns/glance-card.spw?"
  ?[phase_authority]: "Retire ~#status, derive it from card.phase, or keep both with distinct meanings? The answer unblocks teaching spw refresh to derive status."
  ?[archive_policy]: "Should #done plans move to _archive automatically once the index lists them, or stay until a human archives them?"
+ ?[pin_semantics]: "What does pinning an expression do: set the ground, watch a row across edits, join a named slice, or all three; and is it spelled in the workspace, as =#, or as an editor action?"
+ ?[particle_phase]: "With operators as the default, does the Concepts view's Phase grouping become an Aim grouping (#> anchor, #: lens, #! focus), or keep phases as a labelled alternate projection?"
+ ?[cross_surface_copy]: "Which words stay stable across strip, atlas, hover, and diff so the editor teaches one language? Carried from the archived vscode-cognitive-surface; phase is the first case, meaning spirit-sequence in the atlas and pipeline in the register explorer."
+ ?[expert_joy]: "What exactly should feel joyful to an experienced engineer reading or editing Spw? Carried from the archived vscode-cognitive-surface, where it was left open."
 }
 
 ^["commits"]{
@@ -71,6 +84,12 @@
  .[scan_package_markers](1f17c86e): "![audit] — scan packages in the marker audit; describe boonhonk truthfully"
  .[card_live_plans](da5189bb): ".[plans] — card every live plan; derive the index; route readers to it"
  ~[stabilize_index_check]: "![plans] — run plan-index --check inside fuzz:stabilize so CI agrees with the commit gate (fuzz:stabilize is types plus runtime tests today)"
+ ~[spirit_census_seed]: "^seed[seed] — a portable spirit census: per-frame operator counts from the AST, a row mask, occurrence or distinct weights, a projection from the SIGIL_SEMANTICS phases, lift against a ground, and a receipt of what was masked; a test keeps valence off every phase (needs geometric-analysis-tooling ast_operator_census)"
+ ~[spirit_request]: "&[lsp,cli] — spw/spirit and spw spirit serve one census for a ground (workspace, root, file, or frame), so every editor and the CLI print the same numbers"
+ ~[spirit_view]: "&[vscode,neovim] — Spirit shows the seven phased operators with lift against its ground, the off-cycle operators beside them, distinct beside occurrence counts, and a resting row; :SpwSpirit prints the same card"
+ ~[spirit_slices]: "#[workspace] — .spw/workspace.spw ^[\"spirit\"] declares the ground, count, projection, resting rule (declared particles, and lines repeated in N or more files), and named slices; a reading profile chooses a slice, and every slice prints its receipt"
+ ~[concept_spirit]: "&[lsp,vscode] — a concept carries its own spirit, the phase containers its occurrences sit in, on its Concepts row"
+ ~[spirit_pins]: "&[lsp,vscode] — a pinned expression (@bc#hash or an anchor) becomes a ground, a watched row whose spirit is kept across edits, or a slice member; needs fragment-pointers and ?[pin_semantics]"
 }
 
 ^["cache"]{
@@ -78,9 +97,9 @@
  ~#base_ref: "main@3eaab637767222ffe248449da7262a251c4c608b"
  ~#hygiene_split: "none"
  ~#files_hot: "scripts/plans/plan-index.ts, .agents/plans/index.spw"
- ~#next_commit: "stabilize_index_check"
- ~#open_count: "3"
- ~#last_stream: "2026-10-13 12:11"
+ ~#next_commit: "spirit_census_seed"
+ ~#open_count: "7"
+ ~#last_stream: "2026-10-13 19:50"
 }
 
 ^["done"]{
