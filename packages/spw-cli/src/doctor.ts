@@ -4,7 +4,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { promisify } from 'node:util'
 import { facet, formatSpwCard, type SpwCardPart } from '@spwashi/spw-seed'
-import { loadSpwMountResolution } from '@spwashi/spw-runtime'
+import { loadSpwMountResolution } from '@spwashi/spw-runtime/node'
 import { parseCommonFlags } from './args'
 import { printHelpPage } from './help'
 

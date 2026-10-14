@@ -8,8 +8,7 @@
  * @see packages/spw-seed/src/ir/ref.ts
  */
 
-import { createHash } from 'node:crypto'
-import type { DialectId, SurfaceProfileStack } from '@spwashi/spw-seed'
+import { sha256Hex, type DialectId, type SurfaceProfileStack } from '@spwashi/spw-seed'
 import type { StabilityChannel } from './channels'
 
 export const PATH_RECEIPT_VERSION = 'spw.path_receipt/1' as const
@@ -37,7 +36,7 @@ export interface PathReceipt {
 }
 
 export function hashSourceBytes(source: string): string {
-  return createHash('sha256').update(source).digest('hex').slice(0, 16)
+  return sha256Hex(source).slice(0, 16)
 }
 
 export function buildPathReceipt(input: {

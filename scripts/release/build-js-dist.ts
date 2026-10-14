@@ -36,10 +36,12 @@ const declarationAliasTargets = {
   '@spwashi/spw-seed': 'types/spw-seed/src/index.d.ts',
   '@spwashi/spw-seed/parser': 'types/spw-seed/src/parser.d.ts',
   '@spwashi/spw-seed/lite': 'types/spw-seed/src/lite.d.ts',
+  '@spwashi/spw-seed/reader': 'types/spw-seed/src/reader.d.ts',
   '@spwashi/spw-runtime': 'types/spw-runtime/src/index.d.ts',
   '@spwashi/spw-runtime/pipeline': 'types/spw-runtime/src/pipeline.d.ts',
   '@spwashi/spw-runtime/substrate': 'types/spw-runtime/src/substrate.d.ts',
   '@spwashi/spw-runtime/resonance': 'types/spw-runtime/src/resonance.d.ts',
+  '@spwashi/spw-runtime/node': 'types/spw-runtime/src/node.d.ts',
 } as const
 
 const cliEntrypoints: DistEntrypoint[] = [
@@ -78,6 +80,14 @@ const libraryEntrypoints: DistLibraryEntrypoint[] = [
     outfile: 'resonance.js',
     declarationFacade: 'resonance.d.ts',
     declarationSource: 'types/spw-runtime/src/resonance.d.ts',
+  },
+  {
+    // Mount resolution and composition evaluation: the runtime surface that
+    // reads the filesystem, kept out of index.js so that stays portable.
+    entry: 'packages/spw-runtime/src/node.ts',
+    outfile: 'runtime-node.js',
+    declarationFacade: 'runtime-node.d.ts',
+    declarationSource: 'types/spw-runtime/src/node.d.ts',
   },
   {
     entry: 'packages/spw-runtime/src/pipeline.ts',
@@ -313,6 +323,7 @@ async function writeDistPackage(rootPackage: RootPackageManifest, entrypoints: D
     exports: {
       '.': byOutfile['index.js'],
       './runtime': byOutfile['index.js'],
+      './runtime/node': byOutfile['runtime-node.js'],
       './seed': byOutfile['seed.js'],
       './parser': byOutfile['parser.js'],
       './lite': byOutfile['lite.js'],

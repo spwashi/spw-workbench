@@ -4,9 +4,9 @@
  * Split from hot-session.ts for craft (file budget + single responsibility).
  */
 
-import { createHash } from 'node:crypto'
 import {
   parse,
+  sha256Hex,
   scanFlowProtocol,
   type DialectId,
   type GeometricResonanceReport,
@@ -105,7 +105,7 @@ export interface HotInspectRecord {
 }
 
 export function hashContent(source: string): string {
-  return createHash('sha256').update(source).digest('hex').slice(0, 16)
+  return sha256Hex(source).slice(0, 16)
 }
 
 /** Prefer path receipt preparedHash when present (same algorithm as prepare). */

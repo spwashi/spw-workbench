@@ -21,9 +21,9 @@ import {
   assembleCacheLayers,
   formatCacheLayerLines,
 } from '@spwashi/spw-seed'
+import { evaluateCompositionSource } from '@spwashi/spw-runtime/node'
 import {
   createHotSession,
-  evaluateCompositionSource,
   formatRuntimeMediumSpw,
   resolveRuntimeMedium,
   resolveChannelPolicy,

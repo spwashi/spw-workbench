@@ -11,9 +11,9 @@
  * @see packages/spw-seed/src/ir
  */
 
-import { createHash } from 'node:crypto'
 import {
   interconnectSummary,
+  sha256Hex,
   type InterconnectGraph,
 } from '@spwashi/spw-seed'
 import { createHotSession, type HotRuntimeSession } from './hot-session'
@@ -100,7 +100,7 @@ export interface SenseCycleResult {
 }
 
 function hash(text: string): string {
-  return createHash('sha256').update(text).digest('hex').slice(0, 16)
+  return sha256Hex(text).slice(0, 16)
 }
 
 function cardFromInspect(

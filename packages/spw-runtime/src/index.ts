@@ -120,14 +120,7 @@ export { Substrate } from './pipeline/substrate'
 
 export { detectResonances } from './pipeline/resonance'
 
-export type { SpwMountResolution } from './site-install'
-
-export {
-  deriveMountRoots,
-  discoverSpwMountResolution,
-  findSpwSiteRoot,
-  loadSpwMountResolution,
-} from './site-install'
+// Mount resolution and composition evaluation read the filesystem: see ./node.ts.
 
 // Greenfield session: channels, charge, crawl, consumer, brace phrases
 export {
@@ -213,8 +206,4 @@ export {
   type CycleStepReceipt,
   type CycleCard,
   type SenseCycleResult,
-  COMPOSITION_EVAL_VERSION,
-  evaluateCompositionSource,
-  type CompositionEvalOptions,
-  type CompositionEvalResult,
 } from './session'
