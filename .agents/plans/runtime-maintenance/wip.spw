@@ -1,0 +1,105 @@
+# wip — runtime-maintenance
+# Branch: feature/runtime-maintenance
+# Started: 2026-10-13
+
+#>plan_runtime_maintenance
+#:plan #!execution_truth
+#:layer #!pragmatics
+
+!["card"]{
+ phase: #planning
+ gist: "The runtime and seed carry one home per behavior: legacy shims retired, the largest modules split along their reasons to change, one hash function, and roots that run in a browser."
+ touches: [~"packages/spw-runtime/src", ~"packages/spw-seed/src/canonical", ~"src/runtime", ~"src/seed", ~"tsconfig.typecheck.json"]
+ entry: ~"./PLAN.md"
+ next: "~[legacy_tests_home]: move the runtime and CLI tests out of src/runtime/__tests__ so they are type-checked, then ~[retire_src_shims]."
+}
+
+^["edges"]{
+ shares: [~"../precipitate-model-alignment/wip.spw", ~"../refactor-import-sprawl/wip.spw", ~"../audit-ui-data-models/wip.spw", ~"../refactor-experiment-lifecycle/wip.spw", ~"../fragment-pointers/wip.spw", ~"../parser-releases/wip.spw", ~"../tooling-scripts-consolidation/wip.spw", ~"../runtime-axis-traceability/wip.spw"]
+}
+
+^["roots"]{
+ @plan: ~".agents/plans/runtime-maintenance/PLAN.md"
+ @bank: ~"packages/spw-runtime/src/state/register-bank.ts"
+ @hot_session: ~"packages/spw-runtime/src/session/hot-session.ts"
+ @stages: ~"packages/spw-runtime/src/pipeline/stages.ts"
+ @interpreter: ~"packages/spw-runtime/src/interpreter/interpreter.ts"
+ @seed_index: ~"packages/spw-seed/src/index.ts"
+}
+
+^["intent"]{
+ ~#goal: "A change to the runtime touches the one file that owns the behavior, every test that guards it is type-checked, and the same hash names the same bytes in seed, runtime, CLI, LSP, and the browser."
+ ~#taste: "one home per behavior; splits along reasons to change, never by line count alone"
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #service
+ develops: [#craft, #containment, #portability]
+ review_surfaces: [@bank, @hot_session, @stages]
+}
+
+^["survey"]{
+ as_of: "2026-10-13, a read-only survey at 76e17bd4, spot-checked"
+ size: "packages/spw-runtime/src: 36 files, 6,696 lines; register-bank.ts 899 lines is the only file past 600; hot-session.ts has 17 import statements"
+ mixes: [
+  "register-bank: value algebra, memory budget and eviction, get and set, phase and lens, liminality, marks, coupling, provenance",
+  "hot-session: cache keys, evaluate, inspect, interconnect, a cite and follow pointer store, invalidation",
+  "stages: precipitate types, the runSpwStepped generator, .spw rendering",
+  "interpreter: one evaluate switch of 19 cases over about 200 lines"
+ ]
+ legacy: "88 of 89 non-test files under src/seed and src/runtime are one-line re-exports; their consumers are legacy tests, which tsconfig.typecheck.json never checks; 4 of the runtime suite's files test the CLI"
+ hashes: "sha256 cut to 16 hex is copied four times (runtime hot-session-types, path-receipt, sense-cycle; seed patch); FNV readers hash UTF-16 units; range-transform contentHash slices an 8-char hash to 16"
+ portability: "runtime and seed import no outer package and have no relative cycles; the seed index reaches node:crypto (nest-path, stencil, patch) and Buffer (self-mass), the parser and reader entries do not; the runtime root re-exports node-only site-install and composition-eval"
+ health: "test:runtime 190 of 190; test:seed 853 of 853; tsc clean"
+ duplicates: "nowIso, isRuntimeRecord, and clamp01 have several copies; runtimeMagnitude and valueMagnitude measure differently; runtime OPERATOR_AFFINITIES names ., $, and <> differently from the LSP sigil table"
+}
+
+^["risk_model"]{
+ hard_failures: ["a persisted hash or cache key changes without a receipt", "a split changes the public RegisterBank or HotSession surface a mounted consumer uses"]
+ soft_failures: ["moved tests lose a fixture path", "a dead-export prune removes something a consumer imports"]
+ non_negotiables: ["test:runtime, test:seed, and tsc stay green at every commit", "the parser and reader bundles never reach a node built-in"]
+}
+
+^["stream"]{
+ >>[2026-10-13 21:30] observe — A read-only survey of the runtime and seed found one file past the size guard (register-bank, 899 lines), one past the import guard (hot-session, 17), 88 one-line shims kept alive only by legacy tests that are never type-checked, four copies of a sha256-to-16 helper beside FNV hashes of UTF-16 units, and a contentHash that slices 8 characters to 16. No layering violations or relative cycles. Details in the survey frame.
+ >>[2026-10-13 21:30] decide — The owner asked for runtime refactoring and maintenance planning. This plan holds the moves no plan owned; the stages split goes to precipitate-model-alignment, the package DAG check stays with refactor-import-sprawl, and sigil-table convergence with audit-ui-data-models.
+ >>[2026-10-13 22:04] note — Branches waiting to merge on 2026-10-13: feature/reader-bundle adds seed's browser-safe reader entry, which node_free_seed_root extends to the whole seed index.
+}
+
+^["open"]{
+ # Unresolved questions. When resolved: log in stream, then move to ^["done"] as ~#resolved(label).
+ ?[persisted_hashes]: "When one hash function replaces the copies, do cache keys and session handles drop once and rebuild, while anything a person authored keeps its old hash with a receipt naming the new one?"
+ ?[public_surface]: "Do runtime exports reached only through the package root count as a consumer contract, so a prune needs a deprecation release, or are mounted consumers held to documented exports?"
+}
+
+^["commits"]{
+ # Named, in order. Planned ~[name]; landed .[name](hash). Names are never reused.
+ ~[plan]: ".[plans] — runtime-maintenance records the runtime survey and the moves no plan owned"
+ ~[legacy_tests_home]: "![tests] — runtime tests move from src/runtime/__tests__ to packages/spw-runtime and the four CLI tests to packages/spw-cli, so tsc checks them; normalize.test.ts reads stages from the runtime package; the orphaned docs/library wonder-axioms test is repaired or removed"
+ ~[retire_src_shims]: "&[packages] — the 88 re-export shims in src/seed and src/runtime are deleted once nothing imports them"
+ ~[runtime_value_module]: "vocab[runtime] — state/runtime-value.ts holds the value algebra (clone, merge, magnitude), record and frame guards, and nowIso for register-bank and the interpreter; the two magnitude formulas reconcile or are named for their difference"
+ ~[split_register_bank]: "&[runtime] — register-bank.ts splits into the bank, a memory-budget facade, coupling, and marks with liminality, keeping the RegisterBank surface"
+ ~[split_hot_session]: "&[runtime] — hot-session.ts moves its cite, follow, and collapse pointer store beside it, so evaluate and inspect stand alone; coordinated with fragment-pointers"
+ ~[one_hash_module]: "&[seed] — one synchronous hash over raw utf8 bytes replaces the sha256-to-16 copies and the UTF-16 FNV readers, and range-transform contentHash stops slicing past its length; persisted hashes follow ?[persisted_hashes]"
+ ~[node_free_seed_root]: "&[seed] — the seed index reaches no node built-in: nest-path, stencil, and patch use the hash module and self-mass uses TextEncoder; a test bundles the index for a browser"
+ ~[runtime_node_subpath]: "&[runtime] — site-install and composition-eval move behind a ./node export, so the runtime root is portable"
+ ~[interpreter_handlers]: "&[runtime] — the evaluate switch becomes a handler table keyed by node kind, one handler per sigil family"
+ ~[prune_dead_exports]: "&[runtime] — exports with no importer beyond the barrels (33 of 98 in the spot check) are dropped or marked internal, after ?[public_surface]"
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@76e17bd4"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: "packages/spw-runtime/src/state/register-bank.ts, packages/spw-runtime/src/session/hot-session.ts"
+ ~#next_commit: "legacy_tests_home"
+ ~#open_count: "2"
+ ~#last_stream: "2026-10-13 22:04"
+ ~#taste_debt: "register-bank.ts is 899 lines, past the 600-line guard; hot-session.ts has 17 imports, past the 12-import guard"
+}
+
+^["done"]{
+ # Local history: written incrementally, finalized at merge.
+}

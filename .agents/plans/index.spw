@@ -181,6 +181,7 @@
   @cli_mode_overhaul: ~"./cli-mode-overhaul/wip.spw" "Every CLI command declares its effect mode and ceiling, so no --write arrives as a surprise."
   @local_numbering_vcs: ~"./local-numbering-vcs/wip.spw" "Local ids follow one rule (labels are identity, ordinals are derived for display), and every version-control touchpoint reads the VCS from .spw/workspace.spw, detected by default, so plans, lexer, LSP, CLI, and hooks work in git, jj, or no VCS."
   @lsp_custom_request_completions: ~"./lsp-custom-request-completions/wip.spw" "Every spw/* method has one registry entry and a matrix row from handled through tested."
+  @runtime_maintenance: ~"./runtime-maintenance/wip.spw" "The runtime and seed carry one home per behavior: legacy shims retired, the largest modules split along their reasons to change, one hash function, and roots that run in a browser."
   @spw_beat_diff_precipitation: ~"./spw-beat-diff-precipitation/wip.spw" "LSP cache-tier TTLs are read from the cache.spw tiers authority instead of constants in server-index.ts."
   @tooling_scripts_consolidation: ~"./tooling-scripts-consolidation/wip.spw" "Every script and npm name states what it runs, Spw-native analyzers live inside spw verbs, dead and UI-era scripts are retired behind warnings, and nothing a hook, skill, or mounted consumer runs breaks on the way."
   @typescript_perf_audit_infra: ~"./typescript-perf-audit-infra/wip.spw" "Timed typecheck rows name compiler, config, and duration so upgrade claims become measurable."
@@ -266,8 +267,8 @@
  ~"packages": [@refactor_import_sprawl]
  ~"packages/spw-cli": [@absorb_spwq_cli, @audit_css_tokens, @audit_data_attributes, @caches_cut_2026_09_30, @canon_rewrite_v2, @citation_navigation, @cli_mode_overhaul, @cli_sense_reorientation, @curiosity_mutation_ergonomics, @curriculum_logic_terminal_mastery, @fragment_pointers, @gap_affinity_tooling, @geometric_analysis_tooling, @hygiene_index_consolidation, @measure_invariant_generalization, @mounted_consumer_tooling, @naming_profile_convention_align, @onboarding_quest, @package_iteration_radius, @plan_tooling_design, @query_profile, @refactor_experiment_lifecycle, @register_phase_evolution, @relationship_contours, @runtime_dx_foundation, @safety_commit_reconciliation, @spw_cli_overhaul, @spw_site_install]
  ~"packages/spw-lsp": [@apposition_cache_granules, @audit_ui_data_models, @caches_cut_2026_09_30, @caches_living_tree, @citation_navigation, @editor_reading_hierarchy, @form_geometry_editor, @fragment_pointers, @geometric_analysis_tooling, @local_numbering_vcs, @lsp_custom_request_completions, @plan_plugin_integration, @relationship_contours, @runtime_dx_foundation, @safety_commit_reconciliation, @spw_beat_diff_precipitation, @spw_garden_geometry, @vscode_authoring_probe_loop, @vscode_lsp_roadmap, @vscode_plugin_performance, @vscode_register_explorer, @vscode_workspace_atlas]
- ~"packages/spw-runtime": [@lukewarm_backlog, @precipitate_model_alignment, @runtime_axis_traceability, @runtime_dx_foundation, @spw_site_install]
- ~"packages/spw-seed": [@absorb_spwq_cli, @apposition_cache_granules, @audit_ui_data_models, @caches_living_tree, @canon_rewrite_v2, @cli_mode_overhaul, @cli_sense_reorientation, @curiosity_mutation_ergonomics, @curriculum_logic_terminal_mastery, @directive_lattice, @fragment_pointers, @gap_affinity_tooling, @geometric_analysis_tooling, @local_numbering_vcs, @lukewarm_backlog, @measure_invariant_generalization, @onboarding_quest, @operational_topography, @package_iteration_radius, @plan_stream_parse_health, @refactor_experiment_lifecycle, @register_phase_evolution, @relationship_contours, @runtime_dx_foundation, @safety_commit_reconciliation, @seed_roundness_grades, @shape_syntax_ecology, @spw_q_stabilization, @symmetry_explorer_instrument, @syntax_hardware_alignment, @syntax_profile_stack]
+ ~"packages/spw-runtime": [@lukewarm_backlog, @precipitate_model_alignment, @runtime_axis_traceability, @runtime_dx_foundation, @runtime_maintenance, @spw_site_install]
+ ~"packages/spw-seed": [@absorb_spwq_cli, @apposition_cache_granules, @audit_ui_data_models, @caches_living_tree, @canon_rewrite_v2, @cli_mode_overhaul, @cli_sense_reorientation, @curiosity_mutation_ergonomics, @curriculum_logic_terminal_mastery, @directive_lattice, @fragment_pointers, @gap_affinity_tooling, @geometric_analysis_tooling, @local_numbering_vcs, @lukewarm_backlog, @measure_invariant_generalization, @onboarding_quest, @operational_topography, @package_iteration_radius, @plan_stream_parse_health, @refactor_experiment_lifecycle, @register_phase_evolution, @relationship_contours, @runtime_dx_foundation, @runtime_maintenance, @safety_commit_reconciliation, @seed_roundness_grades, @shape_syntax_ecology, @spw_q_stabilization, @symmetry_explorer_instrument, @syntax_hardware_alignment, @syntax_profile_stack]
  ~"schemas/spw-cli-envelope.v1.schema.json": [@spw_cli_overhaul]
  ~"scripts": [@cli_benchmarking_infra, @tooling_scripts_consolidation]
  ~"scripts/analyzers": [@audit_fuzz_truthfulness, @caches_cut_2026_09_30, @caches_living_tree, @hygiene_index_consolidation, @refactor_import_sprawl, @runtime_axis_traceability, @syntax_hardware_alignment, @typescript_perf_audit_infra, @typescript_toolchain_observatory]
@@ -276,14 +277,17 @@
  ~"scripts/plans": [@plan_plugin_integration, @plan_tooling_design, @relationship_contours]
  ~"scripts/pre-commit": [@commit_gate_redesign, @refactor_import_sprawl]
  ~"scripts/release": [@parser_releases, @typescript_toolchain_observatory]
+ ~"src/runtime": [@runtime_maintenance]
+ ~"src/seed": [@runtime_maintenance]
  ~"src/testing": [@curriculum_html_css_mastery, @curriculum_logic_terminal_mastery]
  ~"tsconfig.base.json": [@typescript_upgrade_ladder]
+ ~"tsconfig.typecheck.json": [@runtime_maintenance]
 }
 
 ^["kin"]{
  // computed: live plans that overlap in code or name each other, with no declared edge — a prompt to compare, not a claim
  absorb_spwq_cli: [@package_iteration_radius, @safety_commit_reconciliation, @spw_q_stabilization]
- apposition_cache_granules: [@vscode_plugin_performance, @audit_ui_data_models, @citation_navigation]
+ apposition_cache_granules: [@runtime_maintenance, @vscode_plugin_performance, @audit_ui_data_models]
  audit_css_tokens: [@spw_site_install, @audit_ui_data_models, @hygiene_index_consolidation]
  audit_data_attributes: [@spw_site_install, @audit_ui_data_models, @hygiene_index_consolidation]
  audit_fuzz_truthfulness: [@plan_stream_parse_health, @caches_cut_2026_09_30, @caches_living_tree]
@@ -296,7 +300,7 @@
  cli_mode_overhaul: [@cli_sense_reorientation, @refactor_experiment_lifecycle, @canon_rewrite_v2]
  cli_sense_reorientation: [@caches_cut_2026_09_30, @cli_mode_overhaul, @fragment_pointers]
  commit_gate_redesign: [@obsidian_spw, @tooling_scripts_consolidation, @lukewarm_backlog]
- curiosity_mutation_ergonomics: [@canon_rewrite_v2, @naming_profile_convention_align, @safety_commit_reconciliation]
+ curiosity_mutation_ergonomics: [@canon_rewrite_v2, @naming_profile_convention_align, @runtime_maintenance]
  curriculum_html_css_mastery: [@onboarding_quest]
  curriculum_html_svg_mastery: [@naming_profile_convention_align, @onboarding_quest]
  curriculum_logic_terminal_mastery: [@spw_q_stabilization, @query_profile, @safety_commit_reconciliation]
@@ -311,14 +315,14 @@
  intellij_lsp4ij: [@onboarding_quest, @obsidian_spw, @vscode_editor_contract]
  local_numbering_vcs: [@apposition_cache_granules, @caches_cut_2026_09_30, @citation_navigation]
  lsp_custom_request_completions: [@vscode_lsp_roadmap, @safety_commit_reconciliation]
- lukewarm_backlog: [@canon_rewrite_v2, @runtime_axis_traceability, @commit_gate_redesign]
- measure_invariant_generalization: [@canon_rewrite_v2, @spw_garden_geometry, @syntax_profile_stack]
+ lukewarm_backlog: [@canon_rewrite_v2, @runtime_axis_traceability, @runtime_maintenance]
+ measure_invariant_generalization: [@canon_rewrite_v2, @runtime_maintenance, @spw_garden_geometry]
  mounted_consumer_tooling: [@curriculum_logic_terminal_mastery, @lukewarm_backlog, @naming_profile_convention_align]
  naming_profile_convention_align: [@curiosity_mutation_ergonomics, @plan_tooling_design, @safety_commit_reconciliation]
  neovim_spw_surfaces: [@fragment_pointers, @spw_garden_geometry, @caches_living_tree]
  obsidian_spw: [@commit_gate_redesign, @intellij_lsp4ij, @vscode_editor_contract]
  onboarding_quest: [@editor_inspection_instruments, @intellij_lsp4ij, @spw_site_install]
- operational_topography: [@plan_stream_parse_health, @canon_rewrite_v2, @seed_roundness_grades]
+ operational_topography: [@plan_stream_parse_health, @canon_rewrite_v2, @runtime_maintenance]
  package_iteration_radius: [@absorb_spwq_cli]
  parser_releases: [@curiosity_mutation_ergonomics, @directive_lattice, @shape_syntax_ecology]
  plan_ecology_clustering: [@naming_profile_convention_align, @plan_stream_parse_health]
@@ -332,19 +336,20 @@
  register_phase_evolution: [@spw_q_stabilization, @query_profile, @safety_commit_reconciliation]
  relationship_contours: [@plan_stream_parse_health, @plan_tooling_design, @apposition_cache_granules]
  runtime_axis_traceability: [@precipitate_model_alignment, @lukewarm_backlog, @audit_fuzz_truthfulness]
- runtime_dx_foundation: [@precipitate_model_alignment, @safety_commit_reconciliation]
+ runtime_dx_foundation: [@precipitate_model_alignment, @runtime_maintenance, @safety_commit_reconciliation]
+ runtime_maintenance: [@apposition_cache_granules, @canon_rewrite_v2, @curiosity_mutation_ergonomics]
  safety_commit_reconciliation: [@absorb_spwq_cli, @curiosity_mutation_ergonomics, @curriculum_logic_terminal_mastery]
- seed_roundness_grades: [@canon_rewrite_v2, @form_geometry_editor, @operational_topography]
+ seed_roundness_grades: [@canon_rewrite_v2, @runtime_maintenance, @form_geometry_editor]
  shape_syntax_ecology: [@canon_rewrite_v2, @neovim_spw_surfaces, @parser_releases]
  spw_beat_diff_precipitation: [@audit_ui_data_models, @relationship_contours, @spw_garden_geometry]
  spw_cli_overhaul: [@refactor_experiment_lifecycle, @naming_profile_convention_align]
  spw_garden_geometry: [@vscode_editor_contract, @apposition_cache_granules, @audit_ui_data_models]
  spw_q_stabilization: [@register_phase_evolution, @curriculum_logic_terminal_mastery, @absorb_spwq_cli]
  spw_site_install: [@audit_css_tokens, @audit_data_attributes, @onboarding_quest]
- syntax_hardware_alignment: [@canon_rewrite_v2, @caches_cut_2026_09_30, @local_numbering_vcs]
+ syntax_hardware_alignment: [@canon_rewrite_v2, @runtime_maintenance, @caches_cut_2026_09_30]
  syntax_profile_stack: [@caches_living_tree, @apposition_cache_granules, @canon_rewrite_v2]
  tooling_scripts_consolidation: [@commit_gate_redesign, @lukewarm_backlog, @plan_plugin_integration]
- typescript_perf_audit_infra: [@spw_garden_geometry, @vscode_plugin_performance, @caches_cut_2026_09_30]
+ typescript_perf_audit_infra: [@runtime_maintenance, @spw_garden_geometry, @vscode_plugin_performance]
  typescript_toolchain_observatory: [@plan_stream_parse_health, @caches_cut_2026_09_30, @caches_living_tree]
  vscode_authoring_probe_loop: [@apposition_cache_granules, @caches_cut_2026_09_30, @caches_living_tree]
  vscode_editor_contract: [@spw_garden_geometry, @citation_navigation, @form_geometry_editor]
@@ -358,5 +363,5 @@
  ok: "every card parses; every touch, entry, and edge resolves"
  // advisories below never fail --check; they name where attention has drifted
  status_lags_phase: [@editor_reading_hierarchy, @plan_plugin_integration] // cache ~#status names an earlier stage than card.phase
- plan_map_coverage: "41 of 73 cards appear in plan-ecology-clustering ^plan_map"
+ plan_map_coverage: "41 of 74 cards appear in plan-ecology-clustering ^plan_map"
 }

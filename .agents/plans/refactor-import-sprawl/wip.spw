@@ -66,13 +66,13 @@
  >>[2026-10-12 14:57] observe — Re-measured: nine non-test non-index files exceed 12 import lines, not only commands.ts. No package.json declares an @spwashi dependency, scripts/pre-commit has no import check, and lib/spw named in CLAUDE.md does not exist. A regex scan finds 8 intra-package cycles of which 7 are type-only; the remaining one is the seed grammar group.
  >>[2026-10-12 14:57] revise — Rescoped to planning on the package DAG and the import guard: lane moved to principal engineering. Commits are now 1 to 6 (DAG analyzer, failing fixture, npm wiring, warn-only fan-in table, optional commands split, CLAUDE.md text). Three questions open. Old 1 to 26 moved to done as dropped.
  >>[2026-10-12 15:27] revise — Commits named per the convention in 90c58bbc: 0 landed, 6 planned, 3 dropped.
+ >>[2026-10-13 22:04] revise — Resolved ?[claude_md_layers]: lib/spw and src/app do not exist. The survey also found the fan-in table counts import lines, not statements: hot-session.ts has 22 lines and 17 statements, and hot-session-types.ts has 12 statements, at the guard, not over it.
 }
 
 ^["open"]{
  # Unresolved questions. When resolved: log in stream, then move to ^["done"] as ~#resolved(label).
  ?[gate_home]: "Should the DAG check join npm run lint, the pre-commit hook, or only run on demand, given CLAUDE.md says layer boundaries are pre-commit enforced and scripts/pre-commit has no import check? Unblocks ~[wire_lint_arch]."
  ?[dispatcher_exempt]: "Is commands.ts (43 imports, a printXHelp and runSpwXCli pair per subcommand) exempt from the 12-import guard as a dispatcher, or should it split by command group? Unblocks ~[split_commands_dispatch] and the allowlist in ~[import_fanin_table]."
- ?[claude_md_layers]: "Does the CLAUDE.md Layer Boundaries text (lib/spw must not import @/, infra <- platform <- app <- ui) still describe anything, now that lib/spw and src/app are gone? Unblocks ~[restate_layer_boundaries]."
 }
 
 ^["commits"]{
@@ -90,8 +90,8 @@
  ~#rebased_at: "2026-10-12"
  ~#files_hot: ""
  ~#next_commit: "package_dag_check"
- ~#open_count: "3"
- ~#last_stream: "2026-10-12 15:27"
+ ~#open_count: "2"
+ ~#last_stream: "2026-10-13 22:04"
  ~#taste_debt: ""
 }
 
@@ -104,4 +104,5 @@
  ~#resolved(dag_edges): "What package edges exist? — seed imports no other package; runtime imports seed (21); cli imports seed (61) and runtime (4); lsp imports seed (20) and runtime (5); no import runs cli to lsp, lsp to cli, or runtime to either; no package.json declares an @spwashi dependency, so the DAG is written nowhere a tool can read; evidence: grep of from '@spwashi/spw-*' and of package.json, 2026-10-12"
  ~#resolved(enforcement): "Does scripts/pre-commit enforce the CLAUDE.md layer boundaries? — no: it holds no import or @/ check, and lib/spw does not exist; evidence: grep of scripts/pre-commit and ls lib/spw, 2026-10-12"
  ~#resolved(intra_cycles): "Do modules cycle inside a package? — by a regex scan of relative imports, 8 strongly connected components of size above 1 (seed 3, runtime 1, cli 2, lsp 2); excluding import type, one remains: the six-file seed grammar group (bullets, match, expressions, parameters, containers, patterns), a plausible parser mutual recursion; the other seven are type-only. Regex, not a parser, so the count is a lower bound on rigor; evidence: one-off scan script, 2026-10-12"
+ ~#resolved(claude_md_layers): "Does the CLAUDE.md Layer Boundaries text (lib/spw must not import @/, infra <- platform <- app <- ui) still describe anything, now that lib/spw and src/app are gone? Unblocks ~[restate_layer_boundaries]. — no: lib/spw and src/app do not exist (checked 2026-10-13), so the Layer Boundaries text describes nothing; ~[restate_layer_boundaries] restates it as the package DAG"
 }
