@@ -1,0 +1,119 @@
+# wip — module-trees
+# Branch: refactor/module-trees
+# Started: 2026-10-13
+
+#>plan_module_trees
+#:plan #!execution_truth
+#:layer #!pragmatics
+
+!["card"]{
+ phase: #active
+ gist: "Each package's folder tree says what the module is made of: families sit in folders named for what they do, files are named for their verb, tests sit beside what they test, and no file only repeats another."
+ touches: [~"packages/spw-cli/src", ~"packages/spw-lsp/src", ~"packages/spw-seed/src", ~"extensions/vscode-spw/src"]
+ entry: ~"./PLAN.md"
+ next: "~[seed_reexport_files] lands with this plan; then the owner settles ?[test_placement] and ?[verb_names] before ~[lsp_sibling_tests] and ~[cli_corpus]."
+}
+
+^["edges"]{
+ shares: [~"../runtime-maintenance/wip.spw", ~"../tooling-scripts-consolidation/wip.spw", ~"../editor-reading-hierarchy/wip.spw", ~"../cli-mode-overhaul/wip.spw", ~"../refactor-import-sprawl/wip.spw", ~"../audit-ui-data-models/wip.spw", ~"../apposition-cache-granules/wip.spw"]
+}
+
+^["roots"]{
+ @plan: ~".agents/plans/module-trees/PLAN.md"
+ @cli: ~"packages/spw-cli/src"
+ @lsp: ~"packages/spw-lsp/src"
+ @seed_canonical: ~"packages/spw-seed/src/canonical"
+ @vscode: ~"extensions/vscode-spw/src"
+}
+
+^["intent"]{
+ ~#goal: "A reader opening any package finds its parts by folder and its commands by name, and a move never leaves a file behind that only points at the new place."
+ ~#taste: "group by reason to change; one move per commit; no churn for its own sake"
+}
+
+^["survey"]{
+ as_of: "2026-10-13, read-only, main at 71a6ce96"
+ cli: "125 files, 29.2k lines; 103 sit flat at the root; pulse.ts 1815 lines; seven files named for an alias, not their verb (census in inventory.ts, graph in map.ts, density in analyze.ts, form in geometry.ts, measure in mass.ts, stack in profile.ts, outline in skim.ts)"
+ lsp: "31 source files and 29 tests under __tests__, the only package that keeps them apart; server-index.ts 1374 lines, handlers/display.ts 1343; handlers/ mixes protocol methods with surface readers"
+ seed: "220 files, 40.7k lines; canonical/ holds 44 source files flat (15.5k lines); four root files only re-export their folders; operator-ladders.ts re-exports form-ladders with no importer"
+ vscode: "40 files; views/concepts-tree.ts 753 and workspace-tree.ts 708 lines, each with its own densityBar; semantics.ts is a fifth copy of the sigil table"
+ tests: "101 tests sit beside their source; 29 under packages/spw-lsp/src/__tests__"
+ pinned: [
+  "seed: index, parser, lite, reader",
+  "runtime: index, pipeline, substrate, resonance",
+  "lsp: index, stdio-server, workspace-protocol, reader, upstream-bridge",
+  "cli: main.ts (49 package.json refs), init.ts (a path sentinel), emit/ (seed formula-scan cites emit/axes.ts)"
+ ]
+}
+
+^["conventions"]{
+ tests: "a test sits beside its source as name.test.ts"
+ family_names: "a family folder drops the prefix: pulse/write.ts, not pulse-write.ts"
+ verb_names: "a CLI file is named for the verb it serves; an alias stays an alias"
+ barrels: "an index.ts only where an export or another folder imports it"
+ no_echo_files: "no file whose only job is to re-export another"
+ pinned: "an entry named in package.json, tsconfig paths, vitest aliases, or a release script never moves"
+}
+
+^["move_procedure"]{
+ steps: [
+  "git mv the files, then let tsc name every relative import to rewrite",
+  "spw refactor --rename path:from=to --write rewrites .spw citations; Markdown links are fixed by hand",
+  "update plan touches and roots, since plan-index --check fails on a missing path",
+  "run test:lsp, test:vscode, and test:analyzers by hand: test:run skips them",
+  "one move per commit, green at every commit"
+ ]
+}
+
+^["stream"]{
+ >>[2026-10-13 22:40] observe — A read-only survey of six source trees at 71a6ce96: the CLI root holds 103 flat files, seven named for an alias; the LSP keeps its 29 tests apart and mixes protocol methods with readers; seed's canonical/ is 44 files flat with four root files that only re-export; two VS Code views pass the size guard. Shapes and pinned entries in the survey frame.
+ >>[2026-10-13 22:40] decide — The owner asked to improve the tree structure of several modules. This plan holds the moves no plan owned, lowest risk first; runtime splits stay with runtime-maintenance, scripts with tooling-scripts-consolidation, and display.ts with editor-reading-hierarchy.
+}
+
+^["open"]{
+ # Unresolved questions. When resolved: log in stream, then move to ^["done"] as ~#resolved(label).
+ ?[test_placement]: "Is a sibling name.test.ts the one convention, so the LSP's 29 tests and scripts' __tests__ move beside their sources?"
+ ?[verb_names]: "Are CLI files named for their verb (census.ts, graph.ts, density.ts, form.ts, measure.ts, stack.ts, outline.ts), with the old names kept only as command aliases?"
+ ?[disclose_word]: "One word for three files: disclose (cli pulse-disclose, lsp corpus-disclose) or disclosure (seed corpus-disclosure)?"
+ ?[canonical_name]: "Does canonical/ stay as an umbrella over form/, edit/, citation/, and measure/, or do those folders sit at seed's top level?"
+}
+
+^["commits"]{
+ # Named, in order. Planned ~[name]; landed .[name](hash). Names are never reused.
+ ~[plan]: ".[plans] — module-trees records the tree survey and orders the moves"
+ ~[seed_reexport_files]: "&[seed] — the root files types.ts, lexer.ts, grammar.ts, and combinators.ts, each only re-exporting its folder's index, and canonical/operator-ladders.ts, a form-ladders re-export no file imports, are deleted"
+ ~[lsp_sibling_tests]: "![lsp] — the 29 tests under packages/spw-lsp/src/__tests__ move beside their sources, after ?[test_placement]"
+ ~[cli_families]: "&[cli] — ls, atlas, authority, refactor, and quest become folders holding their family files"
+ ~[cli_corpus]: "&[cli] — corpus/ gathers scan, spread, and memo with the census, graph, formula, density, taste, and lattice verbs, each named for its verb, after ?[verb_names]"
+ ~[cli_query]: "&[cli] — query/ gathers query, query-profile, select, and selectors"
+ ~[cli_cite]: "&[cli] — cite/ gathers cite, resolve, and citation-candidates"
+ ~[cli_emit_home]: "&[cli] — emit.ts becomes emit/command.ts and emit-public.ts folds into emit/index.ts behind the ./emit export"
+ ~[vscode_commit_folder]: "&[vscode] — commit-uri and commit-view move to commit/"
+ ~[vscode_view_splits]: "&[vscode] — concepts-tree.ts and workspace-tree.ts split by concern, and their two densityBar copies become one"
+ ~[lsp_reading]: "&[lsp] — reading/ holds the surface readers (form-context, wonder, outline, commit-ref-forms, corpus disclosure), so reader.ts reads from it rather than from handlers/"
+ ~[lsp_display_split]: "&[lsp] — handlers/display.ts splits into hover, symbols, code-lens, inlay-hints, and highlight, one surface per commit with editor-reading-hierarchy"
+ ~[seed_form_folder]: "&[seed] — canonical/form/ gathers form-*, geometry-*, geometric-resonance, and topography-probe"
+ ~[seed_edit_folder]: "&[seed] — canonical/edit/ gathers differential, semantic-edit, derived-marks, patch, change-report, nest-path, stencil, the transforms, mutation-automata, and path-rename, after runtime-maintenance one_hash_module"
+ ~[seed_citation_folder]: "&[seed] — canonical/citation/ gathers resolve-citation, resolve-fragment, particles, apposition-scan, annotation-lint, read-bias, and index-config"
+ ~[seed_measure_folder]: "&[seed] — canonical/measure/ gathers measure-protocol, self-mass, fingerprint, flow-protocol, format-pulses, and dream-schedule, after one_hash_module"
+ ~[cli_inspect_split]: "&[cli] — inspect.ts (684 lines, 18 imports) splits into inspect/ by args, source, and spacing"
+ ~[cli_pulse_split]: "&[cli] — pulse.ts (1815 lines) splits into pulse/ along its seams, and its private collectSpwFiles gives way to fs-walk, after runtime-maintenance legacy_tests_home"
+ ~[split_server_index]: "&[lsp] — server-index.ts (1374 lines) splits into the document store, scan, annotations, and frames, coordinated with apposition-cache-granules"
+ ~[lsp_index_folder]: "&[lsp] — index/ gathers server-index, anchor-lines, apposition, and spw-selector, last because 60 files cite them"
+}
+
+^["cache"]{
+ ~#status: "active"
+ ~#base_ref: "main@71a6ce96"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: "packages/spw-cli/src, packages/spw-seed/src/canonical"
+ ~#next_commit: "seed_reexport_files"
+ ~#open_count: "4"
+ ~#last_stream: "2026-10-13 22:40"
+ ~#taste_debt: "pulse.ts 1815, server-index.ts 1374, display.ts 1343, form-geometry.ts 1209 lines: each splits before it moves"
+}
+
+^["done"]{
+ # Local history: written incrementally, finalized at merge.
+}
