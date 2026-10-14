@@ -11,7 +11,7 @@
  gist: "Each package's folder tree says what the module is made of: families sit in folders named for what they do, files are named for their verb, tests sit beside what they test, and no file only repeats another."
  touches: [~"packages/spw-cli/src", ~"packages/spw-lsp/src", ~"packages/spw-seed/src", ~"extensions/vscode-spw/src"]
  entry: ~"./PLAN.md"
- next: "~[seed_reexport_files] lands with this plan; then the owner settles ?[test_placement] and ?[verb_names] before ~[lsp_sibling_tests] and ~[cli_corpus]."
+ next: "The owner settles ?[test_placement] and ?[verb_names]; then ~[lsp_sibling_tests], and ~[cli_families] meanwhile, since it renames nothing."
 }
 
 ^["edges"]{
@@ -66,8 +66,9 @@
 }
 
 ^["stream"]{
- >>[2026-10-13 22:40] observe — A read-only survey of six source trees at 71a6ce96: the CLI root holds 103 flat files, seven named for an alias; the LSP keeps its 29 tests apart and mixes protocol methods with readers; seed's canonical/ is 44 files flat with four root files that only re-export; two VS Code views pass the size guard. Shapes and pinned entries in the survey frame.
- >>[2026-10-13 22:40] decide — The owner asked to improve the tree structure of several modules. This plan holds the moves no plan owned, lowest risk first; runtime splits stay with runtime-maintenance, scripts with tooling-scripts-consolidation, and display.ts with editor-reading-hierarchy.
+ >>[2026-10-13 22:30] observe — A read-only survey of six source trees at 71a6ce96: the CLI root holds 103 flat files, seven named for an alias; the LSP keeps its 29 tests apart and mixes protocol methods with readers; seed's canonical/ is 44 files flat with four root files that only re-export; two VS Code views pass the size guard. Shapes and pinned entries in the survey frame.
+ >>[2026-10-13 22:30] decide — The owner asked to improve the tree structure of several modules. This plan holds the moves no plan owned, lowest risk first; runtime splits stay with runtime-maintenance, scripts with tooling-scripts-consolidation, and display.ts with editor-reading-hierarchy.
+ >>[2026-10-13 22:33] implement — Landed ca9ae1bd: seed's four root re-export files and canonical/operator-ladders.ts are gone. Every suite passed; a first CLI run timed out three subprocess tests under load, which passed alone and on a rerun.
 }
 
 ^["open"]{
@@ -80,8 +81,8 @@
 
 ^["commits"]{
  # Named, in order. Planned ~[name]; landed .[name](hash). Names are never reused.
- ~[plan]: ".[plans] — module-trees records the tree survey and orders the moves"
- ~[seed_reexport_files]: "&[seed] — the root files types.ts, lexer.ts, grammar.ts, and combinators.ts, each only re-exporting its folder's index, and canonical/operator-ladders.ts, a form-ladders re-export no file imports, are deleted"
+ .[plan](8abffc70): ".[plans] — module-trees records the tree survey and orders the moves, lowest risk first"
+ .[seed_reexport_files](ca9ae1bd): "&[seed] — four root files that only re-exported their folders, and an operator-ladders re-export no file imported, are deleted"
  ~[lsp_sibling_tests]: "![lsp] — the 29 tests under packages/spw-lsp/src/__tests__ move beside their sources, after ?[test_placement]"
  ~[cli_families]: "&[cli] — ls, atlas, authority, refactor, and quest become folders holding their family files"
  ~[cli_corpus]: "&[cli] — corpus/ gathers scan, spread, and memo with the census, graph, formula, density, taste, and lattice verbs, each named for its verb, after ?[verb_names]"
@@ -108,9 +109,9 @@
  ~#rebased_at: ""
  ~#hygiene_split: "none"
  ~#files_hot: "packages/spw-cli/src, packages/spw-seed/src/canonical"
- ~#next_commit: "seed_reexport_files"
+ ~#next_commit: "cli_families"
  ~#open_count: "4"
- ~#last_stream: "2026-10-13 22:40"
+ ~#last_stream: "2026-10-13 22:33"
  ~#taste_debt: "pulse.ts 1815, server-index.ts 1374, display.ts 1343, form-geometry.ts 1209 lines: each splits before it moves"
 }
 
