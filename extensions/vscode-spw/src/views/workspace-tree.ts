@@ -26,6 +26,7 @@ import type {
 } from '../lsp/custom-requests'
 import type { AnnotationEntry } from '../annotation-index'
 import { bucketByPhase } from './annotation-kinds'
+import { shortPlace } from './entry-place'
 import { displayWorkspaceUri, openWorkspaceTarget } from '../navigation'
 
 // ── Node types ────────────────────────────────────────────────────
@@ -46,6 +47,7 @@ interface SectionNode {
   label: string
   icon: string
   description?: string
+  tooltip?: string
 }
 
 interface RootItemNode {
@@ -278,6 +280,7 @@ class WorkspaceAtlasProvider implements vscode.TreeDataProvider<AtlasNode>, vsco
         item.iconPath = new vscode.ThemeIcon(node.icon)
         item.contextValue = `atlas-section-${node.id}`
         if (node.description) item.description = node.description
+        if (node.tooltip) item.tooltip = node.tooltip
         return item
       }
 
@@ -442,7 +445,9 @@ class WorkspaceAtlasProvider implements vscode.TreeDataProvider<AtlasNode>, vsco
     if (hasCursor) {
       sections.push({
         kind: 'section', id: 'cursor', label: 'You Are Here', icon: 'compass',
-        description: this.cursorFileLabel ?? undefined,
+        // The end of the path tells files apart; the whole path is in the tooltip.
+        description: this.cursorFileLabel ? shortPlace(this.cursorFileLabel) : undefined,
+        tooltip: this.cursorFileLabel ?? undefined,
       })
     }
 

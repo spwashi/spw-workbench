@@ -17,6 +17,7 @@ import * as vscode from 'vscode'
 import type { SpwContext } from '../context'
 import type { AnnotationEntry } from '../annotation-index'
 import { KIND_PHASE, KIND_PREFIX, annotationLabel, bucketByPhase, conceptKey } from './annotation-kinds'
+import { distinctPlaces, entryRow, type RowKnown } from './entry-place'
 
 // ── Core types ──────────────────────────────────────────────────
 
@@ -40,6 +41,10 @@ interface ConceptGroupNode {
 interface ConceptEntryNode {
   kind: 'entry'
   entry: AnnotationEntry
+  /** What the row's ancestors already say, so the row says something else. */
+  known: RowKnown
+  /** The path segments that tell this row apart from its siblings. */
+  place: string
 }
 
 /** Co-occurring concept — appears in same file(s) as parent concept */
@@ -239,26 +244,27 @@ class ConceptsTreeDataProvider implements vscode.TreeDataProvider<ConceptNode> {
   private renderEntryItem(element: ConceptEntryNode): vscode.TreeItem {
     const entry = element.entry
     const prefix = KIND_PREFIX[entry.kind] ?? '#'
-    // An apposition shows its reading: `~#lens(living system)`, not one more bare `~#lens`.
-    const fullLabel = annotationLabel(entry)
-
-    // TreeItemLabel with highlighted sigil prefix for visual cortex pattern recognition
-    const highlightEnd = prefix.length
-    const treeLabel: vscode.TreeItemLabel = {
-      label: fullLabel,
-      highlights: [[0, highlightEnd]],
-    }
-
-    const item = new vscode.TreeItem(treeLabel, vscode.TreeItemCollapsibleState.None)
-
     const rel = vscode.workspace.asRelativePath(entry.file)
     const frameCtx = entry.framePath.length > 0 ? entry.framePath.join(' › ') : null
     const sectionCtx = entry.sectionLabel ?? null
     const contextStr = frameCtx ?? sectionCtx ?? null
 
-    item.description = contextStr
-      ? `${contextStr} · ${rel}:${entry.line + 1}`
-      : `${rel}:${entry.line + 1}`
+    // An apposition shows its reading: `~#lens(living system)`, not one more bare `~#lens`.
+    const row = entryRow({
+      concept: annotationLabel(entry),
+      bareConcept: `${prefix}${entry.name}`,
+      place: element.place,
+      line: entry.line,
+      context: contextStr,
+    }, element.known)
+
+    // The sigil prefix is highlighted when the concept leads the row.
+    const treeLabel: vscode.TreeItemLabel = element.known === 'concept'
+      ? { label: row.label }
+      : { label: row.label, highlights: [[0, prefix.length]] }
+
+    const item = new vscode.TreeItem(treeLabel, vscode.TreeItemCollapsibleState.None)
+    item.description = row.description
 
     const tooltipParts = [`${rel}:${entry.line + 1}`]
     if (contextStr) tooltipParts.push(`Context: ${contextStr}`)
@@ -317,7 +323,7 @@ class ConceptsTreeDataProvider implements vscode.TreeDataProvider<ConceptNode> {
         return this.childrenForConceptGroup(element)
       }
 
-      return entryNodes(element.entries)
+      return entryNodes(element.entries, element.groupKind)
     }
 
     return []
@@ -335,7 +341,7 @@ class ConceptsTreeDataProvider implements vscode.TreeDataProvider<ConceptNode> {
     if (kindGroups.length > 1) {
       children.push(...kindGroups)
     } else {
-      children.push(...entryNodes(group.entries))
+      children.push(...entryNodes(group.entries, 'concept'))
     }
 
     // Resonance children — top co-occurring concepts
@@ -580,6 +586,8 @@ export function registerConceptsTreeView(spw: SpwContext): vscode.Disposable[] {
   const tree = vscode.window.createTreeView('spwConcepts', { treeDataProvider: provider })
   const updateTreeMessage = (): void => {
     tree.message = provider.getStatusMessage()
+    // Clear Filter shows in the title bar only while a filter is on.
+    void vscode.commands.executeCommand('setContext', 'spwConcepts.filtered', provider.getFilter() !== '')
   }
   updateTreeMessage()
 
@@ -646,14 +654,30 @@ function isAnnotationKind(value: string): value is AnnotationKind {
   return Object.hasOwn(KIND_ICONS, value)
 }
 
-function entryNodes(entries: AnnotationEntry[]): ConceptEntryNode[] {
+/** What a group's rows can leave unsaid: its concept, its file, or nothing. */
+const GROUP_KNOWS: Record<GroupNodeKind, RowKnown> = {
+  concept: 'concept',
+  'concept-kind': 'concept',
+  file: 'file',
+  kind: 'nothing',
+  phase: 'nothing',
+}
+
+function entryNodes(entries: AnnotationEntry[], groupKind: GroupNodeKind): ConceptEntryNode[] {
+  const rel = new Map(entries.map((e) => [e, vscode.workspace.asRelativePath(e.file)]))
+  const places = distinctPlaces([...rel.values()])
   return [...entries]
     .sort((a, b) => {
       const fileA = a.file.toString().localeCompare(b.file.toString())
       if (fileA !== 0) return fileA
       return a.line - b.line
     })
-    .map((entry) => ({ kind: 'entry', entry }))
+    .map((entry) => ({
+      kind: 'entry',
+      entry,
+      known: GROUP_KNOWS[groupKind],
+      place: places.get(rel.get(entry)!) ?? rel.get(entry)!,
+    }))
 }
 
 function countKinds(entries: AnnotationEntry[]): Map<AnnotationKind, number> {

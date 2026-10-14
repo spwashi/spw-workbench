@@ -7,9 +7,9 @@ const extensionRoot = fileURLToPath(new URL('..', import.meta.url))
 
 interface Manifest {
   contributes: {
-    commands: Array<{ command: string; title: string }>
+    commands: Array<{ command: string; title: string; icon?: string }>
     configuration: { properties: Record<string, { type: string; default?: unknown }> }
-    menus: Record<string, Array<{ command: string; when?: string }>>
+    menus: Record<string, Array<{ command: string; when?: string; group?: string }>>
   }
 }
 
@@ -58,5 +58,13 @@ describe('extension contributions', () => {
     for (const entry of manifest.contributes.menus.commandPalette ?? []) {
       expect(contributed.has(entry.command)).toBe(true)
     }
+  })
+
+  it('gives every view title action an icon, so its title never crowds out the view name', () => {
+    const icons = new Map(manifest.contributes.commands.map(entry => [entry.command, entry.icon]))
+    const bare = (manifest.contributes.menus['view/title'] ?? [])
+      .filter(entry => entry.group?.startsWith('navigation') && !icons.get(entry.command))
+      .map(entry => entry.command)
+    expect(bare).toEqual([])
   })
 })
