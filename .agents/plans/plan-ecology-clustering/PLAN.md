@@ -80,3 +80,40 @@ Add a distilled cluster doctrine at:
 `.agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw`
 
 It will define the cluster taxonomy, the "well-considered commit" bar, and the per-plan curriculum/discussion/research map for the active ecology.
+
+## Direction review — 2026-10-19
+
+This review is grounded in workbench revision `0eb1d1c0`. The index passes its structural check; that does not establish that a next move is still useful. The portable seed and runtime roots, shared UTF-8 hash, reader, and workbench browser build have landed. The next question is whether a consumer can use those products with reproducible evidence and whether their supporting tests actually guard the package boundary.
+
+### Choose the next exhibit
+
+| Workstream | Next bounded result | Evidence that closes the slice | Boundary |
+| --- | --- | --- | --- |
+| Release truth: `parser-releases` | Reconcile existing stamp coverage, then prepare a release receipt | Built files agree with manifest revision, variant, form, kind and digest; a consumer imports a pinned build | Site publication requires a separate site receipt; local tests cannot establish deployment |
+| Runtime ownership: `runtime-maintenance` | Move legacy tests into the packages that own their behavior | The same cases are collected and type-checked, fixture paths work, and no consumer of a shim remains before deletion | Preserve public exports pending the open contract decision |
+| Reader feedback: `editor-reading-hierarchy` | Retain the hierarchy census before changing presentation | Same fixture, revision, host/settings and counts before and after; errors remain reachable | Owner-dependent palette choices do not block measurement |
+| Navigation: `citation-navigation` | Resolve the selected root-anchor form against a retained corpus | Correct targets and failures plus a comparable timing receipt | Treat the existing 186-second observation as a historical sample, not a current benchmark |
+
+These are parallel lanes of value, not a demand to start four implementations. Select one bounded result, record its receipt, then reconsider priority. Prefer release verification when delivery is the question, runtime test ownership when correctness coverage is the question, and the census when reading quality is the question. Research and curriculum remain available without becoming release dependencies.
+
+### Depth contract
+
+Every implementation handoff should name (1) a falsifiable claim, (2) an existing fixture or consumer shape, (3) the smallest intervention, (4) the observable result including failure, and (5) a stop condition. A plan is deeper when it can reject an attractive but unsupported change. Larger taxonomies and more prose are insufficient evidence.
+
+Stop a slice when its named result is reviewable. Reopen it on a failed invariant, changed consumer contract, or measured regression. Do not widen runtime splits merely to meet size targets, add release variants without a consumer, or infer host parity from shared implementation alone.
+
+### Model upgrades should compound value and theory
+
+The owner's intent is that GPT model upgrades improve the value and theory of this codebase. Treat an upgrade as an opportunity to revisit explanations and discover higher-value directions. The existing queue is revisable: completing it faster is only one possible benefit. Spw remains the evolution force and Boonhonk the field of wonder; exhibits, claims and instruments are how stronger reasoning becomes durable repository knowledge.
+
+**Value** means an observable improvement for an author, reader, maintainer or mounted consumer: a new useful capability, less effort or ambiguity, better reliability, or a more revealing instrument. Each proposed gain names its beneficiary and a concrete task. **Theory** means explicit concepts, relations, invariants and explanations that predict behavior across examples. A stronger theory explains an existing anomaly, predicts an unseen case, or replaces several special cases with a justified distinction. Its limits and counterexamples belong beside the claim.
+
+On a model upgrade, select one unresolved question or awkward boundary and retain the current explanation, representative examples and known failures. Ask the stronger model to challenge the framing, propose alternatives and identify a discriminating experiment. Implement the smallest exhibit or instrument that could distinguish those alternatives. Preserve the surviving explanation in canon or a domain artifact, with links to the evidence; revise dependent plans only where the result changes their direction.
+
+Judge the result on two separate axes: what became more useful, and what became better explained or predicted. Record regressions, complexity and unanswered questions as well as gains. An upgrade may yield a useful implementation without a theoretical advance, or a theoretical advance whose product value is still untested. Do not conflate those outcomes. Record model identity/settings when available, repository revision, task context and validation conditions; without comparable trials, describe the improvement as an observed result rather than attributing it causally to the upgrade.
+
+For the current workstreams, this opens deeper questions alongside maintenance: which runtime distinctions deserve separate value algebras; which reader representation explains host differences; and which release capabilities form a coherent consumer contract. A focused probe may supersede a queued cleanup when it promises a more important answer. Retain negative results so later models can improve the theory without repeating failed reasoning.
+
+### Maintenance scope and validation
+
+This pass updates this direction guide, `parser-releases`, `runtime-maintenance`, their cards and append-only streams, and the authored priority frame plus derived index. Existing historical bases and done records remain historical evidence. No source implementation or publication is part of the pass. Validate cards/index, Spw syntax, and documentation; report any baseline diagnostics separately from changed-file defects.

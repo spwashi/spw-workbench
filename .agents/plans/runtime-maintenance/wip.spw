@@ -7,11 +7,11 @@
 #:layer #!pragmatics
 
 !["card"]{
- phase: #planning
+ phase: #active
  gist: "The runtime and seed carry one home per behavior: legacy shims retired, the largest modules split along their reasons to change, one hash function, and roots that run in a browser."
  touches: [~"packages/spw-runtime/src", ~"packages/spw-seed/src/canonical", ~"src/runtime", ~"src/seed", ~"tsconfig.typecheck.json"]
  entry: ~"./PLAN.md"
- next: "~[legacy_tests_home]: move the runtime and CLI tests out of src/runtime/__tests__ so they are type-checked, then ~[retire_src_shims]."
+ next: "Move legacy tests with collection parity and typecheck coverage; retire shims only after a repository-wide importer check."
 }
 
 ^["edges"]{
@@ -68,6 +68,7 @@
  >>[2026-10-13 22:33] note — From the module-trees survey: land split_hot_session as session/hot/ (the four hot-session files plus the pointer store), so the 18-file session/ reads as two concerns; site-install.ts holds mount resolution, which runtime_node_subpath should name.
  >>[2026-10-13 22:57] implement — Landed on feature/browser-workbench: node_free_seed_root (0bf89a77) and runtime_node_subpath (900e2b9c). Seed and the runtime hash with canonical/content-hash.ts sha256Hex, a synchronous SHA-256 over UTF-8 bytes whose digests equal node:crypto's, so no stored hash moved and ?[persisted_hashes] is not yet forced. one_hash_module now has its home in content-hash.ts; the FNV hashes over UTF-16 units still wait for it.
  >>[2026-10-13 23:16] implement — Landed on feature/reader-form-context: one_hash_module (eb34e6c3) gives seed textHash, 16 hex of SHA-256 over UTF-8 bytes; hashString, geometry cards, and transform preconditions use it, the two FNV hashes are gone, and range-transform's no-op slice ends; the runtime spells its three hashes as textHash (7509cbb8). SHA-256 costs 110 ms over the 9.5 MB corpus against 53 ms for FNV. Resolved ?[persisted_hashes].
+ >>[2026-10-19 16:28] revise — Direction review at 0eb1d1c0: portability and unified hashes have landed; mark active, prioritize test ownership, and gate splits on behavioral evidence.
 }
 
 ^["open"]{
@@ -91,14 +92,14 @@
 }
 
 ^["cache"]{
- ~#status: "planning"
+ ~#status: "active"
  ~#base_ref: "main@76e17bd4"
  ~#rebased_at: ""
  ~#hygiene_split: "none"
  ~#files_hot: "packages/spw-runtime/src/state/register-bank.ts, packages/spw-runtime/src/session/hot-session.ts"
  ~#next_commit: "legacy_tests_home"
  ~#open_count: "1"
- ~#last_stream: "2026-10-13 23:16"
+ ~#last_stream: "2026-10-19 16:28"
  ~#taste_debt: "register-bank.ts is 899 lines, past the 600-line guard; hot-session.ts has 17 imports, past the 12-import guard"
 }
 

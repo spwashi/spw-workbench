@@ -50,5 +50,32 @@ Taste: one home per behavior. Splits follow reasons to change, never line counts
 ## Agentic Hygiene
 
 - Rebase target: `main@76e17bd4`.
-- Each commit keeps `test:runtime`, `test:seed` and `tsc` green. The hash commit waits for `?[persisted_hashes]`.
+- Each commit keeps `test:runtime`, `test:seed` and `tsc` green. The persisted-hash decision is recorded as resolved in `wip.spw`.
 - `typescript-perf-audit-infra` records a typecheck baseline before the splits, so their cost is measured.
+
+## Current boundary — 2026-10-19
+
+The survey above records the October 13 baseline, not current unresolved work. `node_free_seed_root` (`0bf89a77`), `runtime_node_subpath` (`900e2b9c`) and `one_hash_module` (`eb34e6c3`, with runtime callers in `7509cbb8`) have landed. The persisted-hash question is resolved in the stream. Remaining work starts at `legacy_tests_home`; do not repeat the portability or hash migrations.
+
+## Execution and acceptance
+
+1. **Test ownership.** Inventory collected test names and fixture paths before moving files. Move runtime tests to runtime and the four CLI suites to CLI. Verify collection parity, package typecheck inclusion, and unchanged assertions. A green run with fewer collected cases is a failure, not completion.
+2. **Shim retirement.** Search imports across source, tests, scripts and package entrypoints after the move. Delete shims only when no live reference remains; run seed, runtime, CLI and typecheck gates. If an external consumer still requires the legacy path, retain the compatibility boundary and record it.
+3. **Value algebra and module splits.** First characterize clone/merge, both magnitude meanings, eviction, marks and pointer invalidation with existing behavioral cases. Split one responsibility at a time, preserving the public surface and recording typecheck cost against the same revision/environment baseline. Different magnitude formulas must stay distinct unless equivalence is demonstrated.
+4. **Optional cleanup.** The interpreter handler table needs an observable maintenance benefit and dispatch parity. Export pruning remains held on `public_surface`; absence of an internal importer does not prove absence of a consumer.
+
+Stop after each independently reviewable slice. If collection, behavior, or public surface changes unexpectedly, restore that slice and revise its assumption before proceeding.
+
+## Commits
+
+The named sequence and landed receipts in `wip.spw` are authoritative. Execute `legacy_tests_home`, then `retire_src_shims`; subsequent structural work follows the acceptance gates above. The earlier scope list is an inventory, not a claim that all ten moves remain outstanding.
+
+## Dependencies
+
+- `parser-releases` consumes the landed portable roots; release verification can proceed without the remaining structural splits.
+- `typescript-perf-audit-infra` supplies a comparable baseline before structural changes.
+- `fragment-pointers` shares pointer-store behavior; preserve its contracts during `split_hot_session`.
+
+## Spw Artifact
+
+`wip.spw` retains the survey, risk model, commit sequence and unresolved public-surface question; no additional abstraction artifact is needed for this maintenance pass.
