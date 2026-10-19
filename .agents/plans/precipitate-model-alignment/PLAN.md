@@ -50,3 +50,13 @@ None. This plan assumes the runtime telemetry baseline already merged on `main`.
 ## Spw Artifact
 
 `.agents/plans/precipitate-model-alignment/precipitate-model-alignment.spw` — distilled runtime chemistry note covering precipitates, substrate, telemetry, resonance, and falsifiers.
+
+## IR insight and cognitive-surface direction — 2026-10-19
+
+Use the proposed `.spw/tooling/cognitive-surfaces.spw` IR journey to make one question inspectable: where did a named source construct change meaning or cease to have a representation? `stages.ts` already supplies stage, input, output, timestamp and delta, with registersAfter for interpretation; it does not supply a proof of equivalence or a universal source map between stages. The parse product is ParseOutput, not a bare AST; normalization consumes the parsed root.
+
+Before redesigning the surface, pair one valid-source stage trace with the existing `failure_continuity` question. Prefer displaying an absent/skipped/failed stage honestly over inventing an empty successful product. The parse-failure branch is established by source inspection but still needs a reproducible fixture or controlled test of that branch. Record that distinction. Keep substrate events, register snapshots and stage products in separate fields.
+
+A first design trial compares today's stage dump with an artifact passport: source revision, stage, producer, input/output references, omissions and next inspection action. Unsupported fields read unknown. Ask a reader to locate where the result changed and cite the evidence. Correctness and effort are measured independently of aesthetic preference. Stop at the trial and its result before adding a new debugger UI.
+
+Source inspection also finds that `runSpwStepped` records the normalized ONF as the interpret precipitate input, while `interpretSeed(parseOutput.ast)` normalizes again internally. Compare the recorded and executed normalization under the same options before calling this duplication either an optimization opportunity or a semantic defect. An IR view must disclose the distinction; object identity and structural equivalence are different claims.

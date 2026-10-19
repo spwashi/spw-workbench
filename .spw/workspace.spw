@@ -16,13 +16,14 @@
  @hot: ~"./hot.spw"
  @agents: ~"./agents.spw"
  @docs: ~"../docs"
- @seed: ~"../src/seed"
+ @seed: ~"../packages/spw-seed"
  @spec: ~"../lib/spw-v0.3.0"
  @caches: ~"./caches/index.spw"
  @tree: ~"./caches/tree"
  @journal: ~"./caches/journal"
  @submodule_convention: ~"./conventions/submodule.spw"
  @surface_archetypes: ~"./surfaces/surface-archetypes.spw"
+ @cognitive_surfaces: ~"./tooling/cognitive-surfaces.spw"
  @tooling_audit: ~"./tooling/editor-surface-audit.spw"
  @tooling_neovim: ~"./tooling/neovim-spw.spw"
 }
@@ -86,7 +87,7 @@
 ^"lsp"{
  #:lsp #!discovery
  ~#manifest_role: "workspace discovery + root/path navigation bounds"
- ~#index_roots: [~"./", ~"./index.spw", ~"../docs", ~"../lib/spw-v0.3.0", ~"../src/seed"]
+ ~#index_roots: [~"./", ~"./index.spw", ~"../docs", ~"../lib/spw-v0.3.0", ~"../packages/spw-seed"]
  ~#navigable_selector: "$~\"_\" | $@_"
  ~#domain_roots_selector: "$^[_]"
  ~#cache_contract: ~"./biome/ocean/algos/cache.spw"
@@ -136,6 +137,11 @@
 ^"process"{
  #:layer #!pragmatics
  ~#root: ~"./process"
+ agent_development: {
+ ~#entry_spec: ~"./process/agent-development.spw"
+ ~#creative_seeds: ~"./harness/probes/creative-seeds.spw"
+ ~#focus: "reread theory and history; distinguish claims; probe one question; revise the owning plan"
+ }
  observation: {
  ~#entry_spec: ~"./process/loop-observation.spw"
  ~#focus: "loop, observation fields, concept clustering, projection references"

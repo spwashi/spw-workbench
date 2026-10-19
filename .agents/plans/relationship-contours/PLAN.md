@@ -84,3 +84,11 @@ None. Shares vocabulary with plan-ecology-clustering (lanes) and citation-naviga
 ## Spw Artifact
 
 `relationship-contours.spw` — relationships, surfaces that know them, measured evidence, predictable and unpredictable improvements, language contours.
+
+## Next trial — theory and agent direction, 2026-10-19
+
+Run `door_trials` against `.spw/agents.spw` and `.spw/process/agent-development.spw` before expanding the Spirit interface. Give the reader a concrete task: identify the owner of the quoted-sigil census defect, its evidence and its next safe action. A second task asks which browser build contains caret form context. Preserve starting context, route taken, unresolved references, fallbacks, answer correctness and elapsed time if measured. A successful static link check establishes reachability only; it does not establish an intuitive door.
+
+For a later model comparison, retain the same tasks, source revision and context budget, and distinguish model settings from harness changes. A better answer must cite more accurate evidence or require less effort, rather than merely sounding more fluent. Keep a failed route as a repair target.
+
+The plan-level geometry dependency applies to `spirit_census_seed`, not to these door trials. Spirit remains a declared operator-count projection; neither phase counts nor valence words establish a reader's feelings or comprehension. A proposed silence-lens seed may test omission with a receipt while preserving errors and counterexamples.

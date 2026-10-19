@@ -374,3 +374,11 @@ Clients (VS Code Problems, Neovim `[d`) must not invent new codes. Reading profi
 ```
 
 Distilled protocol: measure products, scheme kinds, audience folds, operator ledger status, and clone-experience contract.
+
+## Theory alignment — 2026-10-19
+
+Treat three products separately: runtime `%` returns a scaled register magnitude and increments `measureDepth`; `%mass` declares file quantities; `EvalScheme` reconciles observations against declarations. The source review found the latter in `measure-protocol.ts`, while `self-mass.ts` still owns its specialized reconcile path. A shared glyph is not evidence of identical effects or units.
+
+Proceed with `route_self_mass_schemes` using a table of exact match, exact drift, missing observation, unknown key, and tolerance-boundary cases. Preserve line/byte definitions and digit-only rewrite spans. Require `unmeasurable` to remain distinct from pass, and exact-only write policy to remain separate from a favorable tolerance verdict. Do not pick a tolerance after seeing the error.
+
+The landed phase denotes foundations; the remaining integration is unshipped. The creative counterexample cabinet can supply cases that separate a metric's value from its explanation. Defer a template language or another registry until these cases expose a missing expressible contract. Record what became more reliable for an author and what became better defined in the theory separately.

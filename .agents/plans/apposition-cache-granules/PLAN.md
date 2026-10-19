@@ -20,7 +20,7 @@ Taste note:
   - Frame-level content hashes keyed by apposition name, so derived data survives edits in sibling frames.
   - A shared granule receipt that carries content identity, structural ancestry, resolved syntax/profile revision, parser/product revision, and available source horizon. Line offsets locate a granule but never identify it.
   - An apposition scan in `spw-seed` — extract name, body, and span hash without invoking the parser.
-  - A validity probe that reuses derived data when a granule's apposition envelope is unchanged.
+  - A validity probe that reuses derived data only when the envelope, content, ancestry, profile, producer and dependency preconditions still hold.
   - Retaining the `inbound` reference index that `buildReferenceGraph` already computes and throws away.
   - `codeLens` surfacing per-granule tier, volatility, inbound degree, and hash age.
 - Out of scope:
@@ -115,3 +115,11 @@ Fuzz strategy:
 ## Spw Artifact
 
 `.agents/plans/apposition-cache-granules/apposition-cache-granules.spw` — records why the apposition is the right granule: author-declared, parse-free to verify, perspectival by construction (the parens are the `@` container), and already placed 220 times. Warranted because "the reading is the cache boundary" is a design claim that outlives this branch and that `cache.spw` should eventually absorb.
+
+## Memory insight before a cognitive redesign — 2026-10-19
+
+The proposed `.spw/tooling/cognitive-surfaces.spw` separates LSP cache entries, runtime registers and harness context. Start with `pin_cache_defects`, then a cold/warm/edit/evict probe for one fixed document and query. Retain source hash, parser/profile/product revision, entry identity, invalidation cause when available, and the resulting semantic answer. A cache hit is useful only when its answer agrees with a cold recomputation under the same inputs. Do not compare full snapshots naively: recency, timing and hit counters are expected to differ.
+
+Trial a memory-difference view that answers what was retained, invalidated or recomputed and why. Unsupported provenance is unknown, not inferred from tier or heat. Inspecting the display must not silently mutate recency or evaluation state; use a non-touching snapshot or explicitly disclose the effect. This reinforces `peek_document` rather than introducing another cache.
+
+An unchanged apposition envelope alone cannot authorize reuse if body content, ancestry, syntax profile, producer version or dependencies changed. A sibling-frame edit is a useful reuse control; an edit to the queried frame and document eviction are invalidation controls. Reproduce the historical defects before claiming present impact. Keep the granule key and UI placement open until the evidence justifies them; source and count baselines above are dated survey observations.

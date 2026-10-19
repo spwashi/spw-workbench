@@ -117,3 +117,44 @@ For the current workstreams, this opens deeper questions alongside maintenance: 
 ### Maintenance scope and validation
 
 This pass updates this direction guide, `parser-releases`, `runtime-maintenance`, their cards and append-only streams, and the authored priority frame plus derived index. Existing historical bases and done records remain historical evidence. No source implementation or publication is part of the pass. Validate cards/index, Spw syntax, and documentation; report any baseline diagnostics separately from changed-file defects.
+
+## Theory-to-development pass — 2026-10-19
+
+The next pass reads theory against source and recent episode bodies, then turns the differences into a navigable agent route and four bounded follow-ups. `76e17bd4` establishes rereading, checking and fillable scaffolds as owner direction; `603f6b59`, `b082d500` and `e810b683` add portable reading capabilities; `eb34e6c3` and `7509cbb8` establish shared byte identity. The earlier plan pass is committed as `f8e2308a`.
+
+### Predicted files and commit
+
+- [MOD] `.spw/agents.spw`, `.spw/index.spw`, `.spw/workspace.spw`: task routes and package-root discovery.
+- [NEW] `.spw/process/agent-development.spw`: read → distinguish → probe → revise loop, with explicit handoff criteria.
+- [NEW] `.spw/harness/probes/creative-seeds.spw`: four optional experiments with owners, controls and useful outputs.
+- [NEW] `.spw/harness/runs/2026-10-19-theory-direction.spw`: dated source/history review and actual probe results; no model-comparison claim.
+- [MOD] `.spw/harness/claim-protocol.spw`, `.spw/harness/evals/baseline-evals.spw`, `.spw/harness/runs/runs-index.spw`: evidence fields and discoverability.
+- [MOD] `relationship-contours`, `geometric-analysis-tooling`, `measure-invariant-generalization`, `form-geometry-editor`: PLAN.md and wip.spw, preserving past observations and dormant scope.
+- [MOD] this plan/artifact/card and the authored/derived plan index.
+
+Commit: `.[canon] — connect theory, agent routes and creative probes`. This is a documentation and planning slice; no parser/runtime/editor behavior changes. Keep the new route and probe files individually readable, under 200 lines each. Existing large artifacts get small routing additions rather than another taxonomy.
+
+### Proceed through more plans
+
+1. **Relationship contours: `door_trials`.** Try the new route with a concrete locate-and-explain task; retain missed links, fallbacks and correctness. This slice can run before Spirit counts; the Spirit slice still needs the AST census.
+2. **Geometry: `ast_operator_census` only.** The quoted-sigil defect reproduced again in this review. Fix this one truth defect before using counts for Spirit or shape discovery. The rest of the dormant plan stays deferred.
+3. **Measurement: `route_self_mass_schemes`.** Use exact, drift, missing and tolerance examples to establish the metric/verdict contract. A status or score cannot grant write authority. A canonical declaration follows only when it measures something useful.
+4. **Form editor: prepare `pulse_text_edits`.** Reuse landed text-only form context and establish an explicit baseline for the previously reported mobility failure before mapping preview/apply edits. Reader parity is evidence for one representation, not evidence of safe application.
+
+This is a dependency-aware traversal, not an assertion that all four are active. Door trials and pure measure reconciliation do not need geometry; Spirit does. The existing navigation and reading-hierarchy priorities remain. After each slice, revisit the question and select the next useful result rather than clearing the list mechanically.
+
+### Theory review and creativity
+
+Start with the current theory bridge's implemented/measured/proposed/interpretive distinctions, then form-contour receipts and representational disclosure. Read older operator algebra and probe calculus as research candidates. The review records a reversed set-inclusion example and the need to distinguish pure observation from runtime measurement bookkeeping; it does not rewrite the entire theory or promote illustrative equations to implementation requirements.
+
+Creativity is an optional second pass: try a counterexample cabinet, a silence lens, a cross-domain graft, or a reversible context postcard from the seed surface. Keep the surprising example even if the proposed explanation fails. Promote a surviving result into an existing theory or implementation owner rather than multiplying orphan plans.
+
+Validation: targeted Spw parsing; index/card checks; resolve each new relative path; documentation check; staged review. Retain the geometry reproduction and the four passing form-reader tests as bounded observations, not full-suite claims. New routes are authored workflow scaffolds until a fresh-reader trial measures their usefulness.
+
+### Cognitive surfaces, intermediate representations and memory
+
+The owner is open to redesigning cognitive surfaces and specifically wondering about intermediate representation and memory insights. Add a proposed design brief at `.spw/tooling/cognitive-surfaces.spw`, route it from agents/index/workspace, and connect the existing precipitate and memory surfaces. Expand creative seeds with an IR journey and a cold/warm memory comparison. These are design/probe artifacts, not a claim that a new interface or telemetry exists.
+
+Two more plan owners join the traversal: `precipitate-model-alignment` supplies truthful stage products and failure continuity; `apposition-cache-granules` supplies cache validity and eviction evidence. Their missing facts precede UI confidence. A cognitive surface should answer where a result came from, what changed, what was omitted, and why something was remembered. Unknown provenance remains visible. Compare a minimal artifact passport and a memory-difference view against the current display before choosing a redesign.
+
+Additional files: [NEW] `.spw/tooling/cognitive-surfaces.spw`; [MOD] `.spw/runtime/precipitates.spw`, `.spw/harness/memory-surface.spw`, and the PLAN.md/wip.spw pairs for the two owners above. Keep harness context, LSP derived caches and runtime registers separate even if a future display brings them together.

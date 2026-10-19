@@ -60,8 +60,8 @@ Taste note:
 [MOD?] packages/spw-cli/src/ls/run.ts                            AST/ONF structural mode for operator-arity scoring
 [MOD?] packages/spw-cli/src/ls/probe.ts                          arity-aware probe scoring
 [MOD] src/seed/__tests__/geometry-inspect.test.ts                update for /2 shape
-[NEW] src/seed/__tests__/geometry-census.test.ts                 parity + string-immunity cases
-[NEW] src/seed/__tests__/geometry-shape.test.ts                  fingerprint stability + recurrence
+[NEW] packages/spw-seed/src/canonical/geometry-census.test.ts                 parity + string-immunity cases
+[NEW] packages/spw-seed/src/canonical/geometry-shape.test.ts                  fingerprint stability + recurrence
 [NEW] packages/spw-cli/src/geometry-baseline.test.ts             quantile derivation
 ```
 
@@ -71,7 +71,7 @@ Craft guard:
 - `geometry-inspect.ts` is 184 lines today. Census + rhythm + shape + lessons landing in place would exceed 400; hence the four-module split, leaving the orchestrator small and each module single-concern.
 - `form-geometry.ts` (1209) and `form-ladders.ts` (943) are already over the 600-line guard. Import from them; do not add to them.
 - Target <400 lines per new module, <12 imports each.
-- Both test roots run: `vitest.seed.config.ts` includes `src/seed/**/*.test.ts` *and* `packages/spw-seed/src/**/*.test.ts`. Seed tests may live in either; keep new geometry tests in `src/seed/__tests__/` alongside the existing `geometry-inspect.test.ts`.
+- Both test roots run: `vitest.seed.config.ts` includes `src/seed/**/*.test.ts` *and* `packages/spw-seed/src/**/*.test.ts`. Keep new geometry tests package-local under `packages/spw-seed/src/canonical/`; the existing legacy test remains a migration concern.
 
 Axis attribution:
 - **resolution** — top-N slices, depth-k fingerprint granularity, lesson verbosity.
@@ -106,7 +106,7 @@ Fuzz strategy:
 ## Failure Modes
 
 - **Hard**: lexer fixity tagging breaks existing prefix-only parser recovery.
-- **Hard**: the AST census silently drops operators on surfaces that fail to parse (prose-heavy `.spw`), making the report look clean where the char scan was merely noisy. Mitigation: keep the char census as an explicit `fallback: true` path, and a parity test asserting the two agree on well-formed input.
+- **Hard**: the AST census silently drops operators on surfaces that fail to parse (prose-heavy `.spw`), making the report look clean where the char scan was merely noisy. Mitigation: keep the char census as an explicit `fallback: true` path, and agreement on a sigil-only structured control, plus deliberate disagreement for quoted sigils.
 - **Soft**: fingerprinting cost on the full corpus; hover latency on large documents.
 - **Soft**: no shape recurs at k=2 across the corpus — the resonance thesis is simply false for this codebase. That is a real outcome; onf_shape_fingerprint should report it rather than lower the threshold until something appears.
 - **Non-negotiable**: existing `packages/spw-seed/` tests keep passing; the two `spw.geometry/1` consumers (`packages/spw-cli/src/geometry.ts`, `packages/spw-lsp/src/handlers/spw-probes.ts:403`) migrate in the same commit that bumps the version — no window where a consumer reads a shape that no longer exists.
@@ -114,7 +114,7 @@ Fuzz strategy:
 ## Validation
 
 - **Hypotheses**:
-  - AST-level operator scoring ranks operators differently than the character census on at least one real surface (falsifiable: if the rankings never differ, the defect is cosmetic and ast_operator_census is not worth its cost).
+  - AST-level operator scoring ranks operators differently than the character census on at least one real surface (falsifiable: ranking equality does not excuse counting quoted data; evaluate the string-immunity contract independently).
   - ONF shape hashes at k=2 recur across ≥3 files in `docs/theory/spw/`.
   - Anti-unified templates from near-miss shapes correspond to rungs a human recognizes as form-ladder material.
   - Fixity is recoverable for a majority of operator nodes from parser position — `onf.ts` says it is "often unset", and if it stays unset after parser_fixity_stamps, the census degrades to sigil × site and onf_shape_fingerprint's arity keying loses resolution.
@@ -133,3 +133,11 @@ Fuzz strategy:
 ## Spw Artifact
 
 `.agents/plans/geometric-analysis-tooling/geometric-analysis-tooling.spw` — records the shape-fingerprint abstraction: label erasure, depth-k granularity, recurrence as the operational definition of resonance, and anti-unification as the path from detection to development. Warranted because the fingerprint primitive is novel to the repo and will outlive this branch.
+
+## Bounded follow-through — 2026-10-19
+
+The quoted-sigil stdin example still prints `ops=3` and an unbalanced-brace lesson at the reviewed source basis `0eb1d1c0`; its quoted braces are data. The smallest useful step remains `ast_operator_census`, with the known example as the first counterexample cabinet entry. Keep the broader fingerprint, n-gram and spectral program dormant.
+
+Acceptance needs immunity to sigils in strings/comments, explicit parse-health/fallback evidence on recovered input, and unchanged counts on a simple fully structured control. Do not require the old character scan and AST census to agree on all well-formed input: a valid string containing `!` is precisely where they must differ. An unavailable AST result must not be reported as an observed zero. Keep occurrence order if a future claim says rhythm; a histogram alone cannot support that claim.
+
+New tests belong under `packages/spw-seed/src/canonical/` in alignment with runtime-maintenance's package ownership direction; the earlier legacy test-home prediction is superseded for new work. Reconcile CLI/LSP report consumers in the same implementation slice. Stop after the measurement defect and its consumer contract are fixed, then reassess whether Spirit or shape discovery earns the next step.

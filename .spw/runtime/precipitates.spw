@@ -15,15 +15,15 @@
 
 ^"stages"[
   desugar:   { input: "string",   output: "string",   delta: "sugar rewrites" }
-  parse:     { input: "string",   output: "AST",      delta: "token → tree" }
+  parse:     { input: "string",   output: "ParseOutput<SeedNode>",      delta: "token → tree" }
   normalize: { input: "AST",      output: "ONF",      delta: "tree → σ(args)[frames]" }
   interpret: { input: "ONF",      output: "Value",    delta: "σ → register writes" }
 ]
 
 ^"spw_repr"{
   #:affordance #!self_description
-  ~#invariant: "each stage can render its precipitate as valid Spw text"
-  ~#method: "precipitate.toSpw() → string"
+  ~#contract: "each available stage product has a Spw renderer; parse validity and fidelity require validation and are not guaranteed by this declaration"
+  ~#method: "precipitateToSpw(precipitate) → string; verify output fidelity separately from renderability"
   desugar:   "identity — input and output are already Spw source"
   parse:     "AST → annotation tree: ^[node]{ .. @child ... }"
   normalize: "ONF → σ(args)[reg=...]: the canonical sigil form"
@@ -43,7 +43,7 @@
 ^"projection"{
   #:schema #!derived
   ~#definition: "a view of one stage's output through another stage's lens"
-  ~#invariant: "every stage's precipitate is a functor image of the previous"
+  ~#interpretation: "Functor language is a proposed model; stage transformation alone does not establish identity and composition laws."
   ~#usage: "cross-stage comparison — how does the same concept look in AST vs ONF vs Value?"
   mapping: {
     desugar:   "string → string (syntactic sugar elimination)"
@@ -79,9 +79,9 @@
 
 ^"implementation"{
   #:binding #!typescript
-  ~"../../src/runtime/pipeline/stages.ts"     // Generator + types
-  ~"../../src/runtime/pipeline/run-spw.ts"    // One-shot wrapper
-  ~"../../src/runtime/pipeline/types.ts"      // Shared types
+  ~"../../packages/spw-runtime/src/pipeline/stages.ts"     // Generator + types
+  ~"../../packages/spw-runtime/src/pipeline/run-spw.ts"    // One-shot wrapper
+  ~"../../packages/spw-runtime/src/pipeline/types.ts"      // Shared types
 }
 
 #>wonder_spw_precipitate_1
@@ -98,4 +98,14 @@
   ~#tension: "new syntax creates new AST nodes, which need new ONF mappings, which need new interpreter handlers"
   !probe{ "for each of the 17 new ONF mappings, trace the ripple: which stage needed the most change? which was zero-cost?" }
   $%[file.frame_count, file.annotation_density]
+}
+
+^["inspection_contract"]{
+ source: ~"../../packages/spw-runtime/src/pipeline/stages.ts"
+ owner: ~"../../.agents/plans/precipitate-model-alignment/PLAN.md"
+ design: ~"../tooling/cognitive-surfaces.spw"
+ implemented: "PipelineProjection is a partial stage-keyed view; normalization consumes ParseOutput.ast rather than the entire parse output."
+ open: "The parse-failure branch returns before normalize/interpret; failure continuity and a reproducible branch test remain plan questions."
+ execution: "The interpret receipt records ONF input, but runSpwStepped calls interpretSeed with parseOutput.ast; interpretSeed normalizes again. A view must not imply direct consumption of the recorded object."
+ boundary: "A rendering is a disclosure, not proof of an invertible transform; stage output, runtime events and register memory stay distinct."
 }

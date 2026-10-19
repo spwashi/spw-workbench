@@ -12,7 +12,7 @@
  gist: "LSP cache entries die with their document and invalidate per apposition granule, not per file."
  touches: [~"packages/spw-lsp/src/server-index.ts", ~"packages/spw-lsp/src/handlers", ~"packages/spw-seed/src/canonical/apposition-scan.ts"]
  entry: ~"./apposition-cache-granules.spw"
- next: "~[pin_cache_defects]: pin the document-cache defects in a failing test; the index-scope leak landed in e99e1676. Keep the granule key unset."
+ next: "Pin cache defects, then compare cold/warm/edit/evict answers with non-touching observations; trial memory differences before settling a granule key or UI."
 }
 
 ^["edges"]{
@@ -122,6 +122,7 @@
  >>[2026-10-13 17:16] observe — 198f6875 brings e99e1676's folder-delete pruning to Neovim: the server registers watchers (every .spw file, deletes of anything) with any client that takes dynamic registration, and VS Code dropped its own watchers to take the same registration.
  >>[2026-10-13 22:37] note — The body mask hash in apposition-scan and any frame hash this plan keys granules by should come from runtime-maintenance one_hash_module, the one hash over raw utf8 bytes the owner chose on 2026-10-13; the index's kin frame paired the two plans with no edge.
  >>[2026-10-13 23:16] note — Apposition masks and the substrate hash now come from textHash (eb34e6c3), 16 hex of SHA-256 over UTF-8 bytes, widened from 8; a granule key built later should use the same function.
+ >>[2026-10-19 16:40] revise — Owner welcomes memory insights: separate cache correctness from display, compare semantic answers rather than volatile snapshots, and expose unknown validity reasons instead of inventing them.
 }
 
 ^["open"]{
@@ -154,7 +155,7 @@
  ~#files_hot: "packages/spw-lsp/src/server-index.ts, packages/spw-lsp/src/types.ts, packages/spw-seed/src/types/ast/nodes.ts"
  ~#next_commit: "pin_cache_defects"
  ~#open_count: "2"
- ~#last_stream: "2026-10-13 23:16"
+ ~#last_stream: "2026-10-19 16:40"
  ~#taste_debt: "two-axis eviction (tier x volatility) is correct and deferred; granule identity must reconcile apposition name, content, structural ancestry, and future shape fingerprints without treating activity metadata as human evidence"
 }
 

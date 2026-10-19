@@ -150,3 +150,15 @@ Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 ## Spw Artifact
 
 `.agents/plans/form-geometry-editor/form-geometry-editor.spw`
+
+## Portable reader and next edit boundary — 2026-10-19
+
+`e810b683` landed `packages/spw-lsp/src/form-reader.ts`: `formAt` and `formHover` use the same form-context assembler as the server and ship in the workbench build. This supersedes the introductory claim that the editor does not show the basic coupling packet: P0a/P0b/P1a are already recorded as landed. The four targeted form-reader tests pass in this review, including server-hover text parity; no full host or edit-safety claim follows.
+
+Before `pulse_text_edits`, reproduce and classify the form-context label-mobility failure reported in e810b683's episode. That historical failure has not been retested here. Record whether it affects the intended edit cases; repair it before relying on the affected path. Preview/apply must preserve source revision preconditions, explicit acceptance, UTF-16 ranges (including astral characters), parse-health policy, and refusal when the document changes after preview.
+
+Use the reversible-postcard seed to test whether compact form context retains the evidence needed for the same next action. Omission must be explicit and expansion source-backed. A concise hover is not proof of semantic equivalence, and display parity cannot authorize a mutation. Stop at one verified edit path before extending the context strip or adding another host.
+
+### Cognitive-surface option
+
+The owner is open to redesign, so the current context strip is a candidate rather than a fixed endpoint. Compare its caret packet with the artifact-passport and reversible-postcard views in `.spw/tooling/cognitive-surfaces.spw`. Keep identity, disclosure, retention and attention separate; select a design from a task result and explicit reader preference. This does not widen the pending pulse edit implementation or imply that all proposed fields are available.
