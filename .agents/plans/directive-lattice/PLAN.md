@@ -1,5 +1,7 @@
 # Plan: directive-lattice
 
+**Current direction — 2026-10-19:** three particle aims and fragment addressing are implemented. Public names were settled on 2026-10-12 as **anchor/lens/focus**; implementation names remain deixis/case/mood pending `aim_names`. The next registry must distinguish token counts, attachments and interpretation. The `~#` stance name remains open. See the checkpoint below and `wip.spw` for current work; the original rationale and scope follow for provenance.
+
 Unify the `#` directive family into one structured token lattice —
 `⟨stance⟩#⟨aim⟩name` — making `#>` anchors addressable nodes and fragments
 (`~"file#anchor"`) resolvable references.
@@ -145,3 +147,11 @@ none (bias-resolution-product already merged to main).
 `.spw/registries/directive-lattice.spw` (lattice_registry): the stance×aim lattice,
 occupied cells (with corpus counts), open cells as wonder probes, and the
 naming decision.
+
+## Particle design checkpoint — 2026-10-19
+
+The original rationale describes the pre-implementation problem. Current `ParticleNode` and the lexer already recognize three aims: `#>` deixis, `#:` case and `#!` mood; `~#` remains ANNOTATION, and apposition has its own token path. A prefix such as `$#>item` lexes as an operator plus a particle, not one token carrying a stance field. Keep the full stance-by-aim lattice a design space rather than implying every cell is an implemented construct.
+
+Seven small probes are recorded in `../naming-profile-convention-align/language-design-review.spw`. Two distinguish notation from useful behavior: a quoted `~#status` yields aspect=1 despite being STRING, and `#>tail` yields deixis=1 with a null binding. The next registry should separate recognized token count, derived attachment, bound/unbound anchors, duplicate names and any interpretive usefulness claim. Counts alone establish neither volatility nor navigability.
+
+A particle construct record should state bearer/attachment, scope, duplicate policy, payload and effect boundary. Keep existing first-wins anchor behavior visible while considering duplicate diagnostics; do not silently change fragment resolution. Extend the family only when an actual example needs a missing distinction, including a malformed or quoted negative control. Name the general family particles; retain directive-lattice as the existing plan address until a migration is justified.

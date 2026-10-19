@@ -1,0 +1,106 @@
+# Language Design: Names, Particles, Placement and Physics
+#>language_design_review
+#:layer #!pragmatics
+#:status #!proposed
+
+^["roots"]{
+ @plan: ~"./PLAN.md"
+ @naming: ~"../../../.spw/conventions/naming.spw"
+ @identity: ~"../../../.spw/patterns/surface-identity.spw"
+ @tokens: ~"../../../packages/spw-seed/src/types/token.ts"
+ @nodes: ~"../../../packages/spw-seed/src/types/ast/nodes.ts"
+ @coupling: ~"../../../packages/spw-seed/src/types/coupling.ts"
+ @matcher: ~"../../../packages/spw-seed/src/lexer/matchers/particles.ts"
+ @bindings: ~"../../../packages/spw-seed/src/canonical/particles.ts"
+ @particle_plan: ~"../directive-lattice/PLAN.md"
+ @particle_decisions: ~"../directive-lattice/wip.spw"
+ @folders: ~"../module-trees/PLAN.md"
+ @physics: ~"../syntax-hardware-alignment/PLAN.md"
+ @bridge: ~"../../../docs/theory/spw/charge-valence-brace-bridge.spw"
+ @cognition: ~"../../../.spw/tooling/cognitive-surfaces.spw"
+}
+
+^["direction"]{
+ basis: "bbf42a8d; source inspection and seven small observations on 2026-10-19"
+ intent: "Make the design process itself composable: a new idea names the distinction it adds, the existing construct it reuses, and the observation that could justify it."
+ opportunity: "An expressive language can keep evocative names while making their precise sense and owner inspectable."
+ boundary: "This is a proposal with bounded evidence. No new grammar, public rename, directory migration or model comparison is implemented here."
+}
+
+^["design_layers"]{
+ spelling: .{ question = "What marks were written?" examples = "#>, ~#, <>, < >" owner = @tokens }[reg=facet]
+ construct: .{ question = "What parsed form exists?" examples = "Particle, Annotation, Operation, Capsule, Frame" owner = @nodes }[reg=facet]
+ attachment: .{ question = "What does this mark belong to or point at?" examples = "particle run to following content; null target at tail" owner = @bindings }[reg=facet]
+ product: .{ question = "What does a reader or evaluator produce?" examples = "AST, ONF, reference target, value, register write" rule = "name the producer and revision" }[reg=facet]
+ interpretation: .{ question = "What reading helps us reason about it?" examples = "case, mood, charge, valence" rule = "name the profile and its limits" }[reg=facet]
+ law: "Shared spelling or imagery does not imply shared attachment, representation or effects. A construct may compose existing forms without becoming a new AST kind."
+}
+
+^["construct_record"]{
+ status: "proposed review format; not a runtime schema"
+ fields: ["name and qualified sense", "accepted alias", "spelling", "lexical/AST form", "bearer and scope", "output and effects", "profile/status", "owner", "example", "counterexample"]
+ admission: "Add a primitive only when a composition cannot express the required distinction with acceptable clarity and cost. Keep rejected alternatives with the discriminating example."
+ trial: "Give a reader one sample and ask them to find its parsed kind, attachment and effect. Correctness and wrong turns test the naming."
+}
+
+^["noun_map"]{
+ particle: .{ sense = "metadata mark family" current = "three PARTICLE aims; aspect remains ANNOTATION" names = "creator decided anchor/lens/focus on 2026-10-12; current code still says deixis/case/mood; the ~# stance name remains open" }[reg=facet]
+ apposition: .{ sense = "a reading laid alongside" current = "APPOSITION token and AnnotationNode.apposition" guard = "do not silently give it a value-binding, cache-lifetime or effect contract" }[reg=facet]
+ frame: .{ sense = "qualify AST Frame when [] is meant" other = "a discourse frame may contain an operation and body" guard = "a heading or every braced block is not therefore a FrameNode" }[reg=facet]
+ coupling: .{ sense = "tagged structural family" current = "operator <> and six paired boundary kinds" guard = "retain kind/form; < > and <> are a minimal lexical counterexample to collapsing the family" }[reg=facet]
+ profile: .{ sense = "family-qualified at public ambiguity boundaries" examples = "dialect profile, format profile, interpretation profile" guard = "avoid mechanically lengthening every internal identifier" }[reg=facet]
+ identity: .{ sense = "content hash, shape fingerprint and region key answer different questions" owner = @identity guard = "a folder path or a poetic label alone is not durable product identity" }[reg=facet]
+}
+
+^["particle_observations"]{
+ method: "Call lex(source), parse(source), particleBindings(parsed.ast) and particleMix(parsed.ast, source) from the local Seed modules; retain tokens excluding WHITESPACE and EOF."
+ header: .{ source = "#>item\n#:layer #!semantics\n^[body]{ x: 1 }" result = "three PARTICLE tokens; all three bind to an Expression; mix 1/1/1/0" }[reg=facet]
+ tail: .{ source = "#>tail" result = "PARTICLE, null target, deixis=1" teaches = "count bound anchors separately from recognized marks" }[reg=facet]
+ quoted: .{ source = `^[body]{ "~#status" }` result = "STRING, no particle bindings, aspect=1" teaches = "aspect currently scans source text; spelling frequency is not an AST observation" }[reg=facet]
+ annotation: .{ source = `^[body]{ ~#status: "stable" }` result = "ANNOTATION, aspect=1" teaches = "same count as the quoted control; does not establish expiry or volatility" }[reg=facet]
+ prefix: .{ source = "$#>item\n^[body]{ x: 1 }" result = "OPERATOR $ plus PARTICLE #>item; one derived binding" teaches = "no stance field in ParticleNode; prefix composition needs its own semantics before a full lattice claim" }[reg=facet]
+ couple: .{ source = "<>" result = "one OPERATOR token" }[reg=facet]
+ capsule: .{ source = "< >" result = "CAPSULE_OPEN and CAPSULE_CLOSE tokens" }[reg=facet]
+ limits: "All seven parses succeeded with zero errors; no corpus prevalence, runtime effect or usability was measured. Header/prefix strings above encode newlines as backslash-n; decode them when replaying."
+ next: "A token-backed aspect count, explicit bound/unbound counts and duplicate-name diagnostics are candidates for directive-lattice; preserve current first-wins resolution until a reviewed change."
+}
+
+^["placement"]{
+ physical_tree: "One owner and reason to change per family. Lexer, grammar, query and UI consumers of particles remain in their package/layer; cross-links connect the concept."
+ canon: "Conventions guide authoring; registries enumerate contracts; patterns describe reusable composition; process names workflows; harness holds probes and dated evidence."
+ theory: "A candidate explanation lives in theory or a plan. Promotion needs a concrete consumer, examples, counterexamples and a maintained owner; a successful run alone does not turn a hypothesis into law."
+ families: "Split a folder when sibling responsibilities justify it and a reader can predict placement. Test two retrieval tasks before broad moves; do not choose a threshold solely by file count."
+ names: "Use short local names when parent context supplies the family; use a qualified exported name when the symbol travels alone. Preserve stable anchors and public entrypoints across moves."
+ facets: "Tags, profiles and indexes carry cross-cutting views. Do not duplicate a file under grammar, physics and cognition just because all three readings apply."
+}
+
+^["physics_candidates"]{
+ status: "interpretive names attached to proposed measurements; none is an intrinsic force or a measured human response"
+ attachment: .{
+  question = "How far can a mark move before its bearer changes?"
+  intervention = "Move one particle across content or a boundary while preserving its spelling."
+  observe = "token class, target node/span, scope and unresolved status"
+  counterexample = "same particle count with different or absent targets"
+ }[reg=facet]
+ sensitivity: .{
+  question = "Which small edits preserve structure, and which change the interpretation?"
+  intervention = "Vary one gap, delimiter or label at a time; begin with <> versus < >."
+  observe = "a separate change indicator for tokens, AST, ONF, value, registers and trace"
+  control = "hold dialect, options and initial runtime state fixed; do not collapse all levels into a scalar stiffness"
+ }[reg=facet]
+ memory_dependence: .{
+  question = "Does the same source produce a different answer after a different history?"
+  intervention = "Compare cold/warm and different prior histories, recording the full declared state."
+  observe = "semantic answer, provenance, invalidation and expected bookkeeping differences"
+  control = "stateful evaluation may legitimately depend on history; a cache comparison requires equivalent declared inputs"
+ }[reg=facet]
+ metaphor_boundary: "Keep delimiter polarity, operational charge and material valence distinct. A stronger model can propose a better map, but it must expose a failed prediction and an observation method."
+}
+
+^["next_moves"]{
+ first: "directive-lattice: pin the quoted aspect and unbound-anchor examples before expanding the particle registry"
+ second: "naming-profile-convention-align: trial one particle construct record, preserve anchor/lens/focus and make current code aliases explicit"
+ third: "module-trees: compare two owner-location tasks before moving a family"
+ fourth: "syntax-hardware-alignment: choose one sensitivity or attachment experiment within existing proposal gates"
+ creative_prompt: "Design a sentence whose silhouette stays nearly unchanged while one attachment changes; ask the instrument to reveal the changed relation rather than explain it poetically."
+}

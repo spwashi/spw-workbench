@@ -51,3 +51,13 @@ Taste: group by reason to change, one move per commit, no churn for its own sake
 
 - Rebase target: `main@71a6ce96`.
 - The seed `edit/` and `measure/` moves wait for runtime-maintenance `one_hash_module`, which edits four of their files. The `pulse/` split waits for `legacy_tests_home`, which moves the tests that import `pulse.ts`.
+
+## Folder design checkpoint — 2026-10-19
+
+Use the physical tree to answer ownership and reason to change; use indexes, particles and references for concepts that cross owners. A term such as particle has lexer, grammar, canonical-query and UI consumers, so putting all of them into one cross-package particle folder would hide dependency boundaries. Keep one defining owner and explicit relations to consumers instead of duplicating the definition in each layer.
+
+Within `.spw`, conventions guide authored behavior, registries enumerate declared contracts, patterns explain reusable compositions, process describes workflows, harness holds probes and dated evidence, and generated output remains replaceable. Theory candidates stay with theory or a plan until they have a demonstrated contract. A measured run is evidence for a proposal, not automatically a promotion to normative canon.
+
+Trial folder names with two tasks: find the particle attachment rule, and find the evidence for a cache-validity claim. Record wrong turns and ambiguous ownership before and after a small proposed map. Introduce a family folder when its children share a stable responsibility and the shorter names remain clear outside the editor breadcrumb. Preserve stable anchors across moves and repair citations; a slug is a locator, not semantic identity. Public package entrypoints and useful export boundaries are not redundant merely because they forward symbols.
+
+The old dependency on runtime-maintenance `one_hash_module` is satisfied by eb34e6c3/7509cbb8. Other move gates still apply, including test-home work, pinned entrypoints and owner choices. This review proposes guidance; it authorizes no mass directory move.

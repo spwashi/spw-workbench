@@ -4,12 +4,12 @@ Audit and align **language feature naming**, **profile families**, and **constan
 
 ## Goal
 
-Spw already has several correct but **parallel naming systems** that all use the word *profile*, several **effect/grade ladders**, and **convention surfaces that are not all indexed**. New work (cli-mode-overhaul modes, surface-identity collision nouns, particle vocabulary, free CLI rename) will make the fork worse unless there is one **hygiene pass**: inventory every family, assign ownership, ban shared head nouns across inverted semantics, refresh stale convention indexes, and add a small **alignment gate** so new constants register against the living map.
+Spw already has several correct but **parallel naming systems** that all use the word *profile*, several **effect/grade ladders**, and **convention surfaces that are not all indexed**. New work (cli-mode-overhaul modes, surface-identity collision nouns, particle vocabulary, free CLI rename) will make the fork worse unless there is one **hygiene pass**: inventory every family, assign ownership, qualify shared nouns where their meanings imply different contracts, refresh stale convention indexes, and add a small **alignment gate** so new constants register against the living map.
 
 This plan does **not** invent a new language. It makes the existing one **one mind**: dialect geometry, format profiles, mutation profiles, fractal/emit profiles, form-geometry profiles, syntax-review profiles, effect.l* ceilings, identity kinds, and derived-surface kinds all **named distinctly**, **indexed**, and **cross-referenced** so old and new designs co-evolve.
 
 Taste note:
-- **naming** — collision semantics must not share a head noun (extends surface-identity)
+- **naming** — distinguish collision semantics with a qualified sense or a separate noun (extends surface-identity)
 - **clarity** — “profile” always has a family qualifier in public docs and CLI help
 - **correctness** — conventions index lists every live convention; dead names deprecated with pointer
 - **layering** — grammar dialects ≠ mutation profiles ≠ format profiles ≠ CLI modes
@@ -127,7 +127,7 @@ Fuzz strategy:
 
 | Feature | Owner surface / code | Status | Notes |
 |---------|----------------------|--------|-------|
-| particle (deixis/case/mood/aspect) | directive-lattice, lexer | canon | not “directive” in new prose |
+| particle (anchor/lens/focus) | directive-lattice, lexer | naming decided; code migration pending | implementation aims remain deixis/case/mood; `~#` stance name remains open |
 | apposition | gloss→apposition | canon | readings, not comments |
 | bias edge | bias-product.spw | canon | verb-polymorphic `=` |
 | path_ref / fragment | path-check, resolveFragment | canon | |
@@ -191,3 +191,20 @@ When a plan or PR introduces a **public** name (CLI flag family, profile id, eff
 | hygiene-index-consolidation | Docs grades + CLI appendix; naming gate complements docs g1–g5 |
 | seed-roundness-grades | Effect/grade public ladder owned by constants commit here |
 | spw-cli-overhaul | Envelope only; profile wording in help is this plan |
+
+## Language design review — 2026-10-19
+
+The owner asks what could improve language design, folders, particles, construct names and linguistic physics. The bounded deliverable is `language-design-review.spw`: a proposed design map grounded in current token/AST/coupling types and seven small parser/particle observations at `bbf42a8d`. This pass changes planning and naming guidance only; it does not rename public constructs or change grammar.
+
+Prefer an explicit **sense and owner** over a global ban on reused nouns. A public term needs qualification where it otherwise predicts the wrong product: AST Frame versus a discourse frame, runtime measure versus file-mass declaration, or paired boundary versus operator. Internal names can remain short when their enclosing module supplies the family. Treat a construct as a composition of spelling, parsed shape, attachment and effects, rather than forcing every useful phrase to become a primitive node.
+
+For each proposed construct, write a compact record: canonical name, accepted aliases, spelling, lexical/AST representation, attachment rule, output, effects, profile, implementation owner, minimal example and counterexample. This is a review convention, not a new parser schema. Preserve the creator’s 2026-10-12 decision: anchor/lens/focus are the intended public names, deixis/case/mood remain current implementation names, and the `~#` stance name is open. Start with the existing particle family; measure whether a reader can locate its meaning and implementation before creating a general registry or lint gate.
+
+### Files and next evidence
+
+- [NEW] `.agents/plans/naming-profile-convention-align/language-design-review.spw` — noun distinctions, folder roles, particle observations and candidate physics experiments.
+- [MOD] this PLAN.md and wip.spw; the directive-lattice, module-trees and syntax-hardware-alignment plan pairs.
+- [MOD] `.spw/conventions/naming.spw` — explicit anchor multiplicity and a route to the proposed design review; stable placement guidance.
+- [MOD] `.spw/agents.spw` and the derived plan index — make the review findable.
+
+One bounded next step is a construct record for particles and a token-backed count experiment, followed by a locate-the-owner trial for folder conventions. Broad rename and folder migration remain held. Validation is scoped Spw syntax, new-reference resolution and plan-index checks; language behavior is unchanged. Keep each new artifact below 200 lines and preserve existing historical stream entries.

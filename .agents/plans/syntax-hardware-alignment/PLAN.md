@@ -114,3 +114,11 @@ Fuzz strategy:
 ## Spw Artifact
 
 [syntax-hardware-alignment.spw](./syntax-hardware-alignment.spw) — the seven sample exhibits with per-proposal status, removed/added wires, play affordances, and gate hooks.
+
+## Linguistic physics checkpoint — 2026-10-19
+
+Treat physics as a way to predict a useful difference under a declared intervention. A candidate law needs a state space, operation, observable, invariant, counterexample, profile and implementation boundary. Hardware language can suggest the experiment; it does not determine parser behavior or grant execution authority.
+
+Three promising questions are attachment sensitivity (does moving a mark across one boundary change its bearer?), structural sensitivity (what changes under a one-token or spacing perturbation?), and memory dependence (does the same source under the same declared state produce the same result after different histories?). The design review at `../naming-profile-convention-align/language-design-review.spw` gives controls and separates token, AST, ONF, value, register and trace observations.
+
+Keep operational charge packets, delimiter polarity and material valence distinct. Aspect count is not a lifetime measure: `particleMix` currently counts a quoted annotation spelling, and a stable declaration can use aspect syntax. A useful physics instrument should expose where the analogy fails as readily as where it predicts. Preserve current p1–p7 verdict work and the p4-only spike boundary; these new questions do not promote all proposed syntax cells.
