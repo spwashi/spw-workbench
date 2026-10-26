@@ -9,7 +9,7 @@ import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import { SIGIL_SEMANTICS, type AnnotationEntry, type AnnotationKind } from '../server-index'
 import { annotationLabel } from '../apposition'
-import { findPathRefAtPosition } from '../spw-selector'
+import { findPathRefAtPosition, selectPathRefs } from '../spw-selector'
 import { statKind } from '../helpers'
 import {
     SK,
@@ -22,6 +22,8 @@ import {
 import { outlineFromSource } from './outline'
 import { formContextHover } from './form-context'
 import { hoverCommitRef } from './commit-refs'
+import { citationTarget } from './navigation'
+import { proseHandleAt, proseHandleHover } from './prose-handles'
 import { buildWonderHint, codeSpan, hoverApposition, hoverWonder, parseWonderBlock, sourceTokens } from './wonder'
 import {
   formatCatalogEntryMarkdown,
@@ -461,6 +463,22 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
         return {
             contents: { kind: 'markdown', value: md },
             range: { start: { line: pos.line, character: start }, end: { line: pos.line, character: end } },
+        }
+    }
+
+    // 1.1 A handle the file declares, named inside a string — its declaration
+    // answers first; form geometry, which reads the string as a label site, comes last
+    {
+        const doc = deps.serverIndex.getDocument(uri)
+        const handle = proseHandleAt(source, pos, () => doc?.selectorHits ?? selectPathRefs(source), tokensOf)
+        if (handle) {
+            const target = docPath ? await citationTarget(handle.declaration.hit, source, docPath, deps) : null
+            const geometry = doc ? formContextHover(doc, pos)?.contents.value : undefined
+            const lead = await proseHandleHover(handle, target, deps.workspaceRoot)
+            return {
+                contents: { kind: 'markdown', value: geometry ? `${lead}\n\n---\n\n${geometry}` : lead },
+                range: handle.range,
+            }
         }
     }
 

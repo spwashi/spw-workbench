@@ -6,7 +6,7 @@
  */
 
 import path from 'node:path'
-import { selectPathRefs, findPathRefAtPosition } from '../spw-selector'
+import { selectPathRefs, findPathRefAtPosition, type SpwSelectorHit } from '../spw-selector'
 import { anchorLineReader, type AnchorLineReader } from '../anchor-lines'
 import type {
     LspLocation, LspRange, LspTextEdit, LspPosition,
@@ -16,6 +16,8 @@ import type {
 } from '../types'
 import { escapeRegex, splitAnchor, stripAnchor } from '../helpers'
 import { commitRefLinks } from './commit-refs'
+import { proseHandleAt, proseHandles } from './prose-handles'
+import { sourceTokens } from './wonder'
 
 function referenceSearchNeedles(hit: { kind: string; root?: string; target: string }, targetPath: string): string[] {
     const needles = new Set<string>()
@@ -85,6 +87,39 @@ async function fragmentRange(anchorLine: AnchorLineReader, targetPath: string, f
     }
 }
 
+/**
+ * The file (or folder) a citation lands in, resolved as its document link
+ * resolves it. A handle named in prose lands where its declaration does.
+ */
+export async function citationTarget(
+    hit: SpwSelectorHit,
+    source: string,
+    docPath: string,
+    deps: HandlerDeps,
+): Promise<string | null> {
+    const resolved = await deps.resolveReferencePath(hit, source, docPath, { allowDirectory: true })
+    return resolved ? fileOf(resolved, hit.target) : null
+}
+
+/** Where following a citation lands: its file, and the line its `#fragment` marks when it names one. */
+interface Landing {
+    targetPath: string
+    anchored: LspRange | null
+}
+
+async function landingOf(
+    hit: SpwSelectorHit,
+    source: string,
+    docPath: string,
+    deps: HandlerDeps,
+    anchorLine: AnchorLineReader,
+): Promise<Landing | null> {
+    const targetPath = await citationTarget(hit, source, docPath, deps)
+    if (!targetPath) return null
+    const fragment = fragmentOf(hit.target)
+    return { targetPath, anchored: fragment ? await fragmentRange(anchorLine, targetPath, fragment) : null }
+}
+
 // ── Definition ──────────────────────────────────────────────────
 
 export async function definition(params: DefinitionParams, deps: HandlerDeps): Promise<LspLocation[] | null> {
@@ -99,18 +134,15 @@ export async function definition(params: DefinitionParams, deps: HandlerDeps): P
 
     const doc = deps.serverIndex.getDocument(uri)
     const hits = doc?.selectorHits ?? selectPathRefs(source)
+    // A citation under the caret, else a declared handle named in a string,
+    // which goes where its declaration's citation goes.
     const hit = findPathRefAtPosition(hits, position.line, position.character)
+        ?? proseHandleAt(source, position, () => hits, () => sourceTokens(source, uri, deps))?.declaration.hit
     if (!hit) return null
 
-    const resolved = await deps.resolveReferencePath(hit, source, docPath, { allowDirectory: true })
-    if (!resolved) return null
-
-    const targetPath = fileOf(resolved, hit.target)
-    const fragment = fragmentOf(hit.target)
-    return [{
-        uri: deps.uriFromPath(targetPath),
-        range: fragment ? await fragmentRange(anchorLineReader(deps), targetPath, fragment) : FILE_START,
-    }]
+    const landing = await landingOf(hit, source, docPath, deps, anchorLineReader(deps))
+    if (!landing) return null
+    return [{ uri: deps.uriFromPath(landing.targetPath), range: landing.anchored ?? FILE_START }]
 }
 
 // ── Document Links ──────────────────────────────────────────────
@@ -134,24 +166,46 @@ export async function documentLinks(
     // Index only: a listing runs on every edit and must not parse its targets.
     const anchorLine = anchorLineReader(deps, { parse: false })
 
+    // A fragment rides along as `#L<n>` (1-based), the line address editors
+    // honour when opening a link target; the raw `#anchor` means nothing to
+    // them, so it never reaches the URI. Memoized per hit: every handle named
+    // in prose follows its declaration's hit, which the loop already resolved.
+    const linkTargets = new Map<SpwSelectorHit, Promise<string | null>>()
+    const linkTargetOf = (hit: SpwSelectorHit): Promise<string | null> => {
+        let target = linkTargets.get(hit)
+        if (!target) {
+            target = landingOf(hit, source, docPath, deps, anchorLine).then((landing) => {
+                if (!landing) return null
+                const { targetPath, anchored } = landing
+                const suffix = anchored && anchored.start.line > 0 ? `#L${anchored.start.line + 1}` : ''
+                return `${deps.uriFromPath(targetPath)}${suffix}`
+            })
+            linkTargets.set(hit, target)
+        }
+        return target
+    }
+
     for (const hit of hits) {
-        const resolved = await deps.resolveReferencePath(hit, source, docPath, { allowDirectory: true })
-        if (!resolved) continue
-
-        // A fragment rides along as `#L<n>` (1-based), the line address
-        // editors honour when opening a link target; the raw `#anchor` means
-        // nothing to them, so it never reaches the URI.
-        const targetPath = fileOf(resolved, hit.target)
-        const fragment = fragmentOf(hit.target)
-        const anchored = fragment ? await fragmentRange(anchorLine, targetPath, fragment) : null
-        const suffix = anchored && anchored.start.line > 0 ? `#L${anchored.start.line + 1}` : ''
-
+        const target = await linkTargetOf(hit)
+        if (!target) continue
         links.push({
             range: {
                 start: { line: hit.span.startLine, character: hit.span.startCharacter },
                 end: { line: hit.span.endLine, character: hit.span.endCharacter },
             },
-            target: `${deps.uriFromPath(targetPath)}${suffix}`,
+            target,
+        })
+    }
+
+    // Handles the file declares, named inside its strings, link where their
+    // declaration links. An undeclared one is prose and gets nothing.
+    for (const handle of proseHandles(source, hits, () => sourceTokens(source, uri, deps))) {
+        const target = await linkTargetOf(handle.declaration.hit)
+        if (!target) continue
+        links.push({
+            range: handle.range,
+            target,
+            tooltip: `@${handle.name}, declared on line ${handle.declaration.line + 1}`,
         })
     }
 
