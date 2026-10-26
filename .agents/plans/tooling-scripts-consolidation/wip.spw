@@ -91,6 +91,7 @@
  >>[2026-10-13 17:16] implement — Landed cdbb6912: npm run spw:reset previews what it would discard and exits 1; only bash scripts/spw-reset.sh --force discards, and the dev.ts hint names the forced script. A probe file in .spw survived the npm script. lint:spw:strict, test:all, and the source bundle move to suite_and_bundle. resolved [reset_fate].
  >>[2026-10-13 22:04] note — The 88 one-line shims under src/seed and src/runtime are retired by runtime-maintenance retire_src_shims, not by lsp_shims, which covers scripts/lsp only.
  >>[2026-10-13 22:33] note — From the module-trees survey: the nine scripts/lsp shims have 0 importers; analyzers/ holds 19 files under three naming schemes (spw-*, v020-*, bare); analyzers tests sit in __tests__ while release/ uses a sibling test; commit-review scripts live in two homes; spw-lib.sh is sourced at a fixed path by six skill scripts; test:run skips the lsp, vscode, and analyzers suites.
+ >>[2026-10-25 21:33] observe — npm run lint:spw runs scripts/analyzers/spw-syntax-validate.ts, which ignores flags it does not know: lint:spw -- --stats prints nothing and exits 0, while spw lint now takes --stats and rejects --statz. A fail-open script behind a lint name, found 2026-10-25.
 }
 
 ^["open"]{
@@ -122,7 +123,7 @@
  ~#files_hot: "package.json, .agents/skills/spw-commit-review/scripts/poll-review.sh, scripts/commit-review/run-review.sh"
  ~#next_commit: "suite_and_bundle"
  ~#open_count: "2"
- ~#last_stream: "2026-10-13 22:33"
+ ~#last_stream: "2026-10-25 21:33"
  ~#taste_debt: "spw-lib.sh (980 lines) and agent-lib.sh (1105 lines) pass the 600-line guard; the spw plan verbs shrink the second"
 }
 

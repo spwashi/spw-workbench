@@ -140,6 +140,7 @@
  ~[widen_command_groups]: "#[bench] — widen to the remaining CLI command groups, then the TypeScript toolchain profiler and TS7 readiness matrix"
  ~[bench_runbook]: ".[bench] — document benchmarking protocol, efficiency lattice, and runbook"
  ~[memo_cold_warm]: "![bench] — cold and warm census over one tree, testing the corpus-memo reuse that census --help promises"
+ .[doctor_lint_stats](2a3dac47): "&[cli] — doctor and lint print the query stats line through one walk-stats helper (consumer rank 6)"
 }
 
 ^["stream"]{
@@ -164,6 +165,7 @@
  >>[2026-10-12 14:25] revise — git shows scripts/bench and bench:* package scripts do not exist yet; commit 1 (plan surfaces) is on main. Cut 11 commits to 10: first-slice benchmark commit now follows taste_debt (root help, one light command, inspect source cadence), unified runner merged into the report commit, wider command groups and TS7 matrix moved last. Added wonder on cold-import sample count.
  >>[2026-10-12 15:37] revise — Commits named per the convention in 90c58bbc: 1 landed, 9 planned, 0 dropped.
  >>[2026-10-13 12:11] revise — Workloads come from the caches tree, timed on 2026-10-13: root help 0.84 s, census on the spw branch 17 s, census over the whole tree 190 s, resolve over it 186 s. The caches extension door asks agents to run that resolve, so the bench now has a consumer waiting on it; citation-navigation root_anchor_refs needs the same resolve timing as its cost sample.
+ >>[2026-10-25 21:33] implement — Uncommitted on main 2026-10-25, for consumer rank 6: spw doctor and spw lint take --stats and print the stats line spw query prints, through one helper (packages/spw-cli/src/walk-stats.ts), on stderr with stdout byte-identical. Sample on this repo: query and lint each walk 761 files and 6.3 MB in about 65 s, 99 percent of it parse at about 85 ms a file; the slowest file is .spw/caches/tree/registries/sources/life-and-mind.spw at 1.08 s for 78 KB. The cost is general parser speed, not one file, which is the case for the shared scan memo.
 }
 
 ^["open"]{
@@ -180,7 +182,7 @@
   ~#files_hot: ".agents/plans/cli-benchmarking-infra/PLAN.md, .agents/plans/cli-benchmarking-infra/wip.spw, .agents/plans/cli-benchmarking-infra/cli-benchmarking-infra.spw, package.json"
   ~#next_commit: "retained_sample_models"
   ~#open_count: "0"
-  ~#last_stream: "2026-10-13 12:11"
+  ~#last_stream: "2026-10-25 21:33"
   ~#taste_debt: "The first implementation slice should cover representative workloads, startup composition, and truthful output cadence before promising every CLI command, compiler candidate, profiler, bundle budget, and report form."
 }
 

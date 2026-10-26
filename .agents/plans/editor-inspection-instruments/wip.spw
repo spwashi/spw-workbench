@@ -43,6 +43,7 @@
  # Unresolved questions. When resolved: log in stream, then move to ^["done"] as ~#resolved(label).
  ?[unsaved_buffers]: "File-backed instruments read the saved file; should every instrument take stdin so an unsaved buffer and a selection read the same as a file?"
  ?[receipt_parity]: "How is parity checked: one fixture whose instrument outputs the three editors must print identically, or a per-editor snapshot?"
+ ?[probe_transport]: "Does the buffer probe belong on the language server, or is the CLI --text enough if every client sends the buffer? Asked by a mounted consumer on 2026-10-25."
 }
 
 ^["commits"]{
@@ -54,6 +55,7 @@
  ~[parity_fixture]: "![editors] — one fixture whose instrument outputs every editor prints the same"
  ~[readonly_reports]: "&[vscode] — instrument reports open through a read-only content provider, so closing them asks nothing (scorecard bug 7; host.ts 57, commands.ts, instruments/commands.ts 215)"
  ~[buffer_truth_rows]: ".[tooling] — record per editor and instrument whether it reads the saved file, the buffer, or a selection (hosts/jetbrains-instruments.spw guard); answers ?[unsaved_buffers]"
+ ~[one_buffer_probe]: "&[lsp] — one probe takes the buffer text and answers form, stack, tokens, structure, and trace; Neovim and IntelliJ ship the bundled server (consumer rank 3)"
 }
 
 ^["cache"]{
@@ -62,8 +64,8 @@
  ~#rebased_at: "2026-10-12"
  ~#files_hot: "extensions/vscode-spw/src/instruments, extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwInstrumentActions.kt, extensions/neovim-spw/lua/spw/instruments.lua"
  ~#next_commit: "parity_fixture"
- ~#open_count: "2"
- ~#last_stream: "2026-10-13 11:59"
+ ~#open_count: "3"
+ ~#last_stream: "2026-10-25 20:40"
 }
 
 ^["done"]{
@@ -74,4 +76,5 @@
  >>[2026-10-12 19:07] decide — Creator asked for editor improvements in syntax highlighting, refactoring, tooling integrations, memory inspection, performance checks, intermediate representation and expression geometry inspection. This plan holds the instrument set the three editors share; highlighting lives in vscode-cognitive-surface, refactoring in refactor-experiment-lifecycle and citation-navigation, server features in their owner plans.
  >>[2026-10-12 20:09] implement — Landed: VS Code 99e6d993, IntelliJ 155cfd57, Neovim 1bb4f68d; all three pair inspect memory with mem list and project through emit ir. ed606b3a made file instruments work in mounted consumers.
  >>[2026-10-13 11:59] revise — The three editors' instruments landed (99e6d993, 155cfd57, 1bb4f68d); next is the parity fixture. Scorecard bug 7 now sits in this plan's own output path: reports open as dirty untitled documents (host.ts 57 and seven other call sites); readonly_reports owns it.
+ >>[2026-10-25 20:40] note — A mounted consumer asks (2026-10-25, rank 3, one_probe) for one request that takes buffer text and answers form, stack, tokens, structure, and trace. Today VS Code probes the live buffer through the LSP, Neovim passes a range through --text and otherwise reads the saved file, and IntelliJ reads the saved file; Neovim and IntelliJ still start the server with npm run lsp instead of the bundled dist/server/spw-lsp.cjs. Neovim three-step inspect is the shape the consumer wants the other two to show.
 }

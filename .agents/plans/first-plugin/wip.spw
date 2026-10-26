@@ -1,0 +1,122 @@
+# wip — first-plugin
+# Branch: feature/first-plugin
+# Started: 2026-10-25
+
+#>plan_first_plugin
+#:plan #!execution_truth
+#:layer #!pragmatics
+
+!["card"]{
+ phase: #seed
+ gist: "The plugin protocol runs one .spw plugin on a mounted corpus: it selects, emits, and fails closed when a selector matches nothing or a field it writes has no reader."
+ touches: [~"lib/spw-v0.3.0/surfaces/PLUGIN-PROTOCOL.md", ~".spw/surfaces/plugin-protocol.spw", ~".spw/surfaces/plugins", ~"packages/spw-cli/src"]
+ entry: ~"./PLAN.md"
+ next: "?[first_plugin]: the owner picks the expression manifest or a doctor reading of projection freshness; then ~[runner_fixture], a failing fixture plugin in this repo whose selector matches nothing."
+}
+
+^["edges"]{
+ shares: [~"../mounted-consumer-tooling/wip.spw", ~"../cli-mode-overhaul/wip.spw", ~"../editor-reading-hierarchy/wip.spw"]
+ feeds: [~"../parser-releases/wip.spw"]
+}
+
+^["roots"]{
+ @plan: ~".agents/plans/first-plugin/PLAN.md"
+ @protocol: ~"lib/spw-v0.3.0/surfaces/PLUGIN-PROTOCOL.md"
+ @protocol_spw: ~".spw/surfaces/plugin-protocol.spw"
+ @plugins: ~".spw/surfaces/plugins/index.spw"
+ @emit: ~"packages/spw-cli/src/emit.ts"
+}
+
+^["intent"]{
+ ~#goal: "The protocol has said since v0.2.0 that no concrete plugin exists. One plugin that runs on a real corpus, and fails closed at both ends, teaches what a plugin is better than the document does."
+ ~#taste: "A protocol with nothing to run teaches the reader that plugins are a document. A second plugin waits until the first one fails closed."
+}
+
+^["development"]{
+ lane: #execution_truth
+ ladder: #service
+ develops: [#taste, #design_transfer]
+ review_surfaces: [@protocol, @protocol_spw]
+ snippet_routes: [#example, #query]
+}
+
+^["concept_index"]{
+ primary: [#plugin, #selector_health, #reader_health, #emit]
+ surfaces: [#cli, #mounted_consumer]
+ tensions: [#protocol_vs_runner, #workbench_owns_runner_vs_consumer_owns_plugin, #wordpress_trap]
+ transfers: [#service, #language]
+}
+
+^["recursive_improvement"]{
+ loop: [
+  "? run the plugin on the mounted consumer corpus before widening the protocol",
+  "< ship the runner with one health rule, then the second",
+  "$ record selector hits, fields written, and readers found per run",
+  "^ fold each rule that held into PLUGIN-PROTOCOL.md and plugin-protocol.spw",
+  "% keep a workspace with zero plugins publishing exactly as before",
+ ]
+ gates: [#fail_closed, #one_plugin_first, #zero_plugin_parity]
+}
+
+^["parallel_work"]{
+ critical_path: [#first_plugin, #runner_fixture, #selector_health]
+ parallelizable: [#reader_health, #protocol_doc]
+ shared_hot_files: ["packages/spw-cli/src/index.ts"]
+ merge_risks: [#cli_flag_contract, #emit_verb_overlap]
+ handoff_artifacts: [@plan, @protocol]
+}
+
+^["intake"]{
+ # The fourteen asks a mounted consumer filed on 2026-10-25, and where each one lives in this repo. Ranks are the consumer's.
+ source: "consumer-relative .spw/reviews/upstream-workbench-recommendations/plugins-and-tooling.spw, frames plugins_and_tooling and plugins_in_use"
+ one_character_table: .{ rank = 1 home = ~"../audit-ui-data-models/wip.spw" status = #routed }
+ spw_in_host_files: .{ rank = 2 home = [~"../editor-reading-hierarchy/wip.spw", ~"../plan-plugin-integration/wip.spw"] status = #routed }
+ one_probe: .{ rank = 3 home = ~"../editor-inspection-instruments/wip.spw" status = #routed }
+ alias_and_hover: .{ rank = 4 home = [~"../citation-navigation/wip.spw", ~"../audit-ui-data-models/wip.spw"] status = #routed }
+ one_plugin: .{ rank = 5 home = @plan status = #owned }
+ slow_loop: .{ rank = 6 home = [~"../cli-benchmarking-infra/wip.spw", ~"../apposition-cache-granules/wip.spw"] status = #landed }
+ quest_grow: .{ rank = 7 home = ~"../onboarding-quest/wip.spw" status = #routed }
+ emit_names_its_reader: .{ rank = 8 home = @plan status = #owned }
+ lens_counts_citations: .{ rank = 9 home = ~"../editor-reading-hierarchy/wip.spw" status = #landed }
+ reg_names_one_thing: .{ rank = 10 home = ~"../editor-reading-hierarchy/wip.spw" status = #landed }
+ handle_in_prose: .{ rank = 11 home = ~"../citation-navigation/wip.spw" status = #landed }
+ generated_from_the_page: .{ rank = 12 home = [~"../editor-reading-hierarchy/wip.spw", ~"../vscode-authoring-probe-loop/wip.spw"] status = #landed }
+ compare_in_the_editor: .{ rank = 13 home = ~"../vscode-authoring-probe-loop/wip.spw" status = #routed }
+ one_browser_build: .{ rank = 14 home = ~"../parser-releases/wip.spw" status = #routed }
+}
+
+^["stream"]{
+ >>[2026-10-25 20:40] observe — The consumer filed fourteen plugin and tooling asks on 2026-10-25, seven from reading the editors and protocol and seven from using the VS Code extension on its route trees and plan notebooks. Ranks 5 and 8 had no home here: no plan owned the plugin protocol, .spw/surfaces/plugins holds only a stub index, and no runner reads the scan path.
+ >>[2026-10-25 20:40] decide — This plan owns the first plugin and the intake table for all fourteen asks, so the consumer reads one place after each submodule update. Every other ask joins the plan that already owns its files.
+ >>[2026-10-25 20:40] taste — The workbench owns the protocol, the runner, and the health rules; the consumer owns the plugin file. The expression manifest reads data-spw-semantic-expression, which only the consumer writes, so its plugin file belongs in the consumer and this repo tests the runner with a fixture plugin of its own.
+ >>[2026-10-25 21:34] implement — Ranks 6 (the stats half), 9, 10, 11 and 12 are implemented and verified on main, uncommitted: build clean, test:lsp 389 of 390 (the one failure predates this work, logged in form-geometry-editor), test:cli 322, test:vscode 73, extension typecheck clean, poll-review clean. Each home plan holds the commit. Rank 6 stale-diagnostic half stays routed to apposition-cache-granules.
+ >>[2026-10-26 12:16] implement — Landed: rank 6 stats half in 2a3dac47, rank 11 in cf7df67a, ranks 9, 10 and 12 in 55e79d2e. Nine asks stay routed and two are owned here.
+}
+
+^["open"]{
+ ?[first_plugin]: "Is the first plugin the expression manifest (proves select and emit on a corpus the consumer already builds by script, and touches its publish path) or a doctor reading of projection freshness (smaller, answers a registry that already exists, touches a view)?"
+ ?[reader_name]: "Does an emit name a reader by module path or by the selector it reads? A module path fails when the module moves; a selector fails only when nothing reads the field."
+ ?[verb_home]: "Does the runner live under spw emit, beside pack and fractal, or under its own spw plugin verb?"
+}
+
+^["commits"]{
+ ~[runner_fixture]: "![cli] — a fixture plugin under a test workspace whose selector matches nothing fails the run with the selector named"
+ ~[selector_health]: "#[cli] — the runner discovers .spw/surfaces/plugins/*.spw, evaluates each selector, and fails closed on zero hits"
+ ~[reader_health]: "#[cli] — an emit declares its readers per field; the run fails when a declared reader is gone or a field has none"
+ ~[protocol_doc]: ".[spec] — PLUGIN-PROTOCOL.md and plugin-protocol.spw state both health rules and drop the no concrete plugins line"
+}
+
+^["cache"]{
+ ~#status: "seed"
+ ~#base_ref: "main@39635889"
+ ~#rebased_at: ""
+ ~#hygiene_split: "none"
+ ~#files_hot: "packages/spw-cli/src/emit.ts, .spw/surfaces/plugins/index.spw"
+ ~#next_commit: "runner_fixture"
+ ~#open_count: "3"
+ ~#last_stream: "2026-10-26 12:16"
+ ~#taste_debt: ""
+}
+
+^["done"]{
+}

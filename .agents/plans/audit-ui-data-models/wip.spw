@@ -68,6 +68,7 @@
  >>[2026-10-12 15:36] revise — Commits named per the convention in 90c58bbc: 0 landed, 4 planned, 3 dropped.
  >>[2026-10-13 22:04] note — A fourth sigil table drifts: runtime OPERATOR_AFFINITIES in packages/spw-runtime/src/state/type-affinities.ts names . Subject, $ Substrate, and <> Coupling, where the LSP's SIGIL_SEMANTICS says ground or access, selector or addressing, and capsule or shell. The coverage test should read it too.
  >>[2026-10-13 22:33] note — A fifth sigil table: extensions/vscode-spw/src/semantics.ts copies the LSP's SIGIL_SEMANTICS and has drifted (25 entries against 14, different fields). The table belongs in seed, where the extension and the LSP can both read it.
+ >>[2026-10-25 20:40] note — A mounted consumer asks (2026-10-25, rank 1, one_character_table, intake in first-plugin) that the TextMate grammar, the Neovim syntax, and the VS Code decoration palette generate from the operator table, and that a fixture fail when a client names a sigil the table does not or gives it another word. surface-decorations.ts maps ! to phaseAction (fire, inject) and ~ to phasePotential, where the consumer table says action and potential. Rank 4 adds that a sigil hover names the table word, and the consumer word when a mounted consumer declares its own table.
 }
 
 ^["open"]{
@@ -75,6 +76,7 @@
  ?[ext_table_reader]: "Does anything in extensions/vscode-spw read ctx.SIGIL_SEMANTICS (a grep finds only its type, its context field, and the extension.ts wiring), so the extension copy can be deleted? Unblocks ~[delete_extension_table]."
  ?[math_symbols]: "Are the 14 math-symbol entries (arrows, quantifiers, set operators) wanted for a future hover, so they move into the shared table, or are they dead? Unblocks the key set of ~[closed_sigil_key] and ~[closed_phase_union]."
  ?[underscore_kind]: "Should the LSP-only sigil _ join OperatorKind in the seed token types, or stay an LSP-local key? Unblocks the key type in ~[closed_sigil_key]."
+ ?[words_travel]: "Which words travel with a sigil from the table into every client, and which stay a client presentation? Asked by a mounted consumer on 2026-10-25; vscode-lsp-roadmap left ?[operator_table] open on the same table."
 }
 
 ^["commits"]{
@@ -82,6 +84,7 @@
  ~[closed_sigil_key]: "vocab[lsp] — export a closed SigilKey union and an isSigil guard, and key SIGIL_SEMANTICS by it; correct the satisfies comment, which names a coverage check the code does not perform"
  ~[closed_phase_union]: "vocab[lsp] — type phase as a closed union of the 7 spirit phases plus the six named non-phase strings (binding, observe, meta, access, query, identity), so an unknown phase is unrepresentable"
  ~[delete_extension_table]: "&[vscode-spw] — delete the extension copy of SIGIL_SEMANTICS, its SigilSemantic interface, and the context field, if ?[ext_table_reader] finds no reader"
+ ~[client_palettes_from_table]: "#[grammar] — the TextMate grammar, Neovim syntax, and decoration palette generate from the one operator table; a fixture fails on a sigil or word the table does not hold (consumer rank 1)"
 }
 
 ^["cache"]{
@@ -90,8 +93,8 @@
  ~#rebased_at: "2026-10-12"
  ~#files_hot: ""
  ~#next_commit: "operator_coverage_test"
- ~#open_count: "3"
- ~#last_stream: "2026-10-13 22:33"
+ ~#open_count: "4"
+ ~#last_stream: "2026-10-25 20:40"
  ~#taste_debt: ""
 }
 
