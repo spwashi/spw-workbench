@@ -27,10 +27,12 @@ export class QueryProfile {
     this.emit('enter', { stage, file, bytes })
   }
 
-  finishStage(stage: QueryStage, started: number, file?: string): void {
+  /** Close a stage and return its elapsed ms (query's --stats reads the parse stage). */
+  finishStage(stage: QueryStage, started: number, file?: string): number {
     const elapsedMs = performance.now() - started
     this.stages[stage] += elapsedMs
     this.emit('stage', { stage, file, elapsedMs, discovered: this.discovered })
+    return elapsedMs
   }
 
   complete(source: SourceTiming): void {
@@ -48,17 +50,5 @@ export class QueryProfile {
       stagesMs: this.stages, elapsedMs: performance.now() - this.started,
       slowest: this.slowest,
     })
-  }
-
-  stageMs(stage: QueryStage): number {
-    return this.stages[stage]
-  }
-
-  get bytesRead(): number {
-    return this.bytes
-  }
-
-  get filesParsed(): number {
-    return this.processed
   }
 }

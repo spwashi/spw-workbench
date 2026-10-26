@@ -18,6 +18,7 @@ import {
   suggestClosest,
   truncate,
 } from './view'
+import { WalkStats, walkStatsHelpLine } from './walk-stats'
 
 const SELECT_FIELDS = new Set<keyof QueryRow>([
   'file',
@@ -55,16 +56,14 @@ export async function runQueryCli(args: QueryArgs): Promise<void> {
   }
 
   const profile = args.profile ? new QueryProfile() : undefined
-  const statsStarted = args.stats || profile ? performance.now() : 0
-  let statsBytes = 0
-  let statsParsed = 0
-  let statsParseMs = 0
+  const stats = new WalkStats()
   const discoveryStarted = profile ? performance.now() : 0
   const workspace = await tryDiscoverSpwWorkspace()
   const resolvedRoots = workspace
     ? await Promise.all(args.roots.map(root => resolveWorkspacePath(workspace, root)))
     : args.roots
   const files = await collectFiles(resolvedRoots, args.includeInfrastructure === true)
+  stats.walked(files.length)
   if (profile) {
     profile.discovered = files.length
     profile.finishStage('discovery', discoveryStarted)
@@ -84,10 +83,7 @@ export async function runQueryCli(args: QueryArgs): Promise<void> {
     }
     const { source, bytes: sourceBytes } = read
     sourceByFile.set(file, source)
-    if (args.stats) {
-      statsBytes += sourceBytes
-      statsParsed += 1
-    }
+    stats.parsedSource(sourceBytes)
 
     let matches: SpwMatch[]
     let parseOutcome = 'unknown'
@@ -99,7 +95,7 @@ export async function runQueryCli(args: QueryArgs): Promise<void> {
       const output = parse(source)
       sourceElapsedMs += performance.now() - parseStarted
       parseOutcome = output.ast ? (output.errors.length ? 'ast-with-errors' : 'ast') : 'no-ast'
-      profile.finishStage('parse', parseStarted, relFile)
+      stats.addParseMs(profile.finishStage('parse', parseStarted, relFile))
       profile.emit('parse-outcome', { file: relFile, parseOutcome, errors: output.errors.length })
       profile.enter('evaluate', relFile, bytes)
       const evaluateStarted = performance.now()
@@ -108,9 +104,7 @@ export async function runQueryCli(args: QueryArgs): Promise<void> {
       sourceElapsedMs += performance.now() - evaluateStarted
       profile.finishStage('evaluate', evaluateStarted, relFile)
     } else {
-      const parseStarted = args.stats ? performance.now() : 0
-      matches = spwq.fromSource(source, selector)
-      if (args.stats) statsParseMs += performance.now() - parseStarted
+      matches = stats.timeParse(() => spwq.fromSource(source, selector))
     }
     const formatStarted = profile ? performance.now() : 0
     if (!args.expr && args.selector === 'rootRefs') matches = filterRootRefs(matches)
@@ -248,17 +242,7 @@ export async function runQueryCli(args: QueryArgs): Promise<void> {
   } finally {
     profile?.finishStage('format', formatStarted)
     profile?.report()
-    if (args.stats) {
-      const stats = {
-        files_walked: files.length,
-        files_parsed: profile?.filesParsed ?? statsParsed,
-        bytes_read: profile?.bytesRead ?? statsBytes,
-        cache_hits: 0,
-        parse_ms: Math.round((profile ? profile.stageMs('parse') : statsParseMs) * 10) / 10,
-        total_ms: Math.round((performance.now() - statsStarted) * 10) / 10,
-      }
-      console.error(`spw query stats ${JSON.stringify(stats)}`)
-    }
+    if (args.stats) stats.report('query')
   }
 }
 
@@ -287,7 +271,7 @@ export function printQueryHelp(): void {
           '--profile           Stage/source receipts on stderr; serial source reads',
           '                    Discovery includes workspace resolution; format includes row filtering/output.',
           '                    Stage totals exclude receipts; wall elapsed includes diagnostics.',
-          '--stats             Compact walk/parse timing on stderr (files, bytes, parse_ms, total_ms)',
+          walkStatsHelpLine(20),
           '--include-infrastructure  Also walk node_modules, dist, build, _workbench (--all)',
         ],
       },

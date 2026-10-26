@@ -16,6 +16,7 @@ import { collectSpwFiles, DEFAULT_IGNORED_DIRS } from './fs-walk'
 import { formatJsonEnvelope } from './envelope'
 import { printHelpPage } from './help'
 import { formatTable, meta } from './view'
+import { WalkStats, walkStatsHelpLine } from './walk-stats'
 import { resolveWorkspacePath, tryDiscoverSpwWorkspace } from './workspace'
 
 export type LintKind = 'malformed-axis' | 'duplicate-anchor'
@@ -30,16 +31,18 @@ export interface LintFinding {
 interface LintArgs {
   help: boolean
   json: boolean
+  stats: boolean
   roots: string[]
 }
 
 function parseArgs(argv: string[]): LintArgs {
   const tokens = argv[0] === 'lint' ? argv.slice(1) : argv
-  const parsed: LintArgs = { help: false, json: false, roots: [] }
+  const parsed: LintArgs = { help: false, json: false, stats: false, roots: [] }
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i]!
     if (token === '--help' || token === '-h') parsed.help = true
     else if (token === '--json') parsed.json = true
+    else if (token === '--stats') parsed.stats = true
     else if (token === '--from' || token === '--root') parsed.roots.push(...(tokens[++i] ?? '').split(',').filter(Boolean))
     else if (token.startsWith('--from=')) parsed.roots.push(...token.slice('--from='.length).split(',').filter(Boolean))
     else if (token.startsWith('-')) throw new Error(`spw lint: unknown flag ${token}`)
@@ -53,13 +56,14 @@ export function printLintHelp(): void {
   printHelpPage({
     name: 'lint',
     summary: 'Check axis annotations and unique #> anchors',
-    usage: ['spw lint [--from .spw] [--json]'],
+    usage: ['spw lint [--from .spw] [--json] [--stats]'],
     groups: [
       {
         title: 'Options',
         lines: [
           '--from, --root PATHS   Comma-separated roots (default .spw)',
           '--json                 Envelope of findings',
+          walkStatsHelpLine(23),
         ],
       },
       {
@@ -70,7 +74,7 @@ export function printLintHelp(): void {
         ],
       },
     ],
-    examples: ['spw lint .spw', 'spw lint --from .spw,docs/theory --json'],
+    examples: ['spw lint .spw', 'spw lint --from .spw,docs/theory --json', 'spw lint .spw --stats'],
   })
 }
 
@@ -124,6 +128,15 @@ export async function runSpwLintCli(argv: string[]): Promise<void> {
     return
   }
 
+  const stats = new WalkStats()
+  try {
+    await lintRoots(args, stats)
+  } finally {
+    if (args.stats) stats.report('lint')
+  }
+}
+
+async function lintRoots(args: LintArgs, stats: WalkStats): Promise<void> {
   const workspace = await tryDiscoverSpwWorkspace()
   const consumerRoot = workspace?.consumerRoot ?? process.cwd()
   const absRoots = await Promise.all(
@@ -136,13 +149,18 @@ export async function runSpwLintCli(argv: string[]): Promise<void> {
     )),
   )
   const files = [...new Set((await Promise.all(absRoots.map(root => collectSpwFiles(root, { ignore: DEFAULT_IGNORED_DIRS })))).flat())].sort()
+  stats.walked(files.length)
 
   const findings: LintFinding[] = []
   for (const abs of files) {
-    const source = await fs.readFile(abs, 'utf8')
+    const buffer = await fs.readFile(abs)
+    const source = buffer.toString('utf8')
+    stats.parsedSource(buffer.length)
     const rel = path.relative(consumerRoot, abs)
-    for (const finding of scanMalformedAxes(source)) findings.push(axisFinding(rel, finding))
-    findings.push(...duplicateAnchors(rel, source))
+    stats.timeParse(() => {
+      for (const finding of scanMalformedAxes(source)) findings.push(axisFinding(rel, finding))
+      findings.push(...duplicateAnchors(rel, source))
+    })
   }
 
   const summary = {

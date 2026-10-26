@@ -7,6 +7,7 @@ import { facet, formatSpwCard, type SpwCardPart } from '@spwashi/spw-seed'
 import { loadSpwMountResolution } from '@spwashi/spw-runtime/node'
 import { parseCommonFlags } from './args'
 import { printHelpPage } from './help'
+import { WalkStats, walkStatsHelpLine } from './walk-stats'
 
 type CheckStatus = 'ok' | 'warn' | 'fail'
 export type DoctorPathMode = 'relative' | 'absolute'
@@ -48,11 +49,14 @@ interface DoctorArgs {
   format: 'human' | 'json' | 'spw'
   paths: DoctorPathMode
   fix: boolean
+  stats: boolean
   help: boolean
 }
 
 export interface InspectDoctorOptions {
   paths?: DoctorPathMode
+  /** Counts what the inspection reads; doctor walks no corpus. */
+  stats?: WalkStats
 }
 
 const WORKBENCH_ADD_COMMAND = 'git submodule add https://github.com/spwashi/spw-workbench .spw/_workbench'
@@ -94,6 +98,7 @@ function parseDoctorArgs(argv: string[]): DoctorArgs {
   let format: DoctorArgs['format'] = 'human'
   let paths: DoctorPathMode = 'relative'
   let fix = false
+  let stats = false
 
   const selectFormat = (next: DoctorArgs['format'], flag: string): void => {
     if (format !== 'human' && format !== next) {
@@ -114,6 +119,10 @@ function parseDoctorArgs(argv: string[]): DoctorArgs {
     }
     if (argument === '--fix') {
       fix = true
+      continue
+    }
+    if (argument === '--stats') {
+      stats = true
       continue
     }
     if (argument === '--paths') {
@@ -144,6 +153,7 @@ function parseDoctorArgs(argv: string[]): DoctorArgs {
     format,
     paths,
     fix,
+    stats,
     help: common.flags.help,
   }
 }
@@ -275,9 +285,11 @@ export async function inspectDoctorTarget(
   const checkout = hasWorkbench
     ? await inspectCheckout(workbenchRoot)
     : { head: null, checkout: 'unavailable' as const }
-  const mountSource = hasSpwRoot
-    ? await fs.readFile(path.join(spwRoot, 'mount.spw'), 'utf8').catch(() => '')
-    : ''
+  const mountBuffer = hasSpwRoot
+    ? await fs.readFile(path.join(spwRoot, 'mount.spw')).catch(() => null)
+    : null
+  if (mountBuffer) options.stats?.readBytes(mountBuffer.length)
+  const mountSource = mountBuffer?.toString('utf8') ?? ''
   const declaredPin = readDoctorWorkbenchPin(mountSource)
   const pin = comparePin(declaredPin, checkout.head)
 
@@ -375,7 +387,7 @@ export function printDoctorHelp(): void {
   printHelpPage({
     title: 'Spw Doctor',
     usage: [
-      'spw doctor [target-directory] [--spw|--json] [--paths relative|absolute]',
+      'spw doctor [target-directory] [--spw|--json] [--paths relative|absolute] [--stats]',
       'npm run spw -- doctor [target-directory] [--json]',
       'npm run spw:doctor -- [target-directory] [--paths absolute]',
     ],
@@ -406,6 +418,7 @@ export function printDoctorHelp(): void {
           '--spw                       source-shaped Spw card',
           '--json                      complete structured report',
           '--fix                       seed missing scaffold files and refresh the local commit gate',
+          walkStatsHelpLine(28),
         ],
       },
     ],
@@ -469,21 +482,26 @@ export async function runSpwDoctorCli(argv: string[] = process.argv): Promise<vo
     return
   }
 
-  if (args.fix) {
-    const { applyDoctorFixes } = await import('./init')
-    await applyDoctorFixes(args.targetDir)
-  }
+  const stats = new WalkStats()
+  try {
+    if (args.fix) {
+      const { applyDoctorFixes } = await import('./init')
+      await applyDoctorFixes(args.targetDir)
+    }
 
-  const report = await inspectDoctorTarget(args.targetDir, { paths: args.paths })
-  if (args.format === 'json') {
-    console.log(JSON.stringify(report, null, 2))
-  } else if (args.format === 'spw') {
-    console.log(formatDoctorSpw(report))
-  } else {
-    printDoctorReport(report)
-  }
+    const report = await inspectDoctorTarget(args.targetDir, { paths: args.paths, stats })
+    if (args.format === 'json') {
+      console.log(JSON.stringify(report, null, 2))
+    } else if (args.format === 'spw') {
+      console.log(formatDoctorSpw(report))
+    } else {
+      printDoctorReport(report)
+    }
 
-  if (report.status === 'fail') {
-    process.exitCode = 1
+    if (report.status === 'fail') {
+      process.exitCode = 1
+    }
+  } finally {
+    if (args.stats) stats.report('doctor')
   }
 }
