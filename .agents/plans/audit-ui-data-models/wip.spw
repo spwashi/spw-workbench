@@ -12,7 +12,11 @@
  gist: "The sigil semantics table is keyed by the closed OperatorKind union, with one owner and a coverage test."
  touches: [~"packages/spw-lsp/src/server-index.ts", ~"extensions/vscode-spw/src/semantics.ts", ~"packages/spw-seed/src/types/token.ts"]
  entry: ~"./PLAN.md"
- next: "Answer ?[ext_table_reader], then land ~[operator_coverage_test]: a test that the LSP SIGIL_SEMANTICS covers every OperatorKind."
+ next: "Answer ?[ext_table_reader], then land ~[operator_coverage_test]: a test that the LSP SIGIL_SEMANTICS covers every OperatorKind. ~[table_words_export] then unblocks editor-reading-hierarchy operator_modifiers and neovim-spw-surfaces generated_help, once ?[words_travel] is answered."
+}
+
+^["edges"]{
+ feeds: [~"../editor-reading-hierarchy/wip.spw", ~"../neovim-spw-surfaces/wip.spw"]
 }
 
 ^["roots"]{
@@ -69,6 +73,7 @@
  >>[2026-10-13 22:04] note — A fourth sigil table drifts: runtime OPERATOR_AFFINITIES in packages/spw-runtime/src/state/type-affinities.ts names . Subject, $ Substrate, and <> Coupling, where the LSP's SIGIL_SEMANTICS says ground or access, selector or addressing, and capsule or shell. The coverage test should read it too.
  >>[2026-10-13 22:33] note — A fifth sigil table: extensions/vscode-spw/src/semantics.ts copies the LSP's SIGIL_SEMANTICS and has drifted (25 entries against 14, different fields). The table belongs in seed, where the extension and the LSP can both read it.
  >>[2026-10-25 20:40] note — A mounted consumer asks (2026-10-25, rank 1, one_character_table, intake in first-plugin) that the TextMate grammar, the Neovim syntax, and the VS Code decoration palette generate from the operator table, and that a fixture fail when a client names a sigil the table does not or gives it another word. surface-decorations.ts maps ! to phaseAction (fire, inject) and ~ to phasePotential, where the consumer table says action and potential. Rank 4 adds that a sigil hover names the table word, and the consumer word when a mounted consumer declares its own table.
+ >>[2026-10-26 12:29] note — Two more readers wait on the table words (2026-10-26): editor-reading-hierarchy operator_modifiers names one semantic-token modifier per OperatorKind, and neovim-spw-surfaces generated_help writes a :help tag per sigil. Evidence for ?[words_travel]: the syntax/spw.vim header names ! SpwBoon, ? SpwBonk, ^ SpwHonk and @ SpwBone, folding the valence pentad into the operators; surface-decorations.ts calls ! fire or inject; the IntelliJ TextMate file is a drifted copy, not generated.
 }
 
 ^["open"]{
@@ -85,6 +90,7 @@
  ~[closed_phase_union]: "vocab[lsp] — type phase as a closed union of the 7 spirit phases plus the six named non-phase strings (binding, observe, meta, access, query, identity), so an unknown phase is unrepresentable"
  ~[delete_extension_table]: "&[vscode-spw] — delete the extension copy of SIGIL_SEMANTICS, its SigilSemantic interface, and the context field, if ?[ext_table_reader] finds no reader"
  ~[client_palettes_from_table]: "#[grammar] — the TextMate grammar, Neovim syntax, and decoration palette generate from the one operator table; a fixture fails on a sigil or word the table does not hold (consumer rank 1)"
+ ~[table_words_export]: "vocab[seed] — SPW_OPERATORS carries each operator word and modifier name beside its sigil, and SIGIL_SEMANTICS reads its words from there; the token legend, generated grammars and generated help read one table"
 }
 
 ^["cache"]{
@@ -94,7 +100,7 @@
  ~#files_hot: ""
  ~#next_commit: "operator_coverage_test"
  ~#open_count: "4"
- ~#last_stream: "2026-10-25 20:40"
+ ~#last_stream: "2026-10-26 12:29"
  ~#taste_debt: ""
 }
 

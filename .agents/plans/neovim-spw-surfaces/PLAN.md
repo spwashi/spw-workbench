@@ -100,8 +100,31 @@ A mounted consumer's editor review (pin `229aedcf`) made no Neovim-specific ask.
 | Plans, Questions, Tending views | Not ported; quickfix from a server product at most, once one exists |
 
 - **A second extractor lives here.** `lua/spw/navigation.lua` finds citations with Lua patterns (`~"..."`, `~<...>`, `@root/path`), and `completion.lua` reads root aliases by pattern. These are the Neovim copy of the disagreement the consumer measured on the server (regex over strings, comments and backtick examples). This extends the plan's rule that Lua never parses Spw for meaning: audit them against the server's parser-first answers and prefer the LSP result when attached.
-- **Grammar drift.** `syntax/spw.vim` and `queries/spw/*.scm` are copies to check when `?[operator_table]` (roadmap) settles, including how a hash-space line reads as a comment.
+- **Grammar drift.** `syntax/spw.vim` is a copy to check when `?[words_travel]` (audit-ui-data-models) settles, including how a hash-space line reads as a comment. `queries/spw/*.scm` turned out to have no parser behind it (2026-10-26) and goes in `~[drop_treesitter_queries]`.
 - **Placement preview.** `?[leaf_placement]` is held at the roadmap; no Neovim command until a transport exists.
+
+## Navigable and learnable (2026-10-26)
+
+Read with headless Neovim 0.11.6 and the real server attached:
+
+- **Semantic tokens win, and they know less.** The built-in client paints spw-lsp tokens at priority 125 over `syntax/spw.vim`. The syntax file has a group per sigil; the tokens give `~` and `@` one type (`variable`) and `!` and `?` another (`function`). The fix is upstream, in `editor-reading-hierarchy` `~[operator_modifiers]`; here, `~[operator_highlight_links]` maps the new modifiers to the per-sigil groups.
+- **The tree-sitter queries never ran.** No `spw` parser exists.
+- **Vim's own learning paths are empty.** There is no `doc/`, so `:help spw` finds nothing; the only structural motions are `[d` and `]d`; there are no text objects; 30 `:Spw*` commands have no hub; folds come from syntax regex while the server serves `foldingRange`.
+
+Spw should move the way Vim moves. A reader who knows `]]`, `daf`, `gO` and `:help` should find them already working:
+
+| Vim idiom | Spw meaning | Source |
+|---|---|---|
+| `]]` `[[` | next or previous frame, any operator | `textDocument/documentSymbol` (the outline symbols) |
+| `]a` `[a`, `]?` `[?` | anchors, probes | outline details `anchor`, `probe` |
+| `af` `if` | a frame, its body | outline symbol range |
+| `ae` `ie`, `ak` `ik` | an expression, a facet | new `textDocument/selectionRange` |
+| `gO` | outline in the location list | `documentSymbol` |
+| `zc` `zo` | folds | `vim.lsp.foldexpr()` over `foldingRange` |
+| `:help spw-!` | what a sigil means | generated from the operator table |
+| `:Spw <Tab>` | every command, grouped read / sense / mutate | `commands.lua`, as `spw help` groups the CLI |
+
+The outline is already token-driven and hierarchical, so motions and frame text objects need no new server method. Lua still parses nothing.
 
 ## Scope
 
@@ -157,6 +180,16 @@ A mounted consumer's editor review (pin `229aedcf`) made no Neovim-specific ask.
 [MOD] extensions/neovim-spw/README.md
 [MOD] extensions/neovim-spw/tests/mounted-consumer-smoke.lua
 [MOD] .spw/tooling/neovim-spw.spw
+[DEL] extensions/neovim-spw/queries/spw/{highlights,folds,indents}.scm   no parser exists
+[NEW] extensions/neovim-spw/lua/spw/motions.lua        motions and text objects over documentSymbol and selectionRange
+[NEW] extensions/neovim-spw/tests/motions-smoke.lua
+[MOD] extensions/neovim-spw/ftplugin/spw.vim           motion and text-object maps, gO, LSP folds
+[MOD] extensions/neovim-spw/lua/spw/commit.lua         @lsp.typemod.operator.<word> links beside the commitRef links
+[MOD] extensions/neovim-spw/lua/spw/quest.lua          a motion per quest step
+[NEW] extensions/neovim-spw/doc/spw.txt                generated; tags per command, mapping and sigil
+[NEW] help generator (+ check mode)                    home per ?[help_generator_home]
+[NEW] packages/spw-lsp/src/handlers/selection-range.ts (+ test)
+[MOD] packages/spw-lsp/src/stdio-server.ts             selectionRangeProvider
 [REF] .agents/plans/vscode-lsp-roadmap/PLAN.md
 [REF] .agents/plans/measure-invariant-generalization/PLAN.md
 [REF] .agents/plans/vscode-authoring-probe-loop/PLAN.md
@@ -168,7 +201,8 @@ A mounted consumer's editor review (pin `229aedcf`) made no Neovim-specific ask.
 - Builtins first; every new module must justify itself against standard LSP UX.
 - No second parser for Spw meaning in Lua.
 - Custom requests only after protocol registry marks them earned.
-- Keep `commands.lua` from becoming a kitchen sink — split plan/probe modules if >400 lines.
+- Keep `commands.lua` from becoming a kitchen sink — split plan/probe modules if >400 lines. The `:Spw` hub goes in its own module if it would push `commands.lua` (254 lines) past that.
+- Motions read the server's outline; with no server attached they do nothing rather than fall back to Lua patterns.
 
 ## Commits
 
@@ -201,6 +235,8 @@ Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 - **Hypotheses:** same diagnostic codes appear in VS Code Problems and Neovim quickfix for the same fixture; exact mass fix applies identical edits
 - **Negative controls:** syntax highlighting and `gf` navigation still work with LSP disabled
 - **Demo:** open `.spw/index.spw` → jump `@docs` root ref → open wonder block → see probe-related diagnostic or action → edit plan `wip.spw` → `:SpwPlan`
+- **Moves demo:** open a plan `wip.spw` → `]]` to `^["open"]` → `daf` and `u` → `]a` to an anchor → `gO` → `:help spw-#>` → `:Spw <Tab>`. `motions-smoke.lua` asserts each landing line against the server outline.
+- **Help drift:** the generator's check mode fails when a `:Spw*` command, a mapping or an operator lacks a tag.
 
 ## Spw Artifact
 

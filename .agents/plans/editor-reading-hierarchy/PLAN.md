@@ -47,7 +47,9 @@ Taste note: clarity and containment. The plan removes or relocates more than it 
 [NEW] packages/spw-lsp/src/__tests__/hierarchy-census.test.ts (+ fixtures) — lenses, inlays, duplicates, painted prose per 100 lines
 [MOD] packages/spw-lsp/src/handlers/analysis.ts — lexer errors as diagnostics
 [MOD] packages/spw-lsp/src/server-index.ts — parse with the file path
-[MOD] packages/spw-lsp/src/handlers/semantic-tokens.ts — plan streams and inline # comments as text
+[MOD] packages/spw-lsp/src/handlers/semantic-tokens.ts — roles mapped from the parse tokens instead of 27 line regexes; plan streams and inline # comments as text; one modifier per operator and per particle
+[NEW] packages/spw-lsp/src/__tests__/role-stream-parity.test.ts — no operator role inside a lexed PHRASE, STRING or COMMENT, over the corpus
+[REF] packages/spw-lsp/src/handlers/wonder.ts sourceTokens — the parse tokens the role stream reuses
 [MOD] extensions/vscode-spw/syntaxes/spw.tmLanguage.json (+ generated IntelliJ copy) — no path color for a word with a slash
 [MOD] extensions/vscode-spw/src/surface-decorations.ts — apostrophe mask stays on its line
 [MOD] packages/spw-lsp/src/handlers/display.ts — frame lens units, one incoming owner, anchor trial off, resolved-path inlay, header banner
@@ -66,7 +68,7 @@ Taste note: clarity and containment. The plan removes or relocates more than it 
 Canonical list: `wip.spw` `^["commits"]`. The order:
 1. The census.
 2. Honesty: lexer errors, then the path-aware parse.
-3. Stream prose as text, path color, and inline `#` comments.
+3. One role stream: the parity check, then roles from the parse tokens. Stream prose as text, path color, and inline `#` comments land as role mappings on that stream, not as regex branches. Then operator and particle modifiers, once the operator table names them.
 4. Anti-echo: lens units, one incoming owner, the anchor trial, the resolved-path and wonder inlays, and hover layers.
 5. Commit-frame roles.
 6. Profiles as modes, then status and palette.
@@ -79,7 +81,7 @@ Canonical list: `wip.spw` `^["commits"]`. The order:
 
 ## Dependencies
 
-- **Needs:** `local-numbering-vcs` (the derived-ordinal rule, for `~[commit_frame_roles]` only).
+- **Needs:** `local-numbering-vcs` (the derived-ordinal rule, for `~[commit_frame_roles]` only); `audit-ui-data-models` (the operator words, for `~[operator_modifiers]` only).
 - **Supersedes:** `vscode-cognitive-surface`, whose hierarchy commits move here.
 - **Shares:**
   - `vscode-editor-contract` (gesture and owner tables)
@@ -108,4 +110,6 @@ Canonical list: `wip.spw` `^["commits"]`. The order:
   - Lenses and inlays per 100 lines fall by at least half, with no fact lost.
   - Stream prose and `#` comments carry zero painted tokens in every host.
   - Every lens has a unit and an action.
+  - The role stream paints no operator inside a span the lexer reads as a phrase, string or comment, and potential (`~`) and perspective (`@`) paint apart in every host.
+- **Cost:** the server reuses the parse tokens, so the role stream adds no lex. The reader bundle pays a full lex in the browser: 71 ms on the 78 KB `life-and-mind.spw` against 14 ms for the regex scanner (2026-10-26).
 - **Demo:** open `citation-navigation/wip.spw`. Stream lines render alike, and commits scan by state and derived order.

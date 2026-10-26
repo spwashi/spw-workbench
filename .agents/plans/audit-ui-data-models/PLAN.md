@@ -29,6 +29,7 @@ The original plan (a 26-commit UI data-model curriculum over `src/core/models`) 
 [MOD] packages/spw-lsp/src/handlers/display.ts        (guard at the single-character lookups)
 [DEL] extensions/vscode-spw/src/semantics.ts          (only if ?[ext_table_reader] finds no reader)
 [MOD] extensions/vscode-spw/src/context.ts, extension.ts
+[MOD] packages/spw-seed/src/lite/scan.ts               (SPW_OPERATORS carries each word and modifier name)
 ```
 
 ### Craft guard
@@ -43,6 +44,7 @@ Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 ## Dependencies
 
 - None. The former edges to `audit-data-attributes` and `audit-css-tokens` shared no files after the rescope and are removed.
+- **Feeds** (2026-10-26): `editor-reading-hierarchy` names a semantic-token modifier per operator, and `neovim-spw-surfaces` generates a `:help` tag per sigil, both from the words `~[table_words_export]` puts beside the sigils. Both wait on `?[words_travel]`.
 
 ## Spw Artifact
 

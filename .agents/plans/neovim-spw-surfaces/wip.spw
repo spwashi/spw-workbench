@@ -8,15 +8,15 @@
 
 @["card"]{
  phase: #planning
- gist: "Neovim is a builtins-first spw-lsp peer: honest :Spw* wrappers, projected diagnostics, :SpwInspect"
+ gist: "Neovim is a builtins-first spw-lsp peer: honest :Spw* wrappers, projected diagnostics, :SpwInspect, and Spw that moves as Vim moves: motions, text objects, folds and :help drawn from the server and the operator table"
  touches: [~"extensions/neovim-spw/lua/spw", ~"extensions/neovim-spw/tests", ~".spw/tooling/neovim-spw.spw"]
  entry: ~"./PLAN.md"
- next: "~[audit_surfaces]: one real-lsp-smoke session records whether the built-in client paints spw-lsp tokens, inlay hints, and lenses, filling the empty Neovim parity cells; CLI-backed :Spw commands are exempt from the method-matrix hold."
+ next: "~[drop_treesitter_queries], then ~[structural_motions] and ~[frame_text_objects], which need no server change; ~[audit_surfaces] keeps the inlay and lens cells (semantic tokens recorded 2026-10-26)."
 }
 
 ^["edges"]{
- needs: [~"../lsp-custom-request-completions/wip.spw", ~"../measure-invariant-generalization/wip.spw"]
- shares: [~"../vscode-lsp-roadmap/wip.spw", ~"../vscode-authoring-probe-loop/wip.spw"]
+ needs: [~"../lsp-custom-request-completions/wip.spw", ~"../measure-invariant-generalization/wip.spw", ~"../editor-reading-hierarchy/wip.spw", ~"../audit-ui-data-models/wip.spw"]
+ shares: [~"../vscode-lsp-roadmap/wip.spw", ~"../vscode-authoring-probe-loop/wip.spw", ~"../onboarding-quest/wip.spw"]
  supersedes: [~"../_archive/neovim-spw-surfaces/wip.spw"]
 }
 
@@ -76,12 +76,17 @@
  >>[2026-10-13 11:39] observe — Owner screenshot, 2026-10-13: nvim on the repo-root index.spw resolves root refs inline as virtual text and shows wonder metric counts; it raises nothing for &[@profile, @docs], where @profile is not a declared root, and the roots still name lib/spw-v0.2.0-alpha and src/seed. Journal-aware features from caches-living-tree land in the LSP so this host gets them without new :Spw wrappers.
  >>[2026-10-13 11:59] revise — 1bb4f68d landed six CLI-backed :Spw commands while the matrix hold stood; CLI-backed commands are exempt, since they wrap no spw/* method. demote_phantom_wrappers is moot (every called method is handled). The open gaps are the empty Neovim cells for tokens, inlay hints, and lenses in hosts/host-parity-matrix.spw; audit_surfaces fills them and feeds lsp-custom-request-completions capability_matrix.
  >>[2026-10-13 17:16] implement — Landed 198f6875 and bdd48943 at the owner's request for Neovim parity with the VS Code commit work, without a slot reserved first. The server now registers file watchers with any client that takes dynamic registration; headless Neovim against the real server receives both watchers. In Neovim, gf follows a commit link when there is no definition; :SpwCommit opens a read-only git show buffer named spw-commit://; :SpwCommitFiles fills the quickfix list; code lenses refresh on attach and edits; vim.g.spw_lsp_inlay_hints and vim.g.spw_lsp_codelens turn those off; commitRef links to @number. commit-smoke.lua fails at gf and at code lenses with main's lsp_nav.lua and lsp.lua.
+ >>[2026-10-26 12:29] observe — audit_surfaces evidence, 2026-10-26, headless Neovim 0.11.6 with the real server: the built-in client paints spw-lsp semantic tokens at priority 125 over syntax/spw.vim, so the per-sigil syntax groups show only where no token covers. vim.treesitter.language.inspect finds no spw parser, so queries/spw/*.scm never ran, though the README advertises them.
+ >>[2026-10-26 12:29] observe — Navigation and learning gaps, read 2026-10-26: the only structural motions are [d and ]d; no text objects; no doc/, so :help spw finds nothing; 30 separate :Spw commands and no hub; folds come from syntax regex while the server serves foldingRange. The server outline is token-driven and hierarchical and names each symbol detail (frame, action, probe, anchor), so motions and frame text objects need no new server method.
+ >>[2026-10-26 12:29] decide — Spw moves as Vim moves. Motions and frame text objects read textDocument/documentSymbol; expression and facet text objects read a new textDocument/selectionRange; :help is generated from the operator table and commands.lua. Lua still parses nothing.
 }
 
 ^["open"]{
  ?[statusline]: "Ship optional statusline.lua helper or document lualine snippet only?"
  ?[probe_method]: "Earn spw/probe vs encode probe results only as diagnostics?"
  ?[source_product_transport]: "Should unsaved and range inspection use one earned LSP request, a shared stdin envelope, or both over the same SourceProduct contract?"
+ ?[motion_keys]: "Do structural motions take ]] and [[ (Vim section motions, which readers expect to mean the top-level unit) with ]a and ]? beside them, or one prefix for every Spw motion? ]s is taken by spelling."
+ ?[help_generator_home]: "Does the :help generator live in scripts/ beside the other generators or inside the extension, and does it read the table through the seed package or a JSON export a Lua-only install can ship?"
 }
 
 ^["commits"]{
@@ -96,6 +101,17 @@
  .[quest_command](1bb4f68d): "&[neovim] — :SpwQuest opens the quest panels and :SpwQuest check runs spw quest --check on the current line"
  .[server_file_watchers](198f6875): "&[lsp] — the server registers its file watchers with every client that takes dynamic registration, so Neovim reports .spw changes and folder deletes too"
  .[commit_links_and_lenses](bdd48943): "&[neovim] — commit links open in Neovim, code lenses draw, and inlay hints and the commitRef color are configurable"
+ ~[drop_treesitter_queries]: "&[neovim] — delete queries/spw/*.scm and their README section; no spw parser exists, so they never ran"
+ ~[structural_motions]: "&[neovim] — ]] and [[ step frames, ]a and [a anchors, ]? and [? probes, read from textDocument/documentSymbol details; counts and the jumplist work as for any motion; no Lua parsing"
+ ~[frame_text_objects]: "&[neovim] — af and if select a frame and its body from its documentSymbol range, in operator-pending and visual mode"
+ ~[outline_go]: "&[neovim] — gO opens the outline in the location list, as :help and :Man do"
+ ~[lsp_folds]: "&[neovim] — folds from vim.lsp.foldexpr() while the server is attached; foldmethod=syntax only without it"
+ ~[selection_range]: "&[lsp] — textDocument/selectionRange from the parse: token, expression, facet, frame, file; VS Code expand-selection gets it too; a capability matrix row in lsp-custom-request-completions"
+ ~[expression_text_objects]: "&[neovim] — ae and ie select an expression, ak and ik a facet, from selectionRange"
+ ~[operator_highlight_links]: "&[neovim] — link each @lsp.typemod.operator.<word> group to its per-sigil syntax group, so semantic tokens paint by operator; needs editor-reading-hierarchy operator_modifiers"
+ ~[spw_hub]: "&[neovim] — one :Spw command with completion grouped read, sense and mutate, as spw help groups the CLI; the :Spw* commands stay as aliases"
+ ~[generated_help]: "#[neovim] — doc/spw.txt generated from the operator table, commands.lua and the keymap table, with a tag per command, mapping and sigil; a check mode fails on drift"
+ ~[quest_motions]: "&[neovim] — each :SpwQuest step practises one motion or text object on the open file (shares onboarding-quest)"
 }
 
 ^["cache"]{
@@ -103,10 +119,10 @@
  ~#base_ref: "main@c46558ffbb29a10abb1fee11dbec8aa522cbc8b3"
  ~#rebased_at: "2026-08-24"
  ~#hygiene_split: "none"
- ~#files_hot: "extensions/neovim-spw/lua/spw/commands.lua, extensions/neovim-spw/lua/spw/lsp.lua, packages/spw-lsp/src/stdio-server.ts"
- ~#next_commit: "audit_surfaces"
- ~#open_count: "3"
- ~#last_stream: "2026-10-13 17:16"
+ ~#files_hot: "extensions/neovim-spw/ftplugin/spw.vim, extensions/neovim-spw/lua/spw/commands.lua, extensions/neovim-spw/lua/spw/lsp.lua, packages/spw-lsp/src/stdio-server.ts"
+ ~#next_commit: "drop_treesitter_queries"
+ ~#open_count: "5"
+ ~#last_stream: "2026-10-26 12:29"
  ~#taste_debt: "Source-product transport for unsaved buffers and structural ranges must be earned once across clients; no Lua parser or hidden editor telemetry."
 }
 

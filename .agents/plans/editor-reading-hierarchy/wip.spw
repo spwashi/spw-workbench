@@ -11,13 +11,13 @@
  gist: "Every editor shows glyphs and errors first, one answer per hover second, and instruments on demand, all drawn from one parse-derived role stream, so a reader can scan a file's topography instead of its chrome."
  touches: [~"packages/spw-lsp/src/handlers/display.ts", ~"packages/spw-lsp/src/handlers/semantic-tokens.ts", ~"extensions/vscode-spw/syntaxes/spw.tmLanguage.json", ~"extensions/neovim-spw/lua/spw"]
  entry: ~"./PLAN.md"
- next: "~[hierarchy_census]: the census on one wip.spw and one theory surface, taken after c3ecbb34 landed the frame-lens and incoming-ref fixes; then ~[lexer_errors_first]."
+ next: "~[hierarchy_census]: the census on one wip.spw and one theory surface, taken after c3ecbb34 landed the frame-lens and incoming-ref fixes; then ~[lexer_errors_first]. The role stream then moves to the lexer, ~[role_stream_parity] then ~[roles_from_lex], before any further regex fix to roleTokens."
 }
 
 ^["edges"]{
  supersedes: [~"../_archive/vscode-cognitive-surface/wip.spw"]
  shares: [~"../vscode-editor-contract/wip.spw", ~"../vscode-authoring-probe-loop/wip.spw", ~"../spw-garden-geometry/wip.spw", ~"../vscode-plugin-performance/wip.spw", ~"../plan-plugin-integration/wip.spw", ~"../citation-navigation/wip.spw", ~"../apposition-cache-granules/wip.spw", ~"../neovim-spw-surfaces/wip.spw", ~"../plan-stream-parse-health/wip.spw"]
- needs: [~"../local-numbering-vcs/wip.spw"]
+ needs: [~"../local-numbering-vcs/wip.spw", ~"../audit-ui-data-models/wip.spw"]
 }
 
 ^["roots"]{
@@ -126,6 +126,11 @@
  >>[2026-10-25 20:40] note — A mounted consumer asks (2026-10-25, rank 2, spw_in_host_files) for injection grammars where it writes Spw outside .spw files: the data-spw-semantic-expression attribute, a Spw fence in Markdown, and #[episode]{} in a commit message, each squiggled through the same lite scan. vscode-spw/package.json has no injectTo. The question was left open in the landed vscode-lsp-roadmap as ?[beyond_spw_files] and moves here, since this plan owns the grammar and the role stream; the commit view half goes to plan-plugin-integration.
  >>[2026-10-25 21:33] implement — Uncommitted on main 2026-10-25, for consumer ranks 9, 10 and 12: anchor_trial_off done, so no anchor carries a register lens and the trial cache in context.ts reruns on any text change instead of a 2 s TTL; the register count stays only in the sigil hover, named N runtime registers, written by = & * # @. New citation-lenses.ts reads a citation index kept by reference-graph.ts: line 0 reads cited by N files and M citations, a #> anchor reads its own key count, and the old annotation count reads N files repeat this name; a cold index shows nothing, then the server sends workspace/codeLens/refresh when the client supports it. New generated-lenses.ts: the generated banner offers open source (the file @page, else the registry source), rebuild (the registry status command typed into a terminal, never run), and spec. The consumer family file reads cited by 9 files and 17 citations where it read no cross-file refs.
  >>[2026-10-26 12:16] note — anchor_trial_off, citation_lenses and generated_banner_actions landed in 55e79d2e ahead of hierarchy_census, so the census baseline is taken after them and says so, as it already does for c3ecbb34.
+ >>[2026-10-26 12:29] observe — Headless Neovim 0.11.6 against spw-lsp, 2026-10-26: semantic tokens draw at priority 125 over syntax/spw.vim, which keeps a group per sigil (spwSigAction, spwSigPotential, spwSigPerspective). The role stream gives ! and ? the type function, told apart only by borrowed modification and async modifiers, and gives ~ and @ the type variable, so potential and perspective paint alike. On line 2 of a backtick phrase a ! in prose paints as an action: lex() reads the phrase as one PHRASE token, while roleTokens and the Vim syntax (oneline) scan by line. About 50 such phrases sit in 22 files.
+ >>[2026-10-26 12:29] observe — Seven tokenizers read Spw today: lex(), the lite scan, roleTokens (27 regex branches with no lexer import, feeding the server, the reader bundle and the consumer highlighter), the VS Code TextMate grammar, its IntelliJ copy (188 bytes apart at 17b3a4a2, copied rather than generated), the surface-decorations regex, and syntax/spw.vim. The tree-sitter queries would make eight, but no spw parser exists.
+ >>[2026-10-26 12:29] measure — Cost sample 2026-10-26, mean of five runs after a warm-up: life-and-mind.spw (78 KB) lex 71 ms with events off and 84 ms with trace, roleTokens 14 ms; a 5.5 KB surface lex 12 ms, roleTokens 1.2 ms. In the server the lex is already paid, since sourceTokens reuses doc.parseResult.tokens when the parse is current and not dialect-preprocessed, so roles drawn from the parse cost no second lex. Only the reader bundle in a browser pays the full lex.
+ >>[2026-10-26 12:29] decide — Tokenizer consolidation lives here, since the gist promises one parse-derived role stream and roleTokens is not one. roles_from_lex maps parse tokens to roles; stream_prose_text, inline_hash_comment and path_color_parsed_only then land as role mappings on that stream, not as new regex branches. Operator identity enters the legend as modifiers named from the audit-ui-data-models table, and neovim-spw-surfaces maps them to highlight groups.
+ >>[2026-10-26 12:29] taste — A layer that knows more must not be painted over by one that knows less: per-sigil identity lives only in the regex layers today, and the parse-derived layer erases it on top.
 }
 
 ^["open"]{
@@ -134,6 +139,8 @@
  ?[capture_decorations]: "Which decorations stay on camera in the capture profile: semantic colours and brace highlights only, or also the context strip? Carried from the archived vscode-cognitive-surface, where it was left open."
  ?[beyond_spw_files]: "Which host is first: a route attribute or the commit episode? Carried from vscode-lsp-roadmap and reheated by a mounted consumer on 2026-10-25."
  ?[generated_without_lenses]: "The edit warning learns a file is generated from its lenses, so capture mode or spw.codeLens.enabled=false silences it. Does a small request earn its place to remove that dependency?"
+ ?[modifier_or_type]: "Does operator identity ride as a modifier on operator, so a theme that knows only operator still paints, or as one token type per operator, which reads simpler in theme rules but drops generic themes? Modifiers are the recommendation: 6 existing, 13 operators and 3 particles make 22 of the 32 a bitset holds."
+ ?[dialect_tokens]: "A dialect-preprocessed parse has token offsets that no longer match the source: does the role stream lex the raw text there, or does the preprocessor carry a source map so plan files read through their dialect?"
 }
 
 ^["commits"]{
@@ -159,6 +166,10 @@
  ~[host_injections]: "&[grammar] — injection grammars for an HTML semantic-expression attribute, a Markdown spw fence, and a commit episode block, each read through the lite scan (consumer rank 2)"
  .[citation_lenses](55e79d2e): "&[lsp] — line 0 and each #> anchor count the files that cite them by path and key from a warm citation index; the annotation count is the second count, named; cold shows nothing (consumer rank 9)"
  .[generated_banner_actions](55e79d2e): "&[lsp,vscode] — the generated banner opens the page a tree was read from and types its rebuild; the first edit to a generated file warns with both (consumer rank 12)"
+ ~[role_stream_parity]: "![lsp] — a corpus check that no operator role falls inside a span the lexer reads as PHRASE, STRING or COMMENT, over every .spw file; the 22 files with multi-line phrases are its first failing fixtures"
+ ~[roles_from_lex]: "&[lsp] — roleTokens maps the parse tokens (the server parseResult, else lex with events off) to roles in place of 27 line regexes; a multi-line phrase is one string; commit refs and hashlike still overlay; the reader bundle and the consumer highlighter inherit it"
+ ~[operator_modifiers]: "#[lsp] — the legend carries one modifier per OperatorKind, named from the operator table; every sigil token carries its operator, so clients paint action, wonder, potential and perspective apart instead of borrowing function, async and variable"
+ ~[particle_roles]: "&[lsp] — #> anchor, #: lens and #! focus carry anchor, lens and focus modifiers over keyword and declaration"
 }
 
 ^["cache"]{
@@ -168,8 +179,8 @@
  ~#hygiene_split: "none"
  ~#files_hot: "packages/spw-lsp/src/handlers/display.ts, packages/spw-lsp/src/handlers/semantic-tokens.ts, extensions/vscode-spw/syntaxes/spw.tmLanguage.json"
  ~#next_commit: "hierarchy_census"
- ~#open_count: "5"
- ~#last_stream: "2026-10-26 12:16"
+ ~#open_count: "7"
+ ~#last_stream: "2026-10-26 12:29"
  ~#taste_debt: "display.ts is over 1400 lines; moved hover and inlay builders should land in their own modules"
 }
 
