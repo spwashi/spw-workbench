@@ -225,9 +225,9 @@ describe('handlers follow the parser', () => {
       { path: '/workspace/notes.spw', text: '#>my_notes\n#>quoted_anchor\n#>real_anchor\n' },
     ])
 
-    const lenses = codeLens({ textDocument: { uri: TEST_URI } }, deps)
+    const lenses = await codeLens({ textDocument: { uri: TEST_URI } }, deps)
     const anchorLines = lenses
-      .filter((lens) => /anchor|file ref/.test(lens.command?.title ?? ''))
+      .filter((lens) => /repeats? this name|cited by/.test(lens.command?.title ?? ''))
       .map((lens) => lens.range.start.line)
     expect(anchorLines).toEqual([0])
 

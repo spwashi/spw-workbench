@@ -1,28 +1,38 @@
 /**
  * Client-side code lens shaping: `spw.codeLens.enabled` hides the extension's
- * lenses, and reference-count lenses open a references peek.
+ * lenses, reference-count lenses open a references peek, and a citation lens
+ * shows the sites it names. The lenses a document gets also tell the
+ * generated-surface guard what the document is.
  */
 import * as vscode from 'vscode'
 import type { LanguageClient, Middleware } from 'vscode-languageclient/node'
-import { isNavigableReferenceLens, referenceLookupCharacters } from './reference-lenses'
+import type { GeneratedSurfaces } from './generated-surface'
+import {
+  SHOW_LOCATIONS_COMMAND,
+  isNavigableReferenceLens,
+  locationLensArguments,
+  referenceLookupCharacters,
+} from './reference-lenses'
 
 export const PEEK_REFERENCES_COMMAND = 'spw.peekReferences'
 const ENABLED_SETTING = 'codeLens.enabled'
 
-export function codeLensMiddleware(): Middleware {
+export function codeLensMiddleware(generated?: GeneratedSurfaces): Middleware {
   return {
     provideCodeLenses: async (document, token, next) => {
       if (!codeLensesEnabled(document)) return []
       const lenses = await next(document, token)
+      generated?.learn(document.uri.toString(), lenses?.map(lens => lens.command) ?? [])
       return lenses?.map(lens => withReferencePeek(document, lens)) ?? lenses
     },
   }
 }
 
-/** The peek command and the setting listener; both need the started client. */
+/** The lens commands and the setting listener; the listener needs the started client. */
 export function registerCodeLensControls(client: LanguageClient): vscode.Disposable[] {
   return [
     vscode.commands.registerCommand(PEEK_REFERENCES_COMMAND, peekReferences),
+    vscode.commands.registerCommand(SHOW_LOCATIONS_COMMAND, showLocations),
     vscode.workspace.onDidChangeConfiguration(event => {
       if (event.affectsConfiguration(`spw.${ENABLED_SETTING}`)) refreshCodeLenses(client)
     }),
@@ -63,6 +73,22 @@ async function peekReferences(
     }
   }
   void vscode.window.showInformationMessage('The language server found no references for this lens.')
+}
+
+/** A citation lens's sites, in the same peek a reference lens opens. */
+async function showLocations(uri: unknown, at: unknown, locations: unknown): Promise<void> {
+  const args = locationLensArguments(uri, at, locations)
+  if (!args) return
+  const toPosition = (p: { line: number; character: number }) => new vscode.Position(p.line, p.character)
+  await vscode.commands.executeCommand(
+    'editor.action.showReferences',
+    vscode.Uri.parse(args.uri),
+    toPosition(args.at),
+    args.locations.map(location => new vscode.Location(
+      vscode.Uri.parse(location.uri),
+      new vscode.Range(toPosition(location.range.start), toPosition(location.range.end)),
+    )),
+  )
 }
 
 /** Asks VS Code to re-request lenses for every open Spw document. */

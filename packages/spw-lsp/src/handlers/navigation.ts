@@ -14,7 +14,7 @@ import type {
     DefinitionParams, DocumentParams, ReferencesParams, RenameParams,
     HandlerDeps,
 } from '../types'
-import { escapeRegex, splitAnchor, stripAnchor } from '../helpers'
+import { escapeRegex, fragmentOf, splitAnchor, stripAnchor } from '../helpers'
 import { commitRefLinks } from './commit-refs'
 import { proseHandleAt, proseHandles } from './prose-handles'
 import { sourceTokens } from './wonder'
@@ -37,12 +37,6 @@ function referenceSearchNeedles(hit: { kind: string; root?: string; target: stri
     }
 
     return [...needles].filter(Boolean)
-}
-
-/** The `#anchor` half of a reference target, when it names one. */
-function fragmentOf(target: string): string | null {
-    const fragment = splitAnchor(target).hash.slice(1).trim()
-    return fragment.length > 0 ? fragment : null
 }
 
 /**

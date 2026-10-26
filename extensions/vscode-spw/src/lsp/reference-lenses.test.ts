@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   isNavigableReferenceLens,
+  locationLensArguments,
   referenceCountFromTitle,
   referenceLookupCharacters,
 } from './reference-lenses'
@@ -29,5 +30,19 @@ describe('reference lenses', () => {
     expect(referenceLookupCharacters('#:layer #!pragmatics', 0)).toEqual([2, 0])
     expect(referenceLookupCharacters('plain text', 0)).toEqual([0])
     expect(referenceLookupCharacters('#>here', 2)).toEqual([2])
+  })
+
+  it('leaves a citation lens to its own command: its title counts citations, not refs', () => {
+    expect(isNavigableReferenceLens({ title: '↙ cited by 8 files · 16 citations', command: 'spw.showLocations' })).toBe(false)
+    expect(referenceCountFromTitle('↙ cited by 8 files · 16 citations')).toBe(0)
+  })
+
+  it('reads the sites a citation lens carries, and refuses any other shape', () => {
+    const range = { start: { line: 1, character: 2 }, end: { line: 1, character: 9 } }
+    expect(locationLensArguments('file:///f.spw', { line: 0, character: 0 }, [{ uri: 'file:///a.spw', range }]))
+      .toEqual({ uri: 'file:///f.spw', at: { line: 0, character: 0 }, locations: [{ uri: 'file:///a.spw', range }] })
+    expect(locationLensArguments('file:///f.spw', { line: 0 }, [])).toBeNull()
+    expect(locationLensArguments('file:///f.spw', { line: 0, character: 0 }, [{ uri: 'file:///a.spw' }])).toBeNull()
+    expect(locationLensArguments(undefined, { line: 0, character: 0 }, [])).toBeNull()
   })
 })

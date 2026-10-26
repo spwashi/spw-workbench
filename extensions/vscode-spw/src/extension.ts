@@ -11,6 +11,8 @@ import { registerCommitView } from './commit-view'
 import { createSpwContext } from './context'
 import { registerContextStrip } from './context-strip'
 import { codeLensMiddleware, registerCodeLensControls } from './lsp/code-lens-middleware'
+import { registerGeneratedSurfaceGuard } from './lsp/generated-guard'
+import { GeneratedSurfaces } from './lsp/generated-surface'
 import { createSpwCustomRequestClient } from './lsp/custom-requests'
 import { registerSpwNavigation } from './navigation'
 import { SIGIL_SEMANTICS } from './semantics'
@@ -27,7 +29,8 @@ let client: LanguageClient | undefined
 
 export function activate(context: vscode.ExtensionContext): void {
   const documentSelector: vscode.DocumentSelector = { scheme: 'file', language: 'spw' }
-  client = createLanguageClient(context)
+  const generated = new GeneratedSurfaces()
+  client = createLanguageClient(context, generated)
   client.start()
 
   const requests = createSpwCustomRequestClient(client)
@@ -62,6 +65,7 @@ export function activate(context: vscode.ExtensionContext): void {
     ...registerSpwInstrumentCommands(client, requests, probeCache),
     ...registerSpwCliInstruments(),
     ...registerCodeLensControls(client),
+    ...registerGeneratedSurfaceGuard(generated),
     ...registerCaptureMode(context),
     ...registerQuestWalkthrough(context),
   ]
@@ -79,6 +83,7 @@ export async function deactivate(): Promise<void> {
 
 function createLanguageClient(
   context: vscode.ExtensionContext,
+  generated: GeneratedSurfaces,
 ): LanguageClient {
   // The stdio-server.ts handles: definition, documentLink, hover,
   // documentSymbol, workspaceSymbol, completion, codeLens,
@@ -88,7 +93,7 @@ function createLanguageClient(
     'spw',
     'Spw Language Server',
     createServerOptions(context),
-    createClientOptions(),
+    createClientOptions(generated),
   )
 }
 
@@ -100,7 +105,7 @@ function createServerOptions(context: vscode.ExtensionContext): ServerOptions {
   }
 }
 
-function createClientOptions(): LanguageClientOptions {
+function createClientOptions(generated: GeneratedSurfaces): LanguageClientOptions {
   const cfg = vscode.workspace.getConfiguration('spw')
   return {
     documentSelector: [{ scheme: 'file', language: 'spw' }],
@@ -118,7 +123,7 @@ function createClientOptions(): LanguageClientOptions {
         unresolvedRefs: cfg.get<string>('diagnostics.unresolvedRefs', 'warning'),
       },
     },
-    middleware: codeLensMiddleware(),
+    middleware: codeLensMiddleware(generated),
   }
 }
 

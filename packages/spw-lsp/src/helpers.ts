@@ -193,7 +193,6 @@ export async function resolveReferencePath(
     options?: { allowDirectory?: boolean },
 ): Promise<string | null> {
     const docDir = path.dirname(docPath)
-    const roots = mergeRoots(source, docDir, workspaceRoot, config, serverIndex)
     const allowDirectory = options?.allowDirectory === true
 
     if (hit.kind === 'pathRef') {
@@ -206,9 +205,11 @@ export async function resolveReferencePath(
         if (resolved) return resolved + hash
         if (allowDirectory && await statKind(target) === 'dir') return target
 
-        // Fallback: workspace-root-relative resolution (tilde-relative paths like ~"…")
-        if (cleanTarget && workspaceRoot !== docDir) {
-            const wsTarget = path.resolve(workspaceRoot, cleanTarget)
+        // Fallback: workspace-root-relative resolution (tilde-relative paths
+        // like ~"…"). A leading slash names the workspace root, not the disk's:
+        // `~"/about/index.html"` is a site path, so it joins rather than resolves.
+        if (cleanTarget) {
+            const wsTarget = path.join(workspaceRoot, cleanTarget)
             if (wsTarget !== target) {
                 const wsResolved = await resolveCandidate(wsTarget)
                 if (wsResolved) return wsResolved + hash
@@ -219,6 +220,9 @@ export async function resolveReferencePath(
         return null
     }
 
+    // Only a root reference reads the roots. Declared roots are parsed from
+    // the whole source and stat the disk, so a path citation must not pay it.
+    const roots = mergeRoots(source, docDir, workspaceRoot, config, serverIndex)
     const rootName = hit.root ?? ''
     const defaults = defaultRoots(docDir, workspaceRoot, serverIndex)
     let rootBase = roots[rootName]
@@ -324,6 +328,12 @@ export function splitAnchor(target: string): { path: string; hash: string } {
 
 export function stripAnchor(target: string): string {
     return splitAnchor(target).path
+}
+
+/** The `#anchor` half of a reference target, when it names one. */
+export function fragmentOf(target: string): string | null {
+    const fragment = splitAnchor(target).hash.slice(1).trim()
+    return fragment.length > 0 ? fragment : null
 }
 
 export function normalizeRelPath(value: string): string {

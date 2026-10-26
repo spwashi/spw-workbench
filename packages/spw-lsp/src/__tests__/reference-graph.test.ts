@@ -9,7 +9,14 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { promises as fs } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { buildReferenceGraph, invalidateReferenceGraph } from '../handlers/reference-graph'
+import {
+  buildReferenceGraph,
+  inboundCitationsFor,
+  invalidateReferenceGraph,
+  resetReferenceGraph,
+  warmCitationIndex,
+} from '../handlers/reference-graph'
+import { ServerIndex } from '../server-index'
 import type { HandlerDeps } from '../types'
 
 let root: string
@@ -38,6 +45,7 @@ function makeDeps(): HandlerDeps {
     },
     workspaceRoot: root,
     uriFromPath: (p: string) => `file://${p}`,
+    log: () => {},
     getWorkspaceSpwFiles: () => collect(root),
     mapWithConcurrency: async <T, R>(items: T[], _c: number, fn: (item: T) => Promise<R>) =>
       Promise.all(items.map(fn)),
@@ -55,7 +63,7 @@ function makeDeps(): HandlerDeps {
 }
 
 beforeEach(async () => {
-  invalidateReferenceGraph()
+  resetReferenceGraph()
   root = await fs.mkdtemp(path.join(os.tmpdir(), 'spw-refgraph-'))
 })
 
@@ -148,5 +156,70 @@ describe('buildReferenceGraph — edges are between surfaces', () => {
 
     expect(report.unresolved).toBe(1)
     expect(report.external).toBe(0)
+  })
+})
+
+describe('citation index — who cites a file, and which key', () => {
+  async function writeFamily(): Promise<void> {
+    await write('_family.spw', '#>family\n#>shape_1\nshape_2 = .{}\n=self{ ~"./_family.spw#shape_1" }\n')
+    await write('a.spw', '@family: ~"./_family.spw"\nfollows = ~"./_family.spw#shape_1"\n')
+    await write('b.spw', '@family: ~"./_family.spw"\nfollows = ~"./_family.spw#shape_2"\n')
+  }
+
+  it('knows nothing until a build lands, then counts files, citations and keys', async () => {
+    await writeFamily()
+    const family = path.join(root, '_family.spw')
+    expect(inboundCitationsFor(family, root)).toBeNull()
+
+    await buildReferenceGraph(makeDeps())
+    const cited = inboundCitationsFor(family, root)!
+
+    // The file's own citation of itself is not a citation of its standing.
+    expect(cited).toMatchObject({ files: 2, citations: 4 })
+    expect(cited.fragments.get('shape_1')).toMatchObject({ files: 1, citations: 1 })
+    expect(cited.fragments.get('shape_2')).toMatchObject({ files: 1, citations: 1 })
+    expect(cited.sites.map((site) => path.basename(site.file)).sort()).toEqual(['a.spw', 'a.spw', 'b.spw', 'b.spw'])
+    expect(cited.sites.find((site) => site.range.start.line === 1)?.range.start.character).toBeGreaterThan(0)
+
+    // A surface nothing cites reads zero once the index is warm, never null.
+    expect(inboundCitationsFor(path.join(root, 'a.spw'), root)).toMatchObject({ files: 0, citations: 0 })
+  })
+
+  it('keeps answering from the last build after an edit, and rebuilds once when warmed', async () => {
+    await writeFamily()
+    const deps = makeDeps()
+    const family = path.join(root, '_family.spw')
+    await buildReferenceGraph(deps)
+
+    await write('c.spw', '@family: ~"./_family.spw"\n')
+    invalidateReferenceGraph()
+    expect(inboundCitationsFor(family, root)).toMatchObject({ files: 2 })
+
+    let landings = 0
+    const landed = new Promise<void>((resolve) => {
+      warmCitationIndex(deps, () => { landings += 1; resolve() })
+      warmCitationIndex(deps, () => { landings += 1; resolve() })
+    })
+    await landed
+    expect(landings).toBe(1)
+    expect(inboundCitationsFor(family, root)).toMatchObject({ files: 3, citations: 5 })
+
+    // Warm and unedited: no build, no landing.
+    warmCitationIndex(deps, () => { landings += 1 })
+    await new Promise((resolve) => setTimeout(resolve, 20))
+    expect(landings).toBe(1)
+  })
+
+  it('counts only citers the workspace index holds: no .tmp or release copies, no mounted workbench', async () => {
+    await writeFamily()
+    await write('.tmp/headplans/a.spw', '@family: ~"../../_family.spw"\n')
+    await write('release/wt-pre/a.spw', '@family: ~"../../_family.spw"\n')
+    await write('.spw/_workbench/x.spw', '@family: ~"../../_family.spw"\n')
+    const index = new ServerIndex(root)
+    const deps = makeDeps()
+    ;(deps as any).serverIndex = { ...(deps as any).serverIndex, inIndexScope: (file: string) => index.inIndexScope(file) }
+
+    await buildReferenceGraph(deps)
+    expect(inboundCitationsFor(path.join(root, '_family.spw'), root)).toMatchObject({ files: 2, citations: 4 })
   })
 })

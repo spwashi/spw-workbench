@@ -570,7 +570,23 @@ export class ServerIndex {
 
   // ── Workspace scanning ────────────────────────────────────────
 
-  async scanWorkspace(): Promise<void> {
+  private scanning: Promise<void> | null = null
+
+  /**
+   * Settles once the scan in progress, if any, has finished. A workspace-wide
+   * reader waits on it so it reuses the scan's parses instead of racing it.
+   */
+  scanSettled(): Promise<void> {
+    return this.scanning ?? Promise.resolve()
+  }
+
+  scanWorkspace(): Promise<void> {
+    const run = this.scan()
+    this.scanning = run.catch(() => {})
+    return run
+  }
+
+  private async scan(): Promise<void> {
     this.workspaceAnnotations = []
     this.annotationsByName.clear()
     this.appositionsByName.clear()

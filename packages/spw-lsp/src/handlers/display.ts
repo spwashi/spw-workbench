@@ -25,6 +25,9 @@ import { hoverCommitRef } from './commit-refs'
 import { citationTarget } from './navigation'
 import { proseHandleAt, proseHandleHover } from './prose-handles'
 import { buildWonderHint, codeSpan, hoverApposition, hoverWonder, parseWonderBlock, sourceTokens } from './wonder'
+import { inboundCitationsFor, warmCitationIndex } from './reference-graph'
+import { fileCitationLens, keyCitationLens, nameRepeatLens } from './citation-lenses'
+import { generatedLenses } from './generated-lenses'
 import {
   formatCatalogEntryMarkdown,
   getSyntaxCatalogEntry,
@@ -707,15 +710,19 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
                     e.meta.descriptor?.name?.toLowerCase().includes(sigil) ||
                     e.meta.provenance?.some((p: string) => p.includes(sigil))
                 )
+                // The register bank: cells the interpreter writes as it walks the
+                // file (`=`, `&`, `*` set them; `#` resonates, `@` observes). Not
+                // the `[reg=]` stamps, which name a serialization sink.
+                const bank = `${entries.length} runtime register${entries.length === 1 ? '' : 's'}, written by \`=\` \`&\` \`*\` \`#\` \`@\` in a trial run`
                 if (related.length > 0) {
-                    md += `\n---\n\n**Runtime** (${entries.length} registers)\n\n`
+                    md += `\n---\n\n**Runtime** — ${bank}\n\n`
                     for (const [key, entry] of related.slice(0, 5) as [string, any][]) {
                         const phase = entry.meta.phases?.current ?? '\u2014'
                         const writes = entry.meta.writes
                         md += `- \`${key}\`: phase=${phase}, writes=${writes}\n`
                     }
                 } else if (entries.length > 0) {
-                    md += `\n---\n\n*Runtime: ${entries.length} register(s) active*\n`
+                    md += `\n---\n\n*Runtime: ${bank}*\n`
                 }
             }
         } catch {
@@ -975,7 +982,7 @@ export function workspaceSymbols(params: { query?: string }, deps: HandlerDeps):
 
 // ── Code Lens ───────────────────────────────────────────────────
 
-export function codeLens(params: DocumentParams, deps: HandlerDeps): LspCodeLens[] {
+export async function codeLens(params: DocumentParams, deps: HandlerDeps): Promise<LspCodeLens[]> {
     const uri = params?.textDocument?.uri
     if (!uri) return []
 
@@ -987,6 +994,12 @@ export function codeLens(params: DocumentParams, deps: HandlerDeps): LspCodeLens
     const lines = doc.text.split('\n')
     const lenses: LspCodeLens[] = []
     const anchors = anchorsByLine(doc.annotations)
+
+    // Who cites this file, from the reference graph's last build. A cold index
+    // shows no count at all, never a zero, and the build it starts asks the
+    // client to come back for lenses when it lands.
+    const inbound = inboundCitationsFor(docPath, deps.workspaceRoot)
+    warmCitationIndex(deps, deps.refreshCodeLenses)
 
     for (let i = 0; i < lines.length; i += 1) {
         const line = lines[i]
@@ -1007,46 +1020,15 @@ export function codeLens(params: DocumentParams, deps: HandlerDeps): LspCodeLens
             }
         }
 
-        // Anchor cross-file refs
+        // Anchor: citations that name its key, then files that repeat its name.
+        // Runtime registers are not an anchor's fact; the sigil hover shows them.
         const name = anchors.get(i)
         if (name) {
-            const refs = deps.serverIndex.lookupAnnotation(name)
-            const otherFiles = refs.filter(e => e.file !== docPath)
-            const fileCount = new Set(otherFiles.map(e => e.file)).size
-            const sourceSummary = summarizeReferenceSources(refs, docPath, deps.workspaceRoot)
-            if (fileCount > 0) {
-                lenses.push({
-                    range: { start: { line: i, character: 0 }, end: { line: i, character: line.length } },
-                    command: { title: `\u2197 ${fileCount} file ref(s)${sourceSummary ? ` \u00b7 ${sourceSummary}` : ''}`, command: '' },
-                })
-            } else {
-                lenses.push({
-                    range: { start: { line: i, character: 0 }, end: { line: i, character: line.length } },
-                    command: { title: '\u25c7 anchor \u2014 no cross-file refs', command: '' },
-                })
-            }
-
-            // Runtime register summary
-            try {
-                const trial = deps.trialRunSpw(doc.text, uri)
-                if (trial.success) {
-                    const regEntries = trial.runtime.registers.entries as Record<string, any>
-                    const regCount = Object.keys(regEntries).length
-                    const maxPhaseEntry = (Object.values(regEntries) as any[])
-                        .filter((e: any) => e.meta.phases?.current)
-                        .sort((a: any, b: any) => {
-                            const order = ['lex', 'parse', 'semantic', 'optimize', 'pragmatic']
-                            return order.indexOf(b.meta.phases!.current) - order.indexOf(a.meta.phases!.current)
-                        })[0]
-                    const maxPhase = maxPhaseEntry?.meta.phases?.current ?? '\u2014'
-                    lenses.push({
-                        range: { start: { line: i, character: 0 }, end: { line: i, character: line.length } },
-                        command: { title: `\u25c6 ${regCount} reg \u00b7 phase:${maxPhase}`, command: '' },
-                    })
-                }
-            } catch {
-                // Runtime trial failed — skip lens
-            }
+            const at = { line: i, character: Math.max(0, line.indexOf(`#>${name}`)) }
+            const cited = keyCitationLens(uri, at, line.length, name, inbound?.fragments.get(name), deps)
+            const repeated = nameRepeatLens(uri, at, line.length, deps.serverIndex.lookupAnnotation(name), docPath, deps)
+            if (cited) lenses.push(cited)
+            if (repeated) lenses.push(repeated)
         }
 
         // Projection spec owner lens
@@ -1060,17 +1042,11 @@ export function codeLens(params: DocumentParams, deps: HandlerDeps): LspCodeLens
         }
     }
 
-    // Projection target lens
-    const proj = deps.serverIndex.getProjectionForFile(docPath)
-    if (proj) {
-        lenses.push({
-            range: { start: { line: 0, character: 0 }, end: { line: 0, character: 1 } },
-            command: {
-                title: `\u2190 generated from ${path.relative(deps.workspaceRoot, path.resolve(deps.workspaceRoot, proj.specOwner.replace(/^\.\//, '')))}`,
-                command: '',
-            },
-        })
-    }
+    const fileCited = inbound ? fileCitationLens(uri, inbound, deps) : null
+    if (fileCited) lenses.unshift(fileCited)
+
+    // Generated surfaces: the hand-edit warning, Open source, Rebuild, spec
+    lenses.unshift(...await generatedLenses(doc, deps))
 
     // File metrics banner
     const plane = deps.serverIndex.getWorkspacePlaneForFile(docPath)
@@ -1092,12 +1068,7 @@ export function codeLens(params: DocumentParams, deps: HandlerDeps): LspCodeLens
     const layerNameMatch = layerLine?.match(/#!([a-z]+)/)
     const layerLabel = layerNameMatch?.[1]
 
-    if (isGenerated) {
-        lenses.unshift({
-            range: { start: { line: 0, character: 0 }, end: { line: 0, character: 1 } },
-            command: { title: '\u26a0 generated surface \u2014 do not hand-edit', command: '' },
-        })
-    } else {
+    if (!isGenerated) {
         const parts: string[] = []
         if (layerLabel) parts.push(layerLabel)
         else if (plane) parts.push(plane)

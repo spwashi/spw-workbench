@@ -93,6 +93,12 @@ function sendResult(id: number | string | null, result: any): void { ctx.sendRes
 function sendError(id: number | string | null, code: number, message: string, data?: any): void { ctx.sendError(id, code, message, data) }
 function sendNotification(method: string, params: any): void { ctx.sendNotification(method, params) }
 
+/** Ask for fresh lenses, when the client said at initialize that it takes the request. */
+function refreshCodeLenses(): void {
+  const workspace = (clientCapabilities as { workspace?: { codeLens?: { refreshSupport?: unknown } } } | null)?.workspace
+  if (workspace?.codeLens?.refreshSupport === true) ctx.sendRequest('workspace/codeLens/refresh', undefined)
+}
+
 function documentVersion(value: unknown): number | null {
   return typeof value === 'number' &&
     Number.isInteger(value) &&
@@ -162,6 +168,7 @@ function getDeps(): HandlerDeps {
     getWorkspaceSpwFiles,
     mapWithConcurrency,
     sendNotification,
+    refreshCodeLenses,
     log,
     trialRunSpw,
     loadObservableState,
@@ -290,7 +297,7 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
         return
 
       case 'textDocument/codeLens':
-        sendResult(id, _codeLens(message.params, deps))
+        sendResult(id, await _codeLens(message.params, deps))
         return
 
       case 'textDocument/codeAction':
@@ -480,16 +487,21 @@ function handleNotification(message: JsonRpcRequest): void {
 
     case 'workspace/didChangeWatchedFiles': {
       const changes = Array.isArray(message.params?.changes) ? message.params.changes : []
+      let surfacesMoved = false
       for (const change of changes as Array<{ uri: string; type: number }>) {
         const filePath = pathFromUri(change.uri)
         if (!filePath) continue
         if (filePath.endsWith('.spw')) {
           void serverIndex.refreshFileAnnotations(filePath)
+          surfacesMoved = true
         } else if (change.type === 3) {
           // A deleted folder arrives as one event for the folder, none for its files.
           serverIndex.forgetFilesUnder(filePath)
+          surfacesMoved = true
         }
       }
+      // A generator rewriting a tree, or a checkout, moves citation counts as a save does.
+      if (surfacesMoved) invalidateReferenceGraph()
       return
     }
 

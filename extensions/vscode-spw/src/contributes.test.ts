@@ -44,9 +44,21 @@ describe('extension contributions', () => {
     }
   })
 
-  it('keeps the lens peek command internal to code lenses', () => {
-    expect(contributed.has('spw.peekReferences')).toBe(false)
-    expect(sourceText()).toContain(`'spw.peekReferences'`)
+  it('keeps the lens commands internal to code lenses, and registers each', () => {
+    const source = sourceText()
+    for (const command of ['spw.peekReferences', 'spw.showLocations', 'spw.openUri', 'spw.rebuildGenerated']) {
+      expect(contributed.has(command)).toBe(false)
+      expect(source).toContain(`'${command}'`)
+    }
+  })
+
+  it('names every lens command the server sends as one the extension registers', () => {
+    const serverRoot = path.join(extensionRoot, '..', '..', 'packages', 'spw-lsp', 'src', 'handlers')
+    const server = ['citation-lenses.ts', 'generated-lenses.ts']
+      .map(file => readFileSync(path.join(serverRoot, file), 'utf8')).join('\n')
+    const sent = [...server.matchAll(/_COMMAND = '(spw\.[A-Za-z]+)'/g)].map(match => match[1])
+    expect(sent.sort()).toEqual(['spw.openUri', 'spw.rebuildGenerated', 'spw.showLocations'])
+    for (const command of sent) expect(sourceText()).toContain(`'${command}'`)
   })
 
   it('offers spw.codeLens.enabled, on by default', () => {

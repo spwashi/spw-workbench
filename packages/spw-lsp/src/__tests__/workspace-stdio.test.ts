@@ -280,26 +280,27 @@ describe('workspace stdio integration', () => {
   }, 15_000)
 })
 
-describe('watched files over stdio', () => {
-  async function startServer(capabilities: unknown): Promise<{ client: TestLspClient; tempRoot: string }> {
-    const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'spw-lsp-watch-'))
-    const bundledServer = path.join(tempRoot, 'spw-lsp.mjs')
-    await build({
-      entryPoints: [path.join(process.cwd(), 'packages', 'spw-lsp', 'src', 'stdio-server.ts')],
-      bundle: true,
-      platform: 'node',
-      format: 'esm',
-      outfile: bundledServer,
-      tsconfig: path.join(process.cwd(), 'tsconfig.base.json'),
-    })
-    const client = new TestLspClient(bundledServer, tempRoot)
-    activeClient = client
-    const initialized = await client.request('initialize', { processId: process.pid, rootUri: pathToFileURL(tempRoot).toString(), capabilities })
-    expect(initialized.error).toBeUndefined()
-    client.notify('initialized', {})
-    return { client, tempRoot }
-  }
+async function startServer(capabilities: unknown): Promise<{ client: TestLspClient; tempRoot: string }> {
+  // The real path, so the server's root and the document uris name files alike.
+  const tempRoot = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'spw-lsp-watch-')))
+  const bundledServer = path.join(tempRoot, 'spw-lsp.mjs')
+  await build({
+    entryPoints: [path.join(process.cwd(), 'packages', 'spw-lsp', 'src', 'stdio-server.ts')],
+    bundle: true,
+    platform: 'node',
+    format: 'esm',
+    outfile: bundledServer,
+    tsconfig: path.join(process.cwd(), 'tsconfig.base.json'),
+  })
+  const client = new TestLspClient(bundledServer, tempRoot)
+  activeClient = client
+  const initialized = await client.request('initialize', { processId: process.pid, rootUri: pathToFileURL(tempRoot).toString(), capabilities })
+  expect(initialized.error).toBeUndefined()
+  client.notify('initialized', {})
+  return { client, tempRoot }
+}
 
+describe('watched files over stdio', () => {
   it('registers .spw watchers and folder deletes for a client that takes dynamic registration, and ignores its reply', async () => {
     const { client, tempRoot } = await startServer({ workspace: { didChangeWatchedFiles: { dynamicRegistration: true } } })
     try {
@@ -327,6 +328,65 @@ describe('watched files over stdio', () => {
     try {
       await client.request('workspace/symbol', { query: 'x' })
       expect(client.received.some((message) => message.method === 'client/registerCapability')).toBe(false)
+    } finally {
+      await client.close()
+      activeClient = null
+      await fs.rm(tempRoot, { recursive: true, force: true })
+    }
+  }, 15_000)
+})
+
+describe('code lens refresh over stdio', () => {
+  async function openFamily(client: TestLspClient, tempRoot: string): Promise<string> {
+    const family = path.join(tempRoot, '_family.spw')
+    await fs.writeFile(family, '#>family\n')
+    await fs.writeFile(path.join(tempRoot, 'a.spw'), '@family: ~"./_family.spw"\n')
+    const uri = pathToFileURL(family).toString()
+    client.notify('textDocument/didOpen', { textDocument: { uri, languageId: 'spw', version: 1, text: '#>family\n' } })
+    return uri
+  }
+
+  const titlesOf = (message: RpcMessage): string[] =>
+    ((message.result ?? []) as Array<{ command?: { title: string } }>).map((lens) => lens.command?.title ?? '')
+
+  async function until(check: () => Promise<boolean> | boolean): Promise<boolean> {
+    for (let attempt = 0; attempt < 80; attempt += 1) {
+      if (await check()) return true
+      await new Promise((resolve) => setTimeout(resolve, 25))
+    }
+    return false
+  }
+
+  it('asks a client that takes refresh to come back once citations are counted', async () => {
+    const { client, tempRoot } = await startServer({ workspace: { codeLens: { refreshSupport: true } } })
+    try {
+      const uri = await openFamily(client, tempRoot)
+      const cold = await client.request('textDocument/codeLens', { textDocument: { uri } })
+      expect(titlesOf(cold).filter((title) => /cited by|no cross-file/.test(title))).toEqual([])
+
+      const refresh = () => client.received.find((message) => message.method === 'workspace/codeLens/refresh')
+      expect(await until(() => refresh() !== undefined)).toBe(true)
+      client.reply(refresh()!.id!, null)
+
+      const warm = await client.request('textDocument/codeLens', { textDocument: { uri } })
+      expect(titlesOf(warm)).toContain('↙ cited by 1 file · 1 citation')
+    } finally {
+      await client.close()
+      activeClient = null
+      await fs.rm(tempRoot, { recursive: true, force: true })
+    }
+  }, 15_000)
+
+  it('sends no refresh to a client that did not offer to take one', async () => {
+    const { client, tempRoot } = await startServer({})
+    try {
+      const uri = await openFamily(client, tempRoot)
+      const counted = await until(async () => {
+        const lenses = await client.request('textDocument/codeLens', { textDocument: { uri } })
+        return titlesOf(lenses).some((title) => title.startsWith('↙ cited by'))
+      })
+      expect(counted).toBe(true)
+      expect(client.received.some((message) => message.method === 'workspace/codeLens/refresh')).toBe(false)
     } finally {
       await client.close()
       activeClient = null

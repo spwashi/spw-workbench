@@ -13,9 +13,6 @@ import { DEFAULT_CONFIG } from './types'
 import path from 'node:path'
 import { promises as fs } from 'node:fs'
 
-// ── Runtime Trial Cache ─────────────────────────────────────────
-const RUNTIME_TRIAL_TTL_MS = 2_000
-
 // ── Context ─────────────────────────────────────────────────────
 
 export class ServerContext {
@@ -38,8 +35,8 @@ export class ServerContext {
     observableState: Record<string, any> | null = null
     observableStateLoadedAt = 0
 
-    // Runtime trial cache
-    private readonly runtimeTrialCache = new Map<string, { at: number; result: RunSpwResult }>()
+    // Runtime trial cache: one trial per uri, kept while the text it ran on is current
+    private readonly runtimeTrialCache = new Map<string, { source: string; result: RunSpwResult }>()
 
     constructor(repoRoot: string) {
         this.repoRoot = repoRoot
@@ -82,14 +79,19 @@ export class ServerContext {
 
     // ── Runtime Trial ───────────────────────────────────────────
 
+    /**
+     * One trial run per document text. The cache is keyed by uri and checked
+     * against the text, so an edit reruns at once and an unchanged document
+     * never reruns, however many handlers ask.
+     */
     trialRunSpw(source: string, uri: string): RunSpwResult {
         const cached = this.runtimeTrialCache.get(uri)
-        if (cached && Date.now() - cached.at < RUNTIME_TRIAL_TTL_MS) {
+        if (cached && cached.source === source) {
             return cached.result
         }
         try {
             const result = runSpw(source)
-            this.runtimeTrialCache.set(uri, { at: Date.now(), result })
+            this.runtimeTrialCache.set(uri, { source, result })
             return result
         } catch {
             const fail: RunSpwResult = {
@@ -99,7 +101,7 @@ export class ServerContext {
                 issues: [{ stage: 'interpret', message: 'Runtime trial failed' }],
                 telemetry: { events: [], resonances: [] },
             }
-            this.runtimeTrialCache.set(uri, { at: Date.now(), result: fail })
+            this.runtimeTrialCache.set(uri, { source, result: fail })
             return fail
         }
     }

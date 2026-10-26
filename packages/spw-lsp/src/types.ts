@@ -273,6 +273,8 @@ export interface HandlerDeps {
     // Transport
     sendNotification(method: string, params: any): void
     log(message: string): void
+    /** Ask the client to re-request code lenses; absent or a no-op when it cannot be asked. */
+    refreshCodeLenses?(): void
 
     // Runtime
     trialRunSpw(source: string, uri: string): any
