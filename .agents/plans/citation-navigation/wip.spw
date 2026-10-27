@@ -59,6 +59,9 @@
  .[handles_in_prose](cf7df67a): "&[lsp] — a handle this file declares links, defines and hovers inside a string through its declaration citation; nothing else in a string changes (consumer rank 11)"
  .[leading_slash_root](55e79d2e): "&[lsp] — a citation with a leading slash resolves from the workspace root, not the disk root (helpers.ts resolveReferencePath); the path half of route_fragment_targets (with graph_index_scope)"
  .[graph_index_scope](55e79d2e): "&[lsp] — spw/referenceGraph walks only files inside the index scope, so a mounted _workbench, release copies and .tmp leave the graph (with leading_slash_root)"
+ ~[path_basis_hint]: "&[lsp,cli] — a bare path ref (not /, ./, ../ or @root/) gets a hint naming the basis the resolver chose; / already means the workspace root (55e79d2e)"
+ ~[spw_mv]: "&[cli] — spw mv moves a surface and rewrites every citation of it with the edit willRenameFiles builds (56844e6e); archiving a plan uses it, so a moved plan keeps its edges"
+ ~[resolve_planned]: "&[cli] — resolve reads a card will_touch and a PLAN.md [NEW] line as planned, verdict planned rather than missing-file"
 }
 ^["stream"]{
  >>[2026-09-08 13:08] observe — CLI citation classification exists; LSP fragment lookup reads saved targets.
@@ -94,6 +97,7 @@
  >>[2026-10-27 10:23] implement — Landed in 55e79d2e (2026-10-26) with the citation lenses: leading_slash_root, a leading-slash citation resolves from the workspace root, and graph_index_scope, spw/referenceGraph walks only files inside the index scope. route_fragment_targets keeps its routes half; spw resolve still skips the anchor of a route.
  >>[2026-10-27 10:23] decide — resolved [rename_kind]: neither waited. The path rename kind (seed canonical/path-rename.ts) and willRenameFiles landed together in 56844e6e as one plan for spw refactor and the server.
  >>[2026-10-27 10:23] decide — resolved [parser_first]: yes. Since e6c56978 the parser answers first and fallbackPathRefs runs only for a source the parser rejects; prose-quoted paths stopped resolving (161 false citations dropped over 1306 files), and since cf7df67a only a handle the file declares links inside a string, through its declaration.
+ >>[2026-10-27 13:01] observe — Ergonomics review 2026-10-27: three implicit bases (file-relative, workspace root, declared root) broke two refs when spw-cli-overhaul moved into _archive, and earlier archives still hold broken relative refs that the live-plan resolve pass skips; all 11 missing refs left in live plans are files the plans will create.
 }
 ^["supporting_documents"]{
  must_ship: [@plan, @atlas, @consultation, @evidence, @contract]
@@ -103,6 +107,7 @@
  ?[alias_binder]: "Is a file-scoped alias binder in scope, given unresolved_semantics in workbench-atlas.spw forbids guessing binding rules until the language contract states them?"
  ?[outline_gap]: "documentSymbols already returns nested children via outlineFromSource, so what part of the consumer's flat-outline complaint is left, other than routes and leading-slash fragments?"
  ?[binding_key_fragments]: "Does a fragment name only a #> anchor (resolve_anchor_strict), or also a binding key, as the consumer family citations do (#shape_1 on shape_1 = .{})? The answer decides whether ~[resolve_anchor_strict] ships as written; @address asks the same as anchors_only."
+ ?[bare_path_policy]: "Do bare path refs stay legal with a hint, or migrate to explicit /, ./, ../ and @root/ forms? 1687 of 2804 plan citations resolve through a root today. Decides whether path_basis_hint is a hint or a warning."
 }
 ^["cache"]{
  ~#status: "active"
@@ -110,9 +115,9 @@
  ~#hygiene_split: "none"
  ~#files_hot: "packages/spw-lsp/src/spw-selector.ts, packages/spw-lsp/src/handlers/navigation.ts, packages/spw-lsp/src/handlers/analysis.ts, packages/spw-cli/src/resolve.ts"
  ~#next_commit: "root_anchor_refs"
- ~#open_count: "4"
+ ~#open_count: "5"
  ~#taste_debt: "Editor parity remains unverified."
- ~#last_stream: "2026-10-27 10:23"
+ ~#last_stream: "2026-10-27 13:01"
 }
 ^["done"]{
  ~#dropped(lens_reference_peek): "VS Code's reference peek landed client-side in 99e6d993; the server command route is vscode-authoring-probe-loop ~[code_lens_commands], and lens labels moved to editor-reading-hierarchy ~[frame_lens_units]"

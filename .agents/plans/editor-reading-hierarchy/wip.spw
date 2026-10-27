@@ -134,6 +134,7 @@
  >>[2026-10-26 12:29] taste — A layer that knows more must not be painted over by one that knows less: per-sigil identity lives only in the regex layers today, and the parse-derived layer erases it on top.
  >>[2026-10-27 10:19] revise — The commit block now runs in the PLAN.md order, since order is block position: role_stream_parity and roles_from_lex follow path_aware_parse and precede the three role mappings (stream_prose_text, path_color_parsed_only, inline_hash_comment), then operator_modifiers and particle_roles, as decided 2026-10-26 12:29; citation_lenses and generated_banner_actions sit beside anchor_trial_off, which landed with them in 55e79d2e.
  >>[2026-10-27 10:22] revise — Correction to the 2026-10-26 12:29 tokenizer count: the IntelliJ TextMate grammar is not a hand copy. extensions/intellij-spw/scripts/sync-grammar.mjs generates it from the VS Code grammar since 17b3a4a2, and sync-grammar.mjs --check passes on 2026-10-27; the 188 bytes are the provenance comment the generator writes. Six tokenizers read Spw on their own, and the IntelliJ grammar follows the VS Code one.
+ >>[2026-10-27 13:00] note — Honesty gap beside lexer_errors_first, found 2026-10-27: a parse that degrades to prose reports success with a warning the editor never shows (analysis.ts publishes only failed parses). degradation_diagnostic publishes it; severity follows plan-stream-parse-health ?[degradation_severity].
 }
 
 ^["open"]{
@@ -173,6 +174,7 @@
  ~[census_after]: "![lsp] — rerun the census; record the fall in lenses, inlays, duplicates, and painted prose against ~[hierarchy_census]"
  ~[string_color_swatches]: "&[lsp] — a documentColor provider shows swatches for #rgb, #rrggbb, and #rrggbbaa inside strings, where colors live; a bare #8800ff stays a #tag"
  ~[host_injections]: "&[grammar] — injection grammars for an HTML semantic-expression attribute, a Markdown spw fence, and a commit episode block, each read through the lite scan (consumer rank 2)"
+ ~[degradation_diagnostic]: "&[lsp] — analysis.ts publishes parse warnings, prose-degradation first, at the position the structured parse stopped; today only a failed parse publishes (analysis.ts 51 to 75)"
 }
 
 ^["cache"]{
@@ -183,7 +185,7 @@
  ~#files_hot: "packages/spw-lsp/src/handlers/display.ts, packages/spw-lsp/src/handlers/semantic-tokens.ts, extensions/vscode-spw/syntaxes/spw.tmLanguage.json"
  ~#next_commit: "hierarchy_census"
  ~#open_count: "7"
- ~#last_stream: "2026-10-27 10:22"
+ ~#last_stream: "2026-10-27 13:00"
  ~#taste_debt: "display.ts is 1332 lines at 55e79d2e, still twice the guard; moved hover and inlay builders should land in their own modules"
 }
 
