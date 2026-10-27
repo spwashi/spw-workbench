@@ -147,6 +147,7 @@
  >>[2026-10-12 14:26] revise — commits re-scoped against code: ~[1] still open (S0-S3 remains in 7 docs/theory/spw files, goals.md, a UX audit); ~[2] dropped (applyEdits already rejects overlaps, tested in semantic-edit.test.ts); ~[3]/~[4] code landed (bbb14615, b7c5c7df, 08e2bc1c) so remaining work is tests (no test references range-transform.ts); ~[5] merged (IndexConfig wired in corpus-scan.ts). Closed ?[track-b-sequencing] (decided 07-22 16:15); sharpened the other seven open questions
  >>[2026-10-12 14:31] revise — per convention change: resolved questions and landed commits moved into ^done as ~#resolved(label) and ~#shipped hash entries, nothing deleted; pointer comments left in ^commits
  >>[2026-10-12 15:22] revise — Commits named per the convention in 90c58bbc: 5 landed, 4 planned, 2 dropped.
+ >>[2026-10-27 10:20] observe — eb34e6c3 (runtime-maintenance one_hash_module) gave range-transform.ts its first test import: content-hash.test.ts checks that its contentHash equals seed textHash. planSpanTransform, applyRangePlan and the contentHash drift refusal are still untested, so cover_range_transform stands; its line no longer says no test references the module, and drops b7c5c7df and 08e2bc1c, which git log --follow does not show touching range-transform.ts.
 }
 
 ^["open"]{
@@ -166,7 +167,7 @@
  .[wire_index_config](0bec26ef): "&[cli] =wire[index-config,math-idioms] — put unused seed architecture to work in the sense loop"
  .[pack_wizard](508fe549): "&[cli] =wire[pack-wizard] — combination wizard: seed template expand from curated packs"
  ~[effect_grade_rename]: ".[theory,prompts] =rename[effect-grade] — replace S0-S3 shorthand with effect.l0.measure..l3.external in the living docs still using it (7 docs/theory/spw files, docs/design/md/goals.md, docs/audits/md/ux-dimensions-audit-2026-02-15.md; check .spw/conventions/file-physics.spw 'S0 notes' first, it may be a different S0); .agents/plans/* untouched"
- ~[cover_range_transform]: "![seed] =cover[range-transform] — the module landed (bbb14615, exports in 12b54eb7, later touched by b7c5c7df and 08e2bc1c) but no test file references range-transform.ts today; pin plan (effect.l0), apply (effect.l2) with contentHash gate, and the stale-hash refusal named in docs/theory/spw/range-transform.spw"
+ ~[cover_range_transform]: "![seed] =cover[range-transform] — the module landed (bbb14615, exports in 12b54eb7), and eb34e6c3 moved its contentHash onto seed textHash; content-hash.test.ts imports only that contentHash, so no test pins planSpanTransform (effect.l0), applyRangePlan (effect.l2) with its contentHash gate, or the drift refusal named in docs/theory/spw/range-transform.spw"
  ~[cover_n_range]: "![seed] =cover[n-range] — empty n-range '(())' preview fix landed in bbb14615 without a test; add parser and describeNRange cases"
  ~[close_retrospective]: ".[plans] =close[seed-roundness-grades] — retrospective; name the track B follow-up plans once the membrane/products/temporal questions are answered"
 }
@@ -187,7 +188,7 @@
  ~#files_hot: "packages/spw-seed/src/canonical/differential.ts,packages/spw-seed/src/canonical/range-transform.ts,packages/spw-seed/src/canonical/index-config.ts,packages/spw-seed/src/normalize.ts"
  ~#next_commit: "effect_grade_rename"
  ~#open_count: "7"
- ~#last_stream: "2026-10-12 15:22"
+ ~#last_stream: "2026-10-27 10:20"
  ~#taste_debt: "track B (named params, multi-arm select, stream fold, new operator products, membrane+body AST promotion) remains deferred pending open questions; do not stub AST nodes prematurely."
 }
 

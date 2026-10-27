@@ -50,22 +50,19 @@ Plan facts served as standard LSP products, so VS Code, Neovim and IntelliJ rece
 | `textDocument/documentSymbol` | `^cache` keys, `~[name]` and `.[name]` commit rows, `^done` keys as children | `outline_plan_facts` |
 | `textDocument/hover` | card and `^cache` field values with derivation; `~#resolved(label)` answer and evidence | `plan_fact_hover` |
 | `textDocument/publishDiagnostics` | drift: `~#open_count` vs live `?[` lines, `~#last_stream` vs last `>>` line, `~#next_commit` vs the first `~[name]` in `^commits` | `drift_diagnostics`, information severity, no write fix |
-| completion after `>>[` | stamp from the manifest clock | `vscode-authoring-probe-loop`; blocked on `?[clock_field]` |
+| completion after `>>[` | stamp from the manifest clock | landed in `e6c56978` (`?[clock_field]` resolved); `stream_completion_everywhere` widens it |
 
 Rules: the editor reports drift and never repairs it; `plan:stream` and the human remain the only writers of cache facts.
 
 ## Git hashes in VS Code (escalated 2026-10-13)
 
-The owner escalated git-hash support in VS Code, so it is this plan's first slice. Today, in plan files only, a hash in `.[name](hash)` hovers with its subject, date, and files, and a hash git lacks gets an information note (`e6c56978`, `packages/spw-lsp/src/handlers/commit-refs.ts`). Nothing more exists yet:
-- a hash has no color of its own, and nothing opens the commit
-- completion can't land a planned commit
-- hashes outside that form get nothing: journal `commit:` lines, `(hash)` in stream entries, episode scene refs
+The owner escalated git-hash support in VS Code, so it is this plan's first slice. When it was escalated, only plan files had hash support: a hash in `.[name](hash)` hovered with its subject, date, and files, and a hash git lacks got an information note (`e6c56978`, `packages/spw-lsp/src/handlers/commit-refs.ts`). A hash had no color and nothing opened the commit, completion could not land a planned commit, and hashes outside that form (journal `commit:` lines, `(hash)` in stream entries, episode scene refs) got nothing.
 
 The slice, in order:
-1. `~[commit_ref_token_type]`: a semantic token type and a TextMate scope.
-2. `~[commit_ref_document_link]`: a link to a `spw-commit:` URI for every hash git holds.
-3. `~[commit_view_vscode]`: the link opens the commit in VS Code's multi-diff view through the built-in Git extension API, or else in a read-only `spw-commit:` document. It never opens an untitled buffer (scorecard bug 7).
-4. `~[commit_ref_beyond_plans]`: the same hover and link for journal, stream, and episode hashes that git confirms, with no color (`?[prose_hashes]`).
+1. `~[commit_ref_token_type]`: a semantic token type and a TextMate scope. Landed in `a80a5df7`.
+2. `~[commit_ref_document_link]`: a link to a `spw-commit:` URI for every hash git holds. Landed in `a80a5df7`.
+3. `~[commit_view_vscode]`: the link opens the commit in VS Code's multi-diff view through the built-in Git extension API, or else in a read-only `spw-commit:` document. It never opens an untitled buffer (scorecard bug 7). Landed in `00c6a56e`.
+4. `~[commit_ref_beyond_plans]`: the same hover and link for journal, stream, and episode hashes that git confirms (`?[prose_hashes]`). Landed in `a80a5df7`; `1ea9ac14` later gave other hash-shaped runs a `hashlike` token.
 5. `~[commit_ref_vscode_test]`.
 6. `~[land_commit_action]`: completion and a code action that turn `~[name]` into `.[name](hash): "subject"`.
 
@@ -75,9 +72,9 @@ Git calls stay in `commit-refs.ts` for this slice. `local-numbering-vcs` `~[lsp_
 
 [MOD] packages/spw-lsp/src/handlers/commit-refs.ts — document links; hashes beyond plan files
 [MOD] packages/spw-lsp/src/handlers/semantic-tokens.ts, extensions/vscode-spw/syntaxes/spw.tmLanguage.json — commit-ref token type and scope
-[NEW] extensions/vscode-spw/src/commit-view.ts — spw-commit: provider and the Git-extension multi-diff route
+[NEW] extensions/vscode-spw/src/commit-view.ts — spw-commit: provider and the Git-extension multi-diff route (landed 00c6a56e, with commit-uri.ts and commit-uri.test.ts)
 [MOD] extensions/vscode-spw/src/extension.ts, package.json — register the provider and the command
-[NEW] extensions/vscode-spw/src/test/commit-refs.test.ts — hover, token, link, open, completion
+[NEW] an extension-host test — hover, token, link, open, completion; vscode-spw has no extension-host runner yet, and its vitest tests sit beside their source (vitest.vscode.config.ts)
 [NEW] .agents/plans/plan-plugin-integration/references/plan-facts.spw (`plan_facts_table`)
 [MOD] packages/spw-lsp/src/handlers/outline.ts (`outline_plan_facts`)
 [MOD] packages/spw-lsp/src/handlers/display.ts (hover, `plan_fact_hover`)

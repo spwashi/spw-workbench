@@ -2,7 +2,7 @@
 
 ## Goal
 
-Design a comprehensive **26-commit deep-dive curriculum** dedicated to mastering terminal-based programming, REPL mechanics, and foundational computational paradigms (Prolog, Haskell, GraphQL/Cypher). The goal is to study how these distinct environments manage state, logic, and IO, and directly map those philosophical precedents into **Spw's linguistic architecture**. This bridges classical computer science rigor with Spw's metacognitive workbench. This lane is intentionally curricular and exploratory: it should create better CLI and language discussion subjects, plus reusable experiments, without pretending to be a release blocker on its own.
+Design a comprehensive **five-lab deep-dive curriculum** (planned as 26 lesson commits; collapsed to five lab files on 2026-10-12) dedicated to mastering terminal-based programming, REPL mechanics, and foundational computational paradigms (Prolog, Haskell, GraphQL/Cypher). The goal is to study how these distinct environments manage state, logic, and IO, and directly map those philosophical precedents into **Spw's linguistic architecture**. This bridges classical computer science rigor with Spw's metacognitive workbench. This lane is intentionally curricular and exploratory: it should create better CLI and language discussion subjects, plus reusable experiments, without pretending to be a release blocker on its own.
 
 This curriculum sits between the `language` and `service` rungs in the current ecology. Its value is to create better questions, prototypes, and snippets for query/CLI/service design, not to silently become an implementation branch for foreign runtimes.
 
@@ -10,7 +10,7 @@ This curriculum sits between the `language` and `service` rungs in the current e
 
 ## Scope
 
-- **In scope**: Designing a 26-part curriculum of markdown/spw artifacts grouped into 5 distinct phases: TTY Mechanics, Logical Inference (Prolog), Functional Purity (Haskell), Graph Topologies (GQL), and CLI Synthesis. Each step requires reviewing specific paradigms, writing raw experimental code, synthesizing a Spw reflection, reviewing at least one current repo query/CLI/tooling surface alongside the precedent, and naming at least one experiment or heuristic that could sharpen a future CLI or query surface.
+- **In scope**: Designing a five-lab curriculum of markdown/spw artifacts, one per phase: TTY Mechanics, Logical Inference (Prolog), Functional Purity (Haskell), Graph Topologies (GQL), and CLI Synthesis. Each step requires reviewing specific paradigms, writing raw experimental code, synthesizing a Spw reflection, reviewing at least one current repo query/CLI/tooling surface alongside the precedent, and naming at least one experiment or heuristic that could sharpen a future CLI or query surface.
 - **Out of scope**: Building a full Prolog/Haskell compiler in Spw or silently becoming a required release lane. This is an architectural mapping and skill-building exercise, not a 1:1 runtime implementation.
 
 ## The Curriculum Sequence: 26 Steps to Linguistic Mastery
@@ -40,9 +40,13 @@ Unify the previous paradigms. Designing a CLI that leverages TTY interactivity, 
 
 Predicted file scaffolding:
 ```
-[NEW] docs/learn/labs/logic-terminal/01-tty-ansi-buffers.md
-... (Files 02 through 25)
-[NEW] docs/learn/labs/logic-terminal/26-terminal-mastery-synthesis.md
+[NEW] docs/learn/labs/logic-terminal/01-terminal-tty.md
+[NEW] docs/learn/labs/logic-terminal/02-prolog-unification.md
+[NEW] docs/learn/labs/logic-terminal/03-haskell-purity.md
+[NEW] docs/learn/labs/logic-terminal/04-graph-gql.md
+[NEW] docs/learn/labs/logic-terminal/05-cli-synthesis.md
+      (each with its NN-slug.check.test.ts; the 26 lesson files collapsed to five on 2026-10-12)
+[NEW] the Rosetta-stone .spw artifact (rosetta_stone_artifact; path not chosen)
 [MOD] .spw/conventions/selection.spw
 [MOD] .spw/tooling/vscode-spw.spw
 [MOD] packages/spw-seed/src/query/selector-expr.ts

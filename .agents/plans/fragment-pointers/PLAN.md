@@ -9,7 +9,7 @@ On 2026-10-13 the owner asked whether a selection can be compiled to bytecode an
 What exists:
 - **`spw cite`** prints a `spw.geometry.bc/1` card and a pointer, `@bc:<hash>`.
 - **`spw follow`** resolves the pointer, and `--collapse` evaluates it.
-- **The pointer's hash** is computed from the text (FNV-1a 64). The card mislabels it as `mask`.
+- **The pointer's hash** is computed from the text (FNV-1a 64 on 2026-10-13; since eb34e6c3 it is `textHash`, 16 hex of SHA-256 over UTF-8 bytes). The card mislabels it as `mask`.
 - **The card's body** holds the form: operator counts and vector, brace kinds, depth, and flow roles.
 - **Embedding** works through an anchor plus `={ ~"file#name" }` and `spw expand`.
 
@@ -49,8 +49,8 @@ Taste note: identity comes from content and similarity from form, and the bounda
 ## Dependencies
 
 - `syntax-hardware-alignment` p12: before a hash-valued pointer can be read in source, the lexer has to read a digit-led run as one token with a hash kind.
-- `refactor-experiment-lifecycle` `?[hash_basis]`: one hash basis for selections and pointers, settled together.
-- `citation-navigation` p8 (`@root#anchor`): if `?[pointer_form]` picks `@bc#<hash>`, pointers ride the same reader.
+- `refactor-experiment-lifecycle` `?[hash_basis]`: one hash basis for selections and pointers, settled together on 2026-10-13 (raw UTF-8 bytes); the shared function landed in eb34e6c3.
+- `citation-navigation` p8 (`@root#anchor`): `?[pointer_form]` picked `@bc#<hash>`, so pointers ride the same reader (`~[root_anchor_refs]` there).
 
 ## Files
 
@@ -66,4 +66,4 @@ Taste note: identity comes from content and similarity from form, and the bounda
 ## Agentic Hygiene
 
 - Rebase target: `main@138d2a28`.
-- Before the first code commit, the owner settles `?[pointer_form]` and `?[fragment_store]`. `~[cite_selection]` and `~[cell_boundary]` do not depend on either answer and can go first.
+- The owner settled `?[pointer_form]` and `?[fragment_store]` on 2026-10-13 (see wip.spw `^["done"]`). `~[cite_selection]` and `~[cell_boundary]` never depended on either answer and can go first.

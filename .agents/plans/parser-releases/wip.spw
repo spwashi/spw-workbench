@@ -10,7 +10,7 @@
  gist: "Every release day cuts a dated, immutable set of browser parser builds with a manifest, and spw.quest serves them for other sites to import"
  touches: [~"scripts/release", ~"docs/runtime/md"]
  entry: ~"./PLAN.md"
- next: "Audit existing stamp tests across all four variants and both forms; reconcile stamp_matches_manifest, then verify site state before choosing an immutable release cut."
+ next: "Check the site repository for a published 2026.10.13 (the consumer cites its sizes; no workbench cut matches) to settle first_release; then answer ?[lite_carries_roles] before reader_is_browser_build."
 }
 
 ^["edges"]{
@@ -23,6 +23,8 @@
  @jsdist: ~"scripts/release/build-js-dist.ts"
  @lite: ~"packages/spw-seed/src/lite.ts"
  @parser: ~"packages/spw-seed/src/parser.ts"
+ @builder: ~"scripts/release/build-parser-release.ts"
+ @doc: ~"docs/runtime/md/parser-release.md"
 }
 
 ^["intent"]{
@@ -50,7 +52,7 @@
  ?[more_variants]: "Which consumer would import a lexer-only or reader-kit variant? Each variant is a promise to keep cutting it every release."
  ?[storage]: "Releases sit in git-tracked worker assets and prereleases deploy from gitignored assets; at what size do releases move to R2 with only the manifests kept in git, and should prereleases move there first so any machine can deploy them?"
  ?[import_integrity]: "Integrity covers script and modulepreload tags but not import statements; should the release page recommend an import map, and which browsers honor its integrity section?"
- ?[lite_carries_roles]: "Does the reader extra 12 KB earn its place on pages that only parse, or should lite carry roles and outline?"
+ ?[lite_carries_roles]: "Does the reader's extra 12 KB earn its place on pages that only parse, or should lite carry roles and outline? Answer before reader_is_browser_build makes the reader the default browser build."
 }
 
 ^["commits"]{
@@ -60,7 +62,7 @@
  ~[first_release]: "+[quest] (site repo) — carry release 2026.10.13 from the workbench into spw.quest's assets and verify every hash"
  .[prerelease_builder](a6d69642): "#[release] — bundle:parser --pre cuts a prerelease keyed by revision, ready to try in production"
  .[release_names](749899ee): "#[release] — parser cuts are named for a day: YYYY.MM.DD, -pre.N or -patch.N"
- ~[stamp_matches_manifest]: "![release] — a test holds each file's SPW_PARSER_BUILD stamp to the manifest revision, name, kind, variant and form"
+ .[stamp_matches_manifest](17b0d6d7): "#[release] — npm run bundle:parser cuts a dated, immutable set of browser parser builds with a manifest; the stamp test shipped here and 749899ee carried it to names (with release_builder; audit in stream 2026-10-27 10:21)"
  .[prerelease_routes](051a5a7d): "+[quest] (site repo) — Name parser builds by day, try a prerelease with ?parser=next, and pin /init to a6d69642"
  .[production_parser_switch](051a5a7d): "+[quest] (site repo) — the same commit: ?parser=next|latest|<name> with a banner naming the build"
  .[reader_variant](603f6b59): "#[release] — reader.min.js and reader.debug.js ship the editor's role stream, outline, anchors, and highlightHtml, browser-safe through seed's reader slice"
@@ -75,7 +77,7 @@
  ~#files_hot: "scripts/release/build-parser-release.ts, package.json"
  ~#next_commit: "first_release"
  ~#open_count: "5"
- ~#last_stream: "2026-10-25 20:40"
+ ~#last_stream: "2026-10-27 10:21"
 }
 
 ^["done"]{
@@ -97,4 +99,6 @@
  >>[2026-10-13 23:16] implement — On feature/reader-form-context (e810b683): the workbench build also exports formAt and formHover, the editor's caret form context from text alone; the reader build stays at 85 KB without them.
  >>[2026-10-19 16:28] revise — Direction review at 0eb1d1c0: the release target has elapsed and stamp assertions already exist; PLAN.md now separates local coverage evidence from unverified site publication.
  >>[2026-10-25 20:40] note — A mounted consumer asks (2026-10-25, rank 14, one_browser_build) that the reader be the browser build of a release and full an alias for one release: reader and full give the same AST, tokens, errors, warnings, and events on 990 of 990 consumer .spw files, and the reader adds roles, outline, anchors, and highlightHtml for 12 KB more (2026.10.13: full.min 75850 B, reader.min 87605 B).
+ >>[2026-10-27 10:21] measure — Stamp audit at 850077ab: npm run test:parser-release passes 21 of 21. The stamp test holds all nine scripts of a release (full, lite, reader and workbench in min and debug, and the parser.js alias) to the manifest revision, release name, variant, form and dirt; it shipped with release_builder in 17b0d6d7 (revision, release, offset, variant, form), and 749899ee carried it to names. Kind is asserted per file for a release (prerelease undefined) but only on full.min.js for a prerelease or a patch; the builder sets kind for every file from one stamp function, so the cell is sampled, not missing. stamp_matches_manifest is reconciled to 17b0d6d7 with no new test.
+ >>[2026-10-27 10:21] observe — The 2026-10-25 consumer note cites 2026.10.13 sizes (full.min 75850 B, reader.min 87605 B) that no workbench cut matches: release/parser here holds only 2026.10.13-pre.1 (749899ee, full.min 74362 B, no reader). A 2026.10.13 release with a reader may have been cut and published from the site repository; first_release stays planned until that repository is checked.
 }

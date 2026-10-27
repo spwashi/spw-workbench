@@ -15,7 +15,7 @@
 }
 
 ^["edges"]{
- shares: [~"../runtime-maintenance/wip.spw", ~"../tooling-scripts-consolidation/wip.spw", ~"../editor-reading-hierarchy/wip.spw", ~"../cli-mode-overhaul/wip.spw", ~"../refactor-import-sprawl/wip.spw", ~"../audit-ui-data-models/wip.spw", ~"../apposition-cache-granules/wip.spw"]
+ shares: [~"../runtime-maintenance/wip.spw", ~"../tooling-scripts-consolidation/wip.spw", ~"../editor-reading-hierarchy/wip.spw", ~"../cli-mode-overhaul/wip.spw", ~"../refactor-import-sprawl/wip.spw", ~"../audit-ui-data-models/wip.spw", ~"../apposition-cache-granules/wip.spw", ~"../vscode-workspace-atlas/wip.spw", ~"../query-profile/wip.spw", ~"../naming-profile-convention-align/wip.spw"]
 }
 
 ^["roots"]{
@@ -70,21 +70,22 @@
  >>[2026-10-13 22:30] decide — The owner asked to improve the tree structure of several modules. This plan holds the moves no plan owned, lowest risk first; runtime splits stay with runtime-maintenance, scripts with tooling-scripts-consolidation, and display.ts with editor-reading-hierarchy.
  >>[2026-10-13 22:33] implement — Landed ca9ae1bd: seed's four root re-export files and canonical/operator-ladders.ts are gone. Every suite passed; a first CLI run timed out three subprocess tests under load, which passed alone and on a rerun.
  >>[2026-10-19 16:52] revise — Language-design review separates physical ownership from semantic indexes, keeps particle consumers in their layers, and proposes locate-the-owner trials. one_hash_module is already landed; other move gates remain.
+ >>[2026-10-27 10:18] observe — Checked against main at 850077ab: no move has landed. 55e79d2e moved the citation and generated lens builders out of handlers/display.ts (now 1332 lines) into citation-lenses.ts and generated-lenses.ts, server-index.ts grew to 1390, and the LSP keeps 32 tests under __tests__; planned counts and cache sizes refreshed. build-parser-release.ts now names packages/spw-lsp/src/form-reader.ts (e810b683), so it joins the pinned LSP entries. Declared shares with vscode-workspace-atlas (workspace-tree.ts), query-profile (query.ts, query-profile.ts), and naming-profile-convention-align (pulse.ts and verb names).
 }
 
 ^["open"]{
  # Unresolved questions. When resolved: log in stream, then move to ^["done"] as ~#resolved(label).
- ?[test_placement]: "Is a sibling name.test.ts the one convention, so the LSP's 29 tests and scripts' __tests__ move beside their sources?"
- ?[verb_names]: "Are CLI files named for their verb (census.ts, graph.ts, density.ts, form.ts, measure.ts, stack.ts, outline.ts), with the old names kept only as command aliases?"
- ?[disclose_word]: "One word for three files: disclose (cli pulse-disclose, lsp corpus-disclose) or disclosure (seed corpus-disclosure)?"
- ?[canonical_name]: "Does canonical/ stay as an umbrella over form/, edit/, citation/, and measure/, or do those folders sit at seed's top level?"
+ ?[test_placement]: "Is a sibling name.test.ts the one convention, so the LSP's 32 tests (29 at the survey) and scripts' __tests__ move beside their sources? Unblocks ~[lsp_sibling_tests]."
+ ?[verb_names]: "Are CLI files named for their verb (census.ts, graph.ts, density.ts, form.ts, measure.ts, stack.ts, outline.ts), with the old names kept only as command aliases? Unblocks ~[cli_corpus]."
+ ?[disclose_word]: "One word for three files: disclose (cli pulse-disclose, lsp corpus-disclose) or disclosure (seed corpus-disclosure)? Decides the file names ~[lsp_reading] and ~[cli_pulse_split] write."
+ ?[canonical_name]: "Does canonical/ stay as an umbrella over form/, edit/, citation/, and measure/, or do those folders sit at seed's top level? Decides the paths of the four seed folder moves, ~[seed_form_folder] through ~[seed_measure_folder]."
 }
 
 ^["commits"]{
  # Named, in order. Planned ~[name]; landed .[name](hash). Names are never reused.
  .[plan](8abffc70): ".[plans] — module-trees records the tree survey and orders the moves, lowest risk first"
  .[seed_reexport_files](ca9ae1bd): "&[seed] — four root files that only re-exported their folders, and an operator-ladders re-export no file imported, are deleted"
- ~[lsp_sibling_tests]: "![lsp] — the 29 tests under packages/spw-lsp/src/__tests__ move beside their sources, after ?[test_placement]"
+ ~[lsp_sibling_tests]: "![lsp] — the 32 tests under packages/spw-lsp/src/__tests__ move beside their sources, after ?[test_placement]"
  ~[cli_families]: "&[cli] — ls, atlas, authority, refactor, and quest become folders holding their family files"
  ~[cli_corpus]: "&[cli] — corpus/ gathers scan, spread, and memo with the census, graph, formula, density, taste, and lattice verbs, each named for its verb, after ?[verb_names]"
  ~[cli_query]: "&[cli] — query/ gathers query, query-profile, select, and selectors"
@@ -93,14 +94,14 @@
  ~[vscode_commit_folder]: "&[vscode] — commit-uri and commit-view move to commit/"
  ~[vscode_view_splits]: "&[vscode] — concepts-tree.ts and workspace-tree.ts split by concern, and their two densityBar copies become one"
  ~[lsp_reading]: "&[lsp] — reading/ holds the surface readers (form-context, wonder, outline, commit-ref-forms, corpus disclosure), so reader.ts reads from it rather than from handlers/"
- ~[lsp_display_split]: "&[lsp] — handlers/display.ts splits into hover, symbols, code-lens, inlay-hints, and highlight, one surface per commit with editor-reading-hierarchy"
+ ~[lsp_display_split]: "&[lsp] — handlers/display.ts splits into hover, symbols, code-lens, inlay-hints, and highlight, one surface per commit with editor-reading-hierarchy; the citation and generated lens builders already sit in citation-lenses.ts and generated-lenses.ts (55e79d2e), so code-lens joins them"
  ~[seed_form_folder]: "&[seed] — canonical/form/ gathers form-*, geometry-*, geometric-resonance, and topography-probe"
- ~[seed_edit_folder]: "&[seed] — canonical/edit/ gathers differential, semantic-edit, derived-marks, patch, change-report, nest-path, stencil, the transforms, mutation-automata, and path-rename, after runtime-maintenance one_hash_module"
+ ~[seed_edit_folder]: "&[seed] — canonical/edit/ gathers differential, semantic-edit, derived-marks, patch, change-report, nest-path, stencil, the transforms, mutation-automata, and path-rename; its gate, runtime-maintenance one_hash_module, landed in eb34e6c3"
  ~[seed_citation_folder]: "&[seed] — canonical/citation/ gathers resolve-citation, resolve-fragment, particles, apposition-scan, annotation-lint, read-bias, and index-config"
- ~[seed_measure_folder]: "&[seed] — canonical/measure/ gathers measure-protocol, self-mass, fingerprint, flow-protocol, format-pulses, and dream-schedule, after one_hash_module"
+ ~[seed_measure_folder]: "&[seed] — canonical/measure/ gathers measure-protocol, self-mass, fingerprint, flow-protocol, format-pulses, and dream-schedule; its gate, one_hash_module, landed in eb34e6c3"
  ~[cli_inspect_split]: "&[cli] — inspect.ts (684 lines, 18 imports) splits into inspect/ by args, source, and spacing"
  ~[cli_pulse_split]: "&[cli] — pulse.ts (1815 lines) splits into pulse/ along its seams, and its private collectSpwFiles gives way to fs-walk, after runtime-maintenance legacy_tests_home"
- ~[split_server_index]: "&[lsp] — server-index.ts (1374 lines) splits into the document store, scan, annotations, and frames, coordinated with apposition-cache-granules"
+ ~[split_server_index]: "&[lsp] — server-index.ts (1390 lines on 2026-10-27) splits into the document store, scan, annotations, and frames, coordinated with apposition-cache-granules"
  ~[lsp_index_folder]: "&[lsp] — index/ gathers server-index, anchor-lines, apposition, and spw-selector, last because 60 files cite them"
 }
 
@@ -112,8 +113,8 @@
  ~#files_hot: "packages/spw-cli/src, packages/spw-seed/src/canonical"
  ~#next_commit: "cli_families"
  ~#open_count: "4"
- ~#last_stream: "2026-10-19 16:52"
- ~#taste_debt: "pulse.ts 1815, server-index.ts 1374, display.ts 1343, form-geometry.ts 1209 lines: each splits before it moves"
+ ~#last_stream: "2026-10-27 10:18"
+ ~#taste_debt: "pulse.ts 1815, server-index.ts 1390, display.ts 1332, form-geometry.ts 1209 lines on 2026-10-27: each splits before it moves"
 }
 
 ^["done"]{

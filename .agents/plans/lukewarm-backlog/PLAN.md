@@ -13,12 +13,12 @@ Taste note:
 
 Each `?[name]` in `^["open"]` carries: the evidence (a path or command that re-verifies it), `home` (the plan that owns the fix), `heat` (the event that reheats it) and `cost` (S under an hour, M a commit, L a series).
 
-## Items (12) and their homes
+## Items (9 open) and their homes
 
 | Item | Home plan | Heat trigger | Cost |
 |------|-----------|--------------|------|
 | eslint_unwired | typescript-upgrade-ladder | rung C decides the typescript6 alias | S |
-| skills_overclaim | audit-fuzz-truthfulness | its ~[retire_alias_profiles] renames the aliases | S |
+| skills_overclaim | tooling-scripts-consolidation | its ~[truthful_aliases] renames the aliases (absorbed audit-fuzz-truthfulness retire_alias_profiles on 2026-10-13) | S |
 | mass_undeclared | measure-invariant-generalization | ~[declare_canon_mass] canon declaration | S |
 | old_grade_spelling | seed-roundness-grades, syntax-hardware-alignment | either plan edits those files | S |
 | span_collapsed_text | syntax-profile-stack, runtime-dx-foundation | a position shown for an Spw.l file | M |
@@ -26,9 +26,12 @@ Each `?[name]` in `^["open"]` carries: the evidence (a path or command that re-v
 | precipitate_failure_untested | precipitate-model-alignment | `?[failure_continuity]` answered | S |
 | spwq_open_decisions | spw-q-stabilization | a Spw.q parser or exporter commit | S |
 | gap_probe_order | gap-affinity-tooling | its ~[gap_census_bench] starts | S |
-| obsidian_hot_unscaffolded | obsidian-spw | ~[scaffold_plugin] scaffolds the plugin | S |
-| base_ref_gaps | hygiene-index-consolidation | any listed plan reheats | S |
-| register_explorer_silence | vscode-register-explorer | the plan is reheated | S |
+
+## Resolved
+
+- `base_ref_gaps`: 937b53e9 set the three live plans to `main@551bb419`, and the two others were archived in 90c58bbc; `plan:check` reports no base_ref issue (2026-10-27).
+- `obsidian_hot_unscaffolded`: obsidian-spw answered it on 2026-10-27 10:18: planned paths ride on the card as `will_touch`, and `files_hot` names only paths on disk.
+- `register_explorer_silence`: vscode-register-explorer took the item on 2026-10-12 15:00 and holds it as `?[heuristic_snapshot_enough]`.
 
 ## Dropped and corrected on verification
 

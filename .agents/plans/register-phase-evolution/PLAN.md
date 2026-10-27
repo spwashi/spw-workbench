@@ -35,7 +35,7 @@ This is the language-design rung in the current ecology. Its real value is not j
 [MOD] src/seed/query/__tests__/match.test.ts
 [MOD] src/seed/query/__tests__/selector-expr.test.ts
 [MOD] packages/spw-cli/src/query.ts
-[MOD?] scripts/spwq.ts
+[MOD?] scripts/spwq.ts   # removed in b7c5c7df; spw query is the adapter
 [MOD] docs/runtime/spw/register-bank.spw
 [MOD] docs/runtime/spw/brace-registers.spw
 [MOD] lib/spw-v0.2.0-alpha/runtime/REGISTERS.md
@@ -48,7 +48,7 @@ This is the language-design rung in the current ecology. Its real value is not j
 ### Craft guard
 
 - `packages/spw-runtime/src/state/register-bank.ts` stays a narrow touch-up surface only; if helper extraction becomes necessary, do it as a deliberate follow-on instead of silently mixing refactor work into vocabulary alignment.
-- `packages/spw-cli/src/query.ts` and `scripts/spwq.ts` remain thin adapters; selector parsing and evaluation belong in `packages/spw-seed/src/query/`.
+- `packages/spw-cli/src/query.ts` remains a thin adapter (`scripts/spwq.ts` was removed in b7c5c7df); selector parsing and evaluation belong in `packages/spw-seed/src/query/`.
 - Maintain inward layering: runtime depends on seed types/interfaces, not app/UI modules.
 
 ## Commits

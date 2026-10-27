@@ -35,6 +35,8 @@ Advertised and routed in `stdio-server.ts`: definition/declaration, references, 
 
 Policy for this plan: either implement with tests + mounted-consumer evidence, or demote client types so call sites cannot pretend success.
 
+**Since 2026-07-20:** `bb0ec2ef` (2026-07-22) made the server answer the four phantom rows above through the probe handler, and `a999a24f` landed `spw/formContext` with a handler, a test and a client type. The switch now answers 23 `spw/*` methods (8 direct, 15 through the probe handler); `.spw/caches/tree/spw/hosts/lsp-surface.spw` lists each with its callers per host, and eight have no caller in this repository.
+
 Server routing is not capability advertisement. The current tree has no single custom-protocol registry from which handlers, initialization metadata, TypeScript request maps, client helpers, and audit rows are derived. Establish that registry before adding `spw/topography`, differential preview, garden, pulse, or hydration methods.
 
 ### Proposed next earned method (2026-07-21)

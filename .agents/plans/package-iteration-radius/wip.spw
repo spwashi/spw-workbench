@@ -17,7 +17,7 @@
 
 ^["edges"]{
  feeds: [~"../cli-benchmarking-infra/wip.spw"]
- shares: [~"../canon-rewrite-v2/wip.spw", ~"../runtime-dx-foundation/wip.spw", ~"../typescript-upgrade-ladder/wip.spw", ~"../gap-affinity-tooling/wip.spw", ~"../spw-site-install/wip.spw", ~"../_archive/mounted-workbench-organelle/wip.spw"]
+ shares: [~"../canon-rewrite-v2/wip.spw", ~"../runtime-dx-foundation/wip.spw", ~"../typescript-upgrade-ladder/wip.spw", ~"../gap-affinity-tooling/wip.spw", ~"../spw-site-install/wip.spw", ~"../_archive/mounted-workbench-organelle/wip.spw", ~"../parser-releases/wip.spw"]
 }
 
 ^["roots"]{
@@ -33,6 +33,7 @@
  @runtime_dx: ~".agents/plans/runtime-dx-foundation/runtime-dx-foundation.spw"
  @install: ~".agents/plans/spw-site-install/PLAN.md"
  @gap_affinity: ~".agents/plans/gap-affinity-tooling/gap-affinity-tooling.spw"
+ @parser_release: ~"docs/runtime/md/parser-release.md"
 }
 
 ^["intent"]{
@@ -85,13 +86,14 @@
  >>[2026-10-12 14:34] observe — reconciled against main: ~[1] landed in c46558ff (plan artifacts); outside the list, f3ab94eb (defer compiler loading) and 8d454ad6 (spw-cli tsconfig now references spw-runtime) are on main. ~[2] has not landed: scripts/analyzers has no package-contract audit. Facts for the open questions: all four packages/*/package.json are private at 0.3.0; scripts/release/build-js-dist.ts already bundles bin/spw plus seed (index, parser, lite) and runtime (index, pipeline, substrate, resonance) entries and none for the LSP; extensions/vscode-spw declares esbuild ^0.19.0 and typescript ^5.2.0 against the root's esbuild ^0.27.3 and typescript ~5.9.3.
  >>[2026-10-12 14:34] revise — ?[publication], ?[toolchain_ranges], and ?[entrypoint_matrix] rewritten against those facts so each names the decision it unblocks; ?[task_graph] unchanged. ~[1] pointed at ^[done].
  >>[2026-10-12 15:25] revise — Commits named per the convention in 90c58bbc: 3 landed, 7 planned, 0 dropped.
+ >>[2026-10-27 10:19] observe — Public entries moved since the 2026-10-12 reconcile: 900e2b9c added the runtime ./node export and a jsdist entry for it, 603f6b59 added the seed ./reader export, and the parser release (scripts/release/build-parser-release.ts, documented in docs/runtime/md/parser-release.md, now a root) bundles packages/spw-lsp/src/reader.ts and form-reader.ts into its reader and workbench builds. ?[publication] and ?[entrypoint_matrix] restated with these facts; declared shares with parser-releases, which owns that build. Checked at 850077ab: audit_package_boundaries has not landed and no package-contract-audit.ts exists.
 }
 
 ^["open"]{
- ?[publication]: "All four workspace packages are private and jsdist ships no LSP entry; should the LSP ever ship as a package, or only inside the VS Code extension? Decides whether ~[verify_install_matrix]'s matrix includes an LSP pack-and-import smoke."
+ ?[publication]: "All four workspace packages are private and jsdist ships no LSP entry, while the parser release bundles LSP reader code (reader.ts, form-reader.ts) into its reader and workbench builds; should the LSP ever ship as a package, or only inside the VS Code extension and those builds? Decides whether ~[verify_install_matrix]'s matrix includes an LSP pack-and-import smoke."
  ?[toolchain_ranges]: "extensions/vscode-spw pins esbuild ^0.19.0 and typescript ^5.2.0 while the root uses ^0.27.3 and ~5.9.3; converge the extension to the root or keep a tested compatibility matrix? Decides ~[verify_install_matrix]'s extension row and typescript-upgrade-ladder rung A."
- ?[task_graph]: "Can npm workspace scripts meet the measured radius target before a task-graph or cache framework is justified?"
- ?[entrypoint_matrix]: "Should the entries build-js-dist.ts already bundles (bin/spw; seed index, parser, lite; runtime index, pipeline, substrate, resonance) be declared the public set, with every other export private until a clean-consumer smoke proves it? Decides ~[leaf_export_smokes]'s export smoke list."
+ ?[task_graph]: "Can npm workspace scripts meet the measured radius target before a task-graph or cache framework is justified? Answered by ~[measure_dependency_cones]; a no reopens the out-of-scope line on build orchestration in PLAN.md."
+ ?[entrypoint_matrix]: "Should the entries build-js-dist.ts already bundles (bin/spw; seed index, parser, lite; runtime index, node, pipeline, substrate, resonance), plus the seed ./reader export only the parser release bundles, be declared the public set, with every other export private until a clean-consumer smoke proves it? Decides ~[leaf_export_smokes]'s export smoke list."
 }
 
 ^["commits"]{
@@ -115,7 +117,7 @@
  ~#files_hot: "packages/spw-seed/package.json, packages/spw-cli/package.json, packages/spw-cli/src/commands.ts, packages/spw-cli/src/authority.ts, packages/spw-cli/tsconfig.json, .agents/plans/package-iteration-radius/PLAN.md, .agents/plans/package-iteration-radius/wip.spw"
  ~#next_commit: "audit_package_boundaries"
  ~#open_count: "4"
- ~#last_stream: "2026-10-12 15:25"
+ ~#last_stream: "2026-10-27 10:19"
  ~#taste_debt: "Public package and entry-point intent, extension toolchain convergence, and the threshold for build orchestration remain unresolved until audit, clean-consumer, and radius evidence exist."
 }
 

@@ -53,15 +53,16 @@ Taste note: clarity and containment. The plan removes or relocates more than it 
 [MOD] extensions/vscode-spw/syntaxes/spw.tmLanguage.json (+ generated IntelliJ copy) — no path color for a word with a slash
 [MOD] extensions/vscode-spw/src/surface-decorations.ts — apostrophe mask stays on its line
 [MOD] packages/spw-lsp/src/handlers/display.ts — frame lens units, one incoming owner, anchor trial off, resolved-path inlay, header banner
+[NEW] packages/spw-lsp/src/handlers/citation-lenses.ts, generated-lenses.ts — landed in 55e79d2e (citation counts, generated banner actions)
 [NEW] packages/spw-lsp/src/handlers/hover-layers.ts, inlay-hints.ts — moved out of display.ts as they change
 [MOD] packages/spw-lsp/src/handlers/wonder.ts — off-page facts only
 [MOD] extensions/neovim-spw/lua/spw/lsp.lua — no forced inlay hints at attach
-[MOD] extensions/vscode-spw/package.json, src/capture-plan.ts — status glyphs, AA valence palette, capture as a profile client
+[MOD] extensions/vscode-spw/package.json, src/capture/capture-plan.ts — status glyphs, AA valence palette, capture as a profile client
 ```
 
 ### Craft guard
 
-`display.ts` is over 1,400 lines. Every builder that changes moves to its own module in the same commit, and none of them may grow `display.ts`.
+`display.ts` is 1,332 lines at `55e79d2e`, over twice the 600-line guard. Every builder that changes moves to its own module in the same commit, and none of them may grow `display.ts`.
 
 ## Commits
 
@@ -69,10 +70,11 @@ Canonical list: `wip.spw` `^["commits"]`. The order:
 1. The census.
 2. Honesty: lexer errors, then the path-aware parse.
 3. One role stream: the parity check, then roles from the parse tokens. Stream prose as text, path color, and inline `#` comments land as role mappings on that stream, not as regex branches. Then operator and particle modifiers, once the operator table names them.
-4. Anti-echo: lens units, one incoming owner, the anchor trial, the resolved-path and wonder inlays, and hover layers.
+4. Anti-echo: lens units, one incoming owner, the anchor trial, the resolved-path and wonder inlays, and hover layers. Lens units, one incoming owner (`c3ecbb34`), the anchor trial, citation lenses and generated banner actions (`55e79d2e`) have landed.
 5. Commit-frame roles.
 6. Profiles as modes, then status and palette.
 7. The census again.
+8. Outside the census: string color swatches, and host injections (consumer rank 2, `?[beyond_spw_files]`).
 
 ## Agentic Hygiene
 

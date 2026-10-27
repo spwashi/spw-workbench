@@ -15,7 +15,7 @@
 }
 
 ^["edges"]{
- shares: [~"../audit-fuzz-truthfulness/wip.spw", ~"../hygiene-index-consolidation/wip.spw", ~"../plan-tooling-design/wip.spw", ~"../cli-mode-overhaul/wip.spw", ~"../local-numbering-vcs/wip.spw", ~"../caches-living-tree/wip.spw", ~"../citation-navigation/wip.spw"]
+ shares: [~"../audit-fuzz-truthfulness/wip.spw", ~"../hygiene-index-consolidation/wip.spw", ~"../plan-tooling-design/wip.spw", ~"../cli-mode-overhaul/wip.spw", ~"../local-numbering-vcs/wip.spw", ~"../caches-living-tree/wip.spw", ~"../citation-navigation/wip.spw", ~"../commit-gate-redesign/wip.spw", ~"../plan-plugin-integration/wip.spw", ~"../refactor-import-sprawl/wip.spw"]
 }
 
 ^["roots"]{
@@ -92,11 +92,12 @@
  >>[2026-10-13 22:04] note — The 88 one-line shims under src/seed and src/runtime are retired by runtime-maintenance retire_src_shims, not by lsp_shims, which covers scripts/lsp only.
  >>[2026-10-13 22:33] note — From the module-trees survey: the nine scripts/lsp shims have 0 importers; analyzers/ holds 19 files under three naming schemes (spw-*, v020-*, bare); analyzers tests sit in __tests__ while release/ uses a sibling test; commit-review scripts live in two homes; spw-lib.sh is sourced at a fixed path by six skill scripts; test:run skips the lsp, vscode, and analyzers suites.
  >>[2026-10-25 21:33] observe — npm run lint:spw runs scripts/analyzers/spw-syntax-validate.ts, which ignores flags it does not know: lint:spw -- --stats prints nothing and exits 0, while spw lint now takes --stats and rejects --statz. A fail-open script behind a lint name, found 2026-10-25.
+ >>[2026-10-27 10:25] note — Sweep 2026-10-27: docs_truth now names docs/runtime/md/sense-loop.md and docs/learn/worked-cli.md, which still teach invent and map as the lead verbs (render item 22); lint_spw_fail_closed gives the 2026-10-25 fail-open lint:spw observation a commit, since spw_review names neither the script nor lint:spw.
 }
 
 ^["open"]{
- ?[hook_install]: "Hooks are copied into .git/hooks by hand; does an install-hooks step land here, or with the commit gate's own plan?"
- ?[spw_review_shape]: "Is the review cluster one spw review verb with --parse and --landscape, as conventions/cli.spw plans, or two verbs?"
+ ?[hook_install]: "Hooks are copied into .git/hooks by hand (scripts/pre-commit carries the cp line); does an install-hooks step land here, or in commit-gate-redesign, which owns the hook sources? Decides whether this plan adds an install commit."
+ ?[spw_review_shape]: "Is the review cluster one spw review verb with --parse (spw-syntax-validate) and --landscape (spw-syntax-audit) modes, or two verbs? conventions/cli.spw planned_review names one verb that runs a named review profile, but no flags. Decides what ~[spw_review] adds to the command table."
 }
 
 ^["commits"]{
@@ -106,13 +107,14 @@
  ~[pin_analyzers]: "![analyzers] — topography and refactor-check tests match current parse health, and test:analyzers joins the headless suite"
  ~[gate_dead_checks]: "&[commit-gate] — run-review drops the lib/spw boundary check and the ~# warning, and poll-review fuzz flags either reach eslint or go"
  ~[truthful_aliases]: "vocab[scripts] — fuzz:complexity, dead, naming, async, and boonhonk, analyze:patterns, lint:changed, and the compat spw names warn and route to truthful names (from audit-fuzz-truthfulness retire_alias_profiles and hygiene-index-consolidation npm_scripts_canonical)"
- ~[docs_truth]: ".[docs] — CLAUDE.md, skills, agent commands, and docs/contributing cite canonical names; lint:layers and lint:fix cites are resolved"
+ ~[docs_truth]: ".[docs] — CLAUDE.md, skills, agent commands, docs/contributing, docs/runtime/md/sense-loop.md and docs/learn/worked-cli.md cite canonical names (census and graph lead, invent and map are aliases); lint:layers and lint:fix cites are resolved"
  ~[lsp_shims]: "&[lsp] — npm run lsp runs the package bridge, the re-export shims go, and smoke-navigation moves into packages/spw-lsp"
  ~[archive_check]: "&[analyzers] — the three v020 checks and runtime-filename become one archive-contract-check behind the lint:v020 names"
  ~[verbs_absorb]: "&[cli] — spw resolve, delta --ast, form, and lint --particles absorb path-check, refactor-check, topography and flow, and particle census, with the npm names routed"
  ~[spw_review]: "&[cli] — spw review reads seed syntax-stack as the only profile source, and spw-syntax-review.ts stays as a shim for consumer hooks"
  ~[spw_plan_verbs]: "&[plans] — spw plan and spw agent own init, stream, status, check, index, kb, and vibe; agent-tools.sh dispatches to them; kb stops printing absolute paths; card touches follow"
  ~[retire_ui]: "&[audit] — ui-contract-audit, perturbation-scan, and the UI-era skill loaders warn, and audit-full drops the UI checks"
+ ~[lint_spw_fail_closed]: "&[scripts] — npm run lint:spw rejects a flag it does not know, by routing to spw lint or by a fail-closed parser in spw-syntax-validate.ts; today lint:spw -- --stats prints nothing and exits 0"
 }
 
 ^["cache"]{
@@ -123,7 +125,7 @@
  ~#files_hot: "package.json, .agents/skills/spw-commit-review/scripts/poll-review.sh, scripts/commit-review/run-review.sh"
  ~#next_commit: "suite_and_bundle"
  ~#open_count: "2"
- ~#last_stream: "2026-10-25 21:33"
+ ~#last_stream: "2026-10-27 10:25"
  ~#taste_debt: "spw-lib.sh (980 lines) and agent-lib.sh (1105 lines) pass the 600-line guard; the spw plan verbs shrink the second"
 }
 

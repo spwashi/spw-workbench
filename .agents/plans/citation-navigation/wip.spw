@@ -25,6 +25,7 @@
  @atlas: ~"./workbench-atlas.spw"
  @consultation: ~"./consultation.spw"
  @evidence: ~"./evidence-cache.spw"
+ @address: ~"../../../.spw/caches/tree/spw/theory/address-and-linking.spw"
 }
 ^["intent"]{
  ~#goal: "Make unfamiliar codebases navigable through constructs, evidence, reading trails, and resumable collaborative inquiry."
@@ -45,7 +46,7 @@
  .[resolve_parity](2c082311): "&[cli] — resolve refs against the citing file, then the consumer root"
  .[anchor_line_fragments](861fa214): "&[lsp] — land fragments on their anchor line from the server index"
  .[parser_first_refs](e6c56978): "&[seed] — selectPathRefs reads the parser first and keeps fallbackPathRefs only for a source the parser rejects (routed ask: one_fact_model); verify CLI resolve, diagnostics and links agree on one fixture set"
- ~[route_fragment_targets]: "&[lsp] — resolve routes and a leading slash in fragment targets through splitAnchor and the ServerIndex anchor entries (routed ask: file_navigation, fragments already landed in 861fa214)"
+ ~[route_fragment_targets]: "&[lsp] — resolve routes and a leading slash in fragment targets through splitAnchor and the ServerIndex anchor entries (routed ask: file_navigation, fragments already landed in 861fa214); the leading-slash half landed in 55e79d2e as leading_slash_root, routes stay open, and spw resolve still skips the anchor of a route (resolve.ts)"
  .[rename_rewrites_citations](56844e6e): "&[lsp] — willRenameFiles rewrites citations from a path refactor kind; opens only after refactor-experiment-lifecycle 4e names that kind (routed ask: move_updates_citations)"
  ~[port_probe_fixtures]: "![lsp] — port the consumer's probe lines that run against this repo into fixtures for parser_first_refs, lens_reference_peek, route_fragment_targets and rename_rewrites_citations before any row is closed"
  ~[consultation_resume_loop]: "&[inquiry] — consultation and resume loop; held until ?[entry] picks a journey"
@@ -53,9 +54,11 @@
  ~[root_anchor_lsp]: "&[lsp] — p8: go-to-definition, hover, diagnostics, and anchor completion for a root with a fragment, with or without a path between them, through the ServerIndex anchor entries; an unresolved anchor names the root it searched"
  ~[root_anchor_grammar]: "&[extensions] — p8: the VS Code TextMate grammar and semantic tokens and the IntelliJ lexer color @root#anchor as one citation"
  ~[refs_outside_strings]: "&[lsp] — the rootRef regex fallback (spw-selector.ts, step 3) and the graph and census scanners stop reading refs inside strings and # comments; the fallback runs only for a source the parser rejects, as parser_first_refs made it for pathRefs"
- ~[resolve_anchor_strict]: "&[cli] — resolve accepts only #> anchors as fragments, not frame names or binding keys (resolve-citation.ts 76 to 87; spw/theory/address-and-linking.spw, spw_theory_address_resolve_loose); lands with ~[root_anchor_refs]"
+ ~[resolve_anchor_strict]: "&[cli] — resolve accepts only #> anchors as fragments, not frame names or binding keys (resolve-citation.ts 76 to 87; spw/theory/address-and-linking.spw, spw_theory_address_resolve_loose); lands with ~[root_anchor_refs]; waits on ?[binding_key_fragments], since a mounted consumer cites binding keys as fragments"
  ~[expand_reflexive_targets]: "&[cli] — expand projects every target of a reflexive edge and rebases its links; it projects 1 of 21 on contraptions/index today (render item 9)"
  .[handles_in_prose](cf7df67a): "&[lsp] — a handle this file declares links, defines and hovers inside a string through its declaration citation; nothing else in a string changes (consumer rank 11)"
+ .[leading_slash_root](55e79d2e): "&[lsp] — a citation with a leading slash resolves from the workspace root, not the disk root (helpers.ts resolveReferencePath); the path half of route_fragment_targets (with graph_index_scope)"
+ .[graph_index_scope](55e79d2e): "&[lsp] — spw/referenceGraph walks only files inside the index scope, so a mounted _workbench, release copies and .tmp leave the graph (with leading_slash_root)"
 }
 ^["stream"]{
  >>[2026-09-08 13:08] observe — CLI citation classification exists; LSP fragment lookup reads saved targets.
@@ -88,17 +91,18 @@
  >>[2026-10-25 21:33] implement — Uncommitted on main 2026-10-25, for consumer rank 11: new prose-handles.ts links a handle this file declares (a parser-vouched citation right after @name:) inside a STRING or PHRASE token, through the same citationTarget its declaration link uses; definition follows it too, and the hover leads with the declaration and keeps geometry last. refs_outside_strings rules hold: no selector hit, diagnostic, graph edge or path color, and a root with a path or an anchor inside a string stays text. On the consumer: 1131 uses in 183 files link.
  >>[2026-10-25 21:33] observe — Two resolver changes rode with the citation lenses: a citation with a leading slash resolves from the workspace root, not the disk root (consumer @page and @registry forms; its unresolved citations fall from 1688 to 267 with the scope change), and the reference graph walks only files inside the index scope, so a mounted _workbench, release copies and .tmp leave spw/referenceGraph (consumer surfaces 2534 to 1391; the first build had taken 78 s, nearly all parsing the mounted workbench).
  >>[2026-10-25 21:33] observe — Tension for resolve_anchor_strict: the consumer route trees cite binding keys as fragments (follows to _family.spw#shape_1, shape_1 = .{ ... }), 8 per family. resolve_anchor_strict would make those fragments fail; the new key lens counts only #> anchors, so those citations count toward the file total alone. Either the consumer writes #>shape_1 anchors or fragment lookup widens to binding keys; the consumer asked which in lens_counts_citations.
+ >>[2026-10-27 10:23] implement — Landed in 55e79d2e (2026-10-26) with the citation lenses: leading_slash_root, a leading-slash citation resolves from the workspace root, and graph_index_scope, spw/referenceGraph walks only files inside the index scope. route_fragment_targets keeps its routes half; spw resolve still skips the anchor of a route.
+ >>[2026-10-27 10:23] decide — resolved [rename_kind]: neither waited. The path rename kind (seed canonical/path-rename.ts) and willRenameFiles landed together in 56844e6e as one plan for spw refactor and the server.
+ >>[2026-10-27 10:23] decide — resolved [parser_first]: yes. Since e6c56978 the parser answers first and fallbackPathRefs runs only for a source the parser rejects; prose-quoted paths stopped resolving (161 false citations dropped over 1306 files), and since cf7df67a only a handle the file declares links inside a string, through its declaration.
 }
 ^["supporting_documents"]{
  must_ship: [@plan, @atlas, @consultation, @evidence, @contract]
 }
 ^["open"]{
  ?[entry]: "Is the first journey a single fragment arrival (landed in 861fa214 for anchors), or the routed citation trail (parser-first refs, lens peek, willRenameFiles), and which one does the next commit serve?"
- ?[parser_first]: "May selectPathRefs drop fallbackPathRefs for sources that parse, and does any prose-quoted path the fallback finds today have to keep resolving?"
- ?[rename_kind]: "Does willRenameFiles wait for a path kind in refactor-experiment-lifecycle 4e, or may citation-navigation ship a rename-only edit set first?"
  ?[alias_binder]: "Is a file-scoped alias binder in scope, given unresolved_semantics in workbench-atlas.spw forbids guessing binding rules until the language contract states them?"
  ?[outline_gap]: "documentSymbols already returns nested children via outlineFromSource, so what part of the consumer's flat-outline complaint is left, other than routes and leading-slash fragments?"
- ?[binding_key_fragments]: "Does a fragment name only a #> anchor (resolve_anchor_strict), or also a binding key, as the consumer family citations do (#shape_1 on shape_1 = .{})?"
+ ?[binding_key_fragments]: "Does a fragment name only a #> anchor (resolve_anchor_strict), or also a binding key, as the consumer family citations do (#shape_1 on shape_1 = .{})? The answer decides whether ~[resolve_anchor_strict] ships as written; @address asks the same as anchors_only."
 }
 ^["cache"]{
  ~#status: "active"
@@ -106,12 +110,14 @@
  ~#hygiene_split: "none"
  ~#files_hot: "packages/spw-lsp/src/spw-selector.ts, packages/spw-lsp/src/handlers/navigation.ts, packages/spw-lsp/src/handlers/analysis.ts, packages/spw-cli/src/resolve.ts"
  ~#next_commit: "root_anchor_refs"
- ~#open_count: "6"
+ ~#open_count: "4"
  ~#taste_debt: "Editor parity remains unverified."
- ~#last_stream: "2026-10-25 21:33"
+ ~#last_stream: "2026-10-27 10:23"
 }
 ^["done"]{
  ~#dropped(lens_reference_peek): "VS Code's reference peek landed client-side in 99e6d993; the server command route is vscode-authoring-probe-loop ~[code_lens_commands], and lens labels moved to editor-reading-hierarchy ~[frame_lens_units]"
+ ~#resolved(parser_first): "May selectPathRefs drop fallbackPathRefs for sources that parse, and does any prose-quoted path the fallback finds today have to keep resolving? — yes: the parser answers first and the fallback runs only for a source the parser rejects; prose-quoted paths stopped resolving (161 false citations dropped over 1306 files), and a handle the file declares links inside a string through its declaration instead; evidence: e6c56978, cf7df67a"
+ ~#resolved(rename_kind): "Does willRenameFiles wait for a path kind in refactor-experiment-lifecycle 4e, or may citation-navigation ship a rename-only edit set first? — neither waited: the path rename kind (seed canonical/path-rename.ts) and willRenameFiles landed together as one plan for spw refactor and the server; evidence: 56844e6e"
 }
 
 #>wonder_agents_plans_citationnavigation_w_1

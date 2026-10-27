@@ -11,7 +11,7 @@
  gist: "Every spw/* method has one registry entry and a matrix row from handled through tested."
  touches: [~"packages/spw-lsp/src/stdio-server.ts", ~"packages/spw-lsp/src/types.ts", ~"extensions/vscode-spw/src/lsp/custom-requests.ts"]
  entry: ~"./PLAN.md"
- next: "~[protocol_registry]: seed the registry from the 23 spw/* method rows in the caches (8 direct, 15 probe, typed or not, callers per host) and correct the uncalled list in ?[earned_requests]."
+ next: "~[protocol_registry]: seed the registry from the 23 spw/* method rows in hosts/lsp-surface.spw (8 direct, 15 probe, typed or not, callers per host); ?[earned_requests] then decides which rows are documented probes."
 }
 
 ^["edges"]{
@@ -32,7 +32,8 @@
  @types: ~"packages/spw-lsp/src/types.ts"
  @custom_requests: ~"extensions/vscode-spw/src/lsp/custom-requests.ts"
  @intellij_plan: ~".agents/plans/intellij-lsp4ij/PLAN.md"
- @neovim_plan: ~".agents/plans/_archive/neovim-spw-surfaces/PLAN.md"
+ @neovim_plan: ~".agents/plans/neovim-spw-surfaces/PLAN.md"
+ @caches_methods: ~".spw/caches/tree/spw/hosts/lsp-surface.spw#editor_hosts_lsp_methods"
 }
 
 ^["intent"]{
@@ -44,7 +45,7 @@
  lane: #execution_truth
  ladder: #service
  develops: [#capability_evidence, #semantic_authority, #mounted_consumer_behavior]
- review_surfaces: [@cluster, @plan, @topography, @mount_plan, @audit, @server, @server_index]
+ review_surfaces: [@cluster, @plan, @caches_methods, @topography, @mount_plan, @audit, @server, @server_index]
  snippet_routes: [#capability_matrix, #mounted_fixture, #failure_evidence]
 }
 
@@ -103,16 +104,17 @@
  >>[2026-10-12 15:22] revise — Commits named per the convention in 90c58bbc: 1 landed, 5 planned, 0 dropped.
  >>[2026-10-13 11:59] revise — Corrections from the caches (hosts/lsp-surface.spw, checked against stdio-server.ts 336 to 400): 8 methods are answered directly and 15 through the probe handler, not 7 and 16; ?[earned_requests] lists referenceGraph as uncalled, but VS Code calls it (commands.ts 114), and formContext has a client type and no caller. Scorecard bugs 1 and 2 are still present and land here as keep_cache_layers and trace_setting_id. capability_matrix becomes the one host matrix the Neovim and IntelliJ audits fill.
  >>[2026-10-13 15:33] implement — Landed ac381ee7: cacheReflection keeps plane and every well-formed layer card, so the cache card can show the LSP plane present; the language client id is spw, so spw.trace.server is the setting the client reads.
+ >>[2026-10-27 10:24] revise — ?[earned_requests] now names the eight uncalled methods that hosts/lsp-surface.spw lists (select, corpus, resonance, registerSnapshot, particles, formContext, phraseScan, channelPolicy), applying the 2026-10-13 correction: VS Code calls referenceGraph, and formContext has a client type but no caller; a grep of extensions, packages/spw-cli and scripts on 2026-10-27 agrees, with select reached only by scripts/lsp/smoke-navigation.ts. @neovim_plan points at the live neovim-spw-surfaces, which supersedes the archived copy.
 }
 
 ^["open"]{
- ?[earned_requests]: "Of the handled spw/* methods that no extension or CLI file calls (a first screen names select, referenceGraph, corpus, resonance, registerSnapshot, particles, phraseScan, channelPolicy), which leave the stdio switch and which stay as documented probes?"
+ ?[earned_requests]: "Of the eight handled spw/* methods no extension or CLI file calls (select, corpus, resonance, registerSnapshot, particles, formContext, phraseScan, channelPolicy, per hosts/lsp-surface.spw; VS Code does call referenceGraph), which leave the stdio switch and which stay as documented probes? The answer sets which rows ~[protocol_registry] marks as probes."
  ?[cost_budget]: "What p95 milliseconds per request, on the identity-free mounted-consumer fixture, admits a method to the interactive set, and does vscode-plugin-performance own that number?"
 }
 
 ^["commits"]{
  .[form_context_request](a999a24f): "&[lsp] — project form geometry into hover, code actions, and a probe"
- ~[protocol_registry]: "vocab[lsp] =register[protocol] — one registry listing the 23 methods the stdio switch handles (stdio-server.ts) and spw/workspaceManifest/v1, so identity is not scattered across the switch and the client map"
+ ~[protocol_registry]: "vocab[lsp] =register[protocol] — one registry listing the 23 spw/* methods the stdio switch handles (stdio-server.ts: 8 direct, spw/workspaceManifest/v1 among them, and 15 through the probe handler), so identity is not scattered across the switch and the client map"
  ~[capability_matrix]: "![lsp] *audit[capabilities] — one matrix, one row per registry entry and one column per host (VS Code, Neovim, IntelliJ), seeded from hosts/host-parity-matrix.spw and including willRenameFiles; the neovim-spw-surfaces and intellij-lsp4ij audits fill its cells"
  ~[type_missing_methods]: "vocab[lsp] — type or document the methods missing from SpwCustomRequestMap (it types 14 of the 23); type one only when a caller earns it"
  ~[dispatch_tests]: "![lsp] — one stdio dispatch test for each method no test names (a name grep finds 8 of 23 named)"
@@ -129,7 +131,7 @@
  ~#files_hot: "packages/spw-lsp/src/stdio-server.ts, packages/spw-lsp/src/server-index.ts, extensions/vscode-spw/src/lsp/custom-requests.ts, .agents/plans/form-geometry-editor/PLAN.md"
  ~#next_commit: "protocol_registry"
  ~#open_count: "2"
- ~#last_stream: "2026-10-13 15:33"
+ ~#last_stream: "2026-10-27 10:24"
  ~#taste_debt: "No protocol registry yet; the stdio switch is the only list of handled methods and the client map types 14 of 23"
 }
 

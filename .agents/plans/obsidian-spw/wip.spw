@@ -16,7 +16,7 @@
 }
 
 ^["edges"]{
- shares: [~"../lukewarm-backlog/wip.spw"]
+ shares: [~"../lukewarm-backlog/wip.spw", ~"../audit-ui-data-models/wip.spw"]
 }
 
 ^["roots"]{
@@ -36,7 +36,7 @@
  @context: ~"extensions/vscode-spw/src/context.ts"
  @strip: ~"extensions/vscode-spw/src/context-strip.ts"
  @semantics: ~"extensions/vscode-spw/src/semantics.ts"
- @roots_map: ~"extensions/vscode-spw/src/roots.ts"
+ @roots_map: ~"packages/spw-lsp/src/workspace-protocol.ts"
  @annotation_idx: ~"extensions/vscode-spw/src/annotation-index.ts"
  @obsidian_api: ~"https://github.com/obsidianmd/obsidian-api/blob/master/obsidian.d.ts"
  @ref_index: ~".agents/plans/obsidian-spw/references/index.spw"
@@ -78,8 +78,8 @@
  transfers: [
   #protocol_types,           // SpwCustomRequestMap interfaces — portable, duplicate for now
   #annotation_index,         // AnnotationEntry schema, byName/byFile lookup — transfers directly
-  #sigil_semantics,          // 23-sigil table with role/physics/phase — pure data, no adaptation
-  #root_map,                 // 27 sigil→path mappings — adapt to vault-relative paths
+  #sigil_semantics,          // read the one sigil table audit-ui-data-models gives a single owner, not the VS Code copy it may delete
+  #root_map,                 // roots arrive as server evidence (spw/workspaceManifest/v1) since 47f4015c deleted the VS Code map; adapt to vault-relative paths
   #context_snapshot,         // SpwCursorContextSnapshot cache logic — adapt to CM6 EditorView
   #density_bars,             // unicode block frequency encoding — transfers directly
   #co_occurrence,            // concept co-occurrence algorithm — transfers directly
@@ -258,6 +258,9 @@
  >>[2026-10-12 15:25] revise — Commits named per the convention in 90c58bbc: 0 landed, 11 planned, 0 dropped.
  >>[2026-10-13 22:04] note — The parser release's reader variant (feature/reader-bundle) highlights Spw and outlines a file without a running server: roles, outline, anchors, and highlightHtml.
  >>[2026-10-13 22:57] note — The parser release's workbench build (feature/browser-workbench) runs seed and the runtime in a page, so a plugin can format, fingerprint, and evaluate without a server, beside the reader's highlighting.
+ >>[2026-10-27 10:18] decide — resolved [hot_files_before_scaffold]: only paths on disk. A path the plan will create rides on the card as will_touch (schema v2, b42f9853, which predates the question), and plan:check reports a missing hot file as high, so files_hot names the plan files until ~[scaffold_plugin] lands. lukewarm-backlog ?[obsidian_hot_unscaffolded] can close on this.
+ >>[2026-10-27 10:18] revise — extensions/vscode-spw/src/roots.ts, the 27-sigil root map this plan meant to copy into src/data/roots.ts, was deleted in 47f4015c (2026-07-21). VS Code now reads roots as server evidence through spw/workspaceManifest/v1 (packages/spw-lsp/src/workspace-protocol.ts, read by navigation.ts), so @roots_map points at the protocol. The sigil table this plan meant to copy from semantics.ts is the one audit-ui-data-models gives a single owner, so that plan is now a shares edge.
+ >>[2026-10-27 10:18] note — Count correction for the 2026-04-05 01:08 and 2026-10-27 10:18 entries: the deleted VS Code root map held 22 roots plus the @here case (git show of roots.ts at a2e49bd0 and at the parent of 47f4015c), not 27.
 }
 
 ^["open"]{
@@ -269,7 +272,6 @@
  ?[lezer_boundary]: "Does the first Lezer grammar exclude prose fallback and context-sensitive path sugar so the parser stays structurally honest (lezer-parser-scope.spw leans yes)?"
  ?[lezer_markdown_activation]: "Even with a working Lezer package, which Obsidian or CM6 hook activates it for a spw fence in markdown editing?"
  ?[protocol_types]: "Are the portable custom-request interfaces in vscode-spw/src/lsp/custom-requests.ts extracted into a shared package or duplicated into the plugin, decided before the LSP manager commit?"
- ?[hot_files_before_scaffold]: "Should cache files_hot list extensions/obsidian-spw/src paths before ~[scaffold_plugin] scaffolds them (the directory does not exist yet), or only the plan files until then? Tracked at ~"../lukewarm-backlog/wip.spw" ?[obsidian_hot_unscaffolded]."
 }
 
 ^["commits"]{
@@ -291,15 +293,16 @@
  ~#base_ref: "main@37b6f42b"
  ~#rebased_at: ""
  ~#hygiene_split: "none"
- ~#files_hot: "extensions/obsidian-spw/src/main.ts, extensions/obsidian-spw/src/editor/token-map.ts, .agents/plans/obsidian-spw/obsidian-spw.spw"
+ ~#files_hot: ".agents/plans/obsidian-spw/obsidian-spw.spw, .agents/plans/obsidian-spw/wip.spw"
  ~#next_commit: "scaffold_plugin"
- ~#open_count: "9"
- ~#last_stream: "2026-10-13 22:57"
+ ~#open_count: "8"
+ ~#last_stream: "2026-10-27 10:18"
  ~#taste_debt: "protocol type duplication vs extraction — decide before ~[lsp_process_manager]; concepts-tree.ts is 751 lines in vscode — Obsidian version must decompose differently; keep Lezer scoped as syntax infrastructure rather than letting it absorb seed semantics by accident"
 }
 
 ^["done"]{
  # Written at merge time.
+ ~#resolved(hot_files_before_scaffold): "Should cache files_hot list extensions/obsidian-spw/src paths before ~[scaffold_plugin] scaffolds them, or only the plan files until then? — only paths on disk: a path the plan will create rides on the card as will_touch (schema v2, b42f9853), and plan:check reports a missing hot file as high; files_hot names the plan files until the scaffold lands; evidence: .agents/plans/_schema/wip.spw CARD, .agents/scripts/agent-lib.sh missing_hot_file"
 }
 
 #>wonder_agents_plans_obsidianspw_w_1

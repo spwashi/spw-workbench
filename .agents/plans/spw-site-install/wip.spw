@@ -11,11 +11,11 @@
  gist: "A consumer mounts the workbench at .spw/_workbench and keeps its own .spw canon and review evidence"
  touches: [~"packages/spw-cli/src/doctor.ts", ~"packages/spw-cli/templates/init", ~"packages/spw-runtime/src/site-install.ts", ~".spw/conventions/submodule.spw"]
  entry: ~"./spw-site-install.spw"
- next: "capabilities_json: add spw capabilities --json emitting the compatibility vector (both revisions, schemas, per-capability status)."
+ next: "~[capabilities_json]: spw capabilities --json emits the compatibility vector (both revisions, schemas, per-capability status); the verb itself lands through cli-mode-overhaul ~[capabilities_verb], so the vector rides with it or right after."
 }
 
 ^["edges"]{
- needs: [~"../absorb-spwq-cli/wip.spw", ~"../runtime-dx-foundation/wip.spw", ~"../ecosystem-surface-governance/wip.spw", ~"../cli-sense-reorientation/wip.spw", ~"../cli-benchmarking-infra/wip.spw"]
+ needs: [~"../absorb-spwq-cli/wip.spw", ~"../runtime-dx-foundation/wip.spw", ~"../ecosystem-surface-governance/wip.spw", ~"../cli-sense-reorientation/wip.spw", ~"../cli-benchmarking-infra/wip.spw", ~"../cli-mode-overhaul/wip.spw"]
  feeds: [~"../package-iteration-radius/wip.spw"]
 }
 
@@ -25,6 +25,7 @@
  @artifact: ~".agents/plans/spw-site-install/spw-site-install.spw"
  @workspace: ~".spw/workspace.spw"
  @release: ~".agents/plans/_archive/v030-release-prep/v030-release-prep.spw"
+ @install_story: ~"docs/runtime/md/site-install-release-story.md"
 }
 
 ^["intent"]{
@@ -104,14 +105,13 @@
  >>[2026-10-12 14:26] revise — Reconciled the 26 planned commits against history: seven landed hashes recorded in done, four concrete commits remain (spw capabilities, mount vector fields, doctor comparison, fixtures); three open questions sharpened to one-sentence decisions.
  >>[2026-10-12 14:26] observe — No spw capabilities command exists in packages/spw-cli/src; doctor reports pin drift against checkout head but has no compatibility vector; the init template scaffolds neither workspace paths nor tsconfig paths.
  >>[2026-10-12 15:29] revise — Commits named per the convention in 90c58bbc: 24 landed, 4 planned, 1 dropped.
+ >>[2026-10-27 10:22] revise — spw capabilities belongs to cli-mode-overhaul capabilities_verb: that plan resolved capabilities_owner on 2026-10-13, and absorb-spwq-cli dropped its own capabilities commit on 2026-10-27. capabilities_json keeps the compatibility vector as its share of that verb output, so this plan now needs cli-mode-overhaul. The two resolved questions left as comments in open now sit in done.
 }
 
 ^["open"]{
  ?[node-resolution]: "Should spw init scaffold workspace paths or tsconfig paths so consumer scripts resolve @spwashi/* from .spw/_workbench/packages, given the init template today writes neither?"
  ?[submodule-update]: "Is advancing the pin a manual consumer act (doctor warns only when the declared pin differs from the checkout head), or should doctor also warn when the pin trails a tagged release?"
  ?[multi-consumer]: "When two deployments share one codebase, does .spw authority and review retention live in the shared repository or in each deployment repository?"
- # resolved: [review-entrypoint] — see stream 2026-08-24 10:16
- # resolved: [review-retention] — see stream 2026-08-24 10:17
 }
 
 ^["commits"]{
@@ -153,12 +153,14 @@
  ~#files_hot: "packages/spw-runtime/src/site-install.ts, packages/spw-runtime/src/index.ts, packages/spw-lsp/src/helpers.ts, packages/spw-lsp/src/server-index.ts, packages/spw-cli/src/init.ts, packages/spw-cli/src/doctor.ts, packages/spw-cli/templates/init/base/.spw/mount.spw, .agents/plans/spw-site-install/PLAN.md, .agents/plans/spw-site-install/wip.spw"
  ~#next_commit: "capabilities_json"
  ~#open_count: "3"
- ~#last_stream: "2026-10-12 15:29"
+ ~#last_stream: "2026-10-27 10:22"
  ~#taste_debt: "Mount metadata still needs a tested compatibility-vector schema and doctor currently checks less than its convention promises. Keep review output consumer-owned, revision-aware, and human-gated before exchange; `_workbench` must never become an excuse to absorb consumer canon."
 }
 
 ^["done"]{
  ~#dropped(review_entrypoint): "resolved by [review-entrypoint] (stream 2026-08-24 10:16): the mounted review skill from site_review_contract owns the procedure and CLI roots, doctor, capabilities and probes stay composable; no monolithic entrypoint command"
+ ~#resolved(review-entrypoint): "Should the portable review entrypoint be a CLI command, a mounted skill, or a small command that delegates to a mounted skill? — the mounted review skill owns the authority and provenance procedure; CLI roots, doctor, capabilities, and probes stay composable instruments, with no monolithic command; evidence: stream 2026-08-24 10:16"
+ ~#resolved(review-retention): "Which site-owned review outputs are ephemeral caches, durable claims, or candidates for explicit upstream exchange? — generated caches are ephemeral, explicit consumer claims are durable by local policy, and upstream exchange is always a deliberate human-gated distillation; evidence: stream 2026-08-24 10:17"
  # Local history: written incrementally, finalized at merge.
  # ~#resolved(label): "<question> — <answer>; evidence: <stream stamp | commit | path>"
  # ~#dropped(name): "<reason>"

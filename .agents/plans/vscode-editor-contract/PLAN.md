@@ -34,7 +34,7 @@ Routed from the roadmap table in `vscode-lsp-roadmap/PLAN.md`. Two asks are cont
 
 - **Layer rule (`layered_presentation`).** A payload that reaches a hover or view carries three layers in a fixed order: meaning (one line, in the consumer's words from glossaries its manifest names), then evidence (where it points, who cites it), then geometry (behind `Spw: Inspect Form`). Today the hover chain returns the first layer that matches, so a citation gets geometry. The contract names the layer a payload belongs to; the surface does not choose.
 - **Gesture rule (`gesture_semantics`).** Each editor gesture carries the operator whose meaning it already has: hover `?` (never writes), references `@`, outline `#>`, inlays `.` (resolved value, never prose), lenses `%` (one measure with unit and age), diagnostics and fixes `!` (previewed before writing), rename `=`, completion `$`, snippets and templates `^`, preview `~`, tasks `*`, status bar `[`. A payload declares its gesture, so a `?` surface that writes or a `%` lens with no unit is a contract violation, testable without a screenshot.
-- Open calls: whether `~` is the preview gesture, whether diagnostics are `!` or `*`, and whether the table follows the operator canon when the workbench holds it (`?[operator_table]` in the roadmap).
+- Open calls: whether `~` is the preview gesture, whether diagnostics are `!` or `*`, and whether the table follows the operator canon when the workbench holds it (the roadmap's `?[operator_table]` moved to `audit-ui-data-models`, where `~[table_words_export]` plans the words and `?[words_travel]` stays open).
 
 ## Files
 

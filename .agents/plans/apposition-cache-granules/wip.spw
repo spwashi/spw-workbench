@@ -17,7 +17,7 @@
 
 ^["edges"]{
  needs: [~"../operational-topography/wip.spw"]
- shares: [~"../spw-beat-diff-precipitation/wip.spw", ~"../geometric-analysis-tooling/wip.spw"]
+ shares: [~"../spw-beat-diff-precipitation/wip.spw", ~"../geometric-analysis-tooling/wip.spw", ~"../vscode-plugin-performance/wip.spw"]
 }
 
 ^["roots"]{
@@ -31,6 +31,7 @@
  @workspace_temp: ~"packages/spw-lsp/src/handlers/workspace.ts"
  @beat_plan: ~".agents/plans/spw-beat-diff-precipitation/PLAN.md"
  @geometry_plan: ~".agents/plans/geometric-analysis-tooling/PLAN.md"
+ @cache_card: ~".spw/caches/tree/spw/hosts/vscode-lsp-and-cache.spw#editor_hosts_vscode_lsp_cache_planes"
 }
 
 ^["intent"]{
@@ -124,6 +125,7 @@
  >>[2026-10-13 23:16] note — Apposition masks and the substrate hash now come from textHash (eb34e6c3), 16 hex of SHA-256 over UTF-8 bytes, widened from 8; a granule key built later should use the same function.
  >>[2026-10-19 16:40] revise — Owner welcomes memory insights: separate cache correctness from display, compare semantic answers rather than volatile snapshots, and expose unknown validity reasons instead of inventing them.
  >>[2026-10-25 20:40] note — A mounted consumer asks (2026-10-25, rank 6, slow_loop) that VS Code Inspect Cache name a diagnostic drawn from a tree older than the buffer. The doctor and lint stats half went to the CLI; this half is a cache-honesty reading this plan owns.
+ >>[2026-10-27 10:24] observe — 55e79d2e retains the inbound index in part: the reference graph cache now keeps every citation site per target and #key (reference-graph.ts, inboundCitationsFor) and code lenses read it warm, so the measurement that the graph build discards inbound no longer holds. references in navigation.ts still walks on its own, so retain_inbound_refs stays planned for that half, with its identical-locations control. vscode-plugin-performance is declared as a shares edge: server-index.ts, the moved index-scope fix, and its incremental_annotation_sync beside derive_workspace_annotations.
 }
 
 ^["open"]{
@@ -157,7 +159,7 @@
  ~#files_hot: "packages/spw-lsp/src/server-index.ts, packages/spw-lsp/src/types.ts, packages/spw-seed/src/types/ast/nodes.ts"
  ~#next_commit: "pin_cache_defects"
  ~#open_count: "3"
- ~#last_stream: "2026-10-25 20:40"
+ ~#last_stream: "2026-10-27 10:24"
  ~#taste_debt: "two-axis eviction (tier x volatility) is correct and deferred; granule identity must reconcile apposition name, content, structural ancestry, and future shape fingerprints without treating activity metadata as human evidence"
 }
 

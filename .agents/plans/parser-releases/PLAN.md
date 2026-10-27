@@ -16,6 +16,10 @@ At `0eb1d1c0`, `build-parser-release.test.ts` already tests stamps against the m
 
 The old `2026.10.13` target has elapsed. `first_release` remains unverified here because the site repository and deployed assets were not inspected. Before selecting a new cut, check whether that name already exists. Never overwrite a dated path or imply a release was published from a workbench-only receipt.
 
+## Stamp audit — 2026-10-27
+
+At `850077ab`, `npm run test:parser-release` passes 21 of 21. The stamp test covers all nine scripts of a release (four variants in two forms, plus the `parser.js` alias) for revision, release name, variant, form and dirt; prerelease and patch kinds are asserted on `full.min.js` only, which samples the one stamp function every file goes through rather than leaving a matrix cell untested. `stamp_matches_manifest` is reconciled to `17b0d6d7`, where the stamp test first shipped; no test was added. A mounted consumer's 2026-10-25 note cites `2026.10.13` sizes that no workbench cut matches (only `2026.10.13-pre.1` is cut here), so whether that day was published is checked in the site repository before any new cut.
+
 ## Acceptance and failure modes
 
 - Every manifest file has matching bytes, size and digest; its stamp names the correct revision, release, kind, variant and form. Debug maps and the default alias are accounted for.
@@ -34,7 +38,7 @@ The old `2026.10.13` target has elapsed. `first_release` remains unverified here
 
 ## Commits
 
-Canonical named work is in `wip.spw`. Audit `stamp_matches_manifest` first; change tests only for demonstrated gaps. `first_release` belongs to the site repository and follows a clean release receipt. No publication is performed by this planning pass.
+Canonical named work is in `wip.spw`. `stamp_matches_manifest` is reconciled (see the stamp audit). `first_release` belongs to the site repository and follows a clean release receipt. `reader_is_browser_build`, asked by a mounted consumer on 2026-10-25, waits on `?[lite_carries_roles]`. No publication is performed by this planning pass.
 
 ## Agentic Hygiene
 

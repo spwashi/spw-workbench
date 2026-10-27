@@ -43,7 +43,7 @@ Taste note:
 [NEW] .agents/plans/hygiene-index-consolidation/references/cli-verb-alignment.spw
 [NEW] .agents/plans/index.spw
 [MOD] packages/spw-cli/src/commands.ts
-[MOD?] packages/spw-cli/src/plan.ts
+[NEW?] packages/spw-cli/src/plan.ts
 [MOD?] packages/spw-cli/src/help.ts
 [MOD?] packages/spw-cli/src/mass.ts
 [MOD?] packages/spw-cli/src/refresh.ts
@@ -176,7 +176,7 @@ A path, grade, or selector that exists only inside a quoted English sentence is 
 |-------|------|------|---------|-----------|
 | g0 | parse clean | surface lexes/parses | `lint:spw` | assumed |
 | g1 | local ref resolve | `~` / `@root` on disk | `spw-path-check` | **harden** |
-| g2 | fragment resolve | `file#anchor` → deixis node | path-check + fragment resolve | **add** |
+| g2 | fragment resolve | `file#anchor` → `#>` anchor node | path-check + fragment resolve | **add** |
 | g3 | inbound integrity | who points here; archive repoints | reference graph + audit | index / note |
 | g4 | organelle shape | required products present | future schema product | **out of scope** (Appendix A) |
 | g5 | Writerside topics | topic links exist | `writerside-check` | **keep / extend** |
@@ -216,11 +216,11 @@ Full tables: `references/documentation-referentiality.spw` frames `forms_live` a
 
 | Class | Examples |
 |-------|----------|
-| **Already stringless** | particle headers, deixis anchors, closed `#tokens`, operator sigils, brace structure, root alias *names*, sets/streams of identifiers, `%[…]` brackets |
+| **Already stringless** | particle headers, `#>` anchors, closed `#tokens`, operator sigils, brace structure, root alias *names*, sets/streams of identifiers, `%[…]` brackets |
 | **Should become stringless** | effect ceilings as tokens, status/cluster vocab as tokens, required-key sets, `#yes`/`#no`, hot/warm/cold tiers |
 | **Must remain strings (for now)** | filesystem paths, human goal prose, host command lines, selector expr until native AST, multi-word titles |
 
-**Erase test (goal metric, not ship gate for `ignore_package_dts`, `mark_landed_cards`, `align_cache_status`, `stranded_disposition` and `publish_plan_index`):** parse → drop string payloads → roots aliases, particle mix, deixis table, closed tokens, and frame labels still recoverable. Fail if only freeform maps remain.
+**Erase test (goal metric, not ship gate for `ignore_package_dts`, `mark_landed_cards`, `align_cache_status`, `stranded_disposition` and `publish_plan_index`):** parse → drop string payloads → roots aliases, particle mix, anchor table, closed tokens, and frame labels still recoverable. Fail if only freeform maps remain.
 
 ### B.5 Goals — parse with more dimension
 
@@ -312,7 +312,7 @@ Approximate `.spw` tree counts at filing:
 | Quoted string values (`: "…"`) | ~1800 | Selectable AST, path refs, closed tokens |
 | Labeled frames `^["…"]` / `^"…"` | ~350 | (aligned when used) |
 | Aspect marks `~#` | ~700 | (aligned when derived honestly) |
-| Deixis `#>` | ~270 | (aligned) |
+| Anchor `#>` | ~270 | (aligned) |
 | Bias-shaped `=` forms | ~8 | Verb-polymorphic config lean — almost unused |
 | `//` foreign comments | ~700+ (theory-heavy) | `#` comment / particle plane only |
 

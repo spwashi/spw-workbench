@@ -83,9 +83,9 @@ This plan's landed spacing contract remains authoritative for raw trivia, displa
 [MOD] .agents/plans/vscode-authoring-probe-loop/PLAN.md
 [MOD] .agents/plans/vscode-authoring-probe-loop/wip.spw
 [MOD] .agents/plans/vscode-authoring-probe-loop/vscode-authoring-probe-loop.spw
-[MOD] .agents/plans/vscode-cognitive-surface/PLAN.md
-[MOD] .agents/plans/vscode-cognitive-surface/wip.spw
-[MOD] .agents/plans/vscode-cognitive-surface/vscode-cognitive-surface.spw
+[MOD] .agents/plans/_archive/vscode-cognitive-surface/PLAN.md   # archived since
+[MOD] .agents/plans/_archive/vscode-cognitive-surface/wip.spw
+[MOD] .agents/plans/_archive/vscode-cognitive-surface/vscode-cognitive-surface.spw
 [MOD] .agents/plans/neovim-spw-surfaces/PLAN.md
 [MOD] .agents/plans/neovim-spw-surfaces/wip.spw
 [MOD] .agents/plans/_archive/mounted-workbench-organelle/PLAN.md
@@ -99,7 +99,7 @@ This plan's landed spacing contract remains authoritative for raw trivia, displa
 [MOD] .agents/plans/plan-ecology-clustering/wip.spw
 [MOD] package.json
 [NEW] packages/spw-cli/src/pulse.ts
-[NEW] scripts/spw-pulse.ts
+[NEW] scripts/spw-pulse.ts   # removed in b7c5c7df; spw:pulse runs packages/spw-cli/src/pulse.ts
 [MOD] packages/spw-cli/src/query.ts
 [NEW] packages/spw-seed/src/types/coupling.ts
 [MOD] packages/spw-seed/src/types/index.ts
@@ -134,7 +134,7 @@ This plan's landed spacing contract remains authoritative for raw trivia, displa
 [NEW] packages/spw-seed/src/canonical/form-ladders.ts
 [NEW] packages/spw-seed/src/canonical/form-geometry.ts
 [NEW] packages/spw-seed/src/canonical/form-contours.ts
-[NEW] packages/spw-seed/src/canonical/operator-ladders.ts
+[NEW] packages/spw-seed/src/canonical/operator-ladders.ts   # deleted in ca9ae1bd: a re-export no file imported
 [NEW?] packages/spw-seed/src/canonical/selection.ts
 [NEW?] packages/spw-seed/src/__tests__/format-differential.test.ts
 [NEW?] packages/spw-lsp/src/protocol.ts
@@ -152,7 +152,7 @@ This plan's landed spacing contract remains authoritative for raw trivia, displa
 [MOD?] packages/spw-cli/src/format.ts
 [NEW?] packages/spw-cli/src/hydrate/plan.ts
 [NEW?] packages/spw-cli/src/hydrate/preview.ts
-[MOD?] extensions/vscode-spw/src/custom-requests.ts
+[MOD?] extensions/vscode-spw/src/lsp/custom-requests.ts
 [MOD?] extensions/neovim-spw/lua/spw-lsp.lua
 ```
 

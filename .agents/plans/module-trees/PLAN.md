@@ -50,7 +50,7 @@ Taste: group by reason to change, one move per commit, no churn for its own sake
 ## Agentic Hygiene
 
 - Rebase target: `main@71a6ce96`.
-- The seed `edit/` and `measure/` moves wait for runtime-maintenance `one_hash_module`, which edits four of their files. The `pulse/` split waits for `legacy_tests_home`, which moves the tests that import `pulse.ts`.
+- The seed `edit/` and `measure/` moves waited for runtime-maintenance `one_hash_module`, which edited four of their files; it landed in `eb34e6c3`. The `pulse/` split waits for `legacy_tests_home`, which moves the tests that import `pulse.ts`.
 
 ## Folder design checkpoint — 2026-10-19
 

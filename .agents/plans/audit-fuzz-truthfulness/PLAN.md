@@ -28,7 +28,7 @@ The desired end state is an audit surface whose command names, coverage, and out
 [MOD] scripts/analyzers/ui-contract-audit.ts
 [MOD] scripts/analyzers/spw-syntax-validate.ts
 [NEW] scripts/analyzers/audit-full.ts
-[NEW] scripts/analyzers/fuzz-profile-runner.ts
+[NEW] scripts/analyzers/fuzz-profile-runner.ts   (not built; retire_alias_profiles moved to tooling-scripts-consolidation)
 [MOD] docs/contributing/md/common-tasks.md
 [MOD?] .agents/skills/spw-craft-quality/SKILL.md
 [MOD?] .agents/skills/spw-typescript-affordances/SKILL.md

@@ -27,6 +27,7 @@
  @query: ~"packages/spw-cli/src/query.ts"
  @cli_surface: ~"docs/runtime/spw/cli-command-surface.spw"
  @consumer: ~".agents/plans/mounted-consumer-tooling/PLAN.md"
+ @walk_stats: ~"packages/spw-cli/src/walk-stats.ts"
 }
 
 ^["intent"]{
@@ -101,10 +102,11 @@
  >>[2026-09-05 14:10] revise — "Split construction-worlds and navigable-focus onto feature/construction-worlds. This branch keeps the query instrument only."
  >>[2026-10-12 14:28] revise — reconciled commits with git: 1 landed as 9afc6dc8, 2 as e106b302; moved to done. Reworded slowest_source into a yes/no question that decides whether the fixture joins cli-benchmarking-infra workloads. Phase is landed so no wonders added.
  >>[2026-10-12 15:27] revise — Commits named per the convention in 90c58bbc: 2 landed, 0 planned, 0 dropped.
+ >>[2026-10-27 10:19] observe — 2a3dac47 moved query --stats out of query.ts into packages/spw-cli/src/walk-stats.ts, which doctor and lint now share; the stats getters left query-profile.ts, and QueryProfile.finishStage returns the stage ms that the stats line reads. --profile keeps its stage receipts here; --stats is the compact line beside it.
 }
 
 ^["open"]{
- ?[slowest_source]: "Does a generated file matching the slowest source's size and brace nesting, with no contents, reproduce its parse cost, or is the cost content-dependent? Decides whether the fixture belongs in ~\"../cli-benchmarking-infra/wip.spw\" workloads (its commit 3) or stays a one-off."
+ ?[slowest_source]: "Does a generated file matching the slowest source's size and brace nesting, with no contents, reproduce its parse cost, or is the cost content-dependent? Decides whether the fixture belongs in ~\"../cli-benchmarking-infra/wip.spw\" workloads (its ~[bench_workloads]) or stays a one-off."
 }
 
 ^["commits"]{
@@ -120,7 +122,7 @@
  ~#files_hot: "packages/spw-cli/src/query.ts"
  ~#next_commit: "none"
  ~#open_count: "1"
- ~#last_stream: "2026-10-12 15:27"
+ ~#last_stream: "2026-10-27 10:19"
  ~#taste_debt: "query.ts still owns pipeline plus help; helper owns receipts only"
 }
 

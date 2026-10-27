@@ -41,7 +41,7 @@ Editor presence: LSP diagnostics Phase E; screenshot of `%mass{…}` is a good d
 |------|------|
 | **IDE** | `spw mass` dry on a surface with `@self`; introduce intentional drift; refuse `--write` under tol scheme when schemes land |
 | **Screenshot** | `%mass` + `@self` pair; ask model what is claim vs subject; verify paths |
-| **Learning** | Exact vs band/tol as precision mood of evaluation, not global fuzzy culture |
+| **Learning** | Exact vs band/tol as a precision choice made per scheme, not a global fuzzy culture |
 | **Falsify** | Runtime register-`%` conflated with surface mass; silent pass on unmeasurable keys |
 
 ## Practical use
@@ -240,7 +240,7 @@ A design change is **out** if it:
 
 - Bakes vacuum/catalyst metaphors into lexer or default runtime.
 - Collapses register-`%` and surface-`%mass` into one semantics without a named dialect.
-- Makes all tests exact or all tests fuzzy (precision is a **scheme**, not a global mood).
+- Makes all tests exact or all tests fuzzy (precision is a **scheme**, not a global setting).
 
 ## Files
 
@@ -250,8 +250,8 @@ A design change is **out** if it:
 [NEW] .agents/plans/measure-invariant-generalization/measure-invariant-generalization.spw
 
 # Phase A — design + types only (no surface migration)
-[NEW] packages/spw-seed/src/canonical/eval-scheme.ts          parse + apply EvalScheme; pure reconcile
-[NEW] packages/spw-seed/src/canonical/eval-scheme.test.ts
+[NEW] packages/spw-seed/src/canonical/eval-scheme.ts          parse + apply EvalScheme; pure reconcile (landed instead as EvalScheme + reconcileMetric in measure-protocol.ts, 08e2bc1c)
+[NEW] packages/spw-seed/src/canonical/eval-scheme.test.ts     (measure-protocol.test.ts holds these cases)
 [MOD] packages/spw-seed/src/canonical/self-mass.ts            optional scheme key; non-exact verdicts
 [MOD] packages/spw-seed/src/canonical/self-mass.test.ts
 [MOD] packages/spw-seed/src/canonical/index.ts
@@ -261,7 +261,7 @@ A design change is **out** if it:
 [NEW] packages/spw-seed/src/canonical/invariant-template.ts   load declared invariants; template match
 [NEW] packages/spw-seed/src/canonical/invariant-template.test.ts
 [MOD] packages/spw-cli/src/mass.ts                            report scheme verdicts; refuse --write for non-exact
-[NEW] packages/spw-cli/src/measure.ts                         [MOD?] or extend mass — generalized measure command
+[NEW] packages/spw-cli/src/measure.ts                         [MOD?] or extend mass — generalized measure command (resolved: spw measure runs mass.ts, with mass and thrift aliases; see wip.spw cli_name)
 [MOD] packages/spw-cli/src/commands.ts
 
 # Phase C — authority agnosticism

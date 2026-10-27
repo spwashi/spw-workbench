@@ -42,6 +42,10 @@
    note: "callers per host, Neovim launch order, changedtick probes, and the cache card confirmed"
   }
   ^["r7"]{ event: #gated, at: "2026-10-03", agent: "spw-cut-gate", care: #skim, outcome: #pass }
+  ^["r8"]{
+   event: #revised, at: "2026-10-27", agent: "claude-opus-5.5 writer", care: #read, outcome: #corrected
+   note: "the Neovim semantic_tokens cell filled from a headless session with the real server at e53e41d7 (vim.inspect_pos at each sigil); recorded in neovim-spw-surfaces and editor-reading-hierarchy streams of 2026-10-26"
+  }
  }
  corrections: #[ "the caret rename row gave native LSP rename from 2026.1; the JetBrains table marks 2026.1.1" ]
  rule: "a cell is filled only after its host code was read at 1aa1dc23; an empty cell says unverified and is a gap, not a no"
@@ -159,13 +163,13 @@
  ^["semantic_tokens"]{
   vscode: "full tokens mapped through semanticTokenScopes"
   jetbrains: "full tokens from 2024.2.2 with platform default colors; mapping unverified"
-  neovim: ""
-  gap: "the Neovim cell is empty until a session confirms whether the built-in client paints spw-lsp tokens"
+  neovim: "full tokens painted by the built-in client at extmark priority 125, over the syntax/spw.vim groups; Neovim 0.11.6 headless with the real server at e53e41d7"
+  gap: "the Neovim tokens cover the per-sigil syntax groups with fewer distinctions (~ and @ both variable, ! and ? both function); editor-reading-hierarchy operator_modifiers plans the fix"
  }
 }
 
 ^["gaps"]{
- neovim_rendering: "Neovim semantic tokens, inlay hints, and code lens display are unverified and stay empty"
+ neovim_rendering: "Neovim semantic tokens were confirmed on 2026-10-26; inlay hints and code lens display are unverified and stay empty"
  obsidian: "no Obsidian column: the plan is dormant and extensions/obsidian-spw does not exist"
  jetbrains_old_builds: "rename, links, inlay hints, and folding from the server on builds before their listed JetBrains versions are unverified"
  abbreviations: "instruments/commands.ts is extensions/vscode-spw/src/instruments/commands.ts; Kotlin files are under extensions/intellij-spw/src/main/kotlin/com/spwashi/spw; Lua files are under extensions/neovim-spw/lua/spw"

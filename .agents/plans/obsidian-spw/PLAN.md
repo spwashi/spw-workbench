@@ -52,8 +52,8 @@ Taste note: improve layering, correctness, and architectural legibility. The des
 [NEW] extensions/obsidian-spw/src/lsp/protocol.ts
 [NEW] extensions/obsidian-spw/src/views/concepts-leaf.ts
 [NEW] extensions/obsidian-spw/src/views/atlas-leaf.ts
-[NEW] extensions/obsidian-spw/src/data/semantics.ts
-[NEW] extensions/obsidian-spw/src/data/roots.ts
+[NEW] extensions/obsidian-spw/src/data/semantics.ts     — read the one sigil table audit-ui-data-models gives a single owner
+[NEW] extensions/obsidian-spw/src/data/roots.ts         — the VS Code map it would copy (src/roots.ts) was deleted in 47f4015c; roots now arrive from the server as spw/workspaceManifest/v1
 [MOD] package.json
 ```
 

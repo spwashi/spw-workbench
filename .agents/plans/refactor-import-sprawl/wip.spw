@@ -16,6 +16,10 @@
  next: "Answer ?[gate_home], then land ~[package_dag_check]: the package-dag-check analyzer that fails on a reverse package import."
 }
 
+^["edges"]{
+ shares: [~"../tooling-scripts-consolidation/wip.spw"]
+}
+
 ^["roots"]{
  @cluster: ~".agents/plans/plan-ecology-clustering/plan-ecology-clustering.spw"
  @plan: ~".agents/plans/refactor-import-sprawl/PLAN.md"
@@ -67,11 +71,12 @@
  >>[2026-10-12 14:57] revise — Rescoped to planning on the package DAG and the import guard: lane moved to principal engineering. Commits are now 1 to 6 (DAG analyzer, failing fixture, npm wiring, warn-only fan-in table, optional commands split, CLAUDE.md text). Three questions open. Old 1 to 26 moved to done as dropped.
  >>[2026-10-12 15:27] revise — Commits named per the convention in 90c58bbc: 0 landed, 6 planned, 3 dropped.
  >>[2026-10-13 22:04] revise — Resolved ?[claude_md_layers]: lib/spw and src/app do not exist. The survey also found the fan-in table counts import lines, not statements: hot-session.ts has 22 lines and 17 statements, and hot-session-types.ts has 12 statements, at the guard, not over it.
+ >>[2026-10-27 10:19] observe — Correction to resolved(enforcement): scripts/pre-commit holds no import check itself, but it sources scripts/commit-review/run-review.sh, which greps staged files under lib/spw/ for imports from @/ (lines 46 to 52). No lib/spw directory exists, so the check matches nothing and the conclusion stands: no layer boundary is enforced. tooling-scripts-consolidation gate_dead_checks plans to drop that grep, so ?[gate_home] now names it and the two plans share run-review.sh. Checked at 850077ab: package-dag-check.ts and lint:arch do not exist yet.
 }
 
 ^["open"]{
  # Unresolved questions. When resolved: log in stream, then move to ^["done"] as ~#resolved(label).
- ?[gate_home]: "Should the DAG check join npm run lint, the pre-commit hook, or only run on demand, given CLAUDE.md says layer boundaries are pre-commit enforced and scripts/pre-commit has no import check? Unblocks ~[wire_lint_arch]."
+ ?[gate_home]: "Should the DAG check join npm run lint, the pre-commit hook, or only run on demand, given CLAUDE.md says layer boundaries are pre-commit enforced and the hook's only import check (a lib/spw @/ grep in scripts/commit-review/run-review.sh) matches no live path? Unblocks ~[wire_lint_arch]."
  ?[dispatcher_exempt]: "Is commands.ts (43 imports, a printXHelp and runSpwXCli pair per subcommand) exempt from the 12-import guard as a dispatcher, or should it split by command group? Unblocks ~[split_commands_dispatch] and the allowlist in ~[import_fanin_table]."
 }
 
@@ -91,7 +96,7 @@
  ~#files_hot: ""
  ~#next_commit: "package_dag_check"
  ~#open_count: "2"
- ~#last_stream: "2026-10-13 22:04"
+ ~#last_stream: "2026-10-27 10:19"
  ~#taste_debt: ""
 }
 

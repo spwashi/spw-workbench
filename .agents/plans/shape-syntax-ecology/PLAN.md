@@ -37,7 +37,7 @@ A reviewing human (and any LLM they fold in via IDE or screenshot) should be abl
 | **form-geometry-editor** | Brace material inspect; mobility; liminality bridge honesty |
 | **vscode-lsp-roadmap** + **neovim-spw-surfaces** | Syntactic presence in editors; screenshot-friendly probes |
 | **vscode-authoring-probe-loop** | Cursor sites, wonder, plan context |
-| **vscode-cognitive-surface** | Reading profiles; gestalt disclosure |
+| **vscode-cognitive-surface** (archived; successor editor-reading-hierarchy) | Reading profiles; gestalt disclosure |
 | **spw-beat-diff-precipitation** | Beat cache, precipitation defaults (runtime memory) |
 
 ## Runtime enhancements: experimental syntax that can be *referenced*
@@ -191,13 +191,13 @@ Every related plan should include a short **`## Imagination / play`** block:
 [MOD] .agents/plans/form-geometry-editor/wip.spw
 [MOD] .agents/plans/vscode-authoring-probe-loop/PLAN.md
 [MOD] .agents/plans/vscode-authoring-probe-loop/wip.spw
-[MOD] .agents/plans/vscode-cognitive-surface/PLAN.md
-[MOD] .agents/plans/vscode-cognitive-surface/wip.spw
+[MOD] .agents/plans/_archive/vscode-cognitive-surface/PLAN.md   # archived since
+[MOD] .agents/plans/_archive/vscode-cognitive-surface/wip.spw
 [MOD] .agents/plans/_archive/spw-syntax-warning-cleanup/PLAN.md
 [MOD] docs/runtime/md/spacing-and-progressive-inspection.md
 [MOD?] docs/theory/spw/syntax-profile-stack.spw
 [MOD?] docs/theory/spw/mutation-flow-automata.spw
-[NEW?] packages/spw-seed/src/experimental/syntax-catalog.ts  // follow-on implement
+[NEW] packages/spw-seed/src/experimental/syntax-catalog.ts  // landed in 08e2bc1c
 ```
 
 ## Commits

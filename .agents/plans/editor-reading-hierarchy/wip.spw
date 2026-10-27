@@ -11,7 +11,7 @@
  gist: "Every editor shows glyphs and errors first, one answer per hover second, and instruments on demand, all drawn from one parse-derived role stream, so a reader can scan a file's topography instead of its chrome."
  touches: [~"packages/spw-lsp/src/handlers/display.ts", ~"packages/spw-lsp/src/handlers/semantic-tokens.ts", ~"extensions/vscode-spw/syntaxes/spw.tmLanguage.json", ~"extensions/neovim-spw/lua/spw"]
  entry: ~"./PLAN.md"
- next: "~[hierarchy_census]: the census on one wip.spw and one theory surface, taken after c3ecbb34 landed the frame-lens and incoming-ref fixes; then ~[lexer_errors_first]. The role stream then moves to the lexer, ~[role_stream_parity] then ~[roles_from_lex], before any further regex fix to roleTokens."
+ next: "~[hierarchy_census]: the census on one wip.spw and one theory surface, taken after c3ecbb34 (frame lenses, one incoming owner) and 55e79d2e (citation lenses, anchor trial off, generated banner); then ~[lexer_errors_first]. The role stream then moves to the lexer, ~[role_stream_parity] then ~[roles_from_lex], before any further regex fix to roleTokens."
 }
 
 ^["edges"]{
@@ -28,6 +28,7 @@
  @grammar: ~"extensions/vscode-spw/syntaxes/spw.tmLanguage.json"
  @caches_hosts: ~".spw/caches/tree/spw/hosts/index.spw"
  @care_ladder: ~".spw/caches/tree/spw/inspection-and-ir.spw#spw_ir_care_mapping"
+ @tokens_roles: ~".spw/caches/tree/spw/tokens-and-roles.spw#spw_tokens_rolespan"
 }
 
 ^["intent"]{
@@ -39,7 +40,7 @@
  lane: #projection_feedback
  ladder: #service
  develops: [#taste, #interaction, #a11y]
- review_surfaces: [@artifact, @caches_hosts, @care_ladder]
+ review_surfaces: [@artifact, @caches_hosts, @care_ladder, @tokens_roles]
  snippet_routes: [#example, #query]
 }
 
@@ -131,6 +132,8 @@
  >>[2026-10-26 12:29] measure — Cost sample 2026-10-26, mean of five runs after a warm-up: life-and-mind.spw (78 KB) lex 71 ms with events off and 84 ms with trace, roleTokens 14 ms; a 5.5 KB surface lex 12 ms, roleTokens 1.2 ms. In the server the lex is already paid, since sourceTokens reuses doc.parseResult.tokens when the parse is current and not dialect-preprocessed, so roles drawn from the parse cost no second lex. Only the reader bundle in a browser pays the full lex.
  >>[2026-10-26 12:29] decide — Tokenizer consolidation lives here, since the gist promises one parse-derived role stream and roleTokens is not one. roles_from_lex maps parse tokens to roles; stream_prose_text, inline_hash_comment and path_color_parsed_only then land as role mappings on that stream, not as new regex branches. Operator identity enters the legend as modifiers named from the audit-ui-data-models table, and neovim-spw-surfaces maps them to highlight groups.
  >>[2026-10-26 12:29] taste — A layer that knows more must not be painted over by one that knows less: per-sigil identity lives only in the regex layers today, and the parse-derived layer erases it on top.
+ >>[2026-10-27 10:19] revise — The commit block now runs in the PLAN.md order, since order is block position: role_stream_parity and roles_from_lex follow path_aware_parse and precede the three role mappings (stream_prose_text, path_color_parsed_only, inline_hash_comment), then operator_modifiers and particle_roles, as decided 2026-10-26 12:29; citation_lenses and generated_banner_actions sit beside anchor_trial_off, which landed with them in 55e79d2e.
+ >>[2026-10-27 10:22] revise — Correction to the 2026-10-26 12:29 tokenizer count: the IntelliJ TextMate grammar is not a hand copy. extensions/intellij-spw/scripts/sync-grammar.mjs generates it from the VS Code grammar since 17b3a4a2, and sync-grammar.mjs --check passes on 2026-10-27; the 188 bytes are the provenance comment the generator writes. Six tokenizers read Spw on their own, and the IntelliJ grammar follows the VS Code one.
 }
 
 ^["open"]{
@@ -148,13 +151,19 @@
  ~[hierarchy_census]: "![lsp] — census on one wip.spw and one theory surface: lenses, inlays, and duplicate facts per 100 lines, and tokens painted inside stream prose and # comments, per profile"
  ~[lexer_errors_first]: "&[lsp] — lexer errors reach diagnostics as the first tier (analysis.ts drops them today)"
  ~[path_aware_parse]: "&[lsp] — the server parses with the file path, so plan dialects and stream entries read as the CLI reads them"
+ ~[role_stream_parity]: "![lsp] — a corpus check that no operator role falls inside a span the lexer reads as PHRASE, STRING or COMMENT, over every .spw file; the 22 files with multi-line phrases are its first failing fixtures"
+ ~[roles_from_lex]: "&[lsp] — roleTokens maps the parse tokens (the server parseResult, else lex with events off) to roles in place of 27 line regexes; a multi-line phrase is one string; commit refs and hashlike still overlay; the reader bundle and the consumer highlighter inherit it"
  ~[stream_prose_text]: "&[lsp] — the token scanner reads plan streams as entries, so stream prose is text and only figures take a role; the decoration mask stops opening at apostrophes across lines"
  ~[path_color_parsed_only]: "&[grammar] — path color only on parsed path refs; the word-with-a-slash rule goes, per ?[bare_path_color]"
  ~[inline_hash_comment]: "&[lsp] — the token scanner treats inline # prose as a comment to the end of the line, as the grammar already does"
+ ~[operator_modifiers]: "#[lsp] — the legend carries one modifier per OperatorKind, named from the operator table; every sigil token carries its operator, so clients paint action, wonder, potential and perspective apart instead of borrowing function, async and variable"
+ ~[particle_roles]: "&[lsp] — #> anchor, #: lens and #! focus carry anchor, lens and focus modifiers over keyword and declaration"
  .[frame_lens_units](c3ecbb34): "&[lsp] — frame lenses name what they count, in the plural, and incoming refs show once, as the anchor lens"
  .[one_owner_incoming](c3ecbb34): "&[lsp] — frame lenses name what they count, in the plural, and incoming refs show once, as the anchor lens"
  ~[header_banner]: "&[lsp] — the header banner speaks plain words or goes, per ?[header_banner]; split from frame_lens_units, which landed the frame lenses only"
  .[anchor_trial_off](55e79d2e): "&[lsp] — anchor lenses stop running a runtime trial per anchor; register and phase move behind an instrument"
+ .[citation_lenses](55e79d2e): "&[lsp] — line 0 and each #> anchor count the files that cite them by path and key from a warm citation index; the annotation count is the second count, named; cold shows nothing (consumer rank 9)"
+ .[generated_banner_actions](55e79d2e): "&[lsp,vscode] — the generated banner opens the page a tree was read from and types its rebuild; the first edit to a generated file warns with both (consumer rank 12)"
  ~[resolved_path_hint]: "&[lsp] — the resolved-path inlay shows only for a parent hop, an alias, a mount, or an unresolved target; depth and incoming inlays obey the frames and annotations settings"
  ~[wonder_hint_offscreen]: "&[lsp] — the wonder inlay drops counts visible on the page and shows only facts from elsewhere; Neovim stops forcing inlay hints on at attach"
  ~[hover_layers]: "&[lsp] — hover answers what is under the cursor first, then evidence, then geometry, and never restates the hovered line (from vscode-editor-contract hover_answers_position and spw-garden-geometry anti_echo_hover)"
@@ -164,12 +173,6 @@
  ~[census_after]: "![lsp] — rerun the census; record the fall in lenses, inlays, duplicates, and painted prose against ~[hierarchy_census]"
  ~[string_color_swatches]: "&[lsp] — a documentColor provider shows swatches for #rgb, #rrggbb, and #rrggbbaa inside strings, where colors live; a bare #8800ff stays a #tag"
  ~[host_injections]: "&[grammar] — injection grammars for an HTML semantic-expression attribute, a Markdown spw fence, and a commit episode block, each read through the lite scan (consumer rank 2)"
- .[citation_lenses](55e79d2e): "&[lsp] — line 0 and each #> anchor count the files that cite them by path and key from a warm citation index; the annotation count is the second count, named; cold shows nothing (consumer rank 9)"
- .[generated_banner_actions](55e79d2e): "&[lsp,vscode] — the generated banner opens the page a tree was read from and types its rebuild; the first edit to a generated file warns with both (consumer rank 12)"
- ~[role_stream_parity]: "![lsp] — a corpus check that no operator role falls inside a span the lexer reads as PHRASE, STRING or COMMENT, over every .spw file; the 22 files with multi-line phrases are its first failing fixtures"
- ~[roles_from_lex]: "&[lsp] — roleTokens maps the parse tokens (the server parseResult, else lex with events off) to roles in place of 27 line regexes; a multi-line phrase is one string; commit refs and hashlike still overlay; the reader bundle and the consumer highlighter inherit it"
- ~[operator_modifiers]: "#[lsp] — the legend carries one modifier per OperatorKind, named from the operator table; every sigil token carries its operator, so clients paint action, wonder, potential and perspective apart instead of borrowing function, async and variable"
- ~[particle_roles]: "&[lsp] — #> anchor, #: lens and #! focus carry anchor, lens and focus modifiers over keyword and declaration"
 }
 
 ^["cache"]{
@@ -180,8 +183,8 @@
  ~#files_hot: "packages/spw-lsp/src/handlers/display.ts, packages/spw-lsp/src/handlers/semantic-tokens.ts, extensions/vscode-spw/syntaxes/spw.tmLanguage.json"
  ~#next_commit: "hierarchy_census"
  ~#open_count: "7"
- ~#last_stream: "2026-10-26 12:29"
- ~#taste_debt: "display.ts is over 1400 lines; moved hover and inlay builders should land in their own modules"
+ ~#last_stream: "2026-10-27 10:22"
+ ~#taste_debt: "display.ts is 1332 lines at 55e79d2e, still twice the guard; moved hover and inlay builders should land in their own modules"
 }
 
 ^["done"]{

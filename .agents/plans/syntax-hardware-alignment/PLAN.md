@@ -1,17 +1,17 @@
 # Plan: syntax-hardware-alignment
 
-Seven hardware-aligned Spw syntax proposals staged as sample exhibits before any parser change. (Card, phase, and next move: [wip.spw](./wip.spw) · index: [../index.spw](../index.spw))
+Hardware-aligned Spw syntax proposals staged as sample exhibits before any parser change: p1 to p7 below, p8 to p11 from the caches tree and p12 (digit-led words) in the artifact. (Card, phase, and next move: [wip.spw](./wip.spw) · index: [../index.spw](../index.spw))
 
 ## Goal
 
-Evolve the particle paradigm along its own hardware reading — deixis as address lines, case as control lines, mood as strobe, aspect as latched state, `$%[...]` as readback register — so that cache/cut surfaces stop duplicating wires and gain the missing ones. Each proposal is tested against a single invariant: **one signal per wire**. The proposals live as commented samples in [syntax-hardware-alignment.spw](./syntax-hardware-alignment.spw) until a lexer/parser spike earns them catalog entries; nothing becomes law by fiat.
+Evolve the particle paradigm along its own hardware reading — anchor (`#>`) as address lines, lens (`#:`) as control lines, focus (`#!`) as strobe, the `~#` stance as latched state, `$%[...]` as readback register — so that cache/cut surfaces stop duplicating wires and gain the missing ones. Each proposal is tested against a single invariant: **one signal per wire**. The proposals live as commented samples in [syntax-hardware-alignment.spw](./syntax-hardware-alignment.spw) until a lexer/parser spike earns them catalog entries; nothing becomes law by fiat.
 
 Taste note:
 - expressiveness (shorter, hoverable, runnable constructs) and naming/layering honesty (no shadow registers, provenance travels with the word)
 
 ## Proposals (with samples)
 
-1. **Derive routes from roots** — `#!route(...)` mood on the binding; tooling derives the dispatch table as a view.
+1. **Derive routes from roots** — `#!route(...)` focus on the binding; tooling derives the dispatch table as a view.
 
    ```spw
    ^"roots"{
@@ -73,7 +73,7 @@ Taste note:
 [NEW] .agents/plans/syntax-hardware-alignment/wip.spw — coordination memory
 [NEW] .agents/plans/syntax-hardware-alignment/syntax-hardware-alignment.spw — sample exhibits
 [MOD?] packages/spw-seed/src/canonical/particles.ts — only if the spike lands: `ParticleNode.aim` union gains `~` (evidential); `particleMix` gains an evidential count
-[MOD?] packages/spw-seed/src/types/ast/nodes.ts — aim union + optional mood payload
+[MOD?] packages/spw-seed/src/types/ast/nodes.ts — aim union + optional focus payload
 [MOD?] scripts/analyzers/spw-cut-gate.ts — S0 probe verb lint, `$%[… = …]` latch diffing, `#~derived` staleness check
 
 Craft guard:
@@ -101,7 +101,7 @@ Fuzz strategy:
 
 ## Failure Modes
 
-- Hard: `#~` collides with aspect `~#` in the lexer's longest-match table — spike must prove the token boundary before anything else builds on it.
+- Hard: `#~` collides with the `~#` stance in the lexer's longest-match table — spike must prove the token boundary before anything else builds on it.
 - Soft: latch values (`= 412 @rev …`) drift silently if no tool owns the `--emit` pass; latch without a writer is worse than no latch.
 - Non-negotiable: samples remain comment-fenced until the grammar accepts them; `npm run lint:spw` stays green throughout.
 
@@ -113,7 +113,7 @@ Fuzz strategy:
 
 ## Spw Artifact
 
-[syntax-hardware-alignment.spw](./syntax-hardware-alignment.spw) — the seven sample exhibits with per-proposal status, removed/added wires, play affordances, and gate hooks.
+[syntax-hardware-alignment.spw](./syntax-hardware-alignment.spw) — the sample exhibits (p1 to p12) with per-proposal status, removed/added wires, play affordances, and gate hooks.
 
 ## Linguistic physics checkpoint — 2026-10-19
 
@@ -121,4 +121,4 @@ Treat physics as a way to predict a useful difference under a declared intervent
 
 Three promising questions are attachment sensitivity (does moving a mark across one boundary change its bearer?), structural sensitivity (what changes under a one-token or spacing perturbation?), and memory dependence (does the same source under the same declared state produce the same result after different histories?). The design review at `../naming-profile-convention-align/language-design-review.spw` gives controls and separates token, AST, ONF, value, register and trace observations.
 
-Keep operational charge packets, delimiter polarity and material valence distinct. Aspect count is not a lifetime measure: `particleMix` currently counts a quoted annotation spelling, and a stable declaration can use aspect syntax. A useful physics instrument should expose where the analogy fails as readily as where it predicts. Preserve current p1–p7 verdict work and the p4-only spike boundary; these new questions do not promote all proposed syntax cells.
+Keep operational charge packets, delimiter polarity and material valence distinct. The `~#` count (`particleMix.aspect`) is not a lifetime measure: it currently counts a quoted annotation spelling, and a stable declaration can use `~#` syntax. A useful physics instrument should expose where the analogy fails as readily as where it predicts. Preserve current p1–p7 verdict work and the p4-only spike boundary; these new questions do not promote all proposed syntax cells.

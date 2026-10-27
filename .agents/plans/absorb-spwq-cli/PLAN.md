@@ -19,12 +19,12 @@ The desired end state is a single package-owned CLI surface where selector behav
 [MOD] packages/spw-cli/src/main.ts
 [MOD] packages/spw-cli/src/run.ts
 [MOD] packages/spw-cli/src/query.ts
-[NEW] packages/spw-cli/src/spwq.ts
+[NEW] packages/spw-cli/src/spwq.ts      (never created; spwq is an alias of select in commands.ts)
 [MOD] packages/spw-seed/src/instrumentation/audit.ts
 [MOD] packages/spw-seed/src/query/spwq.ts
 [MOD?] packages/spw-seed/src/query/presets.ts
 [MOD] src/seed/query/__tests__/spwq-corpus.test.ts
-[MOD] scripts/spwq.ts
+[MOD] scripts/spwq.ts                    (deleted in b7c5c7df by spw-cli-overhaul remove_legacy_scripts)
 [MOD] docs/runtime/md/lsp-editor-integration.md
 [MOD] lib/spw-v0.2.0-alpha/applications/QUERY.md
 ```

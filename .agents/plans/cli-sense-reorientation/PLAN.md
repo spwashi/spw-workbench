@@ -1344,6 +1344,7 @@ StackIR
 [NEW] .agents/plans/cli-sense-reorientation/wip.spw
 [NEW] .agents/plans/cli-sense-reorientation/cli-sense-reorientation.spw
 [MOD] packages/spw-cli/src/commands.ts          aliases + help copy
+[MOD] packages/spw-cli/src/fs-walk.ts           resolveSelection: the shared glob resolver for census, graph, query
 [MOD] packages/spw-cli/src/mass.ts → measure.ts # or thin wrapper
 [MOD] packages/spw-cli/src/inventory.ts         census name
 [MOD] packages/spw-cli/src/profile.ts           surface/stack aliases

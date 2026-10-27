@@ -11,13 +11,13 @@
  gist: "One package-owned spw CLI owns truthful selector verbs; spwq survives only as a hidden alias."
  touches: [~"packages/spw-cli/src/select.ts", ~"packages/spw-cli/src/doctor.ts", ~"packages/spw-seed/src/query", ~".spw/conventions/cli.spw"]
  entry: ~"./PLAN.md"
- next: "Decide whether `spw review` becomes a verb, then add `spw capabilities` beside the shipped roots and doctor."
+ next: "?[review-verb]: decide whether spw review is a CLI verb; then ~[verify_portable_evidence] over roots and doctor, and over capabilities once cli-mode-overhaul ~[capabilities_verb] lands it."
 }
 
 ^["edges"]{
  needs: [~"../mounted-consumer-tooling/wip.spw"]
  feeds: [~"../spw-site-install/wip.spw"]
- shares: [~"../register-phase-evolution/wip.spw", ~"../cli-mode-overhaul/wip.spw"]
+ shares: [~"../register-phase-evolution/wip.spw", ~"../cli-mode-overhaul/wip.spw", ~"../tooling-scripts-consolidation/wip.spw"]
 }
 
 ^["roots"]{
@@ -76,10 +76,11 @@
  >>[2026-07-20 15:18] revise — extend verb truth into observability: roots, doctor, capabilities, and review must expose normalized evidence before LSP/editor audits can be repeatable.
  >>[2026-10-12 14:24] revise — reconciled commits with git: 1-4 landed (508f7c37, 6a89cfff, 99958883); spw roots and spw doctor ship in commands.ts with relative-path defaults; no capabilities or review verb exists. Commits 5-7 collapsed to capabilities + portable-evidence verify; added open question review-verb.
  >>[2026-10-12 15:36] revise — Commits named per the convention in 90c58bbc: 4 landed, 2 planned, 0 dropped.
+ >>[2026-10-27 10:20] revise — add_capabilities_verb dropped: cli-mode-overhaul resolved capabilities_owner on 2026-10-13, so spw capabilities lands through its capabilities_verb with one JSON shape for modes, ceilings, and the mounted-consumer snapshot. verify_portable_evidence is next; its capabilities check waits on that verb.
 }
 
 ^["open"]{
- ?[review-verb]: "Should `spw review` ship as a CLI verb that wraps the commit-review poll scripts, or stay a skill-only surface outside the package? Decides whether verify_portable_evidence includes a review contract."
+ ?[review-verb]: "Should `spw review` ship as a CLI verb that wraps the commit-review poll scripts, or stay a skill-only surface outside the package? Decides whether verify_portable_evidence includes a review contract. tooling-scripts-consolidation ~[spw_review] plans a spw review verb over the syntax-review scripts, keeping spw-syntax-review.ts as a shim and poll-review.sh working for consumer hooks; its ?[spw_review_shape] holds the verb shape."
 }
 
 ^["commits"]{
@@ -87,7 +88,6 @@
  .[repair_selector_traversal](508f7c37): "&[selector-dogfood] — repair selector traversal and stabilize ref selection"
  .[absorb_spwq](6a89cfff): "&[spwq-cli] — absorb spwq into the package-owned select surface"
  .[normalize_cli_canon](99958883): ".[cli-conventions] — normalize selector command canon and docs"
- ~[add_capabilities_verb]: "&[cli] =observe[capabilities] — add `spw capabilities` as a relative, scriptable snapshot beside the shipped roots and doctor verbs; shape agreed with cli-mode-overhaul capabilities_verb before either lands"
  ~[verify_portable_evidence]: "![cli] *verify[portable-evidence] — exercise roots, doctor, and capabilities JSON/Spw output against identity-free fixtures"
 }
 
@@ -97,13 +97,14 @@
  ~#rebased_at: "2026-03-27"
  ~#hygiene_split: "none"
  ~#files_hot: "packages/spw-seed/src/instrumentation/audit.ts, packages/spw-cli/src/select.ts, packages/spw-lsp/src/spw-selector.ts, .spw/conventions/cli.spw"
- ~#next_commit: "add_capabilities_verb"
+ ~#next_commit: "verify_portable_evidence"
  ~#open_count: "1"
- ~#last_stream: "2026-10-12 15:36"
+ ~#last_stream: "2026-10-27 10:20"
  ~#taste_debt: "Keep observability output relative, scriptable, and layered. Do not let `spw review` become an opaque model runner; deterministic probes and provenance remain explicit."
 }
 
 ^["done"]{
  ~#resolved(alias-fate): "Should spwq stay a public alias? — spwq becomes a hidden internal wrapper; external codebases learn spw query and spw select; evidence: stream 2026-03-27 00:36"
  ~#resolved(bin-dx): "When does the root spw binary change land? — document the direction now in .spw/conventions/cli.spw and defer package wiring to spw-site-install; evidence: stream 2026-03-27 00:37"
+ ~#dropped(add_capabilities_verb): "cli-mode-overhaul lands spw capabilities through its ~[capabilities_verb], resolved there as capabilities_owner on 2026-10-13; the relative, scriptable snapshot this commit described is part of that one JSON shape"
 }

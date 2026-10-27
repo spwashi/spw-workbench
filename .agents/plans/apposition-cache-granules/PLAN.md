@@ -21,7 +21,7 @@ Taste note:
   - A shared granule receipt that carries content identity, structural ancestry, resolved syntax/profile revision, parser/product revision, and available source horizon. Line offsets locate a granule but never identify it.
   - An apposition scan in `spw-seed` — extract name, body, and span hash without invoking the parser.
   - A validity probe that reuses derived data only when the envelope, content, ancestry, profile, producer and dependency preconditions still hold.
-  - Retaining the `inbound` reference index that `buildReferenceGraph` already computes and throws away.
+  - Retaining the `inbound` reference index that `buildReferenceGraph` already computes and throws away. Since `55e79d2e` the graph cache keeps every citation site per target and `#key` (`reference-graph.ts`) and code lenses read it; `references` in `navigation.ts` does not read it yet.
   - `codeLens` surfacing per-granule tier, volatility, inbound degree, and hash age.
 - Out of scope:
   - Incremental parsing and lexer resume. `LexerState` is already a serializable checkpoint and both `tokenize` and `seedNode` are generators, so the affordance exists — but safe-restart-point analysis is its own plan, and this one gets most of the win without it.
@@ -39,7 +39,7 @@ Taste note:
 [MOD] packages/spw-seed/src/index.ts                            export surface
 [NEW] packages/spw-lsp/src/cache/granule.ts                     frame granules keyed by apposition name
 [NEW] packages/spw-lsp/src/cache/validity.ts                    envelope comparison; reuse-or-reparse decision
-[NEW] packages/spw-lsp/src/cache/inbound-index.ts               retained target -> referrers index
+[NEW] packages/spw-lsp/src/cache/inbound-index.ts               retained target -> referrers index (55e79d2e kept it inside reference-graph.ts instead)
 [MOD] packages/spw-lsp/src/server-index.ts                      evict index entries with the document; peekDocument
 [MOD] packages/spw-lsp/src/handlers/reference-graph.ts          publish inbound rather than discarding it
 [MOD] packages/spw-lsp/src/handlers/navigation.ts               references reads the inbound index; non-touching reads

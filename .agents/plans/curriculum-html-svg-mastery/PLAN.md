@@ -2,7 +2,7 @@
 
 ## Goal
 
-Create a rigorous 50-commit sequence of incremental deep-dive "Labs" dedicated to mastering the HTML and SVG language specifications. The curriculum exercises deep web-platform muscles—moving away from treating SVG as a black-box exported asset, and toward raw, hand-authored mastery of coordinate math, declarative drawing, and filter compositions. These web precedents will be immediately extrapolated into **Spw-inspired design relationships**, connecting native vector operations strictly to Spw's visual, spatial, and generative architecture. This lane is contributor formation and research fuel: its value is in producing discussable visual precedents and experiments that can inform future exhibits and interfaces without masquerading as a release blocker.
+Create a rigorous sequence of five incremental deep-dive "Labs" (planned as 50 lesson commits; collapsed to five lab files on 2026-10-12) dedicated to mastering the HTML and SVG language specifications. The curriculum exercises deep web-platform muscles—moving away from treating SVG as a black-box exported asset, and toward raw, hand-authored mastery of coordinate math, declarative drawing, and filter compositions. These web precedents will be immediately extrapolated into **Spw-inspired design relationships**, connecting native vector operations strictly to Spw's visual, spatial, and generative architecture. This lane is contributor formation and research fuel: its value is in producing discussable visual precedents and experiments that can inform future exhibits and interfaces without masquerading as a release blocker.
 
 This is a page-design rung in the current ecology. The labs should leave behind vector/page archetypes, animation heuristics, and reusable visual snippets that later exhibit, editor, and public-surface plans can borrow without losing the standards-first reasoning that produced them.
 
@@ -10,7 +10,7 @@ This is a page-design rung in the current ecology. The labs should leave behind 
 
 ## Scope
 
-- **In scope**: Designing a 50-commit curriculum grouped into 5 distinct phases of 10 commits each (`docs/learn/labs/html-svg/`). Each phase requires reading specific W3C/MDN specs (SVG2, Paths, Filter Effects, SMIL), writing raw SVG directly in the DOM tree, establishing Spw reflections, reviewing at least one current repo pattern or visual surface alongside the external spec, and naming at least one experiment or heuristic worth carrying into a future exhibit or editor surface.
+- **In scope**: Designing a five-lab curriculum, one lab file per phase (`docs/learn/labs/html-svg/`). Each phase requires reading specific W3C/MDN specs (SVG2, Paths, Filter Effects, SMIL), writing raw SVG directly in the DOM tree, establishing Spw reflections, reviewing at least one current repo pattern or visual surface alongside the external spec, and naming at least one experiment or heuristic worth carrying into a future exhibit or editor surface.
 - **Out of scope**: Building production Spw application features, writing Canvas/WebGL wrappers, or acting as a hidden launch dependency. These exercises remain declarative DOM/SVG research and formation work.
 
 ## The Curriculum Sequence

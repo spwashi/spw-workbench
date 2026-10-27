@@ -45,14 +45,14 @@ Recommended order (revised): (g) first, behind a census fixture; then (d) and (e
 
 [MOD] packages/spw-seed/src/lexer/tokenize.ts (the planStream gate around readPlanStreamEntry)
 [MOD] packages/spw-seed/src/experimental/syntax-catalog.ts (stream.entry_line)
-[NEW] docs/theory/spw/stream-lines.spw
+[NEW] docs/theory/spw/line-items.spw (planned as stream-lines.spw; landed under this name in 866826ff)
 [NEW] a census fixture over the stream lines outside plans
-[MOD] packages/spw-seed/src/canonical/topography-probe.ts (conditional)
-[MOD] packages/spw-cli/src/pulse.ts (call sites only; the file is already over the 600-line guard, so no new logic goes there)
-[MOD] packages/spw-seed/src/canonical/form-geometry.ts (call sites only)
-[MOD] packages/spw-seed/src/dialect/detect.ts (conditional, `detect_plan_stream`)
-[MOD] packages/spw-seed/src/lexer/stream-entry.ts (was plan-stream.ts; conditional, `spaced_entry_tolerance`)
-[MOD] .agents/plans/_schema/wip-template.spw, .agents/scripts/agent-lib.sh (conditional, `template_dialect_pragma`)
+[MOD] packages/spw-seed/src/canonical/topography-probe.ts (dropped with `topography_path_option`; H5 held)
+[MOD] packages/spw-cli/src/pulse.ts (dropped with `thread_path_callsites`; H5 held)
+[MOD] packages/spw-seed/src/canonical/form-geometry.ts (dropped with `thread_path_callsites`; H5 held)
+[MOD] packages/spw-seed/src/dialect/detect.ts (dropped with `detect_plan_stream`; H5 held)
+[MOD] packages/spw-seed/src/lexer/stream-entry.ts (was plan-stream.ts; `spaced_entry_tolerance` dropped, the spaced lines were rewritten in 940ef67e)
+[MOD] .agents/plans/_schema/wip-template.spw, .agents/scripts/agent-lib.sh (dropped with `template_dialect_pragma`)
 [NEW] a topography-probe test file for the fixture
 [DEL] (none)
 
@@ -86,7 +86,7 @@ none. Feeds plan-tooling-design (pulse report parity, plan:stream validator) and
 - Hypotheses: H1, H2, H3 in wip.spw.
 - Negative controls: token equality on every line outside a line-start `>>[` entry, in every `.spw` file and dialect, before and after `entry_line_all_dialects`.
 - Demo sequence: append a hostile stream line with plan:stream, tally health, see no change for that file.
-- Metric: `npm run -s spw:pulse -- .agents/plans/*/wip.spw --json`, then count `reports[].beforeHealth` by value. Baseline (probe over 78 pre-existing files): 6 / 46 / 26 for complete_structured / recovered / invalid. Expected after `thread_path_callsites`: the 75 path-clean files stop depending on prose; after `spaced_entry_tolerance`: all 78 have 0 stream-line errors. Whether a file reaches complete_structured also depends on its non-stream content, which is not promised here.
+- Metric: `npm run -s spw:pulse -- .agents/plans/*/wip.spw --json`, then count `reports[].beforeHealth` by value. Baseline (probe over 78 pre-existing files): 6 / 46 / 26 for complete_structured / recovered / invalid. Expected after `thread_path_callsites`: the 75 path-clean files stop depending on prose; after `spaced_entry_tolerance`: all 78 have 0 stream-line errors. Whether a file reaches complete_structured also depends on its non-stream content, which is not promised here. Both expected slices were dropped; 866826ff and 940ef67e took every active wip.spw to 0 errors instead (stream 2026-10-12 23:48).
 
 ## Spw Artifact
 

@@ -4,7 +4,7 @@ Improve the VS Code extension's startup, indexing, and live-update behavior with
 
 ## Goal
 
-The preview VS Code extension still pays too much work too early: activation starts the LSP, annotation mirror, context strip, concepts tree, and workspace atlas immediately (`activationEvents: []`), and surfaces can request cursor context independently. Compiled LSP launch **exists** (`build:server` → `dist/stdio-server.js`; extension prefers `*.js` over `tsx`), but source-first fallback and eager UI work still dominate feel. The desired end state is a faster, quieter extension that preserves thin-client posture: semantic truth in `packages/spw-lsp/`, selective activation/refresh/recompute on the client. Remaining eager work is a cache, activation-profile, and scan-bound problem. Do not treat missing trees, strips, or atlas completeness as the performance goal.
+The preview VS Code extension still pays too much work too early: once activated (on `onLanguage:spw` or either view, since `b7c5c7df`), it starts the LSP, annotation mirror, context strip, concepts tree, and workspace atlas together, and surfaces can request cursor context independently. The extension runs only its bundled server (`dist/stdio-server.js`; the `tsx` fallback is gone), so eager UI work is what still dominates feel. The desired end state is a faster, quieter extension that preserves thin-client posture: semantic truth in `packages/spw-lsp/`, selective activation/refresh/recompute on the client. Remaining eager work is a cache, activation-profile, and scan-bound problem. Do not treat missing trees, strips, or atlas completeness as the performance goal.
 
 **Server-side cost bounds help Neovim equally** (same stdio server). Neovim-specific CursorHold / fold refresh costs live in `neovim-spw-surfaces`; do not “fix” them by adding VS Code-only debounce that leaves the server heavy.
 
@@ -33,6 +33,8 @@ Does **not** replace `typescript-perf-audit-infra` (that measures `tsc`). Editor
 | Semantic tokens from ServerIndex parse | **Partial / verify** — plan still targets regex elimination |
 | Explicit instrument traffic | **Landed** — Form/Stack/Cache are user-invoked; editor TTL cache now exposes its own receipt |
 | File size pressure | `display.ts` ~1410, `server-index.ts` ~1160, trees ~725–750 |
+
+**Since 2026-07-20 (checked 2026-10-27):** activation is gated on `onLanguage:spw` and the two views (`b7c5c7df`), and the `tsx` fallback is gone, so `lean_activation` became `~[lazy_views]`. `annotationIndex.activate()` and both trees still start at activation. Semantic tokens still come from the regex scanner (`roleTokens`); moving them onto the parse tokens is `editor-reading-hierarchy` `~[roles_from_lex]`; the server already holds the parse tokens, so roles drawn from them cost no second lex (that plan's measure, 2026-10-26). Sizes at `850077ab`: `display.ts` 1332, `server-index.ts` 1390, trees 708 and 753.
 
 ## Mounted-consumer asks (2026-10-12)
 

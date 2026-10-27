@@ -101,13 +101,14 @@
  >>[2026-10-12 14:48] observe — Dogfood pass 2026-10-12: spw mem dump snapshots the runtime memory directory only (7 files, about 13.6 KB), not the surfaces a bulk pass edits, so it cannot bracket a plan edit; git is the real snapshot here. Question for this plan: should mem dump accept extra roots, or is a pulse delta report the intended before-and-after receipt?
  >>[2026-10-12 15:00] observe — an Spw.l parse reports a node at raw line 3 column 1 as line 1 column 24 while the offset matches raw, so a station message quoting line and column could point at collapsed text; opened ?[position_basis]; routed from lukewarm-backlog ?[span_collapsed_text].
  >>[2026-10-12 15:20] revise — Commits named per the convention in 90c58bbc: 1 landed, 6 planned, 13 dropped.
+ >>[2026-10-27 10:20] observe — Correction to the 2026-10-12 14:32 note: 99e6d993 (2026-10-12, after that note) added a second VS Code status item, capture mode (spw.captureMode in capture/capture-mode.ts); there is still no output channel, so vscode_output_channel stands and its text now names both items. Checked at 850077ab: no SPW-* code exists, doctor still has nine kebab-case check ids, and handlers/analysis.ts still emits source spw with a rule-prefixed parse error message and no code.
 }
 
 ^["open"]{
  ?[station_count]: "Do we want publish/release as a first-class station, or should release remain a downstream literature surface that quotes the same codes? The answer fixes the station list in station_registry."
  ?[doctor_id_reconcile]: "spw doctor's nine checks use kebab-case ids (git-root, workbench-pin, ...); do SPW-<STATION>-<NNN> codes replace those ids or sit beside them as a second field? The answer decides the shape of station_registry."
  ?[doctor_depth]: "spw doctor probes the checkout, pin and runtime but no check starts the LSP or looks for the extension; should the next check launch the server, or only verify the launcher path? Past that point doctor gets slow and brittle."
- ?[position_basis]: "Do station messages quote line and column from the collapsed Spw.l text or from the raw source (a node at raw line 3 column 1 parses as line 1 column 24)? Tracked at ~"../lukewarm-backlog/wip.spw" ?[span_collapsed_text]."
+ ?[position_basis]: "Do station messages quote line and column from the collapsed Spw.l text or from the raw source (a node at raw line 3 column 1 parses as line 1 column 24)? Tracked at lukewarm-backlog ?[span_collapsed_text], which the shares edge names."
 }
 
 ^["commits"]{
@@ -118,7 +119,7 @@
  ~[seed_code_fixtures]: "![seed] — malformed .spw fixtures show the code in parse error output"
  ~[lsp_diagnostic_code]: "&[lsp] — set Diagnostic.code and a next-action message from the station code in handlers/analysis.ts (it emits source 'spw' and the message '<rule>: parse error' today)"
  ~[doctor_lsp_check]: "&[cli] — spw doctor gains a check for LSP launch, with a case in doctor.test.ts (doctor.test.ts has no LSP case today)"
- ~[vscode_output_channel]: "&[vscode] — Spw output channel carrying station-attributed diagnostics (no output channel exists; the only status item is the context strip)"
+ ~[vscode_output_channel]: "&[vscode] — Spw output channel carrying station-attributed diagnostics (no output channel exists; the status items are the context strip and, since 99e6d993, capture mode)"
 }
 
 ^["cache"]{
@@ -129,7 +130,7 @@
  ~#files_hot: "packages/spw-runtime/src/pipeline/, packages/spw-seed/src/parser.ts, packages/spw-lsp/src/context.ts, packages/spw-cli/src/main.ts, extensions/vscode-spw/src/extension.ts, .agents/plans/runtime-dx-foundation/, .agents/plans/runtime-dx-foundation/references/"
  ~#next_commit: "station_registry"
  ~#open_count: "4"
- ~#last_stream: "2026-10-12 15:20"
+ ~#last_stream: "2026-10-27 10:20"
  ~#taste_debt: "every station phrase should survive movement between code, CLI, docs, status copy, and support conversation"
 }
 

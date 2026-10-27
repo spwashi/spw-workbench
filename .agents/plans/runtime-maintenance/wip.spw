@@ -15,7 +15,7 @@
 }
 
 ^["edges"]{
- shares: [~"../precipitate-model-alignment/wip.spw", ~"../refactor-import-sprawl/wip.spw", ~"../audit-ui-data-models/wip.spw", ~"../refactor-experiment-lifecycle/wip.spw", ~"../fragment-pointers/wip.spw", ~"../parser-releases/wip.spw", ~"../tooling-scripts-consolidation/wip.spw", ~"../runtime-axis-traceability/wip.spw", ~"../apposition-cache-granules/wip.spw"]
+ shares: [~"../precipitate-model-alignment/wip.spw", ~"../refactor-import-sprawl/wip.spw", ~"../audit-ui-data-models/wip.spw", ~"../refactor-experiment-lifecycle/wip.spw", ~"../fragment-pointers/wip.spw", ~"../parser-releases/wip.spw", ~"../tooling-scripts-consolidation/wip.spw", ~"../runtime-axis-traceability/wip.spw", ~"../apposition-cache-granules/wip.spw", ~"../typescript-perf-audit-infra/wip.spw"]
 }
 
 ^["roots"]{
@@ -25,6 +25,7 @@
  @stages: ~"packages/spw-runtime/src/pipeline/stages.ts"
  @interpreter: ~"packages/spw-runtime/src/interpreter/interpreter.ts"
  @seed_index: ~"packages/spw-seed/src/index.ts"
+ @memory_doc: ~"docs/runtime/md/runtime-memory.md"
 }
 
 ^["intent"]{
@@ -36,7 +37,7 @@
  lane: #execution_truth
  ladder: #service
  develops: [#craft, #containment, #portability]
- review_surfaces: [@bank, @hot_session, @stages]
+ review_surfaces: [@bank, @hot_session, @stages, @memory_doc]
 }
 
 ^["survey"]{
@@ -69,6 +70,8 @@
  >>[2026-10-13 22:57] implement — Landed on feature/browser-workbench: node_free_seed_root (0bf89a77) and runtime_node_subpath (900e2b9c). Seed and the runtime hash with canonical/content-hash.ts sha256Hex, a synchronous SHA-256 over UTF-8 bytes whose digests equal node:crypto's, so no stored hash moved and ?[persisted_hashes] is not yet forced. one_hash_module now has its home in content-hash.ts; the FNV hashes over UTF-16 units still wait for it.
  >>[2026-10-13 23:16] implement — Landed on feature/reader-form-context: one_hash_module (eb34e6c3) gives seed textHash, 16 hex of SHA-256 over UTF-8 bytes; hashString, geometry cards, and transform preconditions use it, the two FNV hashes are gone, and range-transform's no-op slice ends; the runtime spells its three hashes as textHash (7509cbb8). SHA-256 costs 110 ms over the 9.5 MB corpus against 53 ms for FNV. Resolved ?[persisted_hashes].
  >>[2026-10-19 16:28] revise — Direction review at 0eb1d1c0: portability and unified hashes have landed; mark active, prioritize test ownership, and gate splits on behavioral evidence.
+ >>[2026-10-27 10:18] note — docs/runtime/md/runtime-memory.md documents the RegisterBank memory-budget surface (setMemoryBudget, memoryPressure, enforceMemoryBudget, purgeColdCells, setFacetEvictable) and the keys eviction never drops; split_register_bank must keep that surface, so the doc is now a root. Declared shares with typescript-perf-audit-infra over tsconfig.typecheck.json: legacy_tests_home widens what that config checks, which moves the baseline its perf rows measure. Checked against main at 850077ab: nothing past runtime_node_subpath has landed; register-bank.ts is still 899 lines and hot-session.ts still has 17 imports.
+ >>[2026-10-27 10:26] note — From the 2026-10-27 sweep (precipitate-model-alignment test_precipitate_order): the runtime stage-order test sits inside if (result.success), so a failed run passes it. When legacy_tests_home moves normalize.test.ts, dropping that guard costs nothing and makes the test able to fail.
 }
 
 ^["open"]{
@@ -99,7 +102,7 @@
  ~#files_hot: "packages/spw-runtime/src/state/register-bank.ts, packages/spw-runtime/src/session/hot-session.ts"
  ~#next_commit: "legacy_tests_home"
  ~#open_count: "1"
- ~#last_stream: "2026-10-19 16:28"
+ ~#last_stream: "2026-10-27 10:26"
  ~#taste_debt: "register-bank.ts is 899 lines, past the 600-line guard; hot-session.ts has 17 imports, past the 12-import guard"
 }
 

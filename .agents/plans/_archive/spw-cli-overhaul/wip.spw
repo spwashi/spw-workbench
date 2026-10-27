@@ -7,15 +7,19 @@
 #:layer #!pragmatics
 
 !["card"]{
- phase: #landed
+ phase: #done
  gist: "The CLI routes through one package, parses flags fail-closed, and speaks a versioned JSON envelope."
  touches: [~"packages/spw-cli/src/envelope.ts", ~"packages/spw-cli/src/args.ts", ~"schemas/spw-cli-envelope.v1.schema.json", ~"package.json"]
  entry: ~"./PLAN.md"
- next: "Hand ?[json_migration] to cli-mode-overhaul's envelope commit, then archive this plan."
+ next: "Archive this plan under _archive; the JSON migration continues in cli-mode-overhaul ~[json_stdout_only]."
+}
+
+^["edges"]{
+ feeds: [~"../../cli-mode-overhaul/wip.spw"]
 }
 
 ^["roots"]{
- @plan: ~".agents/plans/spw-cli-overhaul/PLAN.md"
+ @plan: ~".agents/plans/_archive/spw-cli-overhaul/PLAN.md"
  @cli_package: ~"packages/spw-cli/package.json"
  @cli_commands: ~"packages/spw-cli/src/commands.ts"
  @cli_args: ~"packages/spw-cli/src/args.ts"
@@ -88,10 +92,11 @@
  >>[2026-07-25 23:42] verify — fuzz:ship passes: build plus 763 seed, runtime, CLI, harness, and DOM tests.
  >>[2026-10-12 14:28] revise — reconciled commits with git: all six landed together in b7c5c7df; moved to done. Envelope is used by inventory, map, and inspect-source only; sharpened json_migration to name the cli-mode-overhaul handoff decision. Phase is landed so no wonders added.
  >>[2026-10-12 15:24] revise — Commits named per the convention in 90c58bbc: 6 landed, 0 planned, 0 dropped.
+ >>[2026-10-27 10:20] decide — resolved [json_migration]: cli-mode-overhaul took the all-command migration on 2026-10-13. Its json_stdout_only names json_migration as absorbed, and its envelope_coverage_smoke checks coverage; neither envelope_mode_fields nor a new plan carries it. Envelope use has also grown: 13 command modules format JSON through formatJsonEnvelope today, not the 3 the question counted. Nothing is left here, so the plan is archive-ready.
+ >>[2026-10-27 10:27] note — Archived 2026-10-27 under the owner rule of 2026-10-12 (done plans move to _archive); cli-mode-overhaul and spw-q-stabilization now point their needs edges here.
 }
 
 ^["open"]{
- ?[json_migration]: "Does cli-mode-overhaul envelope_mode_fields (envelope v1 mode and ceiling fields) also carry the all-command migration, given only inventory, map, and inspect-source use the envelope today, or does it get its own plan? Decides whether this plan archives now."
 }
 
 ^["commits"]{
@@ -104,16 +109,17 @@
 }
 
 ^["cache"]{
- ~#status: "landed"
+ ~#status: "done"
  ~#base_ref: "main@949e7ed3e5e1"
  ~#rebased_at: "not_rebased_dirty_main"
  ~#hygiene_split: "required_before_commit"
  ~#files_hot: "packages/spw-cli/src/args.ts,packages/spw-cli/src/envelope.ts,package.json,docs/design/spw-cli-cache-plan.md,.spw/harness/evals/baseline-evals.spw"
  ~#next_commit: "none"
- ~#open_count: "1"
- ~#last_stream: "2026-10-12 15:24"
+ ~#open_count: "0"
+ ~#last_stream: "2026-10-27 10:27"
  ~#taste_debt: "Remaining JSON commands still emit legacy shapes; migrate them as a separate atomic protocol change."
 }
 
 ^["done"]{
+ ~#resolved(json_migration): "Does cli-mode-overhaul envelope_mode_fields also carry the all-command migration, given only inventory, map, and inspect-source used the envelope then, or does it get its own plan? — neither: cli-mode-overhaul json_stdout_only absorbs it and envelope_coverage_smoke checks coverage; 13 command modules format JSON through the envelope by 2026-10-27; evidence: cli-mode-overhaul wip.spw ^[commits] and stream 2026-10-13 12:11"
 }

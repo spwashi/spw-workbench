@@ -50,11 +50,13 @@ This is the page-design rung in the current ecology. The labs should not just ac
 
 Predicted file scaffolding:
 ```
+[NEW] docs/learn/labs/README.md, a format-lint test, vitest.labs.config.ts; [MOD] package.json (test:labs) — lab_home_runner
 [NEW] docs/learn/labs/html-css/01-semantics-ontology.md
 [NEW] docs/learn/labs/html-css/02-topology-containment.md
 [NEW] docs/learn/labs/html-css/03-calculus-valence.md
 [NEW] docs/learn/labs/html-css/04-query-introspection.md
 [NEW] docs/learn/labs/html-css/05-temporal-navigation.md
+      (each NN-slug.md ships with NN-slug.check.test.ts beside it; wip.spw lab_format)
 [MOD] docs/design/md/dom-css-testing-harness.md
 [MOD] docs/design/spw/theme-progression.spw
 [MOD] .spw/workspace.spw

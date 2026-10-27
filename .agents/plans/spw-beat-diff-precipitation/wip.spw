@@ -24,6 +24,7 @@
  @workspace_spec: ~".spw/workspace.spw"
  @lsp_types: ~"packages/spw-lsp/src/types.ts"
  @lsp_server: ~"packages/spw-lsp/src/server-index.ts"
+ @cache_spec: ~".spw/biome/ocean/algos/cache.spw"
 }
 
 ^["intent"]{
@@ -84,6 +85,7 @@
  >>[2026-10-12 14:52] decide — User decision 2026-10-12: rescope, do not archive. Live slice is making LSP tier TTLs obey cache.spw tiers authority (8/64/256 declared, 64/256 hardcoded in server-index.ts). Diff layer stays with ChangeReport; stateReload and Neovim listener go dormant.
  >>[2026-10-12 15:24] revise — Commits named per the convention in 90c58bbc: 0 landed, 3 planned, 5 dropped.
  >>[2026-10-13 11:59] revise — pin_ttl_drift would pass today: WARM_TTL 64 and COLD_TTL 256 (server-index.ts 116 to 117) equal cache.spw; only hot differs, and evictStale never expires hot documents. It becomes guard_ttl_parity; report_tier_ttls makes cacheReflection name its TTLs, visible in VS Code after keep_cache_layers.
+ >>[2026-10-27 10:25] observe — keep_cache_layers landed in ac381ee7, so the VS Code cache card keeps the server layers and report_tier_ttls no longer waits on another plan. guard_ttl_parity moves to the first slot, where pin_ttl_drift stood before 2026-10-13, so block order agrees with next_commit. WARM_TTL 64 and COLD_TTL 256 at server-index.ts 116 to 117 still equal cache.spw on 2026-10-27.
 }
 
 ^["open"]{
@@ -95,10 +97,10 @@
 
 ^["commits"]{
  # Landed nothing yet. Rescoped 2026-10-12 (user decision: do not archive). The first plan's commits are recorded in ^["done"] as ~#dropped(name) beside ~#resolved(disposition).
+ ~[guard_ttl_parity]: "![lsp] — guard test: WARM_TTL and COLD_TTL equal cache.spw ttlBeats; hot asserted as not enforced"
  ~[read_tier_ttls]: "&[lsp] — read tier TTLs from the cache.spw authority via workspace-authority; keep 64 and 256 as the fallback"
  ~[reconcile_granule_policy]: ".[plans] — reconcile with apposition-cache-granules so granule policy and tier TTLs share one authority"
- ~[guard_ttl_parity]: "![lsp] — guard test: WARM_TTL and COLD_TTL equal cache.spw ttlBeats; hot asserted as not enforced"
- ~[report_tier_ttls]: "&[lsp] — cacheReflection names the TTLs it used and where they came from; VS Code shows them after lsp-custom-request-completions ~[keep_cache_layers]"
+ ~[report_tier_ttls]: "&[lsp] — cacheReflection names the TTLs it used and where they came from; VS Code can show them, since its cache card keeps the server layers (lsp-custom-request-completions keep_cache_layers, ac381ee7)"
 }
 
 ^["cache"]{
@@ -109,7 +111,7 @@
  ~#files_hot: "packages/spw-lsp/src/server-index.ts,.spw/biome/ocean/algos/cache.spw"
  ~#next_commit: "guard_ttl_parity"
  ~#open_count: "4"
- ~#last_stream: "2026-10-13 11:59"
+ ~#last_stream: "2026-10-27 10:25"
  ~#taste_debt: ""
 }
 

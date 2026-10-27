@@ -15,7 +15,7 @@
 }
 
 ^["edges"]{
- shares: [~"../cli-mode-overhaul/wip.spw", ~"../lukewarm-backlog/wip.spw"]
+ shares: [~"../cli-mode-overhaul/wip.spw", ~"../lukewarm-backlog/wip.spw", ~"../runtime-maintenance/wip.spw"]
 }
 
 ^["roots"]{
@@ -23,6 +23,7 @@
  @plan: ~".agents/plans/precipitate-model-alignment/PLAN.md"
  @artifact: ~".agents/plans/precipitate-model-alignment/precipitate-model-alignment.spw"
  @runtime_foundation: ~"docs/runtime/spw/runtime-foundation.spw"
+ @ir_journey: ~".spw/tooling/cognitive-surfaces.spw"
 }
 
 ^["intent"]{
@@ -67,6 +68,7 @@
  >>[2026-10-12 15:27] revise — Commits named per the convention in 90c58bbc: 2 landed, 3 planned, 0 dropped.
  >>[2026-10-13 22:04] revise — A runtime survey (runtime-maintenance) corrects one line here: runSpwStepped and collectPrecipitates are tested, in src/seed/__tests__/normalize.test.ts line 330, reached through the src/runtime shim and run by the seed suite; runtime-maintenance legacy_tests_home moves that test into the runtime package. split_stages is routed here.
  >>[2026-10-19 16:40] revise — Owner welcomes cognitive-surface redesign and IR/memory insight. Ground the proposed IR journey in existing Precipitate fields, distinguish ParseOutput from AST, and keep missing stage mappings explicit.
+ >>[2026-10-27 10:24] observe — The order test that test_precipitate_order would add half exists: all four stages on success in src/seed/__tests__/normalize.test.ts (since df7c6056) lists desugar, parse, normalize, interpret literally, but inside if (result.success), so a failed run passes it. At 850077ab the malformed inputs }}}, an unterminated string, { [ } and the empty string all still return parse success true with 0 errors and 4 precipitates, so the parse-failure branch of failure_continuity stays unreached.
 }
 
 ^["open"]{
@@ -81,7 +83,7 @@
  .[runtime_chemistry_layer](97f845e7): "docs[chemistry] — add parallel chemistry vocabulary layer across runtime"
  ~[align_note_and_spec]: ".[precipitate] — retarget the note's src/runtime paths to packages/spw-runtime and label spec-alignment's distill_extract stages (prime, wonder, extract) as a proposal beside the shipped desugar, parse, normalize, interpret"
  ~[doc_per_stage_precipitate]: "vocab[runtime] — doc-comment Precipitate as strictly per-stage and PipelineProjection as a keyed view, once telemetry_locality and failure_continuity are answered"
- ~[test_precipitate_order]: "![runtime] — test that collectPrecipitates yields desugar, parse, normalize, interpret in STAGE_ORDER for valid source (no runtime test covers runSpwStepped today)"
+ ~[test_precipitate_order]: "![runtime] — test that collectPrecipitates yields desugar, parse, normalize, interpret in STAGE_ORDER for valid source (today all four stages on success in src/seed/__tests__/normalize.test.ts guards on result.success, so a failed run passes it, and lists the stages literally)"
  ~[split_stages]: "&[runtime] — pipeline/stages.ts (486 lines) splits into precipitate types, the runSpwStepped executor, and .spw rendering, with a parse-failure test; routed from runtime-maintenance"
 }
 
@@ -93,7 +95,7 @@
  ~#files_hot: "docs/specs/spw/spec-alignment.spw, docs/runtime/spw/runtime-foundation.spw, packages/spw-runtime/src/pipeline/stages.ts, packages/spw-runtime/src/pipeline/types.ts"
  ~#next_commit: "align_note_and_spec"
  ~#open_count: "4"
- ~#last_stream: "2026-10-19 16:40"
+ ~#last_stream: "2026-10-27 10:24"
  ~#taste_debt: "The repo has chemistry-adjacent terms (substrate, resonance, valence, quality), but precipitate boundaries are not yet normalized across docs and code comments."
 }
 

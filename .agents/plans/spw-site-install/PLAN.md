@@ -60,8 +60,8 @@ A mounted consumer must not need a repository name, private migration story, or 
 [MOD] packages/spw-runtime/src/index.ts
 [MOD] packages/spw-lsp/src/helpers.ts
 [MOD] packages/spw-lsp/src/server-index.ts
-[NEW] docs/runtime/md/site-install-guide.md
-[NEW] docs/runtime/md/mount-protocol.md
+[NEW] docs/runtime/md/site-install-guide.md   (landed as docs/runtime/md/site-install-release-story.md in a7622c94)
+[NEW] docs/runtime/md/mount-protocol.md      (not written; see .[mount_protocol_reference] in wip.spw)
 [NEW] .spw/conventions/submodule.spw
 [NEW] .agents/plans/spw-site-install/spw-site-install.spw
 [MOD] src/runtime/__tests__/spw-init-portability.test.ts

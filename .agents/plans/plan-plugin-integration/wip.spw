@@ -11,7 +11,7 @@
  gist: "Editor plugins read and act on wip.spw plan facts through standard LSP products, one fact model."
  touches: [~"packages/spw-lsp/src/handlers/outline.ts", ~"scripts/plans/plan-index.ts", ~".agents/scripts/agent-lib.sh"]
  entry: ~"./PLAN.md"
- next: "~[commit_ref_vscode_test]: an extension-host test that opens a fixture plan and checks hover, the commitRef token, the link, and the commit view; then ~[land_commit_action]."
+ next: "~[commit_ref_vscode_test]: an extension-host runner (vscode-spw has none), then a test that opens a fixture plan and checks hover, the commitRef token, the link, and the commit view; then ~[land_commit_action]."
 }
 
 ^["edges"]{
@@ -28,6 +28,7 @@
  @outline: ~"packages/spw-lsp/src/handlers/outline.ts"
  @plan_index: ~"scripts/plans/plan-index.ts"
  @agent_lib: ~".agents/scripts/agent-lib.sh"
+ @parity: ~".spw/caches/tree/spw/hosts/host-parity-matrix.spw"
 }
 
 ^["intent"]{
@@ -110,6 +111,7 @@
  >>[2026-10-13 17:16] observe — Neovim reached parity with the VS Code commit slice in bdd48943: gf, :SpwCommit, :SpwCommitFiles, and the commitRef highlight, all from the same server links and token. commit_ref_vscode_test remains VS Code only.
  >>[2026-10-13 18:13] decide — The owner asked for a tokenization for non-commit hashlikes after ~<1>[begin_syntax](ebcde35) in a scratch file registered as nothing. This revises the rule that cited hashes take no color: the strategy now names a token by form, never by git (commitRef for a landed ref, hashlike for every other hash-shaped run), git still decides links, and a hover over a hashlike git does not hold says it is not a commit here. Landed in 1ea9ac14 for both editors.
  >>[2026-10-25 20:40] note — A mounted consumer asks (2026-10-25, rank 2) that the commit view keep its diff and read the #[episode]{} block beside it: commit-view.ts serves a spw-commit link as git show with language diff and does not parse the episode. The injection grammar half lives in editor-reading-hierarchy host_injections.
+ >>[2026-10-27 10:17] observe — commit_ref_vscode_test has no harness yet: vscode-spw has no extension-host runner (no @vscode/test-electron in its package.json), and vitest.vscode.config.ts runs unit tests beside their source, where 00c6a56e put commit-uri.test.ts. packages/spw-lsp/src/__tests__/commit-refs.test.ts covers the server side, so the open and changes-view steps are what only an extension-host test can check; the runner comes first.
 }
 
 ^["open"]{
@@ -149,7 +151,7 @@
  ~#files_hot: ".agents/plans/plan-plugin-integration/PLAN.md, .agents/plans/plan-plugin-integration/wip.spw"
  ~#next_commit: "commit_ref_vscode_test"
  ~#open_count: "4"
- ~#last_stream: "2026-10-25 20:40"
+ ~#last_stream: "2026-10-27 10:17"
  ~#taste_debt: ""
 }
 

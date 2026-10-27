@@ -28,7 +28,7 @@ Taste note:
 3. Invalid cause and span in pulse (routed to runtime-dx-foundation).
 4. Pulse report parity between stdin and file (routed to curiosity-mutation-ergonomics).
 5. `mem dump` caller-chosen roots (`mem_dump_roots`). First slice: repeatable root paths under the dump extra folder.
-6. `plan:stream` dry-run reports parse-health effect (`stream_dry_run_health`), after plan-stream-parse-health lands; until then an unquoted line is correct under the plan lens and needs no validator.
+6. `plan:stream` dry-run reports parse-health effect (`stream_dry_run_health`). Its needs were dropped in 866826ff, when plan-stream-parse-health made stream entries read the same in every dialect, so an unquoted line needs no validator.
 7. Profile guard and baseline ref (routed; decisions are open questions here).
 
 ## Scope
@@ -58,7 +58,7 @@ Canonical list: wip.spw ^["commits"] — named; .[name] lines have landed.
 
 ## Dependencies
 
-`stream_dry_run_health` needs plan-stream-parse-health. Routed slices depend on curiosity-mutation-ergonomics and runtime-dx-foundation, both currently dormant; this plan does not reheat them.
+`stream_writer` followed plan-stream-parse-health `entry_line_all_dialects`, which landed in 866826ff; `stream_dry_run_health` no longer waits on it. Routed slices depend on curiosity-mutation-ergonomics and runtime-dx-foundation, both currently dormant; this plan does not reheat them.
 
 ## Failure Modes
 

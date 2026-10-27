@@ -16,15 +16,17 @@ Taste note:
 
 ## Files
 
-[MOD] `.git/hooks/pre-commit` — shrink into orchestration around review + authorization
-[NEW] `scripts/commit-review/run-review.sh` — shared review engine for hook and polling surfaces
-[NEW] `scripts/commit-review/render-review.sh` — terminal summary renderer for commit review
-[NEW] `scripts/commit-review/authorize-commit.sh` — Touch ID / interactive authorization boundary
-[MOD] `.agents/skills/spw-commit-review/scripts/poll-review.sh` — reuse shared review logic and align summaries
-[MOD?] `scripts/touchid-authorize.swift` — accept richer prompt copy or explicit mode metadata
-[MOD] `.agents/skills/spw-commit-review/SKILL.md` — describe the new interaction flow and machine-readable outputs
-[MOD] `.agents/workflows/commit-review.md` — document the staged summary → authorization ceremony
-[NEW?] `scripts/commit-review/lib/agent-context.sh` — centralize agent detection if shell reuse stays cleaner than inlining
+```text
+[MOD] scripts/pre-commit — shrink into orchestration around review + authorization (.git/hooks/pre-commit is its installed copy)
+[NEW] scripts/commit-review/run-review.sh — shared review engine for hook and polling surfaces
+[NEW] scripts/commit-review/render-review.sh — terminal summary renderer for commit review
+[NEW] scripts/commit-review/authorize-commit.sh — Touch ID / interactive authorization boundary
+[MOD] .agents/skills/spw-commit-review/scripts/poll-review.sh — reuse shared review logic and align summaries
+[MOD?] scripts/touchid-authorize.swift — accept richer prompt copy or explicit mode metadata
+[MOD] .agents/skills/spw-commit-review/SKILL.md — describe the new interaction flow and machine-readable outputs
+[MOD] .agents/workflows/commit-review.md — document the staged summary → authorization ceremony
+[NEW?] scripts/commit-review/lib/agent-context.sh — centralize agent detection if shell reuse stays cleaner than inlining
+```
 
 Craft guard:
 - Keep the hook small and single-purpose; most logic should move to `scripts/commit-review/`.

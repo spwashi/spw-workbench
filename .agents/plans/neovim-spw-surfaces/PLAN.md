@@ -62,7 +62,7 @@ Depends on:
 | Surface | Evidence |
 |---------|----------|
 | Filetype + ftplugin + syntax | `ftdetect/`, `ftplugin/spw.vim`, `syntax/spw.vim` |
-| Treesitter queries (highlight/fold/indent) | `queries/spw/*.scm` |
+| Treesitter queries (highlight/fold/indent) | `queries/spw/*.scm`; no `spw` parser exists, so they never ran (2026-10-26; `~[drop_treesitter_queries]`) |
 | LSP start / mount discovery | `lua/spw/lsp.lua`, README mounted-consumer story |
 | Navigation | `lua/spw/navigation.lua` — open/peek ref, anchors |
 | Commands | `lua/spw/commands.lua` — Restart, Stop, InlayHints, OpenRef, PeekRef, OperatorFreq, Phase, FormSeq, Temperature, … |
@@ -75,13 +75,13 @@ Depends on:
 
 | Gap | Detail |
 |-----|--------|
-| **Phantom custom requests** | OperatorFreq / Phase may fail if server never earned methods — same honesty debt as VS Code |
+| **Phantom custom requests** | OperatorFreq / Phase may fail if server never earned methods — same honesty debt as VS Code. Moot since 2026-10-13: every `spw/*` method Neovim calls is handled (`demote_phantom_wrappers` dropped) |
 | **No mass/authority diagnostics** | Seed+CLI only; buffer does not show drift |
 | **Wonder / `$%` inert** | Screenshots show authored probes; editor does not run or validate them |
 | **No plan context** | Editing `wip.spw` / plan artifacts has no statusline next-commit signal |
 | **Statusline field** | VS Code context strip has no Neovim counterpart (optional lualine/heirline snippet, not required dependency) |
 | **Reading profiles** | No `vim.g.spw_reading_profile` noise budget |
-| **No progressive source inspector** | Current commands expose operator and phase probes, but not the shared tokens → structure → trace product or its completeness/cost receipt |
+| **No progressive source inspector** | Current commands expose operator and phase probes, but not the shared tokens → structure → trace product or its completeness/cost receipt. Closed by `:SpwInspect` in `1bb4f68d` |
 | **Panel temptation** | Avoid porting Concepts/Atlas trees; prefer quickfix + float + notify |
 
 ## Mounted-consumer asks (2026-10-12)
@@ -173,9 +173,9 @@ The outline is already token-driven and hierarchical, so motions and frame text 
 [MOD] .agents/plans/neovim-spw-surfaces/wip.spw
 [MOD] extensions/neovim-spw/lua/spw/commands.lua
 [MOD] extensions/neovim-spw/lua/spw/lsp.lua
-[MOD?] extensions/neovim-spw/lua/spw/plan.lua          thin plan-context reader
-[MOD?] extensions/neovim-spw/lua/spw/statusline.lua    optional context chip
-[NEW?] extensions/neovim-spw/lua/spw/inspect.lua       progressive product projection; no parser
+[NEW?] extensions/neovim-spw/lua/spw/plan.lua          thin plan-context reader
+[NEW?] extensions/neovim-spw/lua/spw/statusline.lua    optional context chip
+[NEW] extensions/neovim-spw/lua/spw/inspect.lua        progressive product projection; no parser (landed 1bb4f68d)
 [MOD] extensions/neovim-spw/lua/spw/health.lua
 [MOD] extensions/neovim-spw/README.md
 [MOD] extensions/neovim-spw/tests/mounted-consumer-smoke.lua

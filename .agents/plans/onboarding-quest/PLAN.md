@@ -1,10 +1,10 @@
 # Plan: onboarding-quest
 
-A newcomer meets Spw by playing in it. One quest, written once in `docs/learn/quest.spw`, is drawn by every host: spw.quest, `spw quest` in a terminal, the VS Code walkthrough and the WebStorm start action. Then `spw init --preset quest` gives the newcomer a `.spw/quest/` folder to play in.
+A newcomer meets Spw by playing in it. One quest, written once in `docs/learn/quest.spw`, is drawn by every host: spw.quest, `spw quest` in a terminal, the VS Code walkthrough, the WebStorm start action and `:SpwQuest` in Neovim. Then `spw init --preset quest` gives the newcomer a `.spw/quest/` folder to play in.
 
 ## Goal
 
-Onboarding should invite play with the syntax, not explain it. One open question runs through the playground: should `door~` bind to `door` the way `~door` does? A reader forks the form, sees what the parser read, moves the claim from felt to proposed to measured, wonders with a probe, and ends with an ask the workbench can act on. The asks shape (rank, claim, exists, gap, measured, recommendation, replaces, probe, question) is the one spwashi.com already uses for its upstream review.
+Onboarding should invite play with the syntax, not explain it. One open question runs through the playground: should `door~` bind to `door` the way `~door` does? A reader forks the form, sees what the parser read, moves the claim from felt to proposed to measured, wonders with a probe, and ends with an ask the workbench can act on. The asks shape (rank, claim, exists, gap, measured, recommendation, replaces, probe, question) is the one a mounted consumer already uses for its upstream review.
 
 ## Surfaces
 
@@ -15,6 +15,7 @@ Onboarding should invite play with the syntax, not explain it. One open question
 | Terminal and scaffold | `spw quest`, `spw init` grow frame | quest_cli_scaffold |
 | VS Code | Get started walkthrough | vscode_walkthrough |
 | WebStorm | Start the Spw quest action, first-run balloon | webstorm_quest |
+| Neovim | `:SpwQuest` panels, `:SpwQuest check` | neovim-spw-surfaces quest_command (1bb4f68d) |
 | Playground | `spw init --preset quest` → `.spw/quest/` | play_preset |
 | spw.quest | site repo, `workers/spw-quest` | pin_spw_quest |
 

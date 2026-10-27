@@ -9,7 +9,7 @@
 #>plan_refactor_experiment_lifecycle
 #:plan #!execution_truth
 #:layer #!pragmatics
-#:status #!planning
+#:status #!active
 
 !["card"]{
  phase: #active
@@ -21,7 +21,7 @@
 
 ^["edges"]{
  feeds: [~"../vscode-lsp-roadmap/wip.spw", ~"../_archive/editor-cli-instruments/wip.spw"]
- shares: [~"../shape-syntax-ecology/wip.spw", ~"../curiosity-mutation-ergonomics/wip.spw", ~"../form-geometry-editor/wip.spw", ~"../measure-invariant-generalization/wip.spw"]
+ shares: [~"../shape-syntax-ecology/wip.spw", ~"../curiosity-mutation-ergonomics/wip.spw", ~"../form-geometry-editor/wip.spw", ~"../measure-invariant-generalization/wip.spw", ~"../canon-rewrite-v2/wip.spw", ~"../cli-mode-overhaul/wip.spw"]
 }
 
 ^["roots"]{
@@ -31,6 +31,7 @@
  @pattern: ~".spw/patterns/query-composition.spw"
  @semantic_edit: ~"packages/spw-seed/src/canonical/semantic-edit.ts"
  @differential: ~"packages/spw-seed/src/canonical/differential.ts"
+ @patch: ~"packages/spw-seed/src/canonical/patch.ts"
  @refactor_cli: ~"packages/spw-cli/src/refactor.ts"
  @bias_apply: ~"packages/spw-cli/src/bias-apply.ts"
  @bias_edges: ~"packages/spw-cli/src/bias-edges.ts"
@@ -168,7 +169,7 @@
 
 ^["selection_model"]{
  fields: #[uri, contentHash, revision?]
- hash: "content hash of file bytes (or normalized? decide — default raw utf8)"
+ hash: "content hash of raw utf8 file bytes through seed textHash (hash_basis settled 2026-10-13; the function landed in eb34e6c3)"
  drift: "re-select → added | removed | changed | unchanged"
  filter: "optional SpwPattern — same vocabulary as spw query"
  excludes: "node_modules, dist, _workbench, .git — align fs-walk"
@@ -432,6 +433,7 @@
  >>[2026-10-13 19:17] decide — The owner settled ?[hash_basis] through fragment-pointers ?[hash_unity]: raw utf8 bytes, one function for selections, cite pointers, and the LSP index. ?[selection_revision] stays open.
  >>[2026-10-13 22:04] note — runtime-maintenance one_hash_module builds the shared hash over raw utf8 bytes that selection_hash_check needs: it replaces four sha256-to-16 copies and the FNV readers of UTF-16 units, and fixes range-transform contentHash slicing an 8-character hash to 16.
  >>[2026-10-13 23:16] note — selection_hash_check can take seed's textHash (eb34e6c3): one hash over raw UTF-8 bytes, as ?[hash_basis] settled, shared with cite pointers, the LSP document index, and geometry cards.
+ >>[2026-10-27 10:21] observe — Seed already has a frozen apply unit that this plan never names: canonical/patch.ts (canon-rewrite-v2 patch_pipeline, d8b8eae4; now @patch) builds spw.patch/1 from a selection, edits, a ceiling and an IrRef, and applyPatch refuses a beforeHash mismatch as a stale patch. applyPatchToFiles checks every file against the one beforeHash of a single-source patch, so a per-file selection hash is still missing; spw delta --patch is its only CLI caller. selection_hash_check and hash_gated_apply should reuse that refusal or say why spw.refactor.plan/1 needs its own.
 }
 
 ^["open"]{
@@ -446,7 +448,7 @@
  .[plan_artifacts](08e2bc1c): "&[canon-rewrite-v2] — land tip capability on upstream; phase 0 field clocks"
  .[refactor_plan_card](75d8f9d2): "&[seed,cli] — emit spw.refactor.plan/1 as the review card"
  ~[selection_hash_check]: "vocab[seed] — selection contentHash and a stale-refusing check on spw.refactor.plan/1 (the card from 75d8f9d2 omits selection_hashes)"
- ~[stale_conflict_tests]: "![seed] — refactor-plan tests for stale hash, conflict and compose (refactor-plan.test.ts has two tests today: omissions and effect raise)"
+ ~[stale_conflict_tests]: "![seed] — refactor-plan tests for stale hash, conflict and compose (refactor-plan.test.ts has three tests today: omissions, a pending path move with unowned links from 56844e6e, and effect raise)"
  ~[selection_corpus_plan]: "#[cli] — selection corpus and plan/check from semantic rules"
  ~[hash_gated_apply]: "&[cli] — hash-gated workspace apply and receipt envelope"
  ~[worktree_episode_apply]: "&[cli] — worktree apply (l1) and episode commit helper"
@@ -465,9 +467,9 @@
  ~#files_hot: "packages/spw-cli/src/refactor.ts, packages/spw-seed/src/canonical/semantic-edit.ts, packages/spw-cli/src/envelope.ts"
  ~#next_commit: "selection_hash_check"
  ~#open_count: "5"
- ~#last_stream: "2026-10-13 23:16"
- ~#taste_debt: "hash_basis and partial_apply undecided — block apply-workspace design until resolved"
- ~#phase: "pre-flight"
+ ~#last_stream: "2026-10-27 10:21"
+ ~#taste_debt: "partial_apply undecided — blocks apply-workspace design until resolved; hash_basis settled 2026-10-13"
+ ~#phase: "review card and path rename landed; lifecycle stages from selection_hash_check on are planned"
  ~#related_plans: "curiosity-mutation-ergonomics, measure-invariant-generalization, form-geometry-editor, vscode-lsp-roadmap"
 }
 

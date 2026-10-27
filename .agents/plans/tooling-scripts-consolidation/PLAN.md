@@ -69,6 +69,9 @@ Taste note: truthful names and one home per behavior, with shims before removals
   - `local-numbering-vcs` (git calls in scripts)
   - `caches-living-tree` (the cut gate is invoked by path)
   - `citation-navigation` (`spw resolve` absorbs the path check)
+  - `commit-gate-redesign` (the hook sources, `run-review.sh`, and `poll-review.sh`)
+  - `refactor-import-sprawl` (the dead `lib/spw` check in `run-review.sh` that its `?[gate_home]` may replace)
+  - `plan-plugin-integration` (`plan-index.ts` and `agent-lib.sh`, which `spw_plan_verbs` moves)
 
 ## Failure Modes
 
