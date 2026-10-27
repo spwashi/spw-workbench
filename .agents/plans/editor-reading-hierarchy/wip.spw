@@ -135,6 +135,8 @@
  >>[2026-10-27 10:19] revise — The commit block now runs in the PLAN.md order, since order is block position: role_stream_parity and roles_from_lex follow path_aware_parse and precede the three role mappings (stream_prose_text, path_color_parsed_only, inline_hash_comment), then operator_modifiers and particle_roles, as decided 2026-10-26 12:29; citation_lenses and generated_banner_actions sit beside anchor_trial_off, which landed with them in 55e79d2e.
  >>[2026-10-27 10:22] revise — Correction to the 2026-10-26 12:29 tokenizer count: the IntelliJ TextMate grammar is not a hand copy. extensions/intellij-spw/scripts/sync-grammar.mjs generates it from the VS Code grammar since 17b3a4a2, and sync-grammar.mjs --check passes on 2026-10-27; the 188 bytes are the provenance comment the generator writes. Six tokenizers read Spw on their own, and the IntelliJ grammar follows the VS Code one.
  >>[2026-10-27 13:00] note — Honesty gap beside lexer_errors_first, found 2026-10-27: a parse that degrades to prose reports success with a warning the editor never shows (analysis.ts publishes only failed parses). degradation_diagnostic publishes it; severity follows plan-stream-parse-health ?[degradation_severity].
+ >>[2026-10-27 13:29] decide — Line and block hints, filed at the owner request on 2026-10-27. A new hint states a fact the page does not (git, another frame, the parser reading), appears only when something has drifted or is far away, carries a fix when it reports drift, and derives from the parse, the outline ranges or git, never a new scanner; wrongness is a diagnostic, not a hint. On a healthy file the count falls: drift hints are zero, depth markers shrink to far-closer hints, path hints appear only on bare refs. hierarchy_census measures it before and after.
+ >>[2026-10-27 13:29] revise — resolved_path_hint narrows to one owner: the basis a bare or root-relative path resolved through is citation-navigation path_basis_hint (2026-10-27), so this commit keeps only the unresolved-target hint and the settings rule, and the echoing => path label goes.
 }
 
 ^["open"]{
@@ -145,6 +147,7 @@
  ?[generated_without_lenses]: "The edit warning learns a file is generated from its lenses, so capture mode or spw.codeLens.enabled=false silences it. Does a small request earn its place to remove that dependency?"
  ?[modifier_or_type]: "Does operator identity ride as a modifier on operator, so a theme that knows only operator still paints, or as one token type per operator, which reads simpler in theme rules but drops generic themes? Modifiers are the recommendation: 6 existing, 13 operators and 3 particles make 22 of the 32 a bitset holds."
  ?[dialect_tokens]: "A dialect-preprocessed parse has token offsets that no longer match the source: does the role stream lex the raw text there, or does the preprocessor carry a source map so plan files read through their dialect?"
+ ?[far_closer_distance]: "How far below its opener must a closing brace sit before it names its frame: a fixed count such as 25 lines, or off-screen by the visible range the client sends with each inlay request? Decides far_closer_hint."
 }
 
 ^["commits"]{
@@ -165,7 +168,7 @@
  .[anchor_trial_off](55e79d2e): "&[lsp] — anchor lenses stop running a runtime trial per anchor; register and phase move behind an instrument"
  .[citation_lenses](55e79d2e): "&[lsp] — line 0 and each #> anchor count the files that cite them by path and key from a warm citation index; the annotation count is the second count, named; cold shows nothing (consumer rank 9)"
  .[generated_banner_actions](55e79d2e): "&[lsp,vscode] — the generated banner opens the page a tree was read from and types its rebuild; the first edit to a generated file warns with both (consumer rank 12)"
- ~[resolved_path_hint]: "&[lsp] — the resolved-path inlay shows only for a parent hop, an alias, a mount, or an unresolved target; depth and incoming inlays obey the frames and annotations settings"
+ ~[resolved_path_hint]: "&[lsp] — the => path inlay goes; an unresolved target keeps a hint, the basis a bare or root-relative path took is citation-navigation path_basis_hint, and depth and incoming inlays obey the frames and annotations settings"
  ~[wonder_hint_offscreen]: "&[lsp] — the wonder inlay drops counts visible on the page and shows only facts from elsewhere; Neovim stops forcing inlay hints on at attach"
  ~[hover_layers]: "&[lsp] — hover answers what is under the cursor first, then evidence, then geometry, and never restates the hovered line (from vscode-editor-contract hover_answers_position and spw-garden-geometry anti_echo_hover)"
  ~[commit_frame_roles]: "&[lsp] — in ^[commits], a label takes a role by state (planned, landed, dropped), a derived ordinal shows before it, the commit id dims, and the description reads as text"
@@ -175,6 +178,10 @@
  ~[string_color_swatches]: "&[lsp] — a documentColor provider shows swatches for #rgb, #rrggbb, and #rrggbbaa inside strings, where colors live; a bare #8800ff stays a #tag"
  ~[host_injections]: "&[grammar] — injection grammars for an HTML semantic-expression attribute, a Markdown spw fence, and a commit episode block, each read through the lite scan (consumer rank 2)"
  ~[degradation_diagnostic]: "&[lsp] — analysis.ts publishes parse warnings, prose-degradation first, at the position the structured parse stopped; today only a failed parse publishes (analysis.ts 51 to 75)"
+ ~[far_closer_hint]: "&[lsp] — a closing brace far below its opener names the frame it closes, from the outline ranges; the depth-3 brace markers and countBracesOutsideStrings go"
+ ~[degraded_region_roles]: "&[lsp] — after roles_from_lex and plan-stream-parse-health degradation_stop_position: the span after a prose-degradation stop paints as text, and the enclosing frame header carries one lens naming the stop line and token that jumps there"
+ ~[redundant_stamp_fade]: "&[lsp] — a [reg=] stamp that restates its container default fades as unnecessary, with a fix that removes it; conditional on syntax-hardware-alignment ?[register_from_container]"
+ ~[learner_first_use_hints]: "&[lsp] — under a learning profile only, the first use of each sigil and particle in a file carries its word from the operator table; after profiles_as_modes and audit-ui-data-models table_words_export"
 }
 
 ^["cache"]{
@@ -184,8 +191,8 @@
  ~#hygiene_split: "none"
  ~#files_hot: "packages/spw-lsp/src/handlers/display.ts, packages/spw-lsp/src/handlers/semantic-tokens.ts, extensions/vscode-spw/syntaxes/spw.tmLanguage.json"
  ~#next_commit: "hierarchy_census"
- ~#open_count: "7"
- ~#last_stream: "2026-10-27 13:00"
+ ~#open_count: "8"
+ ~#last_stream: "2026-10-27 13:29"
  ~#taste_debt: "display.ts is 1332 lines at 55e79d2e, still twice the guard; moved hover and inlay builders should land in their own modules"
 }
 

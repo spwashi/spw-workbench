@@ -117,6 +117,7 @@
  >>[2026-10-13 11:37] observe — Owner screenshot of citation-navigation/wip.spw in VS Code, 2026-10-13: stream lines through 2026-09-30 render plain while later lines carry colored markers, figures, and commit refs, with identical marker bytes. Entries read the same in every dialect since 866826ff, so the split is in the editor: likely semantic tokens covering part of the document; check the token range before ~[entry_figure_nodes] adds more figure kinds.
  >>[2026-10-27 10:20] revise — PLAN.md Files corrected: the theory note landed as docs/theory/spw/line-items.spw, not the planned stream-lines.spw, and the files named only by the dropped commits (topography_path_option, thread_path_callsites, detect_plan_stream, spaced_entry_tolerance, template_dialect_pragma) are marked dropped. Nothing landed since 940ef67e; ~[entry_figure_nodes] is still next.
  >>[2026-10-27 13:00] observe — Ergonomics review 2026-10-27, probed at f36ecd08: a surface whose structured parse stops returns success with a prose-degradation warning, and neither spw lint (annotations and anchors are well-formed, 0 findings) nor the editor (analysis.ts publishes only when success is false) shows it; three plans read half their content as prose through the 2026-10-27 sweep with lint and plan:check green. Each valence word as a facet key (boon, bane, bone, bonk or honk before a colon) lexes as MODIFIER and degrades the whole surface, while banes: lexes as IDENTIFIER and parses. A string holding a quoted ref splits into string, ref and string with no warning.
+ >>[2026-10-27 13:29] observe — Probed 2026-10-27: the prose-degradation warning points at the opener of the frame the parse fell back from, not at the token that broke it. A file whose second frame holds c: .{ bane: "slow" } on line 8 warns at line 6 column 1 (found OPERATOR ^). A lens can name the frame today; degradation_lint and the editor diagnostic need the deepest position to point at the cause.
 }
 
 ^["open"]{
@@ -147,6 +148,7 @@
  ~[modifier_keys]: "^seed[parser] — a valence word in key position reads as a key: a failing fixture for boon: through honk: in a .{} facet, then the key rule accepts MODIFIER; vscode-plugin-performance.spw ^[tradeoffs] is the live specimen"
  ~[string_ref_seam]: "^seed[parser] — a warning when a string closes directly into a ~ ref inside one value, the seam a nested quote leaves; today such a value parses as string, ref and string in silence"
  ~[phrase_for_quoted_code]: ".[conventions] — the conventions name the backtick phrase as the form for prose that quotes Spw, with the nested-quote seam as the counterexample"
+ ~[degradation_stop_position]: "^seed[parser] — the prose-degradation warning carries the deepest position the structured parse reached and the token it could not take, beside the frame opener it fell back from; today a valence key on line 8 reports line 6, OPERATOR ^"
 }
 
 ^["cache"]{
@@ -157,7 +159,7 @@
  ~#files_hot: ""
  ~#next_commit: "entry_figure_nodes"
  ~#open_count: "4"
- ~#last_stream: "2026-10-27 13:00"
+ ~#last_stream: "2026-10-27 13:29"
  ~#taste_debt: ""
 }
 
