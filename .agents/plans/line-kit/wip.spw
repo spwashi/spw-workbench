@@ -1,0 +1,101 @@
+# wip — line-kit
+# Started: 2026-11-06
+
+#>plan_line_kit
+#:plan #!execution_truth
+#:layer #!syntax
+
+!["card"]{
+ phase: #planning
+ gist: "Seed gives interactive hosts one kit for a line: read, query, edit, wrap and describe, each edit byte-preserving"
+ touches: [~"packages/spw-seed/src/line", ~"packages/spw-lsp/src/reader.ts"]
+ entry: ~"./PLAN.md"
+ next: "~[any_pair_leads] in the reader, then ~[kit_laws]: the laws as property tests over generated lines, failing first; then ~[slot_edits]."
+}
+
+^["edges"]{
+ needs: [~"../brace-slot-reading/wip.spw"]
+ feeds: [~"../onboarding-quest/wip.spw", ~"../ground-edge-reading/wip.spw", ~"../editor-reading-hierarchy/wip.spw"]
+ shares: [~"../parser-releases/wip.spw", ~"../interpretation-trials/wip.spw", ~"../cli-sense-reorientation/wip.spw"]
+}
+
+^["roots"]{
+ @plan: ~".agents/plans/line-kit/PLAN.md"
+ @line: ~"packages/spw-seed/src/line/index.ts"
+ @fixtures: ~"packages/spw-seed/src/line/fixtures.ts"
+ @reader: ~"packages/spw-lsp/src/reader.ts"
+ @trials: ~".agents/plans/interpretation-trials/interpretation-trials.spw"
+}
+
+^["intent"]{
+ ~#goal: "Two hosts edit, search and wrap Spw lines the same way because they call the same kit, and no host keeps a slot writer of its own"
+ ~#taste: "Every edit is a splice at spans the reading already holds; readings still on trial stay out of the kit"
+}
+
+^["design"]{
+ # One reading, many uses (the owner: aim for cohesive design and resilient architecture, 2026-11-06).
+ one_reading: "readLine is the only reader: a query, an edit, a wrap point, a feature and a renamed view are each a function of a SlotReading and the source it holds; nothing re-reads text its own way"
+ query_is_a_line: "a query is read by readLine like any line, so {seed}, <receipt>, (atlas) and [pi*] are lead slots of a line with no word, and medium[*] is a word and a mode; a query and a line can never be read two ways"
+ any_pair_leads: "every pair may be written before the word, as the scene and concept already may: [mode]home, {body}home; a moved slot is a lead slot, and the order it was written in is kept"
+ contracts: "each product names its contract and version (line.reading/1, line.query/1, line.features/1, line.breaks/1), so a host can check what it holds and a change is a new version, not a silent shape"
+ totality: "every function takes any string and returns; what it cannot read goes to rest, and no input throws"
+ laws: "the laws run over the fixture table and over generated lines (any slot order, nesting, separators, joins, quotes, unclosed pairs): write-back identity, one-span edits, rest kept, query matches itself"
+ no_host_names: "seed carries no consumer's vocabulary; a host passes its own slot names to the record view, and SLOT_NAMES keeps only the reader names"
+ digestible_features: "features are plain data with stable keys and plain-word names, a short description in words, and a Spw line of their own, so a shelf, a canvas or an agent can use them without reading seed"
+ types_from_the_build: "hosts type the kit from types cut with the build (parser-releases typed_variants), never from a hand-copied file"
+}
+
+^["intake"]{
+ # What each host's planned or landed work asks of the kit. Consumer-relative paths.
+ region_moves_its_slot: .{ host: "factshift.center", source: "TOOLS.md, Regions: consequence, or quiet (G2)", home: "slot_edits: moveSlot" }
+ drop_adds_a_part: .{ host: "factshift.center", source: "TOOLS.md (G3)", home: "slot_edits: addPart" }
+ selection_rewrites_join: .{ host: "factshift.center", source: "TOOLS.md (G4)", home: "slot_edits: setSeparator, setJoinMark" }
+ map_filter_as_slot_query: .{ host: "factshift.center", source: "TOOLS.md, Map and filter, Spw-native (M1, F1)", home: "slot_query" }
+ body_part_by_link: .{ host: "spw.quest", source: "workers/spw-quest/src/pivot.js withBodyPart (584ac7eb)", home: "slot_edits: addPart" }
+ front_mark: .{ host: "spw.quest", source: "workers/spw-quest/src/pivot.js withFrontMark (584ac7eb)", home: "slot_edits: setFrontMark" }
+ shelf_search: .{ host: "spw.quest", source: "public/js/semantic/expression-query.js parseExpressionQuery, no scene slot", home: "slot_query" }
+ wrap_where_spw_parts: .{ host: "spw.quest", source: "src/specimens.js breakable() and the plan lines' hanging indent (4e9ba912, cc047be5)", home: "wrap_points" }
+ level_slider: .{ host: "spw.quest", source: "PLAN.md, Shelf, library and architecture (bad03f63)", home: "line_features" }
+ guided_wonder: .{ host: "factshift.center", source: "interpretation-trials wonder_trial_guided_wonder", home: "line_features, slot_query" }
+}
+
+^["open"]{
+ # Unresolved questions. When resolved: log in stream, then move to ^["done"] as ~#resolved(label).
+ ?[query_match]: "How does a query slot match: * any written slot, x* a prefix, x equal, a body's query parts each held among the line's parts; is an absent query slot no constraint, and does a query slot written empty ([ ]) ask that the line lack it?"
+ ?[features_shape]: "Which features earn a stable key in line.features/1, and what does the short description say first: the order departures, the joins, or the depth?"
+}
+
+^["commits"]{
+ # Named, in order. Planned ~[name]; landed .[name](hash). Names are never reused.
+ ~[any_pair_leads]: "^seed[line] — the reader takes a mode or a body before the word as it takes a scene or a concept: [mode]home, {body}home; fixtures and laws updated, {chronicles} <of> (narnia) now leads with its body"
+ ~[kit_laws]: "![line] — the laws as property tests over generated lines as well as the fixture table: write-back identity, one-span edits, rest kept, no input throws"
+ ~[slot_edits]: "^seed[line] — moveSlot (to any place, before the word included), addPart, setSeparator, setFrontMark and setJoinMark over a reading, each a splice at spans the reading holds, returning the new text and its reading"
+ ~[slot_query]: "^seed[line] — a query is a line: readLine reads it, and matchReading(query, reading) compares slot by slot, nested parts included; {seed} holds, <receipt> goes to, (atlas) scene, [pi*] lens prefix, medium[*] any lens (line.query/1, after ?[query_match])"
+ ~[wrap_points]: "^seed[line] — breakPoints(reading): where a line may wrap (after a slot closes, before a pair opens, after a separator or a join mark; never inside a word or a string), and frameHang for a #> frame line; highlightHtml takes { breaks: true }"
+ ~[line_features]: "^seed[line] — lineFeatures(reading) as line.features/1: plain data with stable keys (slots and their order, leads, departures from word-first order, joins and bonds, separators, depth, marks, unread), describeFeatures in a few plain words, and the features as a Spw line of their own; seed names no level (after ?[features_shape])"
+ ~[slot_record_view]: "&[line] — viewReading(reading, names): a reading under a vocabulary the caller passes, so a consumer's reader can become a view of seed's and no consumer's names live in seed (the site column leaves SLOT_NAMES); with brace-slot-reading consumer_reader_parity"
+ ~[kit_contracts]: ".[spec] — the line.* contracts written down beside the plugin protocol: what each product holds, its version, and the laws it keeps"
+ ~[kit_in_reader]: "&[reader] — the kit exported from seed's reader slice and the language server's reader, asserted on reader.min.js and reader.debug.js in test:parser-release"
+}
+
+^["stream"]{
+ >>[2026-11-06 20:20] observe — In the 90 minutes after the canvas host moved to seed's reader, the consumer filed or built nine asks of a line: factshift.center's tools plan wants a slot query for map and filter, a writeAt rewrite for a cast, a region drag that moves its slot, a drop that adds a part and a selection that rewrites a join; spw.quest built a body part by a chosen link and a front mark by rebuilding the line from its own reader, wraps painted lines by regex, hangs plan lines from their frame, and proposes a level slider. Each is a line operation more than one host needs.
+ >>[2026-11-06 20:20] decide — One plan for the kit beside the reader, rather than a commit each in brace-slot-reading: that plan keeps the parser's agreement, this one keeps the host-facing kit, and both share the fixture table.
+ >>[2026-11-06 20:28] decide — The owner, 2026-11-06: a mode and a body may lead the word, as a scene and a concept may; a slot query should probably be read as a line; features should be made digestible downstream; aim for cohesive design and resilient architecture. The plan now reads one way through every product (one reader, the query a line), names a versioned contract for each, keeps consumers' vocabularies out of seed, runs its laws over generated lines, and leaves the level to hosts while making features plain to read. query_is_a_line is held as the owner's leaning ("probably"), reversible until slot_query lands.
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@27fa1e3d"
+ ~#rebased_at: ""
+ ~#files_hot: "packages/spw-seed/src/line"
+ ~#next_commit: "any_pair_leads"
+ ~#open_count: "2"
+ ~#last_stream: "2026-11-06 20:28"
+}
+
+^["done"]{
+ ~#resolved(move_semantics): "May a mode or body lead the word? Yes: every pair may lead; a moved slot is a lead slot. Owner, 2026-11-06 20:28"
+ ~#resolved(query_grammar): "Shelf grammar or a query read as a line? A line, probably: one reader for queries and lines. Owner, 2026-11-06 20:28; held reversible until slot_query lands"
+ ~#resolved(features_not_level): "Features or a level? Features, made digestible downstream; hosts weigh their own levels. Owner, 2026-11-06 20:28"
+}

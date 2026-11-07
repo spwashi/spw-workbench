@@ -54,6 +54,7 @@
  ?[import_integrity]: "Integrity covers script and modulepreload tags but not import statements; should the release page recommend an import map, and which browsers honor its integrity section?"
  ?[recut_in_place]: "2026.10.13 was published from 76e17bd and cut again under the same name from 0eb1d1c0 the same day, at the owner's word, because nobody had fetched it. Is a re-cut allowed before the first fetch, or should it have been 2026.10.13-patch.1, and should the builder refuse it either way?"
  ?[lite_carries_roles]: "Does the reader's extra 12 KB earn its place on pages that only parse, or should lite carry roles and outline? Answer before reader_is_browser_build makes the reader the default browser build."
+ ?[types_how]: "Types are generated from the variant's own entry and tested, never hand-written (decided 2026-11-06); what remains is the form: a types/ folder beside each variant from tsc --emitDeclarationOnly, or one bundled .d.ts per variant, without a new dependency."
 }
 
 ^["commits"]{
@@ -70,6 +71,7 @@
  .[workbench_variant](b082d500): "#[release] — the parser release gains a workbench build: seed's whole API, the runtime, and the reader, for any page"
  ~[reader_is_browser_build]: "#[release] — the reader is the browser build; full.min stays an alias for one release, then goes (consumer rank 14)"
  ~[release_readings]: "#[release] — the manifest carries the readings of a fixed specimen set, so two releases compare by diff; built by reading-drift release_readings, and the view spw.quest's two-release specimen comparison waits on"
+ ~[typed_variants]: "#[release] — each variant ships types generated from its own entry by the same cut, listed in the manifest with bytes and sha256; a release test typechecks a small consumer against them, so the types cannot drift from the bundle (after ?[types_how] for the form)"
 }
 
 ^["cache"]{
@@ -78,8 +80,8 @@
  ~#rebased_at: "2026-10-12"
  ~#files_hot: "scripts/release/build-parser-release.ts, package.json"
  ~#next_commit: "reader_is_browser_build"
- ~#open_count: "6"
- ~#last_stream: "2026-11-06 18:10"
+ ~#open_count: "7"
+ ~#last_stream: "2026-11-06 20:28"
 }
 
 ^["done"]{
@@ -108,4 +110,6 @@
  >>[2026-11-06 17:24] note — Evidence for ?[lite_carries_roles]: on 2026-10-25 (4c454b32) the consumer moved every importer to the reader and dropped its 75.8 KB parser bundle, after parse matched on 993 of 993 tracked .spw files and parseExpression on 974 of 974 route expressions. Its spw.quest serves the reader as /parser.js (87.5 KB). One consumer has already chosen the reader as its only browser build; its quest plan holds a two-release specimen comparison that waits on a second cut, which makes ?[grammar_version] matter.
  >>[2026-11-06 17:24] note — reading-drift (opened 2026-11-06) owns the per-line reading fingerprint; release_readings here carries it into the manifest. ?[grammar_version] gains a measurable form: a grammar version changes exactly when the specimen readings do.
  >>[2026-11-06 18:10] measure — With the slot reader and slotHash in the reader slice, a dirty scratch cut (2026.11.06, not published) gives reader.min.js 97,801 B against 87,605 B at 2026.10.13; full.min.js 75,872 B; lite.min.js 3,228 B; workbench.min.js 434,001 B. The reader now carries readLine, writeLine, writeAt and slotHash, and test:parser-release asserts them on the bundle. Evidence for ?[lite_carries_roles].
+ >>[2026-11-06 20:20] observe — A canvas host carries reader.min.js (2026.11.07-pre.1) with a hand-written reader.min.d.ts, already edited once to add parse, and still compiles the runtime from a March copy because compiling main from source broke (runtime-maintenance, 2026-11-06). Its 18 imports from spw-workbench/runtime are 5 values, all exported by workbench.min.js, and 13 types, which no variant ships. Typed variants would let it drop the March copy for the dated workbench build. Planned as typed_variants.
+ >>[2026-11-06 20:28] decide — The owner asked for resilient architecture (2026-11-06): a consumer's types come from the cut that made its bundle, generated from the variant's entry and checked by typechecking a consumer stub in test:parser-release, never hand-copied. The canvas host's hand-written reader.min.d.ts, edited once already to add parse, is the failure this prevents.
 }

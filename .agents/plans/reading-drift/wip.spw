@@ -42,7 +42,7 @@
  # Named, in order. Planned ~[name]; landed .[name](hash). Names are never reused.
  ~[line_reading_fingerprint]: "&[seed] — a reading fingerprint per line: node kind, slots in written order, medial arms, and the lines the construct spans; whitespace and comments do not change it"
  ~[readings_snapshot]: "&[cli] — write the fingerprints of a corpus to a snapshot with the parser revision and corpus revision beside them"
- ~[readings_check]: "&[cli] — compare a corpus with a snapshot and list each line whose reading changed, old and new, with counts by kind; exit nonzero on any change unless --expect names it"
+ ~[readings_check]: "&[cli] — compare a corpus with a snapshot and list each line whose reading changed, old and new, with counts by kind; exit nonzero on any change unless --expect names it; on a consumer's corpus it answers what the consumer's manifest rebuild answers today (990 route expressions, b03e1544)"
  ~[corpus_by_path]: "&[cli] — read a corpus by explicit path outside this repo (a mounted consumer, read in place), keeping only fingerprints and counts"
  ~[release_readings]: "#[release] — each parser release carries the readings of a fixed specimen set in its manifest, so two releases compare by diff (with parser-releases)"
  ~[grammar_receipt]: ".[commit-review] — a commit that changes a reading cites its drift in *[verify]: lines changed per corpus"
@@ -51,6 +51,7 @@
 ^["stream"]{
  >>[2026-11-06 17:24] observe — Four silent misreads found by one-off censuses the same day: line-crossing medial capsules (10 here, 347 in a mounted consumer), key = value as three loose expressions (most of 2,174 lines here, 25,429 there), key = @handle as a bias edge (27 here, 2,590 there), and <…> after an operation's slots (0 here, 28 there). Each fix changes existing readings; nothing in the repo can list them. The consumer verifies its own reader with a manifest snapshot compared before and after a change.
  >>[2026-11-06 17:24] decide — A plan of its own: it gates every grammar change in brace-slot-reading, plan-stream-parse-health and syntax-hardware-alignment, and gives parser-releases the artifact spw.quest's two-release specimen view waits on.
+ >>[2026-11-06 20:20] observe — The consumer checked its mount move from 850077ab to 27fa1e3d by hand, the way readings_check should: every one of its 990 route expressions read as before and its rebuilt expression manifest was byte-identical (its b03e1544). readings_check should answer the same question from the same inputs, a mount revision and a corpus path, so the consumer can stop rebuilding its manifest to learn whether a move changed a reading.
 }
 
 ^["cache"]{
@@ -60,7 +61,7 @@
  ~#files_hot: "packages/spw-seed/src/instrumentation, packages/spw-cli/src/fingerprint.ts"
  ~#next_commit: "line_reading_fingerprint"
  ~#open_count: "3"
- ~#last_stream: "2026-11-06 17:24"
+ ~#last_stream: "2026-11-06 20:20"
 }
 
 ^["done"]{
