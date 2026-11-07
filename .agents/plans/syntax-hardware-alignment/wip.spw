@@ -95,6 +95,9 @@
  >>[2026-10-19 16:52] revise — Owner asks about linguistic physics: record attachment, structural sensitivity and memory-dependence probes with explicit observation levels; retain existing proposal verdicts and p4-only spike scope.
  >>[2026-10-27 10:20] implement — aim_names_in_plan done in the 2026-10-27 plan sweep: anchor, lens and focus replace deixis, case and mood in the intent, the evidential_glyph question, PLAN.md and the artifact, and the ~# mark is called the ~# stance until directive-lattice settles stance_name; deixisTable and particleMix.aspect stay as code identifiers. p1_p7_verdicts now heads the planned commits so block order matches the card.
  >>[2026-10-27 13:01] observe — Candidate duplicated wire, counted 2026-10-27: 832 of the 916 [reg=] stamps in workbench .spw files restate their container (757 close a brace as }[reg=facet], 75 close a set as ][reg=set]); 9 name another register. Filed as ?[register_from_container] rather than a p13, since the p-series is the owner call.
+ >>[2026-11-06 17:24] observe — Probed seed at dbd138dd: a = 1 parses as three expressions (Identifier, an = Operation with no operand, Literal), and .{ a = 1 } holds the same three in its body, while a: 1 is a Binding. Lines opening key = value: 2,174 here, 25,429 in a mounted consumer, which writes them more often than key: value. a | b parses as one Expression with connector |. Filed p13 and p14 in the artifact; reading-drift gates both.
+ >>[2026-11-06 17:24] observe — probe of wonder_syntax_hardware_alignment_spaced_equals, run after its ~#expect: the expect missed. Lines opening key = @handle or key = ~"path": 27 here and 2,590 in a mounted consumer (plan = @plan, roots = ~"./a.spw"), plainly aliases. Seed reads each as Identifier then a bias Operation whose anchor is the handle, because the = branch skips whitespace before taking an operator-led subject (expressions.ts, the bias-anchor branch), so 2,590 alias lines read as bias edges. Tight =@ and =~: 160 here, 0 in the consumer. The gap separates the two uses in both corpora without exception; p13's rule should also stop the bias branch from crossing a gap.
+ >>[2026-11-06 18:10] note — p13 and p14 are held as owner trials before a verdict: interpretation-trials wonder_trial_spaced_equals (binding, identity, lean or loose; grounded in copular clauses) and wonder_trial_pipe (alternative, answer partition or pipe; grounded in question semantics).
 }
 
 ^["open"]{
@@ -103,6 +106,8 @@
  ?[scoped_anchor_rename]: "Do #>.offset anchors survive a rename of the segment base without breaking existing ~\"file#anchor\" links? resolve-fragment.ts is the place to check."
  ?[grade_spelling]: "Should the sample spell probe rings !probe[S0] or !probe[effect.l0], given the code's EffectGrade is effect.l0.measure and seed-roundness-grades is retiring S0-S3 in living docs?"
  ?[register_from_container]: "Does a .{} facet default to reg=facet and a #[] set to reg=set, so a stamp names only an exception (832 of 916 stamps would go)? Decides whether the p-series gains a register proposal."
+ ?[spaced_equals]: ~"./wip.spw#wonder_syntax_hardware_alignment_spaced_equals"
+ ?[pipe_meaning]: "Is | between terms the either join (p14), and does that answer a mounted consumer's | as a later mark without a new lexeme?"
 }
 
 ^["commits"]{
@@ -116,6 +121,8 @@
  .[aim_names_in_plan]: "vocab[plans] — anchor, lens, and focus replace deixis, case, and mood in this plan's text and artifact (the samples never used them); the code rename belongs to directive-lattice; landed in the 2026-10-27 plan sweep commit itself, so the stream entry of 2026-10-27 10:20 stands in for its hash"
  ~[p1_tree_index_sample]: "^seed[caches] — a spw/index.spw sample where ^[tree] is the only child list (spw/index.spw lists children in tree, bundle, and ladder)"
  ~[alnum_word_spike]: "^seed[lexer] — p12, after the owner reviews it: a digit-led run lexes as one token with a shape kind (hash, hex, unit, name), with a corpus negative control over every other token"
+ ~[p13_spaced_equals_fixture]: "^seed[parser] — p13, after ?[spaced_equals]: failing fixtures where a = 1 and .{ rank = 1 home = x } read as bindings and =@node{…} and =ref stay bias; reading-drift lists the lines that change first"
+ ~[p14_pipe_table_entry]: ".[operators] — p14, after ?[pipe_meaning]: the connector table names | as alternative, with its hover"
 }
 
 ^["done"]{
@@ -129,8 +136,8 @@
  ~#hygiene_split: "none"
  ~#files_hot: "packages/spw-seed/src/canonical/particles.ts, scripts/analyzers/spw-cut-gate.ts"
  ~#next_commit: "p1_p7_verdicts"
- ~#open_count: "5"
- ~#last_stream: "2026-10-27 13:01"
+ ~#open_count: "7"
+ ~#last_stream: "2026-11-06 18:10"
  ~#taste_debt: ""
 }
 
@@ -140,4 +147,15 @@
   ~#hypothesis: "most write-verb hits inside !probe bodies are rhetorical prompts, so a lint on bare !probe{ } prose would drown in false positives and must key on the !probe[S0] form"
   !probe{ "extract single-line !probe{ \"...\" } bodies from .spw, docs and prompts, then count those naming rewrite|write|edit|apply|delete|mutate|patch|stamp|refresh|update|replace|fix; on 2026-10-12 this gave 79 of 1200, and the sampled hits were thinking prompts such as 'rewrite the root frame in biology vocabulary'" }
   $%[probe.body_count, probe.write_verb_hits]
+}
+
+#>wonder_syntax_hardware_alignment_spaced_equals
+?["Should a spaced = in key position bind, as : does, while a tight =x stays bias?"]{
+ #:depth #!syntax ~#lens(comparison)
+ ~#hypothesis: "Authors already mean a binding when they space the =: no line in either corpus that opens key = value is a bias edge."
+ ~#expect: "Among lines opening key = value, none has an operator-led value that a bias reading would need (=@node, =~\"path\"); the bias uses are all tight."
+ ~#unblocks: "~[p13_spaced_equals_fixture]; citation-navigation ?[binding_key_fragments]; plan intake rows that tools can read"
+ ~#tension: "= is the bias operator in this repo's canon, and a mark with two meanings by gap is a homonym unless the gap is the meaning, as gap-affinity already treats it"
+ !probe{ "count lines opening key = value whose value starts with @ or ~ and compare with tight =@ and =~ uses, in both corpora" }
+ $%[binding.spaced, bias.tight, conflict.lines]
 }

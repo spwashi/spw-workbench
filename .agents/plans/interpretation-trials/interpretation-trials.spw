@@ -1,0 +1,266 @@
+# Interpretation trials
+#
+# Lines of wonder about what Spw's marks could mean, held open to test on purpose.
+# Each card names its competing readings, what each would let a writer say, what an
+# interactive host could do with it, and the linguistic phenomenon it would mirror.
+# Holes (_) are the owner's to fill when a trial runs; spw emit holes counts them.
+
+#>interpretation_trials
+#:plan #!public_interest_research
+#:layer #!semantics
+
+@plan: ~"./wip.spw"
+@brainstorm: ~"../../../.spw/caches/journal/2026-11-06-reading-brainstorm.spw"
+
+^["method"]{
+ # The owner's feature-card method (linguistic play, drafted 2026-10-13), with a rubric for direction.
+ moves: ["write the forms", "read each form as every reader does", "pair forms that differ in one place", "judge each reading", "score the reading you keep"]
+ judgments: ["✓ reads as meant", "? unsure", "* misread"]
+ readers: .{
+  owner: "what the writer meant"
+  seed: "packages/spw-seed parse at dbd138dd; the editor reads the same parse"
+  site_reader: "a mounted consumer's slot reader, public/js/semantic/expression-query.js (readExpressionSlots, readSlotOrder, readContainers)"
+  factshift: "factshift.center, an interactive host that lays a line out on a canvas; its slot reader is workers/factshift-center/app/src/js/modes/spw/line-anatomy.ts in the consumer tree"
+  agent: "a model reading the line cold"
+ }
+ rubric: .{
+  expressive: "what the reading lets a writer say that no other reading does"
+  interactive: "what a host can do with it: a gesture, a layout, a control, a prompt"
+  grounded: "the linguistic phenomenon it mirrors, so the direction rests on how people already mean"
+  cost: "the lines whose reading changes (reading-drift), and the readers that would disagree"
+ }
+ rule: "write ~#expect before a trial runs; a reading is kept when it scores on all three of expressive, interactive and grounded, and its cost is listed"
+}
+
+#>wonder_trial_spaced_equals
+?["What does a spaced = say: a binding, an identity, a lean, or nothing?"]{
+ #:depth #!semantics ~#lens(comparison)
+ ~#readings: ["binding: a = 1 says what a: 1 says", "identity: a = 1 says a is 1, where a: 1 says a has 1", "lean: = is bias, a leans toward what follows", "loose: three terms with no relation (seed today)"]
+ ~#grounded: "copular clauses: predicational (the door is red), specificational (the culprit is Sam) and equative (Cicero is Tully) are three uses of one copula; : as attribution and = as identity would give Spw two of them"
+ ~#interactive: "an identity can be followed both ways, so a host could swap a key for its value in place; a binding only opens its value"
+ ~#forms: ["a = 1", "a: 1", "plan = @plan", "plan =@plan{x}"]
+ ~#pairs: ["a = 1 / a: 1: identity or attribution", "plan = @plan / plan =@plan{x}: alias or bias edge, by the gap alone"]
+ ~#readers_today: .{ seed: "a = 1 is three expressions; plan = @plan is plan then a bias edge anchored at @plan", site_reader: "its scripts read key = value as a binding, by regex", factshift: "_", agent: "_" }
+ ~#home: ~"../syntax-hardware-alignment/wip.spw#wonder_syntax_hardware_alignment_spaced_equals"
+ ~#judgment: _
+ ~#answer: _
+ $%[binding, identity, lean, loose]
+}
+
+#>wonder_trial_angle_readings
+?["What does <…> name: a concept slot, a topic set before the word, a relation, or the whole reading of its line?"]{
+ #:depth #!semantics ~#lens(comparison)
+ ~#readings: ["slot: home[hook]{orient}<atlas> files atlas as home's concept", "topic: <person>home sets person as a frame before the word", "relation: bagel<scent>coffee links two words by a channel", "whole reading: <person> refers to everything its line reads, unlabeled (factshift.center, 2026-10-30)", "borrowed type parameter: loader<{(), getLastError}>"]
+ ~#grounded: "a concept written first mirrors topicalization and frame-setting topics (as for the person, home is…); a trailing one mirrors right dislocation; the relation mirrors an adposition or relational noun (the scent of coffee); the whole-reading sense mirrors a sentential frame such as healthwise, …"
+ ~#interactive: "factshift.center draws a whole-reading < > as a long-dashed tie to an outline of the word, its body and its ( ); a topic could pin a frame the host keeps on screen while the body is edited"
+ ~#forms: ["home<atlas>", "<atlas>home", "bagel<scent>coffee", "beans<food>(kitchen)[mode]{stew}"]
+ ~#pairs: ["home<atlas> / <atlas>home: concept after or topic before", "bagel<scent>coffee / bagel<scent>(coffee): relation to a word or slot before a scene"]
+ ~#readers_today: .{ seed: "<atlas>home is a shell capsule then a separate expression; beans<food>(kitchen)… splits in two", site_reader: "reads <food> as concept in any position after the word, and a leading scene", factshift: "reads <person>home as a concept written first, drawn above the word, tied to the whole reading", agent: "_" }
+ ~#home: ~"../brace-slot-reading/wip.spw#wonder_brace_slot_reading_capsule_before_pair"
+ ~#judgment: _
+ ~#answer: _
+ $%[slot, topic, relation, whole_reading, type_parameter]
+}
+
+#>wonder_trial_scene
+?["Does ( ) modify the word, or the word with its body: is a scene an argument or an adjunct?"]{
+ #:depth #!semantics ~#lens(comparison)
+ ~#readings: ["word: (atlas) qualifies home", "expression: (atlas) applies to home with its body (factshift.center, 2026-10-30)", "scope: the word points to its body of statements inside the scene", "argument: the scene is given to the word, as to a function"]
+ ~#grounded: "the argument and adjunct distinction, and adjunct height: a setting adverbial (in the atlas, …) scopes over the whole clause, a modifier only over its head"
+ ~#interactive: "factshift.center ties ( ) by a dashed line to the outline of the word with its body and resizes the container; an argument reading would let a host call the word with a different scene and show both"
+ ~#forms: ["home(atlas){a}", "home{a}(atlas)", "(atlas)home"]
+ ~#pairs: ["home(atlas){a} / home{a}(atlas): does order change what the scene covers", "(atlas)home / home(atlas): scene before the word as a setting"]
+ ~#readers_today: .{ seed: "home(atlas){a} is one expression with scope and body; (atlas)home is two expressions", site_reader: "a leading scene, then the word", factshift: "applies to the expression as a whole; part of speech left open", agent: "_" }
+ ~#judgment: _
+ ~#answer: _
+ $%[word, expression, scope, argument]
+}
+
+#>wonder_trial_slot_order
+?["If a brace names its slot wherever it sits, what does the order say?"]{
+ #:depth #!pragmatics ~#lens(comparison)
+ ~#readings: ["noise: one canonical order, the writer's is dropped", "voice: the writer's order is kept and means nothing", "information structure: the first slot is topic, the last is focus"]
+ ~#grounded: "case-marking languages (Latin, Russian, Japanese scrambling) mark a word's role by its ending, which frees order to carry topic and focus; brace kinds are Spw's case marks"
+ ~#interactive: "factshift.center stacks a line's slots top to bottom in written order; a host could lead with the topic slot and put the focus under the caret"
+ ~#forms: ["word[mode]{body}(scene)<concept>", "word<concept>(scene)[mode]{body}"]
+ ~#pairs: ["the two forms above: same slots, concept first or last"]
+ ~#readers_today: .{ seed: "slots are fields, and previewAST writes them in one fixed order", site_reader: "readSlotOrder keeps the written order to write a line back", factshift: "stacks in written order", agent: "_" }
+ ~#home: ~"../brace-slot-reading/wip.spw"
+ ~#judgment: _
+ ~#answer: _
+ $%[noise, voice, information_structure]
+}
+
+#>wonder_trial_line_reach
+?["How far does a line reach: may a concept on its own line frame the reading below it?"]{
+ #:depth #!syntax ~#lens(comparison)
+ ~#readings: ["local: a line's meaning is decidable from the line and its open containers", "framing: a lead concept on its own line frames the reading below (factshift.center)", "continuation: a line may continue only by an open container or a trailing join"]
+ ~#grounded: "intonation units and clause boundaries bound most relations; headings and cataphora (here is what happened: …) are the marked way to reach forward"
+ ~#interactive: "a framing line acts as a heading a host can fold under, and moving it carries its block"
+ ~#forms: ["<person>, then home[mode]{a} on the next line", "<person> home[mode]{a}", "one<tag>, then two on the next line"]
+ ~#pairs: ["a concept above the line / beside it", "one<tag> above two / one<tag> two"]
+ ~#readers_today: .{ seed: "a line-final <tag> takes the next line's head as a relation with no error (brace-slot-reading medial_stays_on_line); a capsule alone on a line stays a separate expression", site_reader: "per line", factshift: "a concept written first ties to the reading below it", agent: "_" }
+ ~#judgment: _
+ ~#answer: _
+ $%[local, framing, continuation]
+}
+
+#>wonder_trial_joins
+?["Are ~ ^ & @ between two expressions bonds between lines, or operators on the next word?"]{
+ #:depth #!pragmatics ~#lens(comparison)
+ ~#readings: ["bond: two readings joined by a named relation, spaced or not (factshift.center)", "operator: each mark prefixes the term after it (seed)", "both: tight is an operator, spaced is a bond"]
+ ~#grounded: "discourse connectives and coherence relations (elaboration, cause, situation); @ as perspective mirrors evidential and locative framing (as a student, in this course), ~ as potential mirrors irrealis"
+ ~#interactive: "factshift.center sets joined lines side by side, tied by the bond the mark names: ecestudent@ece.120~?[transistors work.how] reads as a student situated in a course, holding open a wonder"
+ ~#forms: ["ecestudent@ece.120~?[transistors work.how]", "ecestudent @ece.120 ~ ?[transistors work.how]"]
+ ~#pairs: ["the tight and spaced forms above"]
+ ~#readers_today: .{ seed: "four expressions: ecestudent, @ece.120, ~, ?[…]", site_reader: "readCompoundJoin reads the first operator only", factshift: "two expressions tied by @ and ~ bonds", agent: "_" }
+ ~#judgment: _
+ ~#answer: _
+ $%[bond, operator, both]
+}
+
+#>wonder_trial_pipe
+?["Is | an or, and is a question the set of its answers?"]{
+ #:depth #!semantics ~#lens(projection)
+ ~#readings: ["alternative: {a|b} is one of a or b", "partition: $%[a | b] lists the answers a question chooses among", "pipe: a flows into b, as range-transform option C reads a connector"]
+ ~#grounded: "disjunction and alternative questions (tea or coffee?); in question semantics a question denotes the set of its possible answers, or the partition they make, so ?[q]{…} with $%[a | b] would say what the question means"
+ ~#interactive: "a host renders an alternative as a choice and a partition as the answers a wonder can close on; picking one writes ~#answer"
+ ~#forms: ["{a|b}", "$%[a | b]", "a | b"]
+ ~#pairs: ["{a|b} / {a, b}: either or both", "$%[a | b] / $%[a, b]: answers or measures"]
+ ~#readers_today: .{ seed: "a | b is one expression with connector |; a | that ends its line opens a block scalar", site_reader: "holds | as a later mark", factshift: "_", agent: "_" }
+ ~#home: ~"../syntax-hardware-alignment/wip.spw"
+ ~#judgment: _
+ ~#answer: _
+ $%[alternative, partition, pipe]
+}
+
+#>wonder_trial_performance
+?["Can a reading be a performance: one reader's bracketing of a passage, kept as a line and compared with another's?"]{
+ #:depth #!pragmatics ~#lens(comparison)
+ ~#readings: ["statement: {chronicles} <of> (narnia) asserts something", "performance: it records how one reader phrased a title", "highlight: every word takes its container's colour, on demand"]
+ ~#grounded: "constituency and structural ambiguity (old men and women), and prosody, which phrases a sentence aloud and disambiguates it; two bracketings of one passage are two performances"
+ ~#interactive: "a reader brackets a passage by gesture; the host keeps who and when, and two performances compare ground then edge"
+ ~#forms: ["{chronicles} <of> (narnia)", "{chronicles <of> narnia}"]
+ ~#pairs: ["the two forms above: three containers or one"]
+ ~#readers_today: .{ seed: "a medial capsule relating a body to a scope", site_reader: "body, concept and scene with no word", factshift: "_", agent: "_" }
+ ~#judgment: _
+ ~#answer: _
+ $%[statement, performance, highlight]
+}
+
+#>wonder_trial_question_state
+?["Does a question's state belong in its mood: is a wonder answered the way a claim is witnessed?"]{
+ #:depth #!pragmatics ~#lens(projection)
+ ~#readings: ["derived: the state comes from ~#expect, a probe line and ~#answer", "printed: ?name[probed]{…} carries the state in its mode slot", "evidential: the state is a grade of how the answer is known (asked, measured, witnessed)"]
+ ~#grounded: "interrogative mood, and evidentiality, which in many languages marks how a speaker knows a claim (seen, inferred, reported)"
+ ~#interactive: "a host shows a wonder's state as its colour or glyph and offers the next move for that state: write an expect, run the probe, write the answer"
+ ~#forms: ["?[how do transistors work]{…}", "?transistors[probed]{…}"]
+ ~#pairs: ["a wonder with and without a printed state"]
+ ~#readers_today: .{ seed: "? is an operator; nothing reads a lifecycle", site_reader: "its wonder harvest derives open, probed, answered, retired", factshift: "?[…] held open by ~ in a joined line", agent: "_" }
+ ~#home: ~"../inquiry-loop/wip.spw"
+ ~#judgment: _
+ ~#answer: _
+ $%[derived, printed, evidential]
+}
+
+#>wonder_trial_typed_hole
+?["Can a hole ask for a kind, the way who asks for a person?"]{
+ #:depth #!semantics ~#lens(projection)
+ ~#readings: ["any: * asks only that a slot be there", "kind: <&> asks for a concept that has a subject", "pattern: _ is seed's hole and binds what fills it"]
+ ~#grounded: "wh-words restrict their answer by kind (who, where, when), and a typed hole is a wh-phrase"
+ ~#interactive: "a canvas or a search offers only the nodes that fit the hole's kind"
+ ~#forms: ["medium[*]", "<&>", "home[_]{_}"]
+ ~#pairs: ["medium[*] / medium[<&>]: any slot or a slot of a kind"]
+ ~#readers_today: .{ seed: "_ is a pattern hole in selectors", site_reader: "spw.quest searches by slot with *", factshift: "_", agent: "_" }
+ ~#home: ~"../lukewarm-backlog/wip.spw"
+ ~#judgment: _
+ ~#answer: _
+ $%[any, kind, pattern]
+}
+
+#>wonder_trial_common_ground
+?["When two readings are compared, is the ground what they share, or the least general form both fit?"]{
+ #:depth #!computational ~#lens(comparison)
+ ~#readings: ["shared slots: the ground is what the two hold alike, the edge the first slot that differs", "template: the ground is the least general form both instantiate, the edge its variables"]
+ ~#grounded: "common ground in conversation (what speakers take as shared), and minimal pairs, which find a contrast by holding everything else equal"
+ ~#interactive: "a compare lens opens the ground short and the edge whole; a host could fill the template's slot to make a third reading"
+ ~#forms: ["bane-frame against boon-frame in two sibling files"]
+ ~#pairs: ["two siblings that part at the name / two pages that part at four slots"]
+ ~#home: ~"../ground-edge-reading/wip.spw#wonder_ground_edge_reading_anti_unifier"
+ ~#judgment: _
+ ~#answer: _
+ $%[shared_slots, template]
+}
+
+#>wonder_trial_names
+?["Is a mark's name part of the language, or a gloss a workspace keeps?"]{
+ #:depth #!pragmatics ~#lens(comparison)
+ ~#readings: ["canon: one name per character, everywhere", "gloss: the character is the meaning, each workspace names it, and a hover leads with the character", "register: names change with the reader (newcomer, writer, host)"]
+ ~#grounded: "a morpheme and its gloss; one sign read in different communities' vocabularies; [ ] is mode, frame, variant and lens in four surfaces today"
+ ~#interactive: "a host speaks the reader's names and keeps the character visible, so learning one workspace's names teaches the marks"
+ ~#forms: ["home[hook]{orient}"]
+ ~#pairs: ["the same line hovered with this repo's names and a consumer's"]
+ ~#home: ~"../relationship-contours/wip.spw"
+ ~#judgment: _
+ ~#answer: _
+ $%[canon, gloss, register]
+}
+
+#>wonder_trial_quiet_fallback
+?["When a reader cannot read a line, should it fall back to prose quietly, or say where it stopped?"]{
+ #:depth #!pragmatics ~#lens(comparison)
+ ~#readings: ["quiet: the line stays a note and nothing is said", "marked: the reader keeps the note and shows where its reading gave up", "strict: the line is an error until it reads"]
+ ~#grounded: "people read with good-enough processing and recover from garden paths, but they notice the stumble; a reader that never notices has misread"
+ ~#interactive: "a host shades the part it could not read, so the writer sees the edge of the tool's understanding"
+ ~#forms: ["see = @page#bane-frame", "see = @page#shape-frame"]
+ ~#pairs: ["the two forms above: a valence word or another word after #"]
+ ~#readers_today: .{ seed: "#bane-frame is one error and a prose fallback; #shape-frame reads", site_reader: "_", factshift: "_", agent: "_" }
+ ~#home: ~"../plan-stream-parse-health/wip.spw"
+ ~#judgment: _
+ ~#answer: _
+ $%[quiet, marked, strict]
+}
+
+#>wonder_trial_unread_field
+?["Is a field nobody's tool reads worth writing?"]{
+ #:depth #!pragmatics ~#lens(comparison)
+ ~#readings: ["waste: a field with no reader fails, as plugin health asks", "thought: the writer is its reader; writing it shapes the plan", "latent: it waits for a reader, and an index of such fields says which"]
+ ~#grounded: "language for thought as well as for telling: some sentences are written to think them"
+ ~#interactive: "a host could fold a write-only frame away from readers and open it for the writer"
+ ~#forms: ["a plan wip.spw with and without its six optional frames"]
+ ~#pairs: ["one plan written both ways"]
+ ~#home: ~"../plan-tooling-design/wip.spw"
+ ~#judgment: _
+ ~#answer: _
+ $%[waste, thought, latent]
+}
+
+#>wonder_trial_guided_wonder
+?["When a newcomer's wonder is imprecise, can existing scripts guide it toward a construct that says what they meant?"]{
+ #:depth #!pragmatics ~#lens(projection)
+ ~#readings: ["recast: the host offers the nearest well-formed line beside the newcomer's own, and changes nothing", "exemplar: the host shows lines from existing scripts that use the construct the wonder reaches for, ranked by how close they are", "pivot: the host offers the lines one change away, as spw.quest's /pivot does, and the newcomer walks toward precision"]
+ ~#grounded: "in language acquisition, adults recast a child's imprecise utterance into a well-formed one without correcting it; construction grammar holds that people learn form-meaning pairings from exemplars and generalize by analogy, so a corpus of scripts is a learner's input"
+ ~#interactive: "a fuzzy line in the prompt draws its nearest constructs from the mounted scripts as cards the explorer can drag onto the canvas; a chosen card fills the slots the wonder left loose"
+ ~#forms: ["?[how do transistors work]", "transistors[how]{work}", "?transistors[mechanism]{current.gate}<question>"]
+ ~#pairs: ["the imprecise wonder / its recast: what changed, and was it what they meant"]
+ ~#readers_today: .{ seed: "each form parses; nothing ranks constructs by distance", site_reader: "spw.quest /specimens searches by slot and /pivot lists lines one change away", factshift: "_", agent: "_" }
+ ~#home: ~"../onboarding-quest/wip.spw"
+ ~#judgment: _
+ ~#answer: _
+ $%[recast, exemplar, pivot]
+}
+
+#>wonder_trial_stages
+?["Can one script be read on several stages at once, each a step along a projection gradient from what was written to what it does?"]{
+ #:depth #!semantics ~#lens(projection)
+ ~#readings: ["product ladder: one stage per source product, tokens, structure, trace (spw.progressive-product/1, spw inspect --through)", "linguistic levels: written form, slots (syntax), bonds and roles (semantics), what the line does on the canvas (pragmatics)", "continuous: one canvas with a gradient control that moves a line from literal text to its interpreted layout and back", "physics: the same reading under different physics settings, as factshift.center's feel card sets them"]
+ ~#grounded: "the levels of linguistic analysis (form, syntax, semantics, pragmatics), and gradience: grammatical categories shade into each other, so a projection is a position on a scale, not a switch"
+ ~#interactive: "stages side by side for one expression, each answering a different question about it; a selection on one stage lights the same part on the others; factshift.center's panels already read in three levels"
+ ~#forms: ["ecestudent@ece.120~?[transistors work.how]", "a whole .spw script"]
+ ~#pairs: ["the same line on the token stage and the bond stage: what each shows that the other hides"]
+ ~#readers_today: .{ seed: "source products at three depths: tokens, structure, trace", site_reader: "slots only", factshift: "one canvas with a held run and the runtime trace behind a toggle", agent: "_" }
+ ~#home: ~"../editor-inspection-instruments/wip.spw"
+ ~#judgment: _
+ ~#answer: _
+ $%[product_ladder, linguistic_levels, continuous, physics]
+}

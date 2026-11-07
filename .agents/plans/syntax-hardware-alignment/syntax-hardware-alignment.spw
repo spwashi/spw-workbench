@@ -224,6 +224,38 @@
  ~#needs: "a corpus negative control like 866826ff's: outside the 79 runs, every token is unchanged"
 }
 
+# ── Proposal 13: a spaced = binds ──────────────────────────────────────
+# key = value is the most common line in a mounted consumer's .spw, and seed
+# reads it as three expressions. The gap already tells the two uses apart.
+#
+#  before: a = 1 -> Identifier(a) ; Operation(=) with no operand ; Literal(1)
+#  after:  a = 1 -> Binding(a, 1), as a: 1 reads; =@node{…} and =ref stay bias
+
+^["p13_spaced_equals_binds"]{
+ ~#status: "proposed 2026-11-06"
+ ~#census: "lines opening key = value, archives excluded: 2,174 in this repo against 48,470 key: value; 25,429 in a mounted consumer against 16,848; inline .{ k = v rows: 192 here, 1,719 there; every .{ rank = 1 home = … } intake row in this repo's plans reads as loose terms"
+ ~#rule: "an identifier, a gap, =, a gap, then a value, at the start of an expression, is a binding; = with no gap before its operand stays the bias operator (=@node{…}, =~\"path\"{…}, =ref)"
+ ~#readers_today: "packages/spw-lsp/src/handlers/editing.ts reads .{ k = v } facts by regex, and the consumer's scripts read its facets by regex; both would read the parse instead"
+ ~#needs: "gap-affinity already records the gaps (syntax.gap-affinity/1); the rule reads them in the expression grammar; reading-drift lists the lines that change before it lands"
+ ~#open: "does the binding keep which mark it was written with, so a formatter writes = back as =, and does a facet key read as a fragment target (citation-navigation ?[binding_key_fragments])"
+ ~#bias_today: "key = @handle and key = ~\"path\" read as a bias edge anchored at the handle, since the bias branch skips the gap: 27 lines here, 2,590 in the consumer; tight =@ and =~ are 160 here and 0 there, so the rule is also: a bias anchor never follows a gap"
+}
+
+# ── Proposal 14: | means alternative ────────────────────────────────────
+# | already lexes as a connector inside a term run and as a block-scalar
+# opener at line end. A mounted consumer holds | as a later mark for {a|b}
+# and an answer partition $%[a | b]; both are the connector it already is.
+#
+#  today:  a | b -> one Expression, terms a and b, connector |; meaning unstated
+
+^["p14_pipe_alternative"]{
+ ~#status: "proposed 2026-11-06"
+ ~#rule: "| between terms reads as alternative (one of), the way , reads together and ; reads in order; at line end it stays the block-scalar opener"
+ ~#lexes_today: "yes; no lexer change, a semantic table entry and a hover"
+ ~#keeps: "the consumer's join_goal, joins keep their kinds apart, with | as the either join"
+ ~#needs: "the operator and connector table names it; a wonder's $%[a | b] reads as an answer set (vscode-authoring-probe-loop answer_set_mark)"
+}
+
 // Samples: samples/cut-surface.spw rewrites one tree surface with p8 to p11
 // (97 lines and 4037 characters against 108 and 5244, statements and anchors
 // identical); samples/receipts-ledger.spw is one p9 journal entry.

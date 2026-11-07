@@ -1,0 +1,93 @@
+# wip — brace-slot-reading
+# Started: 2026-11-06
+
+#>plan_brace_slot_reading
+#:plan #!execution_truth
+#:layer #!syntax
+
+!["card"]{
+ phase: #planning
+ gist: "Seed reads each brace pair as the slot it names wherever it sits after the word, and writers keep the author's order"
+ touches: [~"packages/spw-seed/src/grammar/expressions.ts", ~"packages/spw-seed/src/instrumentation/preview.ts"]
+ entry: ~"./PLAN.md"
+ next: "~[medial_stays_on_line] needs no decision: a failing fixture for one<tag> then two on the next line, then the line guard; meanwhile ?[capsule_before_pair] waits on the owner's trial in interpretation-trials."
+}
+
+^["edges"]{
+ shares: [~"../syntax-hardware-alignment/wip.spw", ~"../parser-releases/wip.spw", ~"../onboarding-quest/wip.spw"]
+ feeds: [~"../ground-edge-reading/wip.spw", ~"../editor-reading-hierarchy/wip.spw"]
+ needs: [~"../reading-drift/wip.spw"]
+}
+
+^["roots"]{
+ @plan: ~".agents/plans/brace-slot-reading/PLAN.md"
+ @grammar: ~"packages/spw-seed/src/grammar/expressions.ts"
+ @preview: ~"packages/spw-seed/src/instrumentation/preview.ts"
+ @nodes: ~"packages/spw-seed/src/types/ast/nodes.ts"
+ @topography: ~".agents/plans/operational-topography/operational-topography.spw"
+}
+
+^["intent"]{
+ ~#goal: "One reading of a line in seed, the browser reader and every host: a pair names its slot by its kind, never by its position"
+ ~#taste: "The medial relation keeps its meaning wherever a word follows the capsule; only a pair after the capsule, or a capsule after an operation's own slots, changes reading"
+}
+
+^["intake"]{
+ # The consumer ask this plan owns. Consumer-relative paths.
+ source: "consumer .spw/reviews/upstream-workbench-recommendations.spw, frame week_2026_11_05; goal of record in .spw/language/v04/roadmap.spw, frame expressiveness_goals, slot_goal"
+ slot_goal: .{ asked = "2026-11-05" decided_by = "owner" home = @plan status = #owned }
+ consumer_reader: "public/js/semantic/expression-query.js: readContainers, readExpressionSlots, readSlotOrder (consumer commit 9f2e3af4); spw.quest /build and /pivot read the same way"
+}
+
+^["open"]{
+ # Unresolved questions. When resolved: log in stream, then move to ^["done"] as ~#resolved(label).
+ ?[capsule_before_pair]: ~"./wip.spw#wonder_brace_slot_reading_capsule_before_pair"
+ ?[order_on_node]: "Do spans carry author order well enough, or should Expression carry an explicit slot order a writer reads without comparing offsets?"
+ ?[headless_line]: "Does a line with no word, {chronicles} <of> (narnia), read as one expression whose slots are filled and whose head is empty, as the consumer's reader reads it?"
+}
+
+#>wonder_brace_slot_reading_capsule_before_pair
+?["When a <…> follows the word and a pair follows the <…>, is the <…> a slot or a relation?"]{
+ #:depth #!syntax ~#lens(comparison)
+ ~#hypothesis: "A pair on the capsule's right arm marks a slot run, and a word marks a relation: beans<food>(kitchen)[mode]{stew} is one expression with four slots, and bagel<scent>coffee stays left<channel>right."
+ ~#expect: "Moving that rule changes the reading of only a handful of live lines in either corpus, and none of them is a relation its author meant."
+ ~#unblocks: "~[capsule_slot_after_word]; the consumer's slot_goal"
+ ~#tension: "<…> after an operation's own slots wraps the whole operation today ($box[measure]{…}<measurement>); the same rule should settle it, but an operation with a body may also be meant as the left arm of a relation."
+ !probe{ "walk every tracked .spw in both corpora, archives excluded, and count medial capsules by left and right arm: after an operation's slots with no right arm, before a pair, and word to word" }
+ $%[slot.reading, relation.reading, lines.moved]
+}
+
+^["commits"]{
+ # Named, in order. Planned ~[name]; landed .[name](hash). Names are never reused.
+ ~[medial_stays_on_line]: "&[seed] — a medial capsule's right arm must start on the capsule's own line, as the postfix loop already requires of its slots; failing fixtures for one<tag> then two, and x: $a[m]{b}<reg> then y: …, which merge silently today"
+ ~[slot_order_fixtures]: "![seed] — failing fixtures: beans<food>(kitchen)[mode]{stew} is one expression; $box[measure]{presence}<measurement> carries a capsule slot; bagel<scent>coffee and a<r>b<s>c keep the medial reading"
+ ~[capsule_slot_after_word]: "&[seed] — a <…> after the word whose right arm is a pair opens the slot run instead of a relation (after ?[capsule_before_pair])"
+ ~[capsule_slot_after_operation]: "&[seed] — a <…> after an operation's own frame or body fills that operation's capsule slot instead of wrapping it"
+ ~[slot_order_kept]: "&[seed] — the Expression node says the order its slots were written in (after ?[order_on_node])"
+ ~[preview_keeps_order]: "&[seed] — previewAST and any slot writer print slots in the author's order, not head, frame, body, scope, capsule"
+ ~[consumer_reader_parity]: "![seed] — the consumer's readExpressionSlots and seed agree on its 986 route expressions; the consumer can then retire its scanner into seed's export"
+}
+
+^["stream"]{
+ >>[2026-11-06 17:24] observe — The owner decided on 2026-11-05, answering spw.quest's slot-order question, that each brace pair names its slot wherever it sits; the consumer's reader and its quest host read either order since 9f2e3af4. Seed at dbd138dd reads [] {} () in any order after a word (word{body}[mode], word(scene)[mode]{body} each one expression), and reads <…> as a slot only after a frame, body or scope (expressions.ts, the postfixCapsule guard). A <…> straight after the word is a medial capsule: beans<food>(kitchen)[mode]{stew} parses as two expressions, {chronicles} <of> (narnia) as a relation.
+ >>[2026-11-06 17:24] observe — A second gap the consumer did not report: an operation takes its own frame and body, so $box[measure]{presence.flow}<measurement> reads as Capsule/medial with the operation as its left arm and no right arm, while box[measure]{presence.flow}<measurement> reads as one expression with frame, body and capsule. previewAST prints slots as head, frame, body, scope, capsule whatever order they were written in (preview.ts line 161).
+ >>[2026-11-06 17:24] observe — probe of wonder_brace_slot_reading_capsule_before_pair, first pass with all tracked files, archives included: workbench 1,338 files, 79 medial capsules, 1 with a scope on its right arm; consumer 1,155 files, 478 medial capsules, 1 with a scope on its right arm, 62 with a frame (mostly ?<…>[reg=stream] lists), and many after an operation's slots. Run before any ~#expect was on record.
+ >>[2026-11-06 17:24] surprise — While classifying the medial capsules: a <…> at the end of a line reads the next line's first term as its right arm. one<tag> then two on the next line parses as one relation, and x: $a[m]{b}<reg> then y: $c[m]{d}<reg> merges the second binding into the first, with no error in either. The postfix loop checks the head's line before taking a slot (headLine in expressions.ts); the medial loop calls skipWhitespace and termNode for its right arm without that check. Planned as medial_stays_on_line, first, since it needs no decision.
+ >>[2026-11-06 17:24] observe — Size of the line-crossing defect, live .spw files with archives excluded: in the workbench, 10 medial capsules in 7 files take their right arm from a later line, among them the wip template's own header (#>plan_<slug_id> swallows the #:plan line below it) and two ?<…> lists in operational-topography.spw; in the consumer, 347 in 133 files, of 474 medial capsules, mostly a line ending in <…> followed by the next binding (form: … => loader<{…}> then lifetime: …). The consumer's own reader is per line and never saw this; every workbench reader of those files did.
+ >>[2026-11-06 17:24] decide — A plan of its own, not a proposal in syntax-hardware-alignment: the owner has already decided the rule, so what is left is execution and a fixture set, not a staged sample.
+ >>[2026-11-06 17:24] note — <…> carries at least five readings in the two corpora: a slot, a relation (bagel<scent>coffee), a path tag (~<tag>"path"), a stream list (?<a, b>), and a type parameter authors borrow from code (loader<{(), getLastError}>, collisions<{name, modules[]}> in a consumer's module notes). ?[capsule_before_pair] settles the first two; the type-parameter lines are the ones medial_stays_on_line moves most. Each commit here waits on reading-drift readings_check to list what it changes.
+ >>[2026-11-06 18:10] note — ?[capsule_before_pair] and the order question are held as owner trials before any decision: interpretation-trials wonder_trial_angle_readings, wonder_trial_slot_order and wonder_trial_line_reach, where factshift.center's readings (a concept written first frames the reading below; slots stack in written order) sit beside seed's. medial_stays_on_line still needs no trial.
+}
+
+^["cache"]{
+ ~#status: "planning"
+ ~#base_ref: "main@dbd138dd"
+ ~#rebased_at: ""
+ ~#files_hot: "packages/spw-seed/src/grammar/expressions.ts, packages/spw-seed/src/instrumentation/preview.ts"
+ ~#next_commit: "medial_stays_on_line"
+ ~#open_count: "3"
+ ~#last_stream: "2026-11-06 18:10"
+}
+
+^["done"]{
+}

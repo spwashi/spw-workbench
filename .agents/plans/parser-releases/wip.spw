@@ -10,7 +10,7 @@
  gist: "Every release day cuts a dated, immutable set of browser parser builds with a manifest, and spw.quest serves them for other sites to import"
  touches: [~"scripts/release", ~"docs/runtime/md"]
  entry: ~"./PLAN.md"
- next: "Check the site repository for a published 2026.10.13 (the consumer cites its sizes; no workbench cut matches) to settle first_release; then answer ?[lite_carries_roles] before reader_is_browser_build."
+ next: "Answer ?[recut_in_place] so the rule says what 2026.10.13 did, then ?[lite_carries_roles] with the consumer's one-bundle evidence; then ~[reader_is_browser_build] and a second cut, which the consumer's two-release specimen waits on."
 }
 
 ^["edges"]{
@@ -52,6 +52,7 @@
  ?[more_variants]: "Which consumer would import a lexer-only or reader-kit variant? Each variant is a promise to keep cutting it every release."
  ?[storage]: "Releases sit in git-tracked worker assets and prereleases deploy from gitignored assets; at what size do releases move to R2 with only the manifests kept in git, and should prereleases move there first so any machine can deploy them?"
  ?[import_integrity]: "Integrity covers script and modulepreload tags but not import statements; should the release page recommend an import map, and which browsers honor its integrity section?"
+ ?[recut_in_place]: "2026.10.13 was published from 76e17bd and cut again under the same name from 0eb1d1c0 the same day, at the owner's word, because nobody had fetched it. Is a re-cut allowed before the first fetch, or should it have been 2026.10.13-patch.1, and should the builder refuse it either way?"
  ?[lite_carries_roles]: "Does the reader's extra 12 KB earn its place on pages that only parse, or should lite carry roles and outline? Answer before reader_is_browser_build makes the reader the default browser build."
 }
 
@@ -59,7 +60,7 @@
  # Named, in order. Planned ~[name]; landed .[name](hash). Names are never reused.
  .[release_builder](17b0d6d7): "#[release] — npm run bundle:parser cuts full and lite in min and debug forms with an alias and a spw.parser-release/1 manifest; refuses a dirty tree and refuses to rewrite a published release"
  .[quest_parser_routes](55fb8f75): "+[quest] (site repo) — Serve dated parser releases from spw.quest, and lead the guide with a script you can change, copy or download"
- ~[first_release]: "+[quest] (site repo) — carry release 2026.10.13 from the workbench into spw.quest's assets and verify every hash"
+ .[first_release](c8365578): "+[quest] (site repo) — carry release 2026.10.13 from the workbench into spw.quest's assets and verify every hash (first published from 76e17bd in 7d027f49, cut again in place from 0eb1d1c0 the same day)"
  .[prerelease_builder](a6d69642): "#[release] — bundle:parser --pre cuts a prerelease keyed by revision, ready to try in production"
  .[release_names](749899ee): "#[release] — parser cuts are named for a day: YYYY.MM.DD, -pre.N or -patch.N"
  .[stamp_matches_manifest](17b0d6d7): "#[release] — npm run bundle:parser cuts a dated, immutable set of browser parser builds with a manifest; the stamp test shipped here and 749899ee carried it to names (with release_builder; audit in stream 2026-10-27 10:21)"
@@ -68,6 +69,7 @@
  .[reader_variant](603f6b59): "#[release] — reader.min.js and reader.debug.js ship the editor's role stream, outline, anchors, and highlightHtml, browser-safe through seed's reader slice"
  .[workbench_variant](b082d500): "#[release] — the parser release gains a workbench build: seed's whole API, the runtime, and the reader, for any page"
  ~[reader_is_browser_build]: "#[release] — the reader is the browser build; full.min stays an alias for one release, then goes (consumer rank 14)"
+ ~[release_readings]: "#[release] — the manifest carries the readings of a fixed specimen set, so two releases compare by diff; built by reading-drift release_readings, and the view spw.quest's two-release specimen comparison waits on"
 }
 
 ^["cache"]{
@@ -75,9 +77,9 @@
  ~#base_ref: "main@77599452"
  ~#rebased_at: "2026-10-12"
  ~#files_hot: "scripts/release/build-parser-release.ts, package.json"
- ~#next_commit: "first_release"
- ~#open_count: "5"
- ~#last_stream: "2026-10-27 10:21"
+ ~#next_commit: "reader_is_browser_build"
+ ~#open_count: "6"
+ ~#last_stream: "2026-11-06 17:24"
 }
 
 ^["done"]{
@@ -101,4 +103,8 @@
  >>[2026-10-25 20:40] note — A mounted consumer asks (2026-10-25, rank 14, one_browser_build) that the reader be the browser build of a release and full an alias for one release: reader and full give the same AST, tokens, errors, warnings, and events on 990 of 990 consumer .spw files, and the reader adds roles, outline, anchors, and highlightHtml for 12 KB more (2026.10.13: full.min 75850 B, reader.min 87605 B).
  >>[2026-10-27 10:21] measure — Stamp audit at 850077ab: npm run test:parser-release passes 21 of 21. The stamp test holds all nine scripts of a release (full, lite, reader and workbench in min and debug, and the parser.js alias) to the manifest revision, release name, variant, form and dirt; it shipped with release_builder in 17b0d6d7 (revision, release, offset, variant, form), and 749899ee carried it to names. Kind is asserted per file for a release (prerelease undefined) but only on full.min.js for a prerelease or a patch; the builder sets kind for every file from one stamp function, so the cell is sampled, not missing. stamp_matches_manifest is reconciled to 17b0d6d7 with no new test.
  >>[2026-10-27 10:21] observe — The 2026-10-25 consumer note cites 2026.10.13 sizes (full.min 75850 B, reader.min 87605 B) that no workbench cut matches: release/parser here holds only 2026.10.13-pre.1 (749899ee, full.min 74362 B, no reader). A 2026.10.13 release with a reader may have been cut and published from the site repository; first_release stays planned until that repository is checked.
+ >>[2026-11-06 17:24] observe — Checked the consumer repository: release 2026.10.13 is published and tracked in its spw.quest worker assets (assets/parser/2026.10.13/manifest.json, spw.parser-release/2, revision 0eb1d1c0, which is on main here; full.min 75850 B). It went out from 76e17bd in 7d027f49 and was cut again in place from 0eb1d1c0 in c8365578 the same day with reader and workbench variants, because nobody had fetched it. That settles first_release, and explains the sizes no local cut matched: release/parser here never held the published day.
+ >>[2026-11-06 17:24] surprise — The re-cut kept the name, which the layout's own rule forbids (published files never change; a fix to a published day is -patch.N). Opened ?[recut_in_place] rather than calling it a breach: the rule did not say whether an unfetched day counts as published.
+ >>[2026-11-06 17:24] note — Evidence for ?[lite_carries_roles]: on 2026-10-25 (4c454b32) the consumer moved every importer to the reader and dropped its 75.8 KB parser bundle, after parse matched on 993 of 993 tracked .spw files and parseExpression on 974 of 974 route expressions. Its spw.quest serves the reader as /parser.js (87.5 KB). One consumer has already chosen the reader as its only browser build; its quest plan holds a two-release specimen comparison that waits on a second cut, which makes ?[grammar_version] matter.
+ >>[2026-11-06 17:24] note — reading-drift (opened 2026-11-06) owns the per-line reading fingerprint; release_readings here carries it into the manifest. ?[grammar_version] gains a measurable form: a grammar version changes exactly when the specimen readings do.
 }

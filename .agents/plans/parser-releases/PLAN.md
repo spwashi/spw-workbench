@@ -14,7 +14,7 @@ In scope: verify the existing builder/test contract and prepare a reproducible h
 
 At `0eb1d1c0`, `build-parser-release.test.ts` already tests stamps against the manifest and contains prerelease/patch checks. The planned `stamp_matches_manifest` work must first audit those assertions against all four variants and both forms. Run `npm run test:parser-release`; retain revision, command, outcome and any missing matrix cell. If coverage is complete, reconcile the named item with its actual implementation receipt instead of adding duplicate tests. This review inspected coverage but did not execute the release suite.
 
-The old `2026.10.13` target has elapsed. `first_release` remains unverified here because the site repository and deployed assets were not inspected. Before selecting a new cut, check whether that name already exists. Never overwrite a dated path or imply a release was published from a workbench-only receipt.
+`2026.10.13` is published. The site repository tracks it in its spw.quest worker assets with an `spw.parser-release/2` manifest at revision `0eb1d1c0`, which is on main here (checked 2026-11-06). It first went out from `76e17bd` in site commit `7d027f49`. The same day, site commit `c8365578` cut it again in place from `0eb1d1c0`, adding the reader and workbench variants, because nobody had fetched it. That re-cut kept a published name, which the layout's rule forbids for a fix; `?[recut_in_place]` asks whether an unfetched day counts as published. Never overwrite a dated path or imply a release was published from a workbench-only receipt.
 
 ## Stamp audit — 2026-10-27
 
@@ -38,7 +38,7 @@ At `850077ab`, `npm run test:parser-release` passes 21 of 21. The stamp test cov
 
 ## Commits
 
-Canonical named work is in `wip.spw`. `stamp_matches_manifest` is reconciled (see the stamp audit). `first_release` belongs to the site repository and follows a clean release receipt. `reader_is_browser_build`, asked by a mounted consumer on 2026-10-25, waits on `?[lite_carries_roles]`. No publication is performed by this planning pass.
+Canonical named work is in `wip.spw`. `stamp_matches_manifest` is reconciled (see the stamp audit). `first_release` landed in the site repository (`c8365578`). `reader_is_browser_build`, asked by a mounted consumer on 2026-10-25, waits on `?[lite_carries_roles]`. That consumer already ships only the reader to every browser (site `4c454b32`). No publication is performed by this planning pass.
 
 ## Agentic Hygiene
 

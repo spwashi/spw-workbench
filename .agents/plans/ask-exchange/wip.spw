@@ -1,0 +1,66 @@
+# wip — ask-exchange
+# Started: 2026-11-06
+
+#>plan_ask_exchange
+#:plan #!projection_feedback
+#:layer #!pragmatics
+
+@["card"]{
+ phase: #seed
+ gist: "A mounted consumer's asks reach one intake with a home and status each, a check reports drift, and replies reach it on its next pin"
+ touches: [~".agents/plans/first-plugin/wip.spw", ~".agents/plans/inquiry-loop/wip.spw", ~".agents/plans/vscode-lsp-roadmap/PLAN.md"]
+ will_touch: [~".spw/exchange"]
+ entry: ~"./PLAN.md"
+ next: "?[ask_key]: settle how an intake row names an ask without naming the consumer; then ~[intake_shape]."
+}
+
+^["edges"]{
+ shares: [~"../first-plugin/wip.spw", ~"../inquiry-loop/wip.spw", ~"../ground-edge-reading/wip.spw", ~"../vscode-lsp-roadmap/wip.spw", ~"../onboarding-quest/wip.spw", ~"../reading-drift/wip.spw"]
+}
+
+^["roots"]{
+ @plan: ~".agents/plans/ask-exchange/PLAN.md"
+ @plugin_intake: ~".agents/plans/first-plugin/wip.spw"
+ @capability_intake: ~".agents/plans/inquiry-loop/wip.spw"
+ @roadmap_table: ~".agents/plans/vscode-lsp-roadmap/PLAN.md"
+ @brainstorm: ~".spw/caches/journal/2026-11-06-reading-brainstorm.spw"
+}
+
+^["intent"]{
+ ~#goal: "Asks stop going unread because the table that should hold them is one of four, or its home moved"
+ ~#taste: "The consumer owns its asks; the workbench owns a home and a status per ask id; a verb compares the two"
+}
+
+^["open"]{
+ # Unresolved questions. When resolved: log in stream, then move to ^["done"] as ~#resolved(label).
+ ?[ask_key]: "How does an intake row name an ask without naming the consumer: the ask id alone, the id with its theme file (plugins_and_tooling.one_plugin), or a consumer label the consumer's own workspace declares?"
+ ?[verb_home]: "spw asks as its own verb, or a doctor check that runs when a mounted consumer is named by path?"
+ ?[replies_channel]: "Does the consumer read replies from the mount (.spw/_workbench/.spw/exchange/replies.spw) on its pin bump, or does the check write them into the consumer's scratch for a person to carry?"
+}
+
+^["commits"]{
+ # Named, in order. Planned ~[name]; landed .[name](hash). Names are never reused.
+ ~[intake_shape]: "#[exchange] — .spw/exchange/intake.spw: one row per ask with its key, home plan, status, and the receipt that moved it; no consumer name, no ask text (after ?[ask_key])"
+ ~[asks_check_fixture]: "![cli] — a fixture ask tree with one ask homed on an archived plan, one with no row, and one whose status disagrees with its home; the check is red on all three"
+ ~[asks_check]: "&[cli] — read a consumer's ask files by explicit path, in their slot order, and report asks with no row, homes that are archived, dormant or rescoped, and statuses that disagree (takes onboarding-quest collect_asks)"
+ ~[intake_moves]: "&[plans] — the intake frames in first-plugin, inquiry-loop and ground-edge-reading and the vscode-lsp-roadmap table become citations into the intake"
+ ~[replies_file]: "#[exchange] — .spw/exchange/replies.spw: misroutes, stale claims and facts that did not reproduce, starting from inquiry-loop ^replies (after ?[replies_channel])"
+}
+
+^["stream"]{
+ >>[2026-11-06 17:24] observe — Consumer asks reach this repo through four tables in four shapes: first-plugin ^intake (ranks 1 to 17), inquiry-loop ^intake (capability asks), ground-edge-reading ^intake (motions asks) and the vscode-lsp-roadmap PLAN.md table (the 2026-10-12 review). The motions asks were routed to a plan rescoped before they were filed and stayed unread from 2026-10-27 to 2026-11-06; five roadmap rows stayed stale after their work landed.
+ >>[2026-11-06 17:24] decide — A plan of its own, taking onboarding-quest collect_asks, since an asks check serves every consumer ask and not only the quest's. The workbench keeps no consumer text and names no consumer, as mounted-consumer-tooling and ecosystem-surface-governance already require.
+}
+
+^["cache"]{
+ ~#status: "seed"
+ ~#base_ref: "main@dbd138dd"
+ ~#rebased_at: ""
+ ~#files_hot: ".agents/plans/first-plugin/wip.spw, .agents/plans/inquiry-loop/wip.spw"
+ ~#next_commit: "intake_shape"
+ ~#open_count: "3"
+ ~#last_stream: "2026-11-06 17:24"
+}
+
+^["done"]{
+}

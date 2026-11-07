@@ -52,7 +52,7 @@ Craft guard:
 
 ## Validation
 
-- Hypotheses: the consumer's expression manifest, run as a plugin, flags SPW_PROJECTION_SEEDS (195 KB, no caller of getProjectionSeeds) on its first run.
+- Hypotheses: the consumer's expression manifest, run as a plugin, flags a field it writes that nothing reads on its first run. The original example, SPW_PROJECTION_SEEDS (195 KB, no caller of getProjectionSeeds), left the consumer on 2026-10-25 (its 180e4a0e) and now appears only in its plan history, so the demo needs a live candidate. The consumer's November chrome reading names three: data-spw-chrome-slot, which no stylesheet reads; the grounding reason, settle confirmation and effect ledger, which are written and never painted; and achievement events nothing listens for (consumer .spw/caches/chrome-ecology-2026-11.spw).
 - Negative controls: a workspace without `.spw/surfaces/plugins/*.spw` runs nothing and exits 0.
 - Demo sequence: fixture fails on zero hits → fixture passes with one hit → fixture fails on an unread field.
 
