@@ -236,6 +236,25 @@ describe('bundle:parser --allow-dirty into a temp directory', () => {
     }
   })
 
+  it('reader reads a line into slots in any order, writes one back whole, and hashes its slots', async () => {
+    for (const form of ['min', 'debug']) {
+      const reader = await importBundle<{
+        readLine: (text: string) => { order: string[]; whole: boolean; rest: string }
+        writeLine: (reading: unknown, change?: { slots?: Record<string, string | null> }) => string
+        writeAt: (text: string, path: Array<'a' | 'b' | number>, change: { slots?: Record<string, string | null> }) => string
+        slotHash: (text: string, options?: { seed?: string }) => { vector: number[] }
+      }>(path.join(releaseDir, `reader.${form}.js`))
+      const line = 'beans<food>(kitchen)[mode]{stew}'
+      const reading = reader.readLine(line)
+      assert.deepEqual(reading.order, ['word', 'concept', 'scene', 'mode', 'body'])
+      assert.equal(reader.writeLine(reading), line)
+      assert.equal(reader.writeLine(reading, { slots: { scene: 'garden' } }), 'beans<food>(garden)[mode]{stew}')
+      assert.equal(reader.readLine('key = value').rest, ' = value')
+      assert.equal(reader.writeAt('a@b{x, y}', ['b', 1], { slots: { word: 'z' } }), 'a@b{x, z}')
+      assert.equal(reader.slotHash(line, { seed: 's' }).vector.length, 5)
+    }
+  })
+
   it('workbench runs a program, hashes as node:crypto does, and reads a file', async () => {
     for (const form of ['min', 'debug']) {
       const workbench = await importBundle<{

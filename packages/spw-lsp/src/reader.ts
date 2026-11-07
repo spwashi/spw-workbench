@@ -18,6 +18,9 @@ import { outlineFromSource } from './handlers/outline'
 import type { LspDocumentSymbol } from './types'
 
 export { parse, parseExpression } from '@spwashi/spw-seed'
+// Slot reading and slot hashing, for pages that lay a line out or rewrite one slot of it
+export { readLine, readAt, writeLine, writeAt, joinParts, slotHash, SLOT_KEYS, SLOT_NAMES, BONDS } from '@spwashi/spw-seed'
+export type { SlotReading, SlotSpan, LineChange, SlotHash, SlotKey, BondName } from '@spwashi/spw-seed'
 
 /** One token of the role stream, with its role and modifiers by name. */
 export interface RoleSpan {

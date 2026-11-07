@@ -981,3 +981,35 @@ export {
 
 // Content hashing: synchronous and browser-safe, the same digest node:crypto gives
 export { TEXT_HASH_LENGTH, sha256Hex, sha256HexBytes, textHash, utf8ByteLength } from './canonical/content-hash'
+// Slot hashing: one component per slot of a line, under a seed
+export { slotHash } from './canonical/slot-hash'
+export type { SlotHash, SlotHashOptions } from './canonical/slot-hash'
+
+// Slot reading: one line's word and pair slots, in any order, written back without losing a byte
+export {
+  readLine,
+  readAt,
+  readRange,
+  writeLine,
+  writeAt,
+  joinParts,
+  SLOT_KEYS,
+  SLOT_NAMES,
+  PAIRS,
+  JOIN_MARKS,
+  BONDS,
+  SEPARATORS,
+  VALENCE_WORDS,
+} from './line'
+export type {
+  SlotReading,
+  SlotSpan,
+  LinePart,
+  LineCompound,
+  LineChange,
+  SlotKey,
+  PairKey,
+  JoinMark,
+  BondName,
+  Separator,
+} from './line'
