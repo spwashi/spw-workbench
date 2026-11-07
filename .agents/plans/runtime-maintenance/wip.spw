@@ -72,6 +72,7 @@
  >>[2026-10-19 16:28] revise — Direction review at 0eb1d1c0: portability and unified hashes have landed; mark active, prioritize test ownership, and gate splits on behavioral evidence.
  >>[2026-10-27 10:18] note — docs/runtime/md/runtime-memory.md documents the RegisterBank memory-budget surface (setMemoryBudget, memoryPressure, enforceMemoryBudget, purgeColdCells, setFacetEvictable) and the keys eviction never drops; split_register_bank must keep that surface, so the doc is now a root. Declared shares with typescript-perf-audit-infra over tsconfig.typecheck.json: legacy_tests_home widens what that config checks, which moves the baseline its perf rows measure. Checked against main at 850077ab: nothing past runtime_node_subpath has landed; register-bank.ts is still 899 lines and hot-session.ts still has 17 imports.
  >>[2026-10-27 10:26] note — From the 2026-10-27 sweep (precipitate-model-alignment test_precipitate_order): the runtime stage-order test sits inside if (result.success), so a failed run passes it. When legacy_tests_home moves normalize.test.ts, dropping that guard costs nothing and makes the test able to fail.
+ >>[2026-11-06 18:10] observe — A mounted consumer that compiles the packages from source under its own tsconfig (a Vite app aliasing spw-workbench/runtime to packages/spw-runtime/src/index.ts) could not move from fffab72 to main: site-install.ts imports node:fs and node:path and is reachable from the runtime index, so the root does not run in a browser; canonical/snippet.ts assigns readonly tuples to string[] (TS4104) under the consumer's compiler settings though this repo's build passes; and RegisterId is now branded, so a consumer passing plain strings breaks at about ten sites. The consumer took the reader build instead for its slot reader and kept fffab72 for the runtime. Evidence for the browser-root slice: a runtime index with no node built-in reachable, and a published type surface consumers compile against instead of this repo's sources.
 }
 
 ^["open"]{
@@ -102,7 +103,7 @@
  ~#files_hot: "packages/spw-runtime/src/state/register-bank.ts, packages/spw-runtime/src/session/hot-session.ts"
  ~#next_commit: "legacy_tests_home"
  ~#open_count: "1"
- ~#last_stream: "2026-10-27 10:26"
+ ~#last_stream: "2026-11-06 18:10"
  ~#taste_debt: "register-bank.ts is 899 lines, past the 600-line guard; hot-session.ts has 17 imports, past the 12-import guard"
 }
 
