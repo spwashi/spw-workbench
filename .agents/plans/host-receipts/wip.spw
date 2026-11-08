@@ -1,0 +1,80 @@
+# wip — host-receipts
+# Started: 2026-11-08
+
+#>plan_host_receipts
+#:plan #!projection_feedback
+#:layer #!pragmatics
+
+@["card"]{
+ phase: #seed
+ gist: "Every parser or tooling change lands with a receipt per host (spw.quest, factshift.center, two mounted consumers): what reads, what reads differently, where readers part, and a before/after an editor or docs page shows"
+ touches: [~"packages/spw-cli/src", ~"packages/spw-lsp/src", ~".agents/plans/reading-drift/wip.spw", ~".agents/plans/plan-stream-parse-health/wip.spw"]
+ will_touch: [~".spw/exchange"]
+ entry: ~"./PLAN.md"
+ next: "~[host_specimens]: minimal forms per host, starting from the three story-consumer causes and spw.quest's FORMS rows; then ~[degradation_census] once degradation_stop_position lands."
+}
+
+^["edges"]{
+ needs: [~"../plan-stream-parse-health/wip.spw", ~"../reading-drift/wip.spw"]
+ feeds: [~"../parser-releases/wip.spw", ~"../ask-exchange/wip.spw", ~"../commit-gate-redesign/wip.spw"]
+ shares: [~"../interpretation-trials/wip.spw", ~"../editor-reading-hierarchy/wip.spw", ~"../first-plugin/wip.spw", ~"../line-kit/wip.spw"]
+}
+
+^["roots"]{
+ @plan: ~".agents/plans/host-receipts/PLAN.md"
+ @drift: ~".agents/plans/reading-drift/wip.spw"
+ @health: ~".agents/plans/plan-stream-parse-health/wip.spw"
+ @bench: ~".agents/plans/interpretation-trials/wip.spw"
+ @intake: ~".agents/plans/ask-exchange/wip.spw"
+ @warning: ~"packages/spw-seed/src/parser/parse-expression.ts"
+}
+
+^["intent"]{
+ ~#goal: "An improvement counts by what it changes on the hosts that read Spw, and each host can see that change as a diff (the owner, 2026-11-08)"
+ ~#taste: "A receipt is a count that falls or a reading that moves, never a green word; plugin and docs diffs are where interaction semantics, learnability and extensibility can be researched directly"
+}
+
+^["hosts"]{
+ # Hosts by role. Corpora are read in place by explicit path; nothing is copied here.
+ spw_quest: .{ role = "the bench: a line held in an address, one slot changed at a time" reader = "the site's slot reader, carried" specimens = "FORMS rows (contrasting cases)" }
+ factshift_center: .{ role = "the canvas: a line as a field of pulls and pushes, edited byte for byte" reader = "line-anatomy.ts on a March workbench copy" specimens = "garden lines and carried scripts" }
+ site_consumer: .{ role = "a mounted consumer: components read with scripts off, asks filed upstream" reader = "seed at its pin, plus expression-query.js" specimens = "route expressions, plane reports" }
+ story_consumer: .{ role = "a second mounted consumer: canon records, bracework in prose, desk and map queries, spells with provenance" reader = "six browser readers and a vendored seed bundle" specimens = "chapter bracework, desk spells, map queries, canon surfaces" }
+}
+
+^["open"]{
+ # Unresolved questions. When resolved: log in stream, then move to ^["done"] as ~#resolved(label).
+ ?[receipt_home]: "A verb of its own (spw receipt), or reading-drift's readings_check growing --hosts so one command answers both?"
+ ?[host_weight]: "Does a receipt only list per host, or may it mark a change that helps one host and costs another as needing the owner's call?"
+ ?[diff_surface]: "Where does the editor diff live: a page per receipt, a webview in the extension, or a docs page per release?"
+ ?[specimen_source]: "Are specimens reduced by hand from each host, or harvested by a selector the host declares, so the host owns its set?"
+}
+
+^["commits"]{
+ # Named, in order. Planned ~[name]; landed .[name](hash). Names are never reused.
+ ~[host_specimens]: "#[exchange] — .spw/exchange/specimens.spw: per-host specimen sets as minimal forms written fresh (no consumer prose), each tagged with the reading its host expects; the story consumer's three causes and spw.quest's FORMS rows first"
+ ~[degradation_census]: "&[cli] — lint over a corpus named by path counts surfaces read as prose, with the stop position and a cause class (valence word, typography in bare prose, quoted-name bracket, bare + in a value, phrase cut by a backtick, other); on 2026-11-08 main reads 22 of 59, 18 of 447 and 0 of 18 on three host corpora"
+ ~[receipt_check]: "&[cli] — one parser revision against another over every named corpus: degraded before and after, lines whose reading changed (reading-drift readings_check), reader agreement on specimens (trial_bench); one table per host (after ?[receipt_home])"
+ ~[editor_diff]: "&[lsp] — each changed specimen rendered as the editor shows it before and after: semantic tokens, diagnostics (degradation_diagnostic) and hover, on one page a person can inspect (after ?[diff_surface])"
+ ~[docs_diff]: ".[docs] — docs examples re-read under the new revision; an example whose reading changed is listed with its old and new reading, and its prose is checked against the new one"
+ ~[receipt_in_episode]: ".[commit-review] — a commit that changes reading cites its receipt in *[verify]: per host, degraded before and after and readings changed (with reading-drift grammar_receipt, one line, not two)"
+}
+
+^["stream"]{
+ >>[2026-11-08 09:45] decide — The owner asked that parser and tooling improvements be developed as they become meaningful through spw.quest, factshift.center and two mounted consumers, and named plugin improvements and documentation as the most inspectable surface for those diffs, since their interaction semantics, learnability and extensibility can be researched directly. Opened this plan to hold the per-host receipt; it composes reading-drift, trial_bench and degradation_lint rather than adding a fourth measure.
+ >>[2026-11-08 09:45] observe — Baseline at main@3d3181b4, seed prose profile, generated trees excluded: story consumer 22 of 59 surfaces read as prose, site consumer 18 of 447 (plans 4 of 388), factshift.center 0 of 18, workbench .spw 5 of 762, workbench plans 14 of 286 (12 in archived seed excerpts). The story consumer's lint reported 0 errors on its 22, and its pin sat 128 commits behind main on an archived branch; the site's pin is one behind.
+ >>[2026-11-08 09:45] observe — Causes, isolated by removing one line at a time: story consumer 10 typography in bare prose (’ · — inside ~<rationale>{ blocks, where ASCII prose reads), 6 valence keys (one a cast member named bonk:), 6 quoted-name brackets followed by a line break; site consumer adds a bare + in a facet value and a backtick phrase cut short by an inner backtick. The consumer's own diagnosis named the frame openers instead, the misattribution degradation_stop_position predicts.
+}
+
+^["cache"]{
+ ~#status: "seed"
+ ~#base_ref: "main@3d3181b4"
+ ~#rebased_at: ""
+ ~#files_hot: ""
+ ~#next_commit: "host_specimens"
+ ~#open_count: "4"
+ ~#last_stream: "2026-11-08 09:45"
+}
+
+^["done"]{
+}

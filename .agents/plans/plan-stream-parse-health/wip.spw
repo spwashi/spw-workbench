@@ -11,12 +11,12 @@
  gist: "Line items (.. and >>) read the same in every dialect and carry mixed phrases, so parse health measures structure however a file is parsed."
  touches: [~"packages/spw-seed/src/lexer/stream-entry.ts", ~"packages/spw-seed/src/lexer/tokenize.ts", ~"packages/spw-seed/src/experimental/syntax-catalog.ts", ~"docs/theory/spw", ~"packages/spw-seed/src/canonical/topography-probe.ts", ~".agents/plans/_schema/wip-template.spw"]
  entry: ~"./PLAN.md"
- next: "~[entry_figure_nodes]: entry bodies carry figure nodes so path refs in entries reach the outline and selectPathRefs; then ~[dotdot_prose_recovery]."
+ next: "~[degradation_stop_position], then the three fixes that take a mounted consumer from 22 of 59 surfaces read as prose to 0: ~[modifier_keys], ~[prose_typography], ~[quoted_name_bracket_break]; ~[entry_figure_nodes] after."
 }
 
 ^["edges"]{
  shares: [~"../plan-tooling-design/wip.spw", ~"../syntax-profile-stack/wip.spw", ~"../shape-syntax-ecology/wip.spw", ~"../vscode-plugin-performance/wip.spw"]
- feeds: [~"../plan-tooling-design/wip.spw", ~"../plan-plugin-integration/wip.spw"]
+ feeds: [~"../plan-tooling-design/wip.spw", ~"../plan-plugin-integration/wip.spw", ~"../host-receipts/wip.spw"]
 }
 
 ^["roots"]{
@@ -119,13 +119,17 @@
  >>[2026-10-27 13:00] observe — Ergonomics review 2026-10-27, probed at f36ecd08: a surface whose structured parse stops returns success with a prose-degradation warning, and neither spw lint (annotations and anchors are well-formed, 0 findings) nor the editor (analysis.ts publishes only when success is false) shows it; three plans read half their content as prose through the 2026-10-27 sweep with lint and plan:check green. Each valence word as a facet key (boon, bane, bone, bonk or honk before a colon) lexes as MODIFIER and degrades the whole surface, while banes: lexes as IDENTIFIER and parses. A string holding a quoted ref splits into string, ref and string with no warning.
  >>[2026-10-27 13:29] observe — Probed 2026-10-27: the prose-degradation warning points at the opener of the frame the parse fell back from, not at the token that broke it. A file whose second frame holds c: .{ bane: "slow" } on line 8 warns at line 6 column 1 (found OPERATOR ^). A lens can name the frame today; degradation_lint and the editor diagnostic need the deepest position to point at the cause.
  >>[2026-11-06 17:24] observe — A mounted consumer asked on 2026-10-25 (language-support.spw, valence_fragment, rank 5) for the fragment-position case of the modifier_keys defect: see = @page#bane-frame parses with 1 error and a prose fallback at dbd138dd, while @page#shape-frame and a quoted ~"./x.spw#bane-frame" parse clean. The consumer names anchors bane-frame, boon-crossings and bone-role, and cites them through full path refs so its route trees parse. Planned as modifier_fragments beside modifier_keys: one lexer rule, two positions.
+ >>[2026-11-08 09:45] observe — A second mounted consumer reads 22 of 59 surfaces as prose at main@3d3181b4 with its lint at 0 errors. Isolated one line at a time: 10 are typographic punctuation in bare prose (’ · — in ~<rationale>{ blocks; the same block in ASCII reads), 6 are valence keys (boon:, a cast member bonk:, and boon/bane/bone keys under ^"name"{ and &lifecycle{), 6 are ?"name"[ / #"name"[ / ?<name>[ followed by a line break. The consumer's own review blamed ~<rationale>{, ], &[chapter/10/cast]{ and ^"name"{, the openers the warning points at, so degradation_stop_position is now a field finding, not only a probe's.
+ >>[2026-11-08 09:45] observe — Same census on the site consumer: 18 of 447 .spw surfaces outside gen read as prose; 13 stop at a ^"name"{ opener whose cause is inside: a bare + in a facet value (note = curriculum + fields), a backtick phrase cut by an inner backtick, typography in bare prose (2), one valence key, and one ?< capsule opened in a bare value. Workbench: 5 of 762 .spw, 14 of 286 plan files (12 in archived seed excerpts with CH4 + O2 -> CO2 + H2O). The per-host baseline lives in host-receipts.
+ >>[2026-11-08 09:45] note — The second consumer proposes the third reading added to ?[degradation_severity]: fail unless the surface declares itself prose, naming the first unread line and a fix. It also proposes reading valence words after the parse, as a loaded vocabulary, rather than lexing them as MODIFIER; held as wonder_trial_valence_word in interpretation-trials, since modifier_keys fixes key position without deciding that.
+ >>[2026-11-08 09:47] observe — Probed 2026-11-08: a: 1 < 2 falls back to prose whose second chunk reads << 2, a doubled mark never written. A prose fallback that changes bytes breaks write-back for every host that round-trips a degraded line; wonder_trial_comparison carries the form.
 }
 
 ^["open"]{
  ?[stamp_kinds]: "Which stamps make an entry: YYYY-MM-DD HH:MM, YYYY-MM-DD, an ordinal? Does an unknown stamp still make an entry, of kind other?"
  ?[backtick_ground]: "A backtick phrase has no marker to choose its ground: `door~` in the quest is a code sample, `full: parse` in a set is a label; does it take its ground from its key, from a mark, or does each reader choose?"
  ?[archive_dialect]: "Archived plans read as historical Spw.b by path, so their stream entries and commit refs lex as ordinary Spw (71 landed lines there split digit-leading hashes); should _archive under .agents/plans keep the plan dialect, or stay historical?"
- ?[degradation_severity]: "Is prose-degradation an error on plan_surface and canon_surface and a warning elsewhere, or a warning everywhere with lint exiting non-zero only under a strict flag? Decides what degradation_lint and the editor diagnostic report."
+ ?[degradation_severity]: "Is prose-degradation an error on plan_surface and canon_surface and a warning elsewhere, or a warning everywhere with lint exiting non-zero only under a strict flag, or (a mounted consumer's reading, 2026-11-08) an error on any surface that has not declared itself prose, naming the first unread line and a fix? Decides what degradation_lint and the editor diagnostic report."
 }
 
 ^["commits"]{
@@ -146,10 +150,12 @@
  .[spaced_entry_migration](940ef67e): "^seed[lexer] — @ names in entry prose read as root links, and spaced >> [ entries are rewritten"
  .[post_fix_tally](866826ff): "^seed[lexer] — stream entries read the same in every dialect, and their bodies are prose with figures"
  ~[degradation_lint]: "&[cli] — spw lint reports prose-degradation as a finding with the stop position, and exits non-zero on structured profiles (plan_surface, canon_surface); today it says well-formed"
- ~[modifier_keys]: "^seed[parser] — a valence word in key position reads as a key: a failing fixture for boon: through honk: in a .{} facet, then the key rule accepts MODIFIER; vscode-plugin-performance.spw ^[tradeoffs] is the live specimen"
+ ~[modifier_keys]: "^seed[parser] — a valence word in key position reads as a key: a failing fixture for boon: through honk: in a .{} facet, then the key rule accepts MODIFIER; vscode-plugin-performance.spw ^[tradeoffs] is the live specimen; six surfaces in a second mounted consumer degrade on it (2026-11-08), one a cast member named bonk:"
  ~[modifier_fragments]: "^seed[lexer] — a valence word after # reads as the start of a fragment name when a hyphen or word character follows: failing fixtures for @page#bane-frame, #boon-crossings, #bone-role and #honk-x, each one error and a prose fallback today (mounted consumer rank 5, valence_fragment)"
  ~[string_ref_seam]: "^seed[parser] — a warning when a string closes directly into a ~ ref inside one value, the seam a nested quote leaves; today such a value parses as string, ref and string in silence"
  ~[phrase_for_quoted_code]: ".[conventions] — the conventions name the backtick phrase as the form for prose that quotes Spw, with the nested-quote seam as the counterexample"
+ ~[prose_typography]: "^seed[lexer] — typographic punctuation in bare prose inside a block (’ ‘ “ ” · — – …) reads as prose: failing fixtures from ~<rationale>{ blocks, which read with ASCII prose and degrade on one ’; ten surfaces in a mounted consumer (2026-11-08), the block-body sibling of dotdot_prose_recovery"
+ ~[quoted_name_bracket_break]: "^seed[parser] — ?\"name\"[, #\"name\"[ and ?<name>[ followed by a line break read as their one-line forms do; failing fixtures for each; ?name[ and ^\"name\"[ already read across lines; six surfaces in a mounted consumer (2026-11-08)"
  ~[degradation_stop_position]: "^seed[parser] — the prose-degradation warning carries the deepest position the structured parse reached and the token it could not take, beside the frame opener it fell back from; today a valence key on line 8 reports line 6, OPERATOR ^"
 }
 
@@ -159,9 +165,9 @@
  ~#rebased_at: ""
  ~#hygiene_split: "none"
  ~#files_hot: ""
- ~#next_commit: "entry_figure_nodes"
+ ~#next_commit: "degradation_stop_position"
  ~#open_count: "4"
- ~#last_stream: "2026-11-06 17:24"
+ ~#last_stream: "2026-11-08 09:47"
  ~#taste_debt: ""
 }
 
