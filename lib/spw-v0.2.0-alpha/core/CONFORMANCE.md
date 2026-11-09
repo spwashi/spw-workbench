@@ -100,7 +100,7 @@ assert(parse(input, { domain: 'Theatre@' }).emotion === 'joy')  // ❌ Not core!
 - Local parser checks: `npm run lint:spw`
 - Writerside/path checks: `npm run lint:docs:strict`
 - Core stub check: `npm run lint:v020`
-- Golden snapshots: `src/seed/__tests__/snapshots/`
+- Golden snapshots: `packages/spw-seed/src/parser/__tests__/snapshots/`
 
 ## Open Questions
 

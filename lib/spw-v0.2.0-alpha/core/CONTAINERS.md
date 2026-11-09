@@ -163,7 +163,7 @@ Recommended maximum nesting depth: **4**. Beyond that, extract a named sub-frame
 ## Implementation Hooks
 
 - Grammar container rules: `src/seed/grammar/containers.ts`
-- Container parser tests: `src/seed/__tests__/container-disambiguation.test.ts`
+- Container parser tests: `packages/spw-seed/src/parser/container-disambiguation.test.ts`
 - Parsing entry points: `src/seed/parser/parse.ts`
 - Container kind types: `src/seed/types/token.ts#ContainerKind`
 - Brace physics registry: `.spw/registries/brace-physics.spw`

@@ -6,11 +6,9 @@ export default defineConfig({
     alias: vitestWorkspaceAlias,
   },
   test: {
-    // Legacy re-export tree + package-local tests (math, form-sequence, …)
-    include: [
-      'src/seed/**/*.test.ts',
-      'packages/spw-seed/src/**/*.test.ts',
-    ],
+    // Seed tests sit beside the source they exercise. The kernel is portable:
+    // no test here may import runtime, CLI, LSP or scripts/.
+    include: ['packages/spw-seed/src/**/*.test.ts'],
     environment: 'node',
     globals: false,
     restoreMocks: true,

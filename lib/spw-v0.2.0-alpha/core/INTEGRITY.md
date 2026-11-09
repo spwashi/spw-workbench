@@ -46,7 +46,7 @@ hash(canonical_1) == hash(canonical_2)  ✅
 ### 2. Golden snapshots — changes need approval
 
 ```
-src/seed/__tests__/snapshots/phase-4-golden/
+packages/spw-seed/src/parser/__tests__/snapshots/phase-4-golden/
 ├── example-1-inject.spw       # 5 canonical parse outputs
 ├── example-2-reflect.spw      # any change to these
 ├── example-3-couple.spw       # requires explicit approval
@@ -93,9 +93,9 @@ hash("^config{ x: 1 }") ≠ hash("^config{x:1}")  # ❌ These should be equal!
 
 ## Implementation Hooks
 
-- Determinism coverage: `src/seed/__tests__/parser.determinism.test.ts`
+- Determinism coverage: `packages/spw-seed/src/parser/parser.determinism.test.ts`
 - Canonical outputs: `src/seed/canonical/index.ts`
-- Golden snapshots: `src/seed/__tests__/snapshots/`
+- Golden snapshots: `packages/spw-seed/src/parser/__tests__/snapshots/`
 - Normalization: `src/seed/normalize.ts`
 
 ## Open Questions

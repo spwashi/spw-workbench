@@ -104,7 +104,7 @@ Every seed must carry provenance metadata — at minimum the source file and spe
 - Canonicalization pipeline: `src/seed/canonical/`
 - Normalization logic: `src/seed/normalize.ts`
 - Seed-facing docs: `src/seed/docs/index.spw`
-- Golden snapshots: `src/seed/__tests__/snapshots/`
+- Golden snapshots: `packages/spw-seed/src/parser/__tests__/snapshots/`
 
 ## Open Questions
 

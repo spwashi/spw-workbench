@@ -94,7 +94,7 @@ Error: Parse failed  // ❌ No position, no context, no repair hint
 - Kernel parser and lexer surface: `src/seed/`
 - Canon examples for contract checks: `docs/examples/spw/`
 - Conformance targets: [CONFORMANCE.md](./CONFORMANCE.md)
-- Golden snapshots: `src/seed/__tests__/snapshots/`
+- Golden snapshots: `packages/spw-seed/src/parser/__tests__/snapshots/`
 
 ## Open Questions
 

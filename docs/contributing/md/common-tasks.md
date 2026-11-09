@@ -35,7 +35,7 @@ Test a single file without running the whole suite:
 
 ```bash
 # Run runtime tests for a specific file
-npm run test:runtime -- src/runtime/__tests__/register-bank.test.ts
+npm run test:runtime -- packages/spw-runtime/src/state/register-bank.test.ts
 
 # Run DOM tests for a specific file
 npm run test:dom -- src/dom/__tests__/dom-smoke.test.ts
@@ -402,7 +402,7 @@ Stop it with `Ctrl+C`.
 
 ### By File
 ```bash
-npm run test:runtime -- src/runtime/__tests__/register-bank.test.ts
+npm run test:runtime -- packages/spw-runtime/src/state/register-bank.test.ts
 ```
 
 ### By Pattern

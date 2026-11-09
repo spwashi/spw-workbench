@@ -19,7 +19,7 @@ This is intentionally flexible in early canon.
 Recommended:
 - `docs/exhibits/` (narrated)
 - `examples/` (runnable)
-- `src/seed/__tests__/snapshots/` (golden, if appropriate)
+- `packages/spw-seed/src/parser/__tests__/snapshots/` (golden, if appropriate)
 
 ## Add a new exhibit
 

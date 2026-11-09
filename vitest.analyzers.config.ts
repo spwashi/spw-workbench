@@ -6,7 +6,8 @@ export default defineConfig({
     alias: vitestWorkspaceAlias,
   },
   test: {
-    include: ['scripts/analyzers/__tests__/**/*.test.ts'],
+    // Analyzer tests sit beside their script (spw-flow-scan.test.ts); __tests__ holds the older layout.
+    include: ['scripts/analyzers/**/*.test.ts'],
     environment: 'node',
     globals: false,
     restoreMocks: true,
