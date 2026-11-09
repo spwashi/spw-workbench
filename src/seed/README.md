@@ -1,11 +1,9 @@
-# Seed Domain (The Hermit)
+# src/seed (retired)
 
-> **LORE Reference**: Book II, Chapter 6 ("The Hermit")
+The seed kernel — lexer, parser, grammar, types, canonical forms, query — lives in
+`packages/spw-seed/src/`, with its tests beside the sources they exercise. The one-line
+re-export shims that used to mirror it here are gone; import `@spwashi/spw-seed` instead.
 
-This directory is the **Kernel** of the system. It is the pure, environment-agnostic core that parses and executes Spw code.
-
-## Responsibilities
-
-- **Parsing**: Transforming text into AST.
-- **Evaluation**: Executing the AST.
-- **Standard Library**: The built-in functions.
+What remains is `docs/`: the seed stratum map (`index.spw`), the audit guide, the
+precipitation patterns and the operator metaphysics note. `index.spw` still describes
+the retired file layout.

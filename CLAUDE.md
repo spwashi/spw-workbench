@@ -25,10 +25,10 @@ extensions/
 lib/
   spw-v0.2.0-alpha/  # Archival spec reference
   spw-v0.3.0/        # Current spec library (11 subsystems)
-src/                 # Legacy source (being consolidated into packages/)
-  seed/              # Parser source → packages/spw-seed
-  runtime/           # Runtime source → packages/spw-runtime
-  testing/           # Test infrastructure
+src/                 # Shared test harness and compatibility remnants (sources live in packages/)
+  testing/           # Test infrastructure (headless + DOM harness)
+  runtime/index.ts   # Compatibility re-export of packages/spw-runtime for a mounted consumer
+  seed/docs/         # Seed stratum docs (map, audit guide, operator metaphysics)
 .spw/                # Canon root — versioned specification surfaces, conventions, patterns
 .agents/             # Agent skills, plans, workflows, state (see .agents/README.md)
 docs/                # Canonicalized documentation (Writerside)

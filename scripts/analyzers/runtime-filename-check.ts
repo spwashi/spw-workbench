@@ -3,7 +3,7 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 
-const RUNTIME_ROOT = path.resolve('src/runtime')
+const RUNTIME_ROOT = path.resolve('packages/spw-runtime/src')
 const DIRECTORY_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const FILE_PATTERN = /^(?:[a-z0-9]+(?:-[a-z0-9]+)*)(?:\.(?:test|spec))?\.(?:ts|md|spw)$/
 const ALLOWED_SPECIAL = new Set(['README.md'])

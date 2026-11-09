@@ -17,9 +17,10 @@ Principles:
 - `packages/spw-lsp/` — Language Server Protocol implementation.
 - `packages/spw-cli/` — CLI (`spw` binary).
 
-### Legacy source (consolidating into packages/)
-- `src/seed/` → `packages/spw-seed/`
-- `src/runtime/` → `packages/spw-runtime/`
+### Legacy source (retired into packages/)
+- `src/seed/` — sources and tests now live in `packages/spw-seed/src/`; only `src/seed/docs/` remains.
+- `src/runtime/` — sources and tests now live in `packages/spw-runtime/src/`; `src/runtime/index.ts` stays as a compatibility re-export for a mounted consumer.
+- `src/testing/` — shared headless and DOM test harness (not legacy).
 
 ### Specification & documentation
 - `lib/spw-v0.3.0/` — current spec library (v0.2.0-alpha retained as archival reference).

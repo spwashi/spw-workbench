@@ -90,7 +90,7 @@ export interface ONFNode {
 
 /**
  * Surface → ONF normalization targets.
- * Implemented in src/seed/normalize.ts normalizeToONF().
+ * Implemented in packages/spw-seed/src/normalize.ts normalizeToONF().
  *
  * | Surface       | ONF                                                              |
  * |---------------|------------------------------------------------------------------|
