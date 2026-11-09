@@ -11,7 +11,7 @@
  gist: "The runtime and seed carry one home per behavior: legacy shims retired, the largest modules split along their reasons to change, one hash function, and roots that run in a browser."
  touches: [~"packages/spw-runtime/src", ~"packages/spw-seed/src/canonical", ~"src/runtime", ~"src/seed", ~"tsconfig.typecheck.json"]
  entry: ~"./PLAN.md"
- next: "Move legacy tests with collection parity and typecheck coverage; retire shims only after a repository-wide importer check."
+ next: "Characterize the value algebra with behavioral cases (clone, merge, both magnitudes), then runtime_value_module; the follow-ups from the test move (seed docs home, prose mentions, analyzer test twins, the layer check's target) can go in any order."
 }
 
 ^["edges"]{
@@ -74,18 +74,28 @@
  >>[2026-10-27 10:26] note — From the 2026-10-27 sweep (precipitate-model-alignment test_precipitate_order): the runtime stage-order test sits inside if (result.success), so a failed run passes it. When legacy_tests_home moves normalize.test.ts, dropping that guard costs nothing and makes the test able to fail.
  >>[2026-11-06 18:10] observe — A mounted consumer that compiles the packages from source under its own tsconfig (a Vite app aliasing spw-workbench/runtime to packages/spw-runtime/src/index.ts) could not move from fffab72 to main: site-install.ts imports node:fs and node:path and is reachable from the runtime index, so the root does not run in a browser; canonical/snippet.ts assigns readonly tuples to string[] (TS4104) under the consumer's compiler settings though this repo's build passes; and RegisterId is now branded, so a consumer passing plain strings breaks at about ten sites. The consumer took the reader build instead for its slot reader and kept fffab72 for the runtime. Evidence for the browser-root slice: a runtime index with no node built-in reachable, and a published type surface consumers compile against instead of this repo's sources.
  >>[2026-11-06 20:20] note — parser-releases typed_variants is the other way out for the source-compiling consumer recorded above: with types shipped beside workbench.min.js, which already exports all five runtime values the consumer imports, it can drop the March copy without this repo making every source file compile under its settings.
+ >>[2026-11-09 17:44] implement — legacy_tests_home is prepared in the working tree at main@edbc5500, uncommitted. 56 files moved with git mv beside the sources they exercise: 12 runtime tests and their fixtures to packages/spw-runtime, 4 CLI tests to packages/spw-cli, 29 seed tests and the golden snapshots to packages/spw-seed, 3 analyzer tests beside their scripts. Two files are new: pipeline/stages.test.ts holds the ten stage tests cut from normalize.test.ts, and one loadConfig test went to packages/spw-lsp because a runtime test cannot import the language server. Collection parity over eight suites: 2,039 test names before, 2,048 after, none vanished, and the nine added are the trial bench. tsconfig.typecheck.json no longer excludes any test, and tsc is clean. Seven test files needed type fixes (branded register keys, ast narrowing), with no any and no changed assertion beyond the stage guard, which now asserts success. run-spw.test.ts inlines the two harness calls it used, since a package test importing src/testing broke the package build.
+ >>[2026-11-09 17:44] implement — retire_src_shims is prepared in the same tree, uncommitted: 87 of 88 shims deleted, each checked first as a one-line mirror of its package twin. The premise that only legacy tests used the shims was false in one place: a mounted consumer build aliases src/runtime/index.ts through its own pinned mount, so that file stays with a README naming why. src/seed/docs holds four real files (637 lines) and stays; its index still lists the retired layout. 15 .spw refs in four files that resolved into shim directories now point at the packages, and the runtime filename check walks packages/spw-runtime/src. Baseline failures are unchanged and not from this work: three in scripts/analyzers/__tests__ and one in the language server form-context test. Follow-ups are named in commits: the compatibility index, the seed docs home, 133 prose mentions, the analyzer test twins, the layer check target, and the dead wonder-axioms test.
+ >>[2026-11-09 17:50] implement — legacy_tests_home landed as 891e93b9 and retire_src_shims as 1a1b95bb, on feature/runtime-maintenance, authorized by the owner. Next is the value algebra.
 }
 
 ^["open"]{
  # Unresolved questions. When resolved: log in stream, then move to ^["done"] as ~#resolved(label).
  ?[public_surface]: "Do runtime exports reached only through the package root count as a consumer contract, so a prune needs a deprecation release, or are mounted consumers held to documented exports?"
+ ?[lsp_test_in_run]: "The loadConfig test cut from the site-install suite now runs under test:lsp, which test:run does not include. Does test:headless gain test:lsp, or does that one test go elsewhere?"
 }
 
 ^["commits"]{
  # Named, in order. Planned ~[name]; landed .[name](hash). Names are never reused.
  .[plan](cfc0c9c9): ".[plans] — runtime-maintenance records the runtime survey and the moves no plan owned"
- ~[legacy_tests_home]: "![tests] — runtime tests move from src/runtime/__tests__ to packages/spw-runtime and the four CLI tests to packages/spw-cli, so tsc checks them; normalize.test.ts reads stages from the runtime package; the orphaned docs/library wonder-axioms test is repaired or removed"
- ~[retire_src_shims]: "&[packages] — the 88 re-export shims in src/seed and src/runtime are deleted once nothing imports them"
+ .[legacy_tests_home](891e93b9): "![tests] — every legacy test moves beside the source it exercises: 12 runtime tests to packages/spw-runtime, 4 CLI tests to packages/spw-cli, 29 seed tests to packages/spw-seed, 3 analyzer tests beside their scripts, so tsc checks them all; the stage tests leave normalize.test.ts for the runtime package and can now fail"
+ .[retire_src_shims](1a1b95bb): "&[packages] — 87 of the 88 re-export shims in src/seed and src/runtime are deleted; src/runtime/index.ts stays as a compatibility boundary for a mounted consumer, and .spw refs that resolved into shim directories point at the packages"
+ ~[runtime_compat_index]: "&[packages] — src/runtime/index.ts is deleted once the mounted consumer that aliases it imports the package path or a typed build (parser-releases typed_variants)"
+ ~[seed_docs_home]: ".[docs] — the four files in src/seed/docs move to a docs home or have their @here refs re-rooted at packages/spw-seed/src; docs/toc.spw, docs/index.spw, two v0.2.0-alpha surfaces and the lsp smoke test follow"
+ ~[legacy_path_prose]: ".[docs] — the 133 prose mentions of retired src/seed and src/runtime paths in 52 files name their package twins; the 43 that name paths that never existed are fixed or dropped"
+ ~[analyzer_test_twins]: "![analyzers] — the three analyzer tests moved from the seed tree and their newer twins in scripts/analyzers/__tests__ become one set; the twins' three failures (refactor-check 1, topography-scan 2) are fixed or the assertions retired with a reason"
+ ~[layer_check_target]: "![review] — layer-check.sh and semantics-check.sh read packages/spw-seed/src and packages/spw-runtime/src, where the code is; they checked one-line shims before and check nothing now (with refactor-import-sprawl)"
+ ~[wonder_axioms_test]: "![docs] — docs/library/__tests__/wonder-axioms.test.ts is rewritten against the runtime that exists or removed; it imports src/lang and an Interpreter class with a generator evaluate, neither of which is in this repo, and no config runs it"
  ~[runtime_value_module]: "vocab[runtime] — state/runtime-value.ts holds the value algebra (clone, merge, magnitude), record and frame guards, and nowIso for register-bank and the interpreter; the two magnitude formulas reconcile or are named for their difference"
  ~[split_register_bank]: "&[runtime] — register-bank.ts splits into the bank, a memory-budget facade, coupling, and marks with liminality, keeping the RegisterBank surface"
  ~[split_hot_session]: "&[runtime] — hot-session.ts moves its cite, follow, and collapse pointer store beside it, so evaluate and inspect stand alone; coordinated with fragment-pointers"
@@ -98,13 +108,13 @@
 
 ^["cache"]{
  ~#status: "active"
- ~#base_ref: "main@76e17bd4"
+ ~#base_ref: "main@edbc5500"
  ~#rebased_at: ""
  ~#hygiene_split: "none"
  ~#files_hot: "packages/spw-runtime/src/state/register-bank.ts, packages/spw-runtime/src/session/hot-session.ts"
- ~#next_commit: "legacy_tests_home"
- ~#open_count: "1"
- ~#last_stream: "2026-11-06 20:20"
+ ~#next_commit: "runtime_value_module"
+ ~#open_count: "2"
+ ~#last_stream: "2026-11-09 17:50"
  ~#taste_debt: "register-bank.ts is 899 lines, past the 600-line guard; hot-session.ts has 17 imports, past the 12-import guard"
 }
 

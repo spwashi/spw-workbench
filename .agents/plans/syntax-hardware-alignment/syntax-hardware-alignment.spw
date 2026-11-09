@@ -2,6 +2,7 @@
 //
 // Proposed syntax moves, each staged as a commented sample exhibit: p1 to p7
 // from the shelf audit, p8 to p11 from the caches living tree (2026-10-13).
+# p12 to p14 come from the owner's judgments and seed probes (2026-10-13, 2026-11-06); p15 to p17 from the reader-agreement run of 2026-11-09.
 // Organizing metaphor: a header stack is a bus transaction — the anchor is the
 // address lines, the lens the control lines, the focus the flag/strobe, the ~#
 // stance the latched (volatile) state, $%[...] the readback register. Every proposal is
@@ -254,6 +255,64 @@
  ~#lexes_today: "yes; no lexer change, a semantic table entry and a hover"
  ~#keeps: "the consumer's join_goal, joins keep their kinds apart, with | as the either join"
  ~#needs: "the operator and connector table names it; a wonder's $%[a | b] reads as an answer set (vscode-authoring-probe-loop answer_set_mark)"
+}
+
+# ── Proposal 15: a dot that opens a part is its mark ───────────────────
+# The line reader splits a body at every dot outside a pair, so a part that
+# opens with a dot loses it whenever no other separator is present. The
+# parser already reads the dot as that part's operator.
+#
+#  today:  kitchen{.bread{flour}} -> line reader: one part bread, joined by a dot; parser: the . operation labelled bread
+#  after:  the line reader keeps .bread, as it does in kitchen{.bread{flour}, ~soup{beans}}
+
+^["p15_opening_dot_marks"]{
+ ~#status: "proposed 2026-11-09"
+ ~#rule: "a join has text on both sides, as the line reader already asks of ~ ^ & @; a dot with nothing before it in its body leads the first part as its mark"
+ ~#census: "bodies whose first part opens with a dot: 0 here, 2 in the site consumer (1 misread, the line that reports it), 38 in a second mounted consumer (all 38 misread, every one a level row .steps[…] !voice[…] …)"
+ ~#lexes_today: "yes; the parser agrees already, so this is the line reader following the grammar"
+ ~#needs: "a failing fixture pair (the part alone, the part in company) in packages/spw-seed/src/line/fixtures.ts, then partsOf drops a cut at the body's first character"
+ ~#open: "x{ .a.b } still reads as two parts where the parser reads one marked name; that half waits on wonder_trial_dot"
+ ~#evidence: ~"../../../.spw/caches/journal/2026-11-09-reader-agreement.spw"
+}
+
+# ── Proposal 16: a gap parts a body ────────────────────────────────────
+# The parser reads terms set side by side in a body as separate expressions.
+# The line reader has no gap separator, so it reads the first term and
+# leaves the others unread.
+#
+#  today:  *wonders{ @a $b #c } -> parser: 3 expressions; line reader: 1 part @a, rest unread
+#  after:  the line reader returns 3 parts in company, written with a gap
+
+^["p16_gap_parts_a_body"]{
+ ~#status: "proposed 2026-11-09; the rule's reach is the owner's (wonder_trial_gap)"
+ ~#rule: "inside a body, a gap between two terms is a separator: looser than a dot, so a.b c.d is two dotted names, and tighter than a comma, a semicolon and a path"
+ ~#census: "single-line bodies with terms side by side: 5 here, 3 in the site consumer, 230 of 1,620 in a second mounted consumer, where 149 hold marked terms only"
+ ~#lexes_today: "yes; gap-affinity already records the gap (syntax.gap-affinity/1), and the parser already splits there"
+ ~#needs: "SEPARATORS gains the gap between the path and the dot; writeLine keeps the gap a writer used; a host gets a name for the join (company without a comma)"
+ ~#open: "does every gap part a body, as the parser reads it (a prose body then becomes one part per word), or only a gap between marked or braced terms; and is a, b c one flat company of three, as the parser reads it, or a company whose second member is a pair"
+ ~#cost: "prose bodies: a question such as ?{ where will the ice cube sit } is one part with unread rest today, and would be six"
+ ~#evidence: ~"../../../.spw/caches/journal/2026-11-09-reader-agreement.spw"
+}
+
+# ── Proposal 17: a shape is a line of holes ────────────────────────────
+# A canvas host counts a line's shape by taking its words out and writing a
+# middle dot for each: ~·[]{,}<>. The hole _ already says a slot left open,
+# and a query is already read as a line, so a shape needs no glyph of its own.
+#
+#  host today: ~soup[warm]{beans, salt}<food> -> ~·[]{,}<>
+#  proposed:   ~soup[warm]{beans, salt}<food> -> ~_[_]{_, _}<_>, which is itself a line and a query
+
+^["p17_shape_is_a_line_of_holes"]{
+ ~#status: "proposed 2026-11-09"
+ ~#rule: "a line's shape is the line with each word replaced by _; a shape matches every line that fills its holes, so the shape is the line's most general query"
+ ~#lexes_today: "yes for the line reader, which reads ~_[_]{_, _}<_> and _[_]{_._._}<_> whole; in part for the parser, which reads each _ as a Wildcard but reads _._._ as five expressions where a.b.c is one name"
+ ~#census: "the site consumer's 391 expression lines have 36 shapes; five cover 84%, and 20 occur once"
+ ~#removes: "a second notation for shapes in each host (the middle dot), and a second matcher beside line-kit slot_query"
+ ~#needs: "line-kit line_features carries the shape under a stable key; slot_query's match treats _ as any; the parser reads a hole wherever a name may stand, so a mark before a hole (~_) is one marked hole and _._ is one dotted name of two holes"
+ ~#sample: ~"./samples/shapes.spw"
+ ~#play: "same words in two shapes are isomers, and like ~soup is a query for one shape, as the canvas host already offers; a newcomer can fill a shape as a first exercise"
+ ~#open: "does a body's shape keep its part count ({_, _} against {_}), and does a typed hole (wonder_trial_typed_hole) narrow a shape"
+ ~#evidence: ~"../../../.spw/caches/journal/2026-11-09-reader-agreement.spw"
 }
 
 // Samples: samples/cut-surface.spw rewrites one tree surface with p8 to p11

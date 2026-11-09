@@ -40,6 +40,8 @@
  contracts: "each product names its contract and version (line.reading/1, line.query/1, line.features/1, line.breaks/1), so a host can check what it holds and a change is a new version, not a silent shape"
  totality: "every function takes any string and returns; what it cannot read goes to rest, and no input throws"
  laws: "the laws run over the fixture table and over generated lines (any slot order, nesting, separators, joins, quotes, unclosed pairs): write-back identity, one-span edits, rest kept, query matches itself"
+ agreement: "the line reader and the parser are held together by a law over the same generated lines: wherever both read a body, they find the same number of parts and the same marks; a form where they part is either fixed or named in a table of known partings with the trial that owns it, so a new parting fails a test and an old one is never silent"
+ part_alone_or_in_company: "a part reads the same whether it is a body's only part or one of several; its mark, word and slots do not depend on its siblings"
  no_host_names: "seed carries no consumer's vocabulary; a host passes its own slot names to the record view, and SLOT_NAMES keeps only the reader names"
  digestible_features: "features are plain data with stable keys and plain-word names, a short description in words, and a Spw line of their own, so a shelf, a canvas or an agent can use them without reading seed"
  types_from_the_build: "hosts type the kit from types cut with the build (parser-releases typed_variants), never from a hand-copied file"
@@ -62,6 +64,12 @@
  body_join_reader: .{ host: "spw.quest", source: "the site's plane reports, quest.spw workbench_asks: one reader for body joins, FORMS rows (forms.js) as its conformance set", home: "line_features; with brace-slot-reading consumer_reader_parity" }
  one_reader_three_profiles: .{ host: "a second mounted consumer", source: "its review, 2026-11-08: six browser readers sharing no syntax tree, beside a vendored seed bundle", home: "kit_in_reader; with parser-releases reader_is_browser_build" }
  intermediate_forms: .{ host: "all four", source: "interpretation-trials wonder_trial_intermediate_forms (the owner, 2026-11-08)", home: "line_features, slot_query" }
+ body_law_mark: .{ host: "factshift.center, a second mounted consumer", source: "the site's cache brace-literal-local-law-2026-11 (law, before_the_brace): the mark a word leads with is its body's law, and ~{warm_furrow} has a mark and no name", home: "mark_span" }
+ owed_closers: .{ host: "factshift.center", source: "the same cache (particles, ion): the prompt paints the closers an open line owes and Tab writes them, from the host's own count", home: "line_features: owes" }
+ fold_pairs: .{ host: "spw.quest, factshift.center", source: "the same cache (literal, accordion): a page that renders a file as nested details wants each pair's open and close as data", home: "top_level_split, wrap_points" }
+ line_shape: .{ host: "factshift.center", source: "the same cache (molecule, formula): a line's shape with its words taken out, written ~·[]{,}<>, and like ~soup as a query for one shape (app d83863b)", home: "line_features: shape; slot_query; syntax-hardware-alignment p17" }
+ lone_dot_part: .{ host: "factshift.center, a second mounted consumer", source: "the same cache (dot): kitchen{.bread{flour, water}} loses its mark; 38 level rows in the second consumer read the same way", home: "parts_as_parsed; syntax-hardware-alignment p15" }
+ side_by_side_parts: .{ host: "a second mounted consumer", source: "230 of its 1,620 single-line bodies set terms side by side (journal 2026-11-09-reader-agreement)", home: "parts_as_parsed; syntax-hardware-alignment p16" }
 }
 
 ^["open"]{
@@ -74,6 +82,9 @@
  # Named, in order. Planned ~[name]; landed .[name](hash). Names are never reused.
  ~[any_pair_leads]: "^seed[line] — the reader takes a mode or a body before the word as it takes a scene or a concept: [mode]home, {body}home; fixtures and laws updated, {chronicles} <of> (narnia) now leads with its body"
  ~[kit_laws]: "![line] — the laws as property tests over generated lines as well as the fixture table: write-back identity, one-span edits, rest kept, no input throws"
+ ~[reader_parser_agreement]: "![line] — a law over generated lines and the fixture table: where the parser and the line reader both read a body, part counts and marks agree; known partings (the dot as seam or join, the gap, a bare mark before a body) sit in a named table citing their trials, and the test fails on any parting outside it"
+ ~[parts_as_parsed]: "^seed[line] — the line reader's parts follow the grammar where no trial is open: a dot that opens a body leads its first part as a mark (p15); the gap as a separator (p16) lands only after wonder_trial_gap"
+ ~[mark_span]: "^seed[line] — a reading gives the word's leading mark a span of its own beside the name, so ~soup is a mark and a name and ~{furrow} is a mark with no name; setFrontMark becomes a one-span edit (line.reading/2, since the word's shape changes)"
  ~[slot_edits]: "^seed[line] — moveSlot (to any place, before the word included), addPart, setSeparator, setFrontMark and setJoinMark over a reading, each a splice at spans the reading holds, returning the new text and its reading"
  ~[slot_query]: "^seed[line] — a query is a line: readLine reads it, and matchReading(query, reading) compares slot by slot, nested parts included; {seed} holds, <receipt> goes to, (atlas) scene, [pi*] lens prefix, medium[*] any lens (line.query/1, after ?[query_match])"
  ~[wrap_points]: "^seed[line] — breakPoints(reading): where a line may wrap (after a slot closes, before a pair opens, after a separator or a join mark; never inside a word or a string), and frameHang for a #> frame line; highlightHtml takes { breaks: true }"
@@ -91,6 +102,7 @@
  >>[2026-11-06 20:28] decide — The owner, 2026-11-06: a mode and a body may lead the word, as a scene and a concept may; a slot query should probably be read as a line; features should be made digestible downstream; aim for cohesive design and resilient architecture. The plan now reads one way through every product (one reader, the query a line), names a versioned contract for each, keeps consumers' vocabularies out of seed, runs its laws over generated lines, and leaves the level to hosts while making features plain to read. query_is_a_line is held as the owner's leaning ("probably"), reversible until slot_query lands.
  >>[2026-11-08 09:47] observe — Two hosts' asks fit the kit (2026-11-08). The site's plane reports ask for one codec (toSpw64, fromSpw64 and the #spw64= fragment, written four times today), one splitter for a file's top-level expressions (counted by hand in spw-talk.ts), and one reader for body joins with spw.quest's FORMS rows as its conformance set. A second mounted consumer runs six browser readers that share no syntax tree (selector, expression index, claims lines, a desk's spells, a map query, a projection spell) beside a vendored seed bundle, and asks for one reader with expression, record and prose profiles. Rows added to ^intake.
  >>[2026-11-08 10:07] note — The kit's laws have a floor reading (docs/theory/spw/exhibit-floor.spw ^exhibit_physics): write-back identity and one-span edits are what make an exhibit reversible, and a reset that moves a reading is a broken exhibit. wonder_trial_rest_state, homed here, asks whose rest a line returns to.
+ >>[2026-11-09 17:07] observe — Read the site consumer since 2026-11-08 (its cache brace-literal-local-law-2026-11) and ran both seed readers over three corpora (journal 2026-11-09-reader-agreement). Six rows added to intake: the mark as a body law, owed closers, pairs as data for folds, a line shape, the lone dot part, and parts side by side. The parser and the line reader live in one package and part on a body: design gains agreement (one law over generated lines, with known partings named and owned by a trial) and part_alone_or_in_company. Commits gain reader_parser_agreement, parts_as_parsed and mark_span.
 }
 
 ^["cache"]{
@@ -100,7 +112,7 @@
  ~#files_hot: "packages/spw-seed/src/line"
  ~#next_commit: "any_pair_leads"
  ~#open_count: "2"
- ~#last_stream: "2026-11-08 10:07"
+ ~#last_stream: "2026-11-09 17:07"
 }
 
 ^["done"]{

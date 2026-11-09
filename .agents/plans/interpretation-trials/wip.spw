@@ -10,7 +10,7 @@
  gist: "Open readings of Spw's marks held as trials, each scored expressive, interactive and grounded before it becomes grammar"
  touches: [~".agents/plans/interpretation-trials"]
  entry: ~"./interpretation-trials.spw"
- next: "The owner picks a card when ready; ~[trial_bench] can come first so each trial starts from every reader's reading side by side."
+ next: "The owner picks a card when ready; ^reach orders the cards by lines moved, and npm run analyze:trials shows seed's two readers side by side on any card."
 }
 
 ^["edges"]{
@@ -30,16 +30,29 @@
  ~#taste: "Try readings on purpose before deciding them; keep a reading when it lets a writer say more, lets a host do more, and mirrors how people already mean"
 }
 
+^["reach"]{
+ # Lines each card's answer would re-read, as counted so far; an order for the owner's hours, not a verdict. Counts cite their source.
+ spaced_equals: .{ here: 2174, site_consumer: 25429, counts: "lines opening key = value", source: "syntax-hardware-alignment p13, 2026-11-06" }
+ register: .{ here: 916, site_consumer: 6890, counts: "[reg=…] stamps; 832 and 6,719 restate their container", source: "syntax-hardware-alignment stream, 2026-10-27 and 2026-11-08" }
+ dot: .{ here: 33, site_consumer: 564, second_consumer: 173, counts: "single-line bodies joined by a dot; 241 of the 381 bodies in the site's expression lines", source: "journal 2026-11-09-reader-agreement" }
+ angle_readings: .{ here: 10, site_consumer: 347, counts: "lines ending in a <tag> that takes the next line's head", source: "the owner's reading notes, 2026-11-06" }
+ gap: .{ here: 5, site_consumer: 3, second_consumer: 230, counts: "single-line bodies with terms side by side", source: "journal 2026-11-09-reader-agreement" }
+ slot_order: .{ site_consumer: 0, counts: "typed expression lines, of 387, that depart from word, mode, body, scene, concept", source: "journal 2026-11-09-reader-agreement" }
+ reading: "By lines moved, the spaced = and the register come first on the site, and the dot decides its expression lines; the gap is one consumer's dialect; slot order moves no typed line yet. Cards with no count here have not been measured."
+}
+
 ^["open"]{
  # Unresolved questions. When resolved: log in stream, then move to ^["done"] as ~#resolved(label).
- ?[first_trial]: "Which card runs first? The spaced = and the <…> readings move the most lines; the stages and guided-wonder cards move the most hosts."
+ ?[first_trial]: "Which card runs first? The spaced = and the <…> readings move the most lines; the stages and guided-wonder cards move the most hosts. ^reach now holds the counts: the spaced = (25,429 site lines), the register (6,890 stamps) and the dot (564 bodies) lead."
  ?[bench_readers]: "Does the bench import the consumer's slot reader and factshift.center's line anatomy by path, read-only, or do those readers print their readings for the bench to collect?"
  ?[novice_trials]: "Are trial cards also quest material: can a newcomer run one, judge it, and leave an ask?"
 }
 
 ^["commits"]{
  # Named, in order. Planned ~[name]; landed .[name](hash). Names are never reused.
- ~[trial_bench]: "^seed[analyzers] — read every form on a trial card through each reader (seed's parse and source products, and the consumer readers by path) and print the readings side by side, with the card's holes left open"
+ .[trial_bench](56d6245d): "^seed[analyzers] — read every form on a trial card through each reader and print the readings side by side, with the card's holes left open; scripts/analyzers/spw-trial-bench.ts reads the cards with the parser and each form with the parser and the line reader, and says where they part (trial.bench/1; npm run analyze:trials)"
+ ~[trial_bench_host_readers]: "^seed[analyzers] — the bench gains the consumer readers as columns, after ?[bench_readers]"
+ ~[trial_bench_pairs]: "^seed[analyzers] — the bench reads each card's ~#pairs as two forms and prints the first place their readings differ, per reader"
  ~[first_trials]: ".[plans] — the owner runs the first trials and fills judgment and answer; each card keeps its ~#expect, written before the run"
  ~[promote_kept_readings]: ".[plans] — a reading kept on all three axes moves to its home plan as a decision citing its trial; a reading dropped stays on the card with why"
 }
@@ -56,6 +69,8 @@
  >>[2026-11-08 09:47] observe — The site's plane reports add readers to angle_readings: within the site, < > is what this is about on the guide and where it goes on /forms/ and /pivot, so the site's own readers part before seed is asked.
  >>[2026-11-08 09:56] note — Added wonder_trial_register (26 cards): six readings of one word, from the owner's remark that registers could be made more useful. Normal form already uses registers to record how a node was built, which is the intermediate-forms card's exemplar reading in miniature: a middle form that remembers its source.
  >>[2026-11-08 10:07] note — Added wonder_trial_rest_state and wonder_trial_play_schemas (28 cards), from docs/theory/spw/exhibit-floor.spw: the owner's high-school volunteering on a children's museum floor (resetting exhibits, watching children play, trying the physics, noticing light, texture and art) read as four vantages on interactive models. The intermediate_forms card's physics reading now has its conditions written there: immediate, consistent, reversible, conserved, legible, open-ended.
+ >>[2026-11-09 17:07] note — Added wonder_trial_gap and wonder_trial_shape (30 cards), from a run of both seed readers over three corpora (journal 2026-11-09-reader-agreement). The gap card asks whether terms side by side are company, an order, one phrase or unread; grounded in asyndeton. The shape card asks whether a line with its words taken out is still a line; grounded in argument-structure constructions, and written with _ so a shape is a query. The dot card now records that seed holds two readers that part on it, and the slot-order card that no typed line in the site consumer departs from one order.
+ >>[2026-11-09 17:11] implement — trial_bench is written for seed readers: scripts/analyzers/spw-trial-bench.ts reads the cards through the parser (an anchor, a ? frame, its forms) and each form through the parser and the line reader, then names where they part: on line count, on body part count, or on the marks parts lead with. First run over 30 cards and 94 forms: the two readers part on 54 (40 on lines, 13 on parts, 1 on marks). The lines figure is rough, since some forms are prose the line reader never claimed; parts and marks are exact. Host reader columns wait on bench_readers, and a pairs runner is named as the next slice.
 }
 
 ^["cache"]{
@@ -63,9 +78,9 @@
  ~#base_ref: "main@dbd138dd"
  ~#rebased_at: ""
  ~#files_hot: ".agents/plans/interpretation-trials/interpretation-trials.spw"
- ~#next_commit: "trial_bench"
+ ~#next_commit: "first_trials"
  ~#open_count: "3"
- ~#last_stream: "2026-11-08 10:07"
+ ~#last_stream: "2026-11-09 17:11"
 }
 
 ^["done"]{

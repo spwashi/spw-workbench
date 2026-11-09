@@ -57,6 +57,15 @@ Taste: one home per behavior. Splits follow reasons to change, never line counts
 
 The survey above records the October 13 baseline, not current unresolved work. `node_free_seed_root` (`0bf89a77`), `runtime_node_subpath` (`900e2b9c`) and `one_hash_module` (`eb34e6c3`, with runtime callers in `7509cbb8`) have landed. The persisted-hash question is resolved in the stream. Remaining work starts at `legacy_tests_home`; do not repeat the portability or hash migrations.
 
+## Current boundary — 2026-11-09
+
+`legacy_tests_home` (`891e93b9`) and `retire_src_shims` (`1a1b95bb`) have landed; `wip.spw` holds the parity numbers. Two things differ from the survey above:
+
+- One shim stays. `src/runtime/index.ts` is a compatibility boundary for a mounted consumer whose build aliases it. It goes when that consumer imports the package path or a typed build.
+- `src/seed/docs/` is real content (four files), not a shim. It needs a docs home before `src/seed` can go.
+
+Remaining structural work starts at the value algebra. Follow-ups from the move are named in `wip.spw` (seed docs home, prose mentions of retired paths, analyzer test twins, the layer check's target, the dead wonder-axioms test).
+
 ## Execution and acceptance
 
 1. **Test ownership.** Inventory collected test names and fixture paths before moving files. Move runtime tests to runtime and the four CLI suites to CLI. Verify collection parity, package typecheck inclusion, and unchanged assertions. A green run with fewer collected cases is a failure, not completion.

@@ -1,0 +1,67 @@
+# Reader agreement — 2026-11-09
+#
+# Seed's parser and seed's own line reader were run on the same forms and the same three corpora.
+# They part on the two most basic questions about a body: what a dot does, and what a gap does.
+# The counts say where each host writes into the disagreement.
+
+#>journal_2026_11_09_reader_agreement
+#:cache #!observation
+#:layer #!syntax
+
+^["entry"]{
+ date: "2026-11-09"
+ kind: #observation
+ base: "main@edbc5500; the site consumer at 72215f3c; a second mounted consumer at its working tree of the same day"
+ method: "session scripts called parse and readLine from packages/spw-seed/src/index.ts over each form and corpus; the form comparison was then written as scripts/analyzers/spw-trial-bench.ts, and the corpus counts stay one-off until reading-drift's corpus check carries them"
+ bench: "over the 30 trial cards and their 94 forms on this date, the two readers part on 54: 40 on how many lines a form is, 13 on a body's parts, 1 on a part's mark"
+}
+
+^["thread"]{
+ claim: "One package holds two readers of a body, and they disagree on its parts. The parser reads a gap as the boundary between expressions and a dot as a seam inside one name. The line reader reads a dot as the boundary between parts and does not read a gap at all."
+ why_it_matters: "Hosts draw, drag and query what the line reader returns, and tools lint what the parser returns. A line both accept can still be two different things, and neither reports an error."
+ direction: "Hold the two together with a law over generated lines, so a disagreement is a failing test and never a silent reading. Which reading wins on the dot stays the owner's trial."
+}
+
+^["body_split"]{
+ # One form per row: how many expressions the parser finds in the body, and what the line reader returns.
+ dotted_names: .{ form: "x{host.valence.archetype}", parser: "1 expression, one name of three segments", line_reader: "3 parts joined by a dot" }
+ lone_marked_part: .{ form: "kitchen{.bread{flour}}", parser: "1 expression, the . operation labelled bread", line_reader: "1 part named bread joined by a dot; the mark is gone" }
+ marked_part_in_company: .{ form: "kitchen{.bread{flour}, ~soup{beans}}", parser: "2 expressions, each an operation", line_reader: "2 parts, .bread and ~soup, marks kept" }
+ marked_dotted_name: .{ form: "x{ .a.b }", parser: "1 expression", line_reader: "2 parts, a and b" }
+ terms_side_by_side: .{ form: "x{ @a $b #c }", parser: "3 expressions", line_reader: "1 part @a; the other two are unread rest" }
+ marked_terms_side_by_side: .{ form: "x{ .steps[\"X\"] !voice[tock] &chapter[1] }", parser: "3 expressions", line_reader: "1 part named steps joined by a dot; the mark is gone and two terms are unread" }
+ dotted_names_side_by_side: .{ form: "x{ a.b c.d }", parser: "2 expressions", line_reader: "3 parts: a, then b with c unread, then d" }
+ comma_then_gap: .{ form: "x{ a, b c }", parser: "3 expressions in one flat sequence", line_reader: "2 parts; c is unread inside the second" }
+ prose: .{ form: "x{ where will the ice cube sit }", parser: "6 expressions", line_reader: "1 part where; the other five words are unread" }
+ bare_mark_before_a_body: .{ form: "~{warm_furrow}@boof", parser: "2 expressions: a ~ operation with a body, then the reference @boof", line_reader: "a join by @ of a line whose word is ~ and a line whose word is boof" }
+}
+
+^["counts"]{
+ # Single-line bodies read by the line reader, after a leading key and = or : is stripped. Archives, generated trees and the mount are excluded.
+ here: .{ files: 1290, bodies: 10014, comma: 7641, unseparated: 2321, dot: 33, semicolon: 19, side_by_side: 5, opening_dot: 0 }
+ site_consumer: .{ files: 942, bodies: 3672, comma: 1762, unseparated: 875, dot: 564, semicolon: 468, path: 3, side_by_side: 3, opening_dot: 2 }
+ second_consumer: .{ files: 143, bodies: 1620, unseparated: 1132, comma: 315, dot: 173, side_by_side: 230, opening_dot: 38 }
+ side_by_side: "a body whose single part leaves term-shaped text unread; in the second consumer 149 of the 230 are marked terms only, such as *wonders{ @torch_ants $press_stones #first_ink_stays }"
+ opening_dot: "a body whose first part opens with a dot; the line reader drops the mark in 1 of the site's 2 and in all 38 of the second consumer's, every one a level row such as *torch_march{ .steps[…] !voice[tock] … }"
+ site_opening_dot: "the site's one misread line is the cache line that reports the misreading (brace-literal-local-law-2026-11, dot)"
+}
+
+^["shapes"]{
+ # A line with its words taken out, as the canvas host counts shapes; here over the site's expression lines.
+ population: "391 lines written expression = … under the site's .spw tree"
+ read_whole: "383 of 391 (98.0%); the 8 others are prose or a multi-line facet"
+ formulas: "36 distinct shapes; the five most common cover 84% of lines, and 20 occur once"
+ commonest: ["·[]{·.·.·}<> 125", "·[]{·} 101", "·[]{·.·}<> 47", "·[]{·.·.·.·}<> 39", "·[]{·}<> 18"]
+ order: "387 single lines and 4 joins; every single line is word first and keeps the order word, mode, body, scene, concept; no line leads with a pair"
+ marks: "16 of 387 lead with a mark"
+ joins_in_bodies: "of 381 bodies: a dot 241, one part 122, a comma 12, a semicolon 5, a path 1"
+ reading: "Writers use one order, and the freedom to move a slot is used by hosts that drag, not by anyone typing. The dot is the site's ordinary body join, so the dot question decides how most of its lines read."
+ holes: "a shape written with holes reads today: ~_[_]{_, _}<_> is one whole line to the line reader, and the parser reads each _ as a Wildcard, though it leaves ~ apart from the _ after it"
+}
+
+^["follows"]{
+ proposals: ~"../../../.agents/plans/syntax-hardware-alignment/syntax-hardware-alignment.spw"
+ trials: ~"../../../.agents/plans/interpretation-trials/interpretation-trials.spw"
+ law: ~"../../../.agents/plans/line-kit/wip.spw"
+ held: "No reader changed today. The dot and the gap are on trial with the owner; the agreement law can be written failing before either is decided."
+}
