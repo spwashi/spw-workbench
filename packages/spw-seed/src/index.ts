@@ -984,6 +984,14 @@ export { TEXT_HASH_LENGTH, sha256Hex, sha256HexBytes, textHash, utf8ByteLength }
 // Slot hashing: one component per slot of a line, under a seed
 export { slotHash } from './canonical/slot-hash'
 export type { SlotHash, SlotHashOptions } from './canonical/slot-hash'
+export {
+  REGISTER_OF_CLOSER,
+  REGISTER_STAMP_CONTRACT,
+  readRegisterStamps,
+  summarizeRegisterStamps,
+  withoutRestatingStamps,
+} from './canonical/register-stamp'
+export type { RegisterStamp, RegisterStampSummary, StampedCloser } from './canonical/register-stamp'
 
 // Slot reading: one line's word and pair slots, in any order, written back without losing a byte
 export {

@@ -201,7 +201,7 @@ function main(): void {
   const flag = (name: string): boolean => args.includes(name)
   const cardAt = args.indexOf('--card')
   const only = cardAt >= 0 ? args[cardAt + 1] : undefined
-  const file = args.find((arg, index) => !arg.startsWith('--') && index !== cardAt + 1) ?? DEFAULT_CARDS
+  const file = args.find((arg, index) => !arg.startsWith('--') && (cardAt < 0 || index !== cardAt + 1)) ?? DEFAULT_CARDS
   let cards = readTrialCards(readFileSync(file, 'utf8'))
   if (only) cards = cards.filter(card => card.name === only || card.name === `wonder_trial_${only}`)
   if (!cards.length) {

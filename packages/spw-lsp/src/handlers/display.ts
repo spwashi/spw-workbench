@@ -28,6 +28,7 @@ import { buildWonderHint, codeSpan, hoverApposition, hoverWonder, parseWonderBlo
 import { inboundCitationsFor, warmCitationIndex } from './reference-graph'
 import { fileCitationLens, keyCitationLens, nameRepeatLens } from './citation-lenses'
 import { generatedLenses } from './generated-lenses'
+import { registerStampHover } from './register-stamp-hover'
 import {
   formatCatalogEntryMarkdown,
   getSyntaxCatalogEntry,
@@ -671,19 +672,12 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
         }
     }
 
-    // 6.6 Registry qualifier hover
-    const regRe = /\[reg=([a-zA-Z0-9_]+)\]/g
-    let regMatch: RegExpExecArray | null
-    while ((regMatch = regRe.exec(line)) !== null) {
-        const rStart = regMatch.index
-        const rEnd = rStart + regMatch[0].length
-        if (pos.character >= rStart && pos.character < rEnd) {
-            let md = `**\`[reg=${regMatch[1]}]\`** \u2014 *Facet Qualifier*\n\n`
-            md += `Flags this block for extraction by the layer-check and semantic validation hooks.\n`
-            return {
-                contents: { kind: 'markdown', value: md },
-                range: { start: { line: pos.line, character: rStart }, end: { line: pos.line, character: rEnd } },
-            }
+    // 6.6 Register stamp hover
+    const stampHover = registerStampHover(line, pos.character)
+    if (stampHover) {
+        return {
+            contents: { kind: 'markdown', value: stampHover.markdown },
+            range: { start: { line: pos.line, character: stampHover.start }, end: { line: pos.line, character: stampHover.end } },
         }
     }
 
@@ -712,7 +706,7 @@ export async function hover(params: HoverParams, deps: HandlerDeps): Promise<Lsp
                 )
                 // The register bank: cells the interpreter writes as it walks the
                 // file (`=`, `&`, `*` set them; `#` resonates, `@` observes). Not
-                // the `[reg=]` stamps, which name a serialization sink.
+                // the `[reg=]` stamps, which name a frame's register in source.
                 const bank = `${entries.length} runtime register${entries.length === 1 ? '' : 's'}, written by \`=\` \`&\` \`*\` \`#\` \`@\` in a trial run`
                 if (related.length > 0) {
                     md += `\n---\n\n**Runtime** — ${bank}\n\n`
