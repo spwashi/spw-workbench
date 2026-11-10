@@ -14,6 +14,7 @@ import type {
   BodyNode,
   ScopeNode,
   ProseChunkNode,
+  IdentifierNode,
   ModifierChainNode,
   TermNode,
   CapsuleNode,
@@ -648,10 +649,26 @@ function chargeEndsExpression(token: Token, chargeLine: number): boolean {
   return isScheduleSeparator(token)
 }
 
+/** A valence chain read as a name: `boon` or `boon.honk` standing where a key stands. */
+function valenceKey(chain: ModifierChainNode): IdentifierNode {
+  const segments = chain.modifiers.map(modifier => modifier.value)
+  return {
+    type: 'Identifier',
+    span: chain.span,
+    token: {
+      type: 'IDENTIFIER',
+      value: segments.join('.'),
+      span: chain.span,
+      identifier: { segments, qualified: segments.length > 1 },
+    },
+  }
+}
+
 /**
  * Expression: charge-sign? term (connector term)*
  *
  * `boon` / `boon.honk` attach as ModifierChain and the noun parse continues.
+ * Before a colon the same words are a key (`boon: "preloader"`), not a charge.
  * A chain followed by an operator (`boon!`, `boon.home`, `boon.honk!`) stays
  * the operation prefix it already was. `boon..honk` stays an interval.
  */
@@ -663,6 +680,7 @@ export const expressionImpl: Parser<ExpressionNode> = named('expression',
     const origin = stream.position
     let charge: ModifierChainNode | undefined
     let chargeConsumed = 0
+    let keyTerm: IdentifierNode | undefined
 
     if (current(stream).type === 'MODIFIER') {
       const modGen = modifierChain(stream, depth + 1)
@@ -677,10 +695,15 @@ export const expressionImpl: Parser<ExpressionNode> = named('expression',
         const next = current(stream)
         // Operation prefixes stay operations. `boon..honk` is an interval, not a charge.
         const interval = next.type === 'CONNECTOR' && next.value === '..'
+        const chain = modStep.value.value!
         if (next.type === 'OPERATOR' || interval) {
           stream.position = origin
+        } else if (next.type === 'COLON' && next.span.start.line === chain.span.end.line) {
+          // Before a colon the word is a key, not a charge: `boon: "preloader"`.
+          keyTerm = valenceKey(chain)
+          chargeConsumed = modStep.value.consumed
         } else {
-          charge = modStep.value.value
+          charge = chain
           chargeConsumed = modStep.value.consumed
         }
       } else {
@@ -698,10 +721,10 @@ export const expressionImpl: Parser<ExpressionNode> = named('expression',
       && !heldForPostfix
       && chargeEndsExpression(current(stream), chargeLine)
 
-    let headTerm: TermNode | undefined
+    let headTerm: TermNode | undefined = keyTerm
     let consumed = chargeConsumed
 
-    if (!heldForPostfix && !chargeOnly) {
+    if (!headTerm && !heldForPostfix && !chargeOnly) {
       const firstGen = termNode(stream, depth + 1)
       let firstStep = firstGen.next()
       while (!firstStep.done) {
