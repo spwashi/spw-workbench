@@ -96,14 +96,17 @@ export const frameNode: Parser<FrameNode> = named('frame',
 
     let consumed = openStep.value.consumed
 
-    // Content
+    // Content. A frame holds values, so it is never prose ground, even inside a body.
     skipWhitespace(stream)
+    const outerGround = stream.proseGround
+    stream.proseGround = false
     const contentGen = frameContent(stream, depth + 1)
     let contentStep = contentGen.next()
     while (!contentStep.done) {
       yield contentStep.value
       contentStep = contentGen.next()
     }
+    stream.proseGround = outerGround
 
     const content = contentStep.value.success ? contentStep.value.value! : []
     consumed += contentStep.value.consumed

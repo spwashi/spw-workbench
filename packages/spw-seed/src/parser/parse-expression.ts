@@ -8,7 +8,7 @@ import type {
 import type { ParseOutput } from './output'
 import { DEFAULT_OPTIONS, retainsParseEvent } from '../types'
 import { lex, resolveLexProfile } from '../lexer'
-import { createTokenStream, current, getPosition, skipWhitespace } from '../combinators'
+import { createTokenStream, current, describeStop, getPosition, readStop, skipWhitespace } from '../combinators'
 import { sequenceNode } from '../grammar'
 import { proseNode } from '../grammar/prose'
 import { buildParseCompletenessReceipt } from './completeness'
@@ -90,17 +90,20 @@ export function parseExpression(
     })
   } else if (!hasStructuredPrefix) {
     proseFallback = true
-    const message = structuredStall.type === 'EOF'
+    const stop = readStop(stream, structuredStall)
+    stream.stop = stop
+    const message = structuredStall.type === 'EOF' && !stop.unclosed
       ? 'Structured expression parse consumed nothing; surface degraded to prose.'
-      : `Structured expression parse stopped at ${structuredStall.type} ${JSON.stringify(structuredStall.value)}; surface degraded to prose.`
+      : describeStop(stop, 'Structured expression parse')
     observeEvent({
       type: 'warning',
       rule: 'parseExpression',
-      position: structuredStall.span.start,
+      position: stop.position,
       data: {
         message,
         code: 'prose-degradation',
-        found: structuredStall.type,
+        found: stop.found,
+        stop,
       },
       timestamp: performance.now(),
       depth: 0,
@@ -131,6 +134,7 @@ export function parseExpression(
     actualRoot: ast,
     remainingToken: current(stream),
     proseFallback,
+    stop: stream.stop,
   })
   const duration = performance.now() - startTime
 

@@ -1,4 +1,5 @@
 import type { ASTNode, Token } from '../types'
+import type { ParseStop } from '../combinators'
 import type { ParseCompletenessReceipt, ParseExpectedRootKind } from './output'
 
 export interface ParseCompletenessInput {
@@ -8,6 +9,7 @@ export interface ParseCompletenessInput {
   actualRoot?: ASTNode
   remainingToken?: Token
   proseFallback?: boolean
+  stop?: ParseStop
 }
 
 function satisfiesRoot(actualRoot: ASTNode | undefined, expectedRootKind: ParseExpectedRootKind): boolean {
@@ -48,5 +50,6 @@ export function buildParseCompletenessReceipt(
     expectedRootKind: input.expectedRootKind,
     actualRootKind: input.actualRoot?.type,
     proseFallback,
+    ...(input.stop ? { stop: input.stop } : {}),
   }
 }

@@ -154,6 +154,7 @@ export {
 export type {
   ParseOutput,
   ParseCompletenessReceipt,
+  ParseStop,
   ParseExpectedRootKind,
   LogFormatter,
   TraceNode,

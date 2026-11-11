@@ -41,6 +41,7 @@ import { wildcardNode, spreadNode } from './patterns'
 import { matchNode } from './match'
 import { bulletNode, streamEntryNode } from './bullets'
 import { blockScalarNode } from './block-scalar'
+import { proseTextRunNode } from './prose'
 
 // matchNode — extracted to ./match.ts
 export { matchNode } from './match'
@@ -49,6 +50,37 @@ const INLINE_PAYLOAD_OPERATORS = new Set(['#', '?'])
 const INLINE_PAYLOAD_PUNCT = new Set(['.', '#', '?', '!'])
 const LOW_CONTEXT_PATH_SUGAR_ERROR =
   'Unquoted local path references are high-context sugar. Use ~"..." or parse with contextMode: "high".'
+
+/**
+ * True when `?` or `#` carries a name written against it that closes directly
+ * into a frame or body: `?"probes"[`, `#<notes>{`. Anything else stays payload.
+ */
+function nameLeadsContainer(stream: TokenStream, op: Token): boolean {
+  const first = current(stream)
+  if (first.span.start.offset !== op.span.end.offset) return false
+
+  let last = first
+  let offset = 0
+  if (first.type === 'CAPSULE_OPEN') {
+    let open = 0
+    for (;; offset++) {
+      const token = peek(stream, offset)
+      if (!token || token.type === 'EOF' || token.span.start.line !== first.span.start.line) return false
+      if (token.type === 'CAPSULE_OPEN') open++
+      if (token.type === 'CAPSULE_CLOSE' && --open === 0) {
+        last = token
+        break
+      }
+    }
+  } else if (first.type !== 'STRING') {
+    return false
+  }
+
+  const next = peek(stream, offset + 1)
+  return next?.type === 'CONTAINER_OPEN'
+    && (next.value === '[' || next.value === '{')
+    && next.span.start.offset === last.span.end.offset
+}
 
 function isBarePathStartToken(token: Token): boolean {
   if (token.type === 'OPERATOR' && token.value === '.') return true
@@ -435,6 +467,38 @@ export const operationNode: Parser<OperationNode> = named('operation',
       }
     }
 
+    // A name written against ? or #, when a frame or body follows it at once:
+    // `?"probes"[…]`, `#<notes>{…}`. Without one the name stays line payload.
+    // Mid-line, `?<a>` keeps the medial capsule it already reads as.
+    const beforeName = { position: stream.position, consumed }
+    let namedBlock = false
+    if (
+      INLINE_PAYLOAD_OPERATORS.has(operatorToken.value)
+      && !subject
+      && (current(stream).type !== 'CAPSULE_OPEN' || startsItsLine(stream, opIndex))
+      && nameLeadsContainer(stream, operatorToken)
+    ) {
+      const nameGen = choice<TermNode>(literalNode, capsuleNode)(stream, depth + 1)
+      let nameStep = nameGen.next()
+      while (!nameStep.done) {
+        yield nameStep.value
+        nameStep = nameGen.next()
+      }
+      if (nameStep.value.success) {
+        subject = nameStep.value.value!
+        consumed += nameStep.value.consumed
+        namedBlock = true
+      }
+    }
+
+    /** A named block that does not read gives its name back to the line payload. */
+    const releaseName = () => {
+      stream.position = beforeName.position
+      consumed = beforeName.consumed
+      subject = undefined
+      namedBlock = false
+    }
+
     // Optional frame
     let frame: FrameNode | undefined
     skipWhitespace(stream)
@@ -446,31 +510,41 @@ export const operationNode: Parser<OperationNode> = named('operation',
         frameStep = frameGen.next()
       }
 
-      if (!frameStep.value.success) {
+      if (frameStep.value.success) {
+        frame = frameStep.value.value
+        consumed += frameStep.value.consumed
+      } else if (namedBlock) {
+        releaseName()
+      } else {
         return { success: false, consumed: 0, error: frameStep.value.error }
       }
-
-      frame = frameStep.value.value
-      consumed += frameStep.value.consumed
     }
 
     // Optional body
     let body: BodyNode | undefined
     skipWhitespace(stream)
     if (current(stream).value === '{') {
+      // A capsule-led block is prose by declaration. Any other operation's body
+      // is a record, where a stray mark would silently cut a value short.
+      const outerGround = stream.proseGround
+      stream.proseGround = subject?.type === 'Capsule'
       const bodyGen = bodyNode(stream, depth + 1)
       let bodyStep = bodyGen.next()
       while (!bodyStep.done) {
         yield bodyStep.value
         bodyStep = bodyGen.next()
       }
+      stream.proseGround = outerGround
 
-      if (!bodyStep.value.success) {
+      if (bodyStep.value.success) {
+        body = bodyStep.value.value
+        consumed += bodyStep.value.consumed
+      } else if (namedBlock) {
+        releaseName()
+        frame = undefined
+      } else {
         return { success: false, consumed: 0, error: bodyStep.value.error }
       }
-
-      body = bodyStep.value.value
-      consumed += bodyStep.value.consumed
     }
 
     // Optional inline payload for line-scoped operators (#, ?)
@@ -609,7 +683,8 @@ export const termNode: Parser<TermNode> = lazy(() => named('term',
       frameNode,
       streamNode,
       nrangeNode,
-      bodyNode
+      bodyNode,
+      proseTextRunNode
     )(stream, depth + 1)
 
     let fallbackStep = fallbackGen.next()

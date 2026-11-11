@@ -11,6 +11,8 @@ import {
   current,
   skipWhitespace,
   named,
+  readStop,
+  describeStop,
 } from '../combinators'
 import { annotationNode, appositionNode } from './references'
 import { sequenceNode } from './expressions'
@@ -78,16 +80,19 @@ export const seedNode: Parser<SeedNode> = named('seed',
         // hard-fail on a malformed expression. Silence is the defect: without a
         // signal an author sees a degraded parse and cannot learn why. Report
         // where structured parsing stopped, then degrade as before.
+        const stop = readStop(stream, stall)
+        stream.stop = stop
         yield {
           type: 'warning',
           rule: 'seed',
-          position: stall.span.start,
+          position: stop.position,
           data: {
-            message: reachedEOF
+            message: reachedEOF && !stop.unclosed
               ? 'Structured parse consumed nothing; surface degraded to prose.'
-              : `Structured parse stopped at ${stall.type} ${JSON.stringify(stall.value)}; surface degraded to prose.`,
+              : describeStop(stop, 'Structured parse'),
             code: 'prose-degradation',
-            found: stall.type,
+            found: stop.found,
+            stop,
           },
           timestamp: performance.now(),
           depth,

@@ -91,6 +91,7 @@ export function* parseStream(
     actualRoot: result.value,
     remainingToken: current(stream),
     proseFallback: result.value?.expression.type === 'Prose',
+    stop: stream.stop,
   })
   const duration = performance.now() - startTime
 

@@ -14,6 +14,7 @@ export type {
   ParseCompletenessReceipt,
   ParseExpectedRootKind,
 } from './output'
+export type { ParseStop } from '../combinators'
 export type {
   SourceProductDepth,
   SourceProductIdentity,

@@ -69,6 +69,65 @@ function collectFallbackText(stream: Parameters<Parser<ProseChunkNode>>[0]): { n
 }
 
 /**
+ * What a sentence is made of beyond ASCII words: its punctuation, and letters
+ * like the é of `Poincaré`. Deliberately narrower than TEXT: a bare `-` before
+ * a digit, a `+` or an emoji stays a stop, because reading those as prose would
+ * hide a dropped sign or a broken name.
+ */
+const PROSE_TEXT = /^['\u2018\u2019\u201C\u201D\u00B7\u2013\u2014\u2026\p{L}\p{M}]$/u
+
+function isProseText(token: Token): boolean {
+    return token.type === 'TEXT' && PROSE_TEXT.test(token.value)
+}
+
+/** True when the cursor sits against a sigil's name: `^caf|é`. A name stays ASCII even where prose may stand. */
+function continuesLabel(stream: Parameters<Parser<ProseChunkNode>>[0]): boolean {
+    const name = stream.tokens[stream.position - 1]
+    const sigil = stream.tokens[stream.position - 2]
+    return name?.type === 'IDENTIFIER'
+        && sigil?.type === 'OPERATOR'
+        && name.span.end.offset === current(stream).span.start.offset
+        && sigil.span.end.offset === name.span.start.offset
+}
+
+/**
+ * A run of prose text in a capsule-led block, with any word it is written against:
+ * the `’s` of `maker’s`, the `’n’roll` of `rock’n’roll`. Only the prose profile
+ * lexes these as TEXT, so other profiles never reach this.
+ */
+export const proseTextRunNode: Parser<ProseChunkNode> = named('proseTextRun',
+    function* proseTextRunParser(stream, _depth) {
+        // This parser is intentionally yield-free; yield* [] keeps it compliant with require-yield.
+        yield* []
+        const first = current(stream)
+        if (!stream.proseGround || !isProseText(first) || continuesLabel(stream)) {
+            return {
+                success: false,
+                consumed: 0,
+                error: { message: 'No prose text', recoverable: true, expected: ['Text'], found: first.type },
+            }
+        }
+
+        let text = ''
+        let end = first.span.end
+        let consumed = 0
+        while (!isAtEnd(stream)) {
+            const token = current(stream)
+            const against = token.span.start.offset === end.offset
+                && (token.type === 'IDENTIFIER' || token.type === 'NUMBER')
+            if (!isProseText(token) && !(consumed > 0 && against)) break
+            text += token.value
+            end = token.span.end
+            advance(stream)
+            consumed++
+        }
+
+        const node: ProseChunkNode = { type: 'ProseChunk', span: { start: first.span.start, end }, text }
+        return { success: true, value: node, consumed }
+    }
+)
+
+/**
  * Parse text until a Spw trigger is found
  */
 export const proseTextNode: Parser<ProseChunkNode> = named('proseText',

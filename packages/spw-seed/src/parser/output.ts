@@ -14,6 +14,7 @@ import type {
   ASTNodeType,
   Span,
 } from '../types'
+import type { ParseStop } from '../combinators'
 
 export type ParseExpectedRootKind = 'Seed' | 'Expression'
 
@@ -28,6 +29,8 @@ export interface ParseCompletenessReceipt {
   expectedRootKind: ParseExpectedRootKind
   actualRootKind?: ASTNodeType
   proseFallback: boolean
+  /** Present on a prose fallback: where the structured read stopped, and why it could not go on. */
+  stop?: ParseStop
 }
 
 /**

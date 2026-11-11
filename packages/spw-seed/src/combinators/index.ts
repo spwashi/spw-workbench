@@ -17,6 +17,7 @@ export type Parser<T = ASTNode> = (
 // Re-export stream utilities
 export {
   type TokenStream,
+  type ParseStop,
   createTokenStream,
   current,
   peek,
@@ -26,6 +27,8 @@ export {
   unmark,
   reset,
   getPosition,
+  readStop,
+  describeStop,
 } from './stream'
 
 // Re-export primitives

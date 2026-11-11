@@ -339,6 +339,7 @@ function runSourcePipeline(
     actualRoot: result.value,
     remainingToken: current(stream),
     proseFallback: result.value?.expression.type === 'Prose',
+    stop: stream.stop,
   })
   const output: ParseOutput<SeedNode> = {
     success,
