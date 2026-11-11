@@ -1,0 +1,135 @@
+# Address, grain, edit — 2026-11-11
+#
+# Proposals for finding, naming, stepping through and reshaping Spw, read from two mounted consumers and this repo's editors: what each host writes by hand because the workbench does not hand it over, and which operator combinations surprise a writer.
+# The owner asked for language or runtime enhancements beside VS Code and Neovim enhancements, for indexing, id generation, traversal and topography mutation, and for operational combinatorics that hold together and meet a writer's expectation.
+
+#>journal_2026_11_11_address_grain_edit
+#:cache #!observation
+#:layer #!pragmatics
+
+^["entry"]{
+ date: "2026-11-11"
+ kind: #observation
+ base: "main@5b421b8f; the site consumer's main at ef961d3b with one plan edited locally by another session; a second mounted consumer's working tree of the same day; all read only"
+ method: "three readers, one per tree, each citing file and line; the LSP rename handler, the outline's opener rule and the site consumer's reader exports checked by hand; nothing parsed or measured on this pass"
+ limits: "a reader that found no code for something searched for it by name; the owner's words about navigation come from another session, not from either tree; the counts of hand-written readers are a reading of code, not a census"
+}
+
+^["finding"]{
+ parts_unwired: "the workbench already holds most of what a host needs: readLine, readAt, writeAt and slotHash; planSemanticEdits, renameMark, renameParticle and renamePaths; matchAll with ancestors; findNodePathAtOffset; parseRangeFragment; transformEdit and composeEditLists; about 25 mobility rules. Outside spw refactor, willRenameFiles and a few code actions, nothing in the LSP, the CLI or either editor calls them"
+ hosts_rewrite_them: "the second consumer walks the parse tree six separate ways and reads about a dozen forms by regex; the site consumer has three anchor resolvers that disagree (six declaration forms, five tests ending in a substring match, and seed's #>-only anchors), three slot readers, and a spw.quest readLine whose name collides with seed's; neither imports the line kit, though the site's bundle exports it"
+ no_address: "no node carries an id or a path, so a held part, a citation, a step and an edit each find their target again their own way: by newline row, by substring, by the first part of the same kind, by a section ordinal, or by a hash of the whole source that any edit breaks"
+ ids_by_hand: "every id scheme in the second consumer is minted by hand: ledger AL-NNN out of order and one entry outside its block, contracts c0NN, claims lore-c0NN and chambers c14 sharing one prefix, plan slices with letter suffixes its gate does not admit, probe findings renumbered on every run"
+ two_lines: "a line is a newline row in spw.quest and a statement in the canvas and in seed's line reader; the canvas plans say hold has five meanings and Enter five vocabularies, and ask for a grain indicator; the owner, in another session: navigating between lines and constructs is still a bit unintuitive"
+ rename_is_text: "the LSP rename matches ((?:~)?#(?:!|:|>)?)name followed by a word boundary on every line of every surface, so renaming #foo also rewrites the head of #foo-bar (the boundary falls before the hyphen), every #foo in prose or a string, and #>foo, #:foo, #!foo and ~#foo together whatever their kind; @x renames every @x everywhere; spw refactor plans the same rename on the tree (handlers/navigation.ts 424 to 447, read 2026-11-11, not run)"
+ outline_misses_frames: "the outline opens a symbol only at { (handlers/outline.ts 168), so ?probes[ … ], !\"first\"[ … ] and %findings[ … ] are not symbols, and motions read from documentSymbol would step over them"
+ attachment: "which node a container hangs on depends on the sigil and on the order it is written in; five of the second consumer's stress findings are that one rule met in five places"
+}
+
+^["proposals"]{
+ # Each names its layer, what it says, what it answers, the parts that exist, what each editor gets, how a host would measure it, and the plan it belongs to. Ordered by what unblocks the rest.
+
+ rename_on_the_tree: .{
+  layer: "lsp, a correction"
+  says: "route the LSP rename through seed's renameParticle and renameMark, the path spw refactor already plans with, so a rename touches marks of the asked kind and citations that resolve to the renamed declaration, and nothing in prose"
+  answers: "finding rename_is_text"
+  first: "a failing fixture each for #foo beside #foo-bar, #foo inside a string, and an anchor rename that must re-aim ~\"f.spw#foo\"; the reader found no fragment case in navigation.test.ts or refactor.test.ts"
+  receipt: "on each host, the edits the LSP and spw refactor --rename plan for the same rename, compared; today they can differ"
+  home: ~"../../../.agents/plans/citation-navigation/wip.spw"
+ }
+
+ one_walk: .{
+  layer: "seed"
+  says: "a shared visitor with ancestors, lookup by label and frame key (^grant[x], ^chamber[15], ^entry[AL-001]), the source text of a node's span, and one readWhole flag meaning complete and not degraded"
+  answers: "finding hosts_rewrite_them; the second consumer checks success, proseFallback or complete in different files, and one gate's question loop checks none, so a degraded ?open[ … ] counts zero"
+  parts: "walkAST, getNodePath, matchAll, completeness"
+  host: "the second consumer adds the names to the bundle's EXPORTS beside parse and readBias"
+  receipt: "per host, the hand-written walkers and regex readers that remain; the count only goes down"
+  home: "module consumability, the current focus"
+ }
+
+ address: .{
+  layer: "seed, lsp, editors; language only in naming the fragment's resolution order"
+  says: "addressOf(text, offset) and resolveAddress(text, address). An address is a label path from the surface: a #> anchor or a block label, then frame keys and facet keys, written as the fragments hosts already write: #projection_rules, #AL-001, #phase.04, #entries.AL-001. Where a step has no label, the address falls back to the slotHash of its line, then to an ordinal, and says which: stability label, key, hash or ordinal"
+  answers: "finding no_address; three site resolvers become one; the second consumer's fragments, most of which name a block label, a frame key or a field rather than a #> anchor; a held part that survives an edit; a binding's indexOf fallback"
+  parts: "deixisTable, resolveFragment, sourceDeclaresAnchor, slotHash, findNodePathAtOffset, parseRangeFragment"
+  vscode: "hover shows the address; Copy Address; the context strip shows it; definition and references work on #>x, ^\"x\" and keys, where today they return null or declarations of the same name"
+  neovim: "the same LSP; :SpwAddress yanks it; a statusline component"
+  open: "this is the loose answer to citation-navigation ?[binding_key_fragments], against ~[resolve_anchor_strict]; a strict resolver would leave most of the second consumer's fragments unresolved, so the plan's question is the owner's, and this entry adds evidence, not a decision"
+  receipt: "per host, fragments resolved by kind (anchor, label, key, path, html, unresolved) before and after"
+  home: ~"../../../.agents/plans/citation-navigation/wip.spw"
+ }
+
+ grain: .{
+  layer: "seed, lsp, editors, hosts"
+  says: "one ladder of grains in seed: token, part (a slot as readLine names it), row, line (a statement), construct (an operation with its containers), block (a container's inside), surface. grainsAt(text, offset) returns the nested ranges with their grain and address; stepFrom(text, offset, grain, direction) returns the next sibling at that grain. Row and line are both kept and named apart, so no host has to choose what line means to step by it"
+  answers: "finding two_lines; finding outline_misses_frames; spw.quest's hold, which survives up and down only at depth 0 and picks the first part of the same kind again; the canvas's missing grain indicator"
+  lsp: "textDocument/selectionRange from grainsAt, so expand and shrink selection walk the same ladder; a custom spw/step for motions; the planned ~[selection_range] rows (token, expression, facet, frame, file) gain part, row and line"
+  vscode: "next and previous at a grain, with keybindings (package.json has none today); expand selection comes free; the context strip names the grain the next step will move by"
+  neovim: "]] and [[ read spw/step, not documentSymbol, so [ ]-only frames are steps; text objects from selectionRange; a statusline grain; ?[motion_keys] stays the plan's question"
+  hosts: "spw.quest and factshift.center call stepFrom, so the same act at different grains is one act; a hold is an address and a grain"
+  open: ~"../../../.agents/plans/interpretation-trials/interpretation-trials.spw#wonder_trial_grain"
+  home: ~"../../../.agents/plans/neovim-spw-surfaces/wip.spw"
+ }
+
+ edit_verbs: .{
+  layer: "seed, lsp, cli, editors"
+  says: "a closed set of structural verbs over addresses: rename, set a slot's value, swap a sigil, swap a container, wrap and unwrap, move among siblings, lift and lower, insert a keyed child. Each returns its edits, its inverse and its delta: an alternate form, or a move that names which coordinate changed (swap-grace rule_swap_visibility)"
+  parts: "writeAt, writeLine, planSemanticEdits, planSpanTransform, applyMobilityRule, transformEdit, composeEditLists, buildPatch"
+  lsp: "workspace/executeCommand, not registered today, and code actions offering the verbs that apply at the cursor"
+  cli: "spw edit <verb> <address>, plan first, --write to apply; a consumer that fences off writing commands can still take the plan"
+  vscode: "commands with keybindings; the probe loop's planned executeCommandProvider"
+  neovim: "one :Spw edit hub; :SpwWrapContainer reads vim.fn.mode() inside a user command and ignores opts.range, so by reading it wraps the word under the cursor, not the selection (not run)"
+  hosts: "the second consumer's writers regenerate from a model and lose detail (writePower turns \" into ', writeBias drops a signed edge's label); set-value at an address keeps every other byte; the canvas's Alt+up and down reorder is move among siblings"
+  theory: ~"../../../docs/theory/spw/swap-grace.spw"
+  home: ~"../../../.agents/plans/line-kit/wip.spw"
+ }
+
+ facts_index: .{
+  layer: "lsp, cli"
+  says: "one index over the parse keyed by address: anchors, labels, keys, citations with fragment and kind, annotations, questions, wonder ids, and expect and probe pairs. Every labeled operation is a frame in it, as the outline already treats them, where today only ^ is; references on an anchor return the citations that name it, through the reference graph's inboundCitationsFor, which the lenses already use; the CLI outline reads it, where skimOutline keeps its own regex"
+  answers: "the site consumer's facts-module ask (architecture.spw 42 to 58); symbols, highlights, lenses and the outline agreeing on what a frame is"
+  home: ~"../../../.agents/plans/editor-reading-hierarchy/wip.spw"
+ }
+
+ mint: .{
+  layer: "cli, lsp, lint"
+  says: "spw mint <address of a block> reads the keys the block's children already carry, names their pattern (prefix, width, suffix), and returns the next unused one; completion offers it after ^entry[. Inference first: a written scheme on a block is proposed only if inference fails on a real block. A lint keyed_block names a duplicate key, a key outside its siblings' pattern, a child written after its block closes, and a reader whose pattern is narrower than the keys it reads"
+  answers: "finding ids_by_hand; a finding that keeps its id across runs when its slotHash matches the last run's, so the ledger copy stops drifting"
+  law: "labels are identity and ordinals are derived (local-numbering-vcs); mint never renumbers"
+  home: ~"../../../.agents/plans/local-numbering-vcs/wip.spw"
+ }
+
+ attachment_law: .{
+  layer: "language"
+  says: "everything written directly against an operator (a label, a capsule, a frame, a scope, a body, a valence word, an @ observer) attaches to that operation, for every sigil, in whatever order the writer puts it, with the body last; an @ reference keeps its sigil and takes a frame as an operation does. Two orders a writer would call the same read as the same tree, or the parser warns and names the order that does"
+  answers: "capsule_attachment_varies, reference_frame_asymmetry, bias_anchor_after_frame (=meme[pov]@boof{ pop } reads as two expressions and readBias returns null; =meme@boof[pov]{ pop } is one edge), bias_label_sign_order, and postfix_observer_detached, which waits on which side of @ looks"
+  table: "a commutation table generated from seed: which adjacent attachments commute and which change meaning; the editors' grammars, hovers and docs read it, the site consumer's ask to generate syntax from one operator table"
+  also: "warn on a doubled sigil and a number with two points (silent_acceptance); say so when ?<…>, #(…) or #<…> swallow the rest of a line (silent_swallow)"
+  receipt: "the same three-host receipt as 7b8e2250: surfaces read differently, worse, healed"
+  open: ~"../../../.agents/plans/interpretation-trials/interpretation-trials.spw#wonder_trial_attachment"
+ }
+
+ expect_check: .{
+  layer: "language reading, runtime"
+  says: "~#expect holds a sentence; the site consumer's dreamable-codebases cache proposes a comparison in its mode slot, ~#expect[count<=3], so a question, its guess and its probe can be checked while nobody watches. The workbench part is reading a comparison in a mode slot as a typed check, a measure name, an operator and a number, and running each check twice before trusting it"
+  answers: "the cache found 145 open wonders with a probe and no guess, and 17 of 100 checks that changed with nothing changed"
+  open: "whether a mode slot may hold a comparison at all is a register question (wonder_trial_register), and the owner's"
+  home: ~"../../../.agents/plans/inquiry-loop/wip.spw"
+  also_filed: "the site consumer files the same ask under inquiry_loop in its capabilities"
+ }
+}
+
+^["editors"]{
+ # What each editor gets if the proposals land, and the parity it keeps.
+ both: "the same verbs, the same names and the same grains, read from the LSP; a command table generated beside the operator table, so neither editor adds a verb the other lacks"
+ vscode_only_today: "the navigate quick-pick, the workspace and concepts views, the context strip, capture mode and the commit view; the context strip is where the grain and the address would show"
+ neovim_only_today: "a Lua resolver with no client, jump_to_anchor, create a missing target, a quickfix of unresolved refs; dead tree-sitter queries are already planned for removal"
+ neither_today: "motions, text objects, next or previous construct, change sigil, swap container, move block, selectionRange, executeCommand"
+}
+
+^["order"]{
+ # Each step is useful alone; later ones use earlier ones.
+ steps: ["rename_on_the_tree, a correction with fixtures", "one_walk and address, since every later step names its target by address", "grain, then motions and selection in both editors", "edit_verbs over addresses", "facts_index", "mint and keyed_block", "attachment_law, measured per host before it ships", "expect_check, once the register question is answered"]
+ owner: "binding_key_fragments in citation-navigation decides how far address reaches; the two new trial cards and wonder_trial_observer_postfix decide grain names and attachment"
+}

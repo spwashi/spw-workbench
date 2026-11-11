@@ -80,6 +80,7 @@
  >>[2026-10-26 12:29] observe — audit_surfaces evidence, 2026-10-26, headless Neovim 0.11.6 with the real server: the built-in client paints spw-lsp semantic tokens at priority 125 over syntax/spw.vim, so the per-sigil syntax groups show only where no token covers. vim.treesitter.language.inspect finds no spw parser, so queries/spw/*.scm never ran, though the README advertises them.
  >>[2026-10-26 12:29] observe — Navigation and learning gaps, read 2026-10-26: the only structural motions are [d and ]d; no text objects; no doc/, so :help spw finds nothing; 30 separate :Spw commands and no hub; folds come from syntax regex while the server serves foldingRange. The server outline is token-driven and hierarchical and names each symbol detail (frame, action, probe, anchor), so motions and frame text objects need no new server method.
  >>[2026-10-26 12:29] decide — Spw moves as Vim moves. Motions and frame text objects read textDocument/documentSymbol; expression and facet text objects read a new textDocument/selectionRange; :help is generated from the operator table and commands.lua. Lua still parses nothing.
+ >>[2026-11-11 15:51] observe — For ~[structural_motions], read 2026-11-11: the outline opens a symbol only at { (handlers/outline.ts 168), so motions read from documentSymbol would step over ?probes[ … ], !"first"[ … ] and other [ ]-only frames. The journal 2026-11-11-address-grain-edit proposes one grain ladder in seed (token, part, row, line, construct, block, surface) behind selectionRange and a custom spw/step that both editors and the two hosts' steppers read; open as wonder_trial_grain. Also read: :SpwWrapContainer reads vim.fn.mode() inside a user command and ignores opts.range (form.lua 25, commands.lua 223 to 227), so it likely wraps the word under the cursor, not the selection; not run.
 }
 
 ^["open"]{
@@ -123,7 +124,7 @@
  ~#files_hot: "extensions/neovim-spw/ftplugin/spw.vim, extensions/neovim-spw/lua/spw/commands.lua, extensions/neovim-spw/lua/spw/lsp.lua, packages/spw-lsp/src/stdio-server.ts"
  ~#next_commit: "drop_treesitter_queries"
  ~#open_count: "5"
- ~#last_stream: "2026-10-26 12:29"
+ ~#last_stream: "2026-11-11 15:51"
  ~#taste_debt: "Source-product transport for unsaved buffers and structural ranges must be earned once across clients; no Lua parser or hidden editor telemetry."
 }
 
