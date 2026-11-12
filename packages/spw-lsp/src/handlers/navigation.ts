@@ -6,6 +6,7 @@
  */
 
 import path from 'node:path'
+import { offsetToPosition } from '@spwashi/spw-seed'
 import { selectPathRefs, findPathRefAtPosition, type SpwSelectorHit } from '../spw-selector'
 import { anchorLineReader, type AnchorLineReader } from '../anchor-lines'
 import type {
@@ -16,6 +17,7 @@ import type {
 } from '../types'
 import { escapeRegex, fragmentOf, splitAnchor, stripAnchor } from '../helpers'
 import { commitRefLinks } from './commit-refs'
+import { markAt, markRenameEdits, offsetOf } from './mark-rename'
 import { proseHandleAt, proseHandles } from './prose-handles'
 import { sourceTokens } from './wonder'
 
@@ -342,20 +344,12 @@ export async function prepareRename(
 
     const line = source.split('\n')[pos.line] ?? ''
 
-    // 1. Annotation
-    const annotRe = /(?:~)?#(!|:|>)?([a-zA-Z_][a-zA-Z0-9_-]*)/g
-    let annotMatch: RegExpExecArray | null
-    while ((annotMatch = annotRe.exec(line)) !== null) {
-        const nameStart = annotMatch.index + annotMatch[0].length - annotMatch[2].length
-        const nameEnd = nameStart + annotMatch[2].length
-        if (pos.character < nameStart || pos.character >= nameEnd) continue
-
+    // 1. A mark (#tag, #>anchor, #:lens, #!focus, ~#annotation), read from tokens so a name in a string is not one
+    const mark = markAt(source, offsetOf(source, pos.line, pos.character))
+    if (mark) {
         return {
-            range: {
-                start: { line: pos.line, character: nameStart },
-                end: { line: pos.line, character: nameEnd },
-            },
-            placeholder: annotMatch[2],
+            range: { start: offsetToPosition(source, mark.start), end: offsetToPosition(source, mark.end) },
+            placeholder: mark.name,
         }
     }
 
@@ -420,40 +414,9 @@ export async function rename(params: RenameParams, deps: HandlerDeps): Promise<L
         changes[editUri].push({ range, newText: text })
     }
 
-    // 1. Annotation rename
-    const annotRe = /(?:~)?#(!|:|>)?([a-zA-Z_][a-zA-Z0-9_-]*)/g
-    let annotMatch: RegExpExecArray | null
-    while ((annotMatch = annotRe.exec(line)) !== null) {
-        const nameStart = annotMatch.index + annotMatch[0].length - annotMatch[2].length
-        const nameEnd = nameStart + annotMatch[2].length
-        if (pos.character < nameStart || pos.character >= nameEnd) continue
-
-        const oldName = annotMatch[2]
-        const files = await deps.getWorkspaceSpwFiles()
-        const annotPattern = new RegExp(`((?:~)?#(?:!|:|>)?)${escapeRegex(oldName)}\\b`, 'g')
-
-        await deps.mapWithConcurrency(files, 16, async (filePath: string) => {
-            const fileUri = deps.uriFromPath(filePath)
-            const fileText = await deps.getDocumentText(fileUri)
-            if (fileText === null || !fileText.includes(oldName)) return
-
-            const fileLines = fileText.split('\n')
-            for (let lineNo = 0; lineNo < fileLines.length; lineNo++) {
-                let m: RegExpExecArray | null
-                annotPattern.lastIndex = 0
-                while ((m = annotPattern.exec(fileLines[lineNo])) !== null) {
-                    const prefixLen = m[1].length
-                    const editStart = m.index + prefixLen
-                    addEdit(fileUri, {
-                        start: { line: lineNo, character: editStart },
-                        end: { line: lineNo, character: editStart + oldName.length },
-                    }, newName)
-                }
-            }
-        })
-
-        return { changes }
-    }
+    // 1. A mark: only marks of the same kind and name, never prose; an anchor re-aims the citations that reach its file
+    const mark = markAt(source, offsetOf(source, pos.line, pos.character))
+    if (mark) return { changes: await markRenameEdits(mark, newName, uri, deps) }
 
     // 2. @root rename
     const rootRe = /@([a-zA-Z_][a-zA-Z0-9_]*)/g

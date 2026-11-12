@@ -220,6 +220,85 @@ describe('rename', () => {
   })
 })
 
+// ── Rename by token: a mark renames only marks of its kind and name ──
+
+describe('rename by token', () => {
+  const at = (line: number, character: number, newName: string) =>
+    ({ textDocument: { uri: 'file:///test.spw' }, position: { line, character }, newName })
+  const editsIn = (result: { changes: Record<string, LspTextEdit[]> } | null, uri: string) =>
+    (result?.changes[uri] ?? []).map(e => [e.range.start.line, e.range.start.character, e.range.end.character, e.newText])
+
+  it('leaves a hyphenated name that starts with the old one', async () => {
+    const result = await rename(at(0, 2, 'bar'), makeDeps({ text: '#foo #foo-bar' }))
+    expect(editsIn(result, 'file:///test.spw')).toEqual([[0, 1, 4, 'bar']])
+  })
+
+  it('leaves the name inside a string and a comment', async () => {
+    const text = '#foo\nnote: "see #foo here"\n// #foo\n# a comment about #foo'
+    const result = await rename(at(0, 2, 'bar'), makeDeps({ text }))
+    expect(editsIn(result, 'file:///test.spw')).toEqual([[0, 1, 4, 'bar']])
+  })
+
+  it('renames only marks of the kind under the caret', async () => {
+    const text = '#>foo\n#:foo\n#!foo\n~#foo: 1\n#foo'
+    const anchor = await rename(at(0, 3, 'bar'), makeDeps({ text }))
+    expect(editsIn(anchor, 'file:///test.spw')).toEqual([[0, 2, 5, 'bar']])
+    const lens = await rename(at(1, 3, 'bar'), makeDeps({ text }))
+    expect(editsIn(lens, 'file:///test.spw')).toEqual([[1, 2, 5, 'bar']])
+    const mark = await rename(at(3, 3, 'bar'), makeDeps({ text }))
+    expect(editsIn(mark, 'file:///test.spw')).toEqual([[3, 2, 5, 'bar']])
+    const tag = await rename(at(4, 2, 'bar'), makeDeps({ text }))
+    expect(editsIn(tag, 'file:///test.spw')).toEqual([[4, 1, 4, 'bar']])
+  })
+
+  it('renames a lens across files, as a shared word', async () => {
+    const deps = makeDeps({ text: '#:layer #!pragmatics', files: { 'file:///other.spw': '#:layer\n#layer' } })
+    const result = await rename(at(0, 3, 'tier'), deps)
+    expect(editsIn(result, 'file:///test.spw')).toEqual([[0, 2, 7, 'tier']])
+    expect(editsIn(result, 'file:///other.spw')).toEqual([[0, 2, 7, 'tier']])
+  })
+
+  it('renames an anchor in its own file and re-aims the citations that reach that file', async () => {
+    const deps = makeDeps({
+      text: '#>foo',
+      files: {
+        'file:///other.spw': 'a: ~"test.spw#foo"\nb: ~"third.spw#foo"\nc: "test.spw#foo"',
+        'file:///third.spw': '#>foo',
+      },
+    })
+    deps.resolveReferencePath = async (hit: { target: string }) =>
+      // As the real resolver does, the fragment stays on the resolved path.
+      hit.target.startsWith('test.spw') ? '/test.spw#foo' : hit.target.startsWith('third.spw') ? '/third.spw#foo' : null
+    const result = await rename(at(0, 3, 'bar'), deps)
+    expect(editsIn(result, 'file:///test.spw')).toEqual([[0, 2, 5, 'bar']])
+    expect(editsIn(result, 'file:///other.spw')).toEqual([[0, 14, 17, 'bar']])
+    expect(editsIn(result, 'file:///third.spw')).toEqual([])
+  })
+
+  it('leaves a fragment written against a name', async () => {
+    const result = await rename(at(1, 2, 'bar'), makeDeps({ text: 'see @page#foo and file#foo\n#foo' }))
+    expect(editsIn(result, 'file:///test.spw')).toEqual([[1, 1, 4, 'bar']])
+  })
+
+  it('renames marks after a dropped brace or an unpaired apostrophe on an earlier line', async () => {
+    const dropped = await rename(at(2, 2, 'bar'), makeDeps({ text: '^x{ a: 1\n#foo\n#foo' }))
+    expect(editsIn(dropped, 'file:///test.spw')).toEqual([[1, 1, 4, 'bar'], [2, 1, 4, 'bar']])
+    const apostrophe = await rename(at(2, 2, 'bar'), makeDeps({ text: "~<rationale>{ the maker's hand }\n#foo\n#foo" }))
+    expect(editsIn(apostrophe, 'file:///test.spw')).toEqual([[1, 1, 4, 'bar'], [2, 1, 4, 'bar']])
+  })
+
+  it('leaves a plan stream entry as it was written', async () => {
+    const text = '#:layer\n >>[2026-10-12 21:02] observe — every header has #:layer #!pragmatics\n#:layer'
+    const result = await rename(at(0, 3, 'tier'), makeDeps({ text }))
+    expect(editsIn(result, 'file:///test.spw')).toEqual([[0, 2, 7, 'tier'], [2, 2, 7, 'tier']])
+  })
+
+  it('offers no rename for a name inside a string', async () => {
+    const result = await prepareRename(params(0, 12), makeDeps({ text: 'note: "see #foo here"' }))
+    expect(result).toBeNull()
+  })
+})
+
 // ── References ─────────────────────────────────────────────────
 
 describe('references', () => {

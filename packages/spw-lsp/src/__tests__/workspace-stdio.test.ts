@@ -280,9 +280,14 @@ describe('workspace stdio integration', () => {
   }, 15_000)
 })
 
-async function startServer(capabilities: unknown): Promise<{ client: TestLspClient; tempRoot: string }> {
+async function startServer(capabilities: unknown, files: Record<string, string> = {}): Promise<{ client: TestLspClient; tempRoot: string }> {
   // The real path, so the server's root and the document uris name files alike.
   const tempRoot = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'spw-lsp-watch-')))
+  // Written before the server starts, so its first workspace scan sees them.
+  for (const [rel, text] of Object.entries(files)) {
+    await fs.mkdir(path.dirname(path.join(tempRoot, rel)), { recursive: true })
+    await fs.writeFile(path.join(tempRoot, rel), text)
+  }
   const bundledServer = path.join(tempRoot, 'spw-lsp.mjs')
   await build({
     entryPoints: [path.join(process.cwd(), 'packages', 'spw-lsp', 'src', 'stdio-server.ts')],
@@ -406,3 +411,32 @@ async function waitForSymbols(
   }
   return []
 }
+
+describe('mark rename over stdio', () => {
+  it('renames an anchor in its file and re-aims the citations the real resolver sends there', async () => {
+    const { client, tempRoot } = await startServer({}, {
+      'doc.spw': '#>intro\n',
+      'other.spw': '#>intro\n',
+      'a.spw': 'here: ~"./doc.spw#intro"\nthere: ~"./other.spw#intro"\n',
+      'sub/b.spw': 'up: ~"../doc.spw#intro"\nroot: ~"/doc.spw#intro"\n',
+    })
+    try {
+      const uri = pathToFileURL(path.join(tempRoot, 'doc.spw')).toString()
+      client.notify('textDocument/didOpen', { textDocument: { uri, languageId: 'spw', version: 1, text: '#>intro\n' } })
+
+      const response = await client.request('textDocument/rename', { textDocument: { uri }, position: { line: 0, character: 3 }, newName: 'opening' })
+      expect(response.error).toBeUndefined()
+      const changes = (response.result as { changes: Record<string, Array<{ range: { start: { line: number; character: number } } }>> }).changes
+      const at = (file: string) => (changes[pathToFileURL(path.join(tempRoot, file)).toString()] ?? [])
+        .map((edit) => `${edit.range.start.line}:${edit.range.start.character}`).sort()
+      expect(at('doc.spw')).toEqual(['0:2'])
+      expect(at('a.spw')).toEqual(['0:18'])
+      expect(at(path.join('sub', 'b.spw'))).toEqual(['0:17', '1:17'])
+      expect(at('other.spw')).toEqual([])
+    } finally {
+      await client.close()
+      activeClient = null
+      await fs.rm(tempRoot, { recursive: true, force: true })
+    }
+  }, 30_000)
+})
