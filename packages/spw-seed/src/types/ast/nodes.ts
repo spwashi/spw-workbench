@@ -105,6 +105,8 @@ export interface SequenceNode extends ASTNode {
   expressions: ExpressionNode[]
   /** Written separator marks, positionally aligned to the gaps between steps. */
   separators?: (Token<'COMMA'> | Token<'ARROW'> | Token<'CONNECTOR'> | undefined)[]
+  /** A separator written after the last step (`{ a, b, }`); it joins nothing. */
+  trailing?: Token<'COMMA'> | Token<'ARROW'> | Token<'CONNECTOR'>
 }
 
 // ============================================================================
@@ -239,6 +241,15 @@ export interface FrameNode extends ASTNode {
   openLabel?: Token<'IDENTIFIER'>
   closeLabel?: Token<'IDENTIFIER'>
   content: (PatternNode | ParameterNode | ConditionNode)[]
+  /**
+   * Written separators between items, aligned to the gaps as on a Sequence:
+   * `separators[i]` sits between `content[i]` and `content[i + 1]`, undefined
+   * where the items were juxtaposed, so `#[a ; b]`, `#[a, b]` and `#[a b]` keep
+   * what was written.
+   */
+  separators?: (Token<'COMMA'> | Token<'CONNECTOR'> | undefined)[]
+  /** A separator written after the last item (`[a, b,]`); it joins nothing. */
+  trailing?: Token<'COMMA'> | Token<'CONNECTOR'>
 }
 
 export interface BodyNode extends ASTNode {

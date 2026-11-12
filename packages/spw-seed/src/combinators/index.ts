@@ -38,7 +38,8 @@ export { token, tokenOneOf, literal } from './primitives'
 export { sequence, choice, many, many1, optional } from './composition'
 
 // Re-export transform combinators
-export { map, sepBy, sepByOptional, between } from './transform'
+export { map, sepBy, sepByOptional, sepByOptionalKept, between } from './transform'
+export type { KeptSeparation } from './transform'
 
 // Re-export utilities
 export { lazy, named, skipWhitespace, lexeme } from './utilities'

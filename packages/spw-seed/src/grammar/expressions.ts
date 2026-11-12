@@ -1216,8 +1216,9 @@ export const sequenceImpl: Parser<SequenceNode> = named('sequence',
       }
     }
 
-    // separators[i] describes the gap after expressions[i]; the trailing gap is
-    // only meaningful when another step followed it.
+    // separators[i] describes the gap after expressions[i]; a separator after
+    // the last step joins nothing and is kept apart as trailing.
+    const trailing = separators[expressions.length - 1]
     separators.length = Math.max(0, expressions.length - 1)
 
     const endPos = getPosition(stream)
@@ -1226,6 +1227,7 @@ export const sequenceImpl: Parser<SequenceNode> = named('sequence',
       span: { start: startPos, end: endPos },
       expressions,
       separators,
+      ...(trailing ? { trailing } : {}),
     }
 
     return { success: true, value: node, consumed }

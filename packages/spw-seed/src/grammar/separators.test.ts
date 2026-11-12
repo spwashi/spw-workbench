@@ -147,6 +147,27 @@ describe('schedule separators (; sequential, || parallel)', () => {
     expect(frame).not.toBeNull()
     expect(frame.content).toHaveLength(3)
   })
+
+  it('keeps what separates a frame\'s items, as a sequence does', () => {
+    const marks = (source: string) =>
+      (findNode(topSequence(source), 'Frame') as any).separators.map((s: any) => s?.value)
+    expect(marks('#[a ; b ; c]')).toEqual([';', ';'])
+    expect(marks('#[a, b, c]')).toEqual([',', ','])
+    expect(marks('#[a b c]')).toEqual([undefined, undefined])
+    expect(marks('#[a, b c || d]')).toEqual([',', undefined, '||'])
+  })
+
+  it('keeps a trailing separator apart from the gaps', () => {
+    const frame: any = findNode(topSequence('#[a, b,]'), 'Frame')
+    expect(frame.content).toHaveLength(2)
+    expect(frame.separators.map((s: any) => s?.value)).toEqual([','])
+    expect(frame.trailing?.value).toBe(',')
+    expect((findNode(topSequence('#[a, b]'), 'Frame') as any).trailing).toBeUndefined()
+
+    const body: any = findNode(topSequence('anchor { a, b, }'), 'Body')
+    expect(body.sequence.separators.map((s: any) => s?.value)).toEqual([','])
+    expect(body.sequence.trailing?.value).toBe(',')
+  })
 })
 
 describe('capsule interiors', () => {

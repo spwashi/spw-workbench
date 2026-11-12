@@ -155,7 +155,31 @@ export function sepByOptional<T, S>(
   item: Parser<T>,
   separator: Parser<S>
 ): Parser<T[]> {
+  const kept = sepByOptionalKept(item, separator)
   return function* sepByOptionalParser(stream, depth): Generator<ParseEvent, ParseResult<T[]>, void> {
+    const result = yield* kept(stream, depth)
+    return result.success
+      ? { success: true, value: result.value!.items, consumed: result.consumed }
+      : { success: false, consumed: result.consumed, error: result.error }
+  }
+}
+
+/**
+ * Items and the separators written after them, as {@link sepByOptional} reads
+ * them: `separators[i]` is the separator written after `items[i]`, or
+ * undefined where the next item was juxtaposed, so the last entry is a
+ * trailing separator when one was written (`[a, b,]`).
+ */
+export interface KeptSeparation<T, S> {
+  items: T[]
+  separators: (S | undefined)[]
+}
+
+export function sepByOptionalKept<T, S>(
+  item: Parser<T>,
+  separator: Parser<S>
+): Parser<KeptSeparation<T, S>> {
+  return function* sepByOptionalKeptParser(stream, depth): Generator<ParseEvent, ParseResult<KeptSeparation<T, S>>, void> {
     const pos = getPosition(stream)
 
     yield {
@@ -168,6 +192,7 @@ export function sepByOptional<T, S>(
     }
 
     const results: T[] = []
+    const separators: (S | undefined)[] = []
     let totalConsumed = 0
 
     while (!isAtEnd(stream)) {
@@ -202,8 +227,10 @@ export function sepByOptional<T, S>(
       if (sepStep.value.success) {
         unmark(stream)
         totalConsumed += sepStep.value.consumed
+        separators.push(sepStep.value.value!)
       } else {
         reset(stream)
+        separators.push(undefined)
       }
     }
 
@@ -216,7 +243,7 @@ export function sepByOptional<T, S>(
       depth,
     }
 
-    return { success: true, value: results, consumed: totalConsumed }
+    return { success: true, value: { items: results, separators }, consumed: totalConsumed }
   }
 }
 

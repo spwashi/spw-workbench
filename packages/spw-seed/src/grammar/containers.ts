@@ -26,7 +26,8 @@ import {
   current,
   skipWhitespace,
   choice,
-  sepByOptional,
+  sepByOptionalKept,
+  type KeptSeparation,
   named,
 } from '../combinators'
 import {
@@ -63,8 +64,11 @@ import { sequenceNode, expressionNode, operationNode, scheduleSeparator } from '
  * prose. `,` and the `;` / `||` schedule pair all separate — `#[a ; b ; c]`
  * reads as three arms, the same list `<< a ; b ; c >>` yields as steps.
  */
-const frameContent: Parser<(LiteralNode | ReferenceNode | ParameterNode | OperationNode)[]> = named('frameContent',
-  sepByOptional(
+type FrameItem = LiteralNode | ReferenceNode | ParameterNode | OperationNode
+type FrameSeparator = Token<'COMMA'> | Token<'CONNECTOR'>
+
+const frameContent: Parser<KeptSeparation<FrameItem, FrameSeparator>> = named('frameContent',
+  sepByOptionalKept(
     choice<LiteralNode | ReferenceNode | ParameterNode | OperationNode>(
       parameterNode,
       referenceNode,
@@ -108,7 +112,11 @@ export const frameNode: Parser<FrameNode> = named('frame',
     }
     stream.proseGround = outerGround
 
-    const content = contentStep.value.success ? contentStep.value.value! : []
+    const kept = contentStep.value.success ? contentStep.value.value! : { items: [], separators: [] }
+    const content = kept.items
+    // separators[i] sits after content[i]; the last one, when written, joins nothing.
+    const trailing = kept.separators[content.length - 1]
+    const separators = kept.separators.slice(0, Math.max(0, content.length - 1))
     consumed += contentStep.value.consumed
 
     // Closing bracket
@@ -131,6 +139,8 @@ export const frameNode: Parser<FrameNode> = named('frame',
       type: 'Frame',
       span: { start: startPos, end: endPos },
       content,
+      separators,
+      ...(trailing ? { trailing } : {}),
     }
 
     return { success: true, value: node, consumed }
