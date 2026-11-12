@@ -894,6 +894,10 @@ export type {
   RhymeHole,
   RhymeInstance,
   RhymeOptions,
+  SurfaceReadings,
+  ReadingsSnapshot,
+  DriftStatus,
+  SurfaceDrift,
 } from './experimental'
 export {
   SYNTAX_CATALOG,
@@ -915,6 +919,12 @@ export {
   LIKENESS_RUNGS,
   likeness,
   findRhymes,
+  READINGS_SCHEMA,
+  compareReadings,
+  driftedLines,
+  nodeReading,
+  readingsOf,
+  readingsOfColumns,
 } from './experimental'
 
 // Query (spw.q dialect)

@@ -292,7 +292,7 @@ export const COMMANDS: CommandSpec[] = [
     name: 'fingerprint',
     aliases: ['fp'],
     group: 'collate',
-    summary: 'Count AST node types for one expression or surface',
+    summary: 'Count AST node types for a surface, or keep how every line reads and list what a grammar change moved',
     printHelp: () => printFingerprintHelp(),
     run: (_invoked, args) => runSpwFingerprintCli(['fingerprint', ...args]),
   },

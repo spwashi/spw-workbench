@@ -6,11 +6,11 @@
 #:layer #!syntax
 
 !["card"]{
- phase: #seed
+ phase: #active
  gist: "Before a grammar change lands, it lists every line whose reading changes, here and in any corpus named by path"
- touches: [~"packages/spw-seed/src/instrumentation", ~"packages/spw-cli/src/fingerprint.ts", ~"scripts/release/build-parser-release.ts"]
+ touches: [~"packages/spw-seed/src/experimental/readings.ts", ~"packages/spw-cli/src/fingerprint-readings.ts", ~"packages/spw-cli/src/fingerprint.ts", ~"scripts/release/build-parser-release.ts"]
  entry: ~"./PLAN.md"
- next: "~[line_reading_fingerprint]: a failing test that one<tag> then two on the next line and the same two lines apart give different fingerprints, and that spw format output gives the same one."
+ next: "Before a plan that waits on this gate uses it, the reading must see what that plan changes: a slot column for brace-slot-reading (readings carry kind, structure, word, parent and previous sibling, not which slot a brace pair fills), and a check that dialect-resolved plan streams read as plan-stream-parse-health means. Then ~[grammar_receipt], then ~[release_readings] with parser-releases."
 }
 
 ^["edges"]{
@@ -33,9 +33,7 @@
 
 ^["open"]{
  # Unresolved questions. When resolved: log in stream, then move to ^["done"] as ~#resolved(label).
- ?[fingerprint_grain]: "Is a line's reading the top expression that starts on it, or every node whose span starts on it? The first is stable to read; the second catches a slot that moved inside a body."
- ?[verb_home]: "spw readings as its own verb, or --readings on fingerprint, which already counts node types per surface?"
- ?[snapshot_home]: "Where does a corpus snapshot live: the scratch of the run that takes it, .spw/gen here, or beside the consumer's own generated files?"
+ ?[reading_noun]: "Does the gate keep the word readings? Seed already has LineReading and SlotReading for a line's slots, and spw readings is an alias of spw lattice for appositions; this is a third use, in a schema name (spw.readings/1) and a flag (--readings) that are cheap to rename only before they land."
 }
 
 ^["commits"]{
@@ -53,17 +51,26 @@
  >>[2026-11-06 17:24] decide — A plan of its own: it gates every grammar change in brace-slot-reading, plan-stream-parse-health and syntax-hardware-alignment, and gives parser-releases the artifact spw.quest's two-release specimen view waits on.
  >>[2026-11-06 20:20] observe — The consumer checked its mount move from 850077ab to 27fa1e3d by hand, the way readings_check should: every one of its 990 route expressions read as before and its rebuilt expression manifest was byte-identical (its b03e1544). readings_check should answer the same question from the same inputs, a mount revision and a corpus path, so the consumer can stop rebuilding its manifest to learn whether a move changed a reading.
  >>[2026-11-08 09:47] observe — Corpora for corpus_by_path, 2026-11-08: a second mounted consumer (59 surfaces, 22 read as prose), the site consumer (447 .spw outside gen, 18; plans 388, 4) and factshift.center (18, 0). Both consumers' reviews ask that the language change only when a fixture from use fails first. host-receipts composes readings_check with a degradation census and reader agreement into one receipt per host.
+ >>[2026-11-11 23:46] decide — fingerprint_grain resolved: a line's reading is every node whose span starts on it, each read locally (its kind, the structure it writes, its word; its parent's; the sibling before it's), so a change deep in a body is reported on its own line and not on every enclosing one, and a node that moves to another parent reports its line and the line of the node that followed it. Separators, trailing separators, spacing and comments are spelling and leave a reading alone; positions are left out, so reindenting keeps it. This replaces the commits list's slots-in-order and spanned-lines wording.
+ >>[2026-11-11 23:46] decide — verb_home resolved: spw fingerprint --readings, the card's second option. spw readings is already an alias of spw lattice (apposition readings), and form's geometry.ts is at 590 of 600 lines and is a measure verb. snapshot_home resolved: the file --write names, holding only line fingerprints, a text hash per surface and keys relative to the path a corpus was named by, never source text or an absolute path. A surface whose text hash differs is reported as text changed and not compared.
+ >>[2026-11-11 23:47] observe — The gate rests on seed's experimental parse columns (readings.ts beside parse-columns.ts), so it moves when they leave experimental/. Found while testing: a line-final <tag> takes the next line's head even across a blank line (one<tag>, a blank line, two reads two into the capsule).
+ >>[2026-11-12 00:04] verify — line_reading_fingerprint, readings_snapshot, readings_check and corpus_by_path, uncommitted: 9 seed and 6 CLI tests. One text under two parser builds, from throwaway worktrees, expectations written before running: the build before 179f4c29 (frame separators kept, additive) shows 0 drifted lines over 304 surfaces here (plans, surfaces, runtime docs) and 0 over the story consumer's 100, as expected; the build before 7b8e2250 (named ? and # blocks read across lines) shows 0 here, since this repo never writes a multi-line ?"name"[ or #"name"{ block, and 4 surfaces and 74 lines on the story consumer's, all four read as prose before and whole after. On 7b8e2250's own test inputs the old build drifts on every line of the block. Seed 1,094 pass; tsc clean.
+ >>[2026-11-12 00:11] observe — What the gate does not see yet: which slot a brace pair fills (the columns carry no slot column), so brace-slot-reading cannot rest on it until one is added; and separators by design, so a change that only turns ; into , reads as no drift, though this repo writes ; inside sets on purpose. Each surface is read with its path, as the CLI's profile and inspect reads are, so the dialect a path selects applies. readings_check left out three things the commits list asked for: --expect, the old and new reading of a line, and counts by kind. Two corpora named by folders of one name would share keys, so a run refuses a duplicate key.
+ >>[2026-11-12 09:19] observe — The canvas host draws a body by its separator (a comma a ring, a semicolon a row, a dot a tight chain, ~> a rising path; its line-anatomy.ts, read 2026-11-12), so on that host a separator change is a reading change, and this gate, which leaves separators out as spelling, would report none. The exclusion fits a corpus of surfaces and not a host of lines; an option that keeps separators in the reading would let one gate serve both, and wonder_trial_gap holds the meaning. ?[reading_noun] is opened: readings is a third use of the word beside seed's LineReading and SlotReading and spw lattice's readings alias, asked of the owner on 2026-11-12 and not yet answered.
 }
 
 ^["cache"]{
- ~#status: "seed"
+ ~#status: "active"
  ~#base_ref: "main@dbd138dd"
  ~#rebased_at: ""
- ~#files_hot: "packages/spw-seed/src/instrumentation, packages/spw-cli/src/fingerprint.ts"
+ ~#files_hot: "packages/spw-seed/src/experimental/readings.ts, packages/spw-cli/src/fingerprint-readings.ts"
  ~#next_commit: "line_reading_fingerprint"
- ~#open_count: "3"
- ~#last_stream: "2026-11-08 09:47"
+ ~#open_count: "1"
+ ~#last_stream: "2026-11-12 09:19"
 }
 
 ^["done"]{
+ ~#resolved(fingerprint_grain): "every node whose span starts on the line, read locally: its own identity, its parent's and the previous sibling's (stream 2026-11-11 23:46)"
+ ~#resolved(verb_home): "spw fingerprint --readings; spw readings is lattice's alias (stream 2026-11-11 23:46)"
+ ~#resolved(snapshot_home): "the file --write names, fingerprints and text hashes only (stream 2026-11-11 23:46)"
 }

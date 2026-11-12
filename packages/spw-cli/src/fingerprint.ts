@@ -6,6 +6,7 @@ import { promises as fs } from 'node:fs'
 import process from 'node:process'
 import { fingerprintSource, type FormFingerprint } from '@spwashi/spw-seed'
 import { formatJsonEnvelope } from './envelope'
+import { READINGS_HELP_GROUPS, runFingerprintReadings } from './fingerprint-readings'
 import { printHelpPage } from './help'
 import { meta } from './view'
 import { resolveCliInput } from './workspace'
@@ -48,11 +49,12 @@ function parseArgs(argv: string[]): FingerprintArgs {
 export function printFingerprintHelp(): void {
   printHelpPage({
     name: 'fingerprint',
-    summary: 'Count AST node types for one expression or surface',
+    summary: 'Count AST node types for one expression or surface, or keep how every line reads',
     usage: [
       'spw fingerprint <file.spw> [--json]',
       'spw fingerprint --expr \'noun[mode]{parts}<scene>\'',
       'cat surface.spw | spw fingerprint --stdin',
+      'spw fingerprint --readings <paths…> [--write FILE | --check FILE] [--json]',
     ],
     groups: [
       {
@@ -63,6 +65,7 @@ export function printFingerprintHelp(): void {
           '--json            Envelope with byType, signature, completeness',
         ],
       },
+      ...READINGS_HELP_GROUPS,
       {
         title: 'Notes',
         lines: [
@@ -74,6 +77,8 @@ export function printFingerprintHelp(): void {
     examples: [
       'spw fingerprint --expr \'cauldron[garden]{sow ~> tend ~> harvest}\'',
       'spw fingerprint docs/examples/spw/form-sequence.spw --json',
+      'spw fingerprint --readings .agents/plans --write /tmp/plans.readings.json --label main',
+      'spw fingerprint --readings .agents/plans --check /tmp/plans.readings.json',
     ],
   })
 }
@@ -96,6 +101,11 @@ function printHuman(fp: FormFingerprint): void {
 }
 
 export async function runSpwFingerprintCli(argv: string[]): Promise<void> {
+  const rest = argv[0] === 'fingerprint' || argv[0] === 'fp' ? argv.slice(1) : argv
+  if (rest.includes('--readings') && !rest.includes('--help') && !rest.includes('-h')) {
+    await runFingerprintReadings(rest)
+    return
+  }
   let args: FingerprintArgs
   try {
     args = parseArgs(argv)

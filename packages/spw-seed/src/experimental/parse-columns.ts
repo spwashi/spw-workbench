@@ -319,9 +319,9 @@ function bandsOf(depth: Uint16Array, maxDepth: number): ColumnBands {
   return { order, offsets }
 }
 
-/** Parse a surface into columns, or null when the parser returns no tree. */
-export function parseColumns(source: string): ParseColumns | null {
-  const output = parse(source)
+/** Parse a surface into columns, or null when the parser returns no tree. A path lets the parser pick the surface's profile, as the CLI's reads do. */
+export function parseColumns(source: string, options: { path?: string } = {}): ParseColumns | null {
+  const output = options.path ? parse(source, { path: options.path }) : parse(source)
   const ast = output.ast as ASTNode | undefined
   if (!ast) return null
   return columnsOfAst(ast, {
