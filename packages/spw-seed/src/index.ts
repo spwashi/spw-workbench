@@ -883,6 +883,17 @@ export type {
   SyntaxCatalogEntry,
   ScannedExpRef,
   ExperimentalScan,
+  ColumnBands,
+  ColumnName,
+  ColumnsReceipt,
+  ParseColumns,
+  ParseColumnsJson,
+  LikenessRung,
+  RhymeSurface,
+  Rhyme,
+  RhymeHole,
+  RhymeInstance,
+  RhymeOptions,
 } from './experimental'
 export {
   SYNTAX_CATALOG,
@@ -891,6 +902,19 @@ export {
   formatCatalogEntryMarkdown,
   scanExperimentalRefs,
   resolveCitedCatalogEntries,
+  COLUMN_KINDS,
+  COLUMN_NAMES,
+  PARSE_COLUMNS_SCHEMA,
+  childRows,
+  columnsFromJson,
+  columnsOfAst,
+  columnsToJson,
+  parseColumns,
+  reduceUp,
+  wordUnit,
+  LIKENESS_RUNGS,
+  likeness,
+  findRhymes,
 } from './experimental'
 
 // Query (spw.q dialect)

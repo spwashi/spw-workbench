@@ -217,7 +217,7 @@ export const COMMANDS: CommandSpec[] = [
     name: 'form',
     aliases: ['geometry', 'geom'],
     group: 'collate',
-    summary: 'Measure braces, operators, resonance, and fields in source form',
+    summary: 'Measure braces, operators, resonance, fields, and repeated shapes in source form',
     printHelp: () => printGeometryHelp(),
     run: (invoked, args) => runSpwGeometryCli(argv(invoked, args)),
   },

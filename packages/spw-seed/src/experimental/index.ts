@@ -12,3 +12,27 @@ export {
 
 export type { ScannedExpRef, ExperimentalScan } from './scan-refs'
 export { scanExperimentalRefs, resolveCitedCatalogEntries } from './scan-refs'
+
+export type {
+  ColumnBands,
+  ColumnName,
+  ColumnsReceipt,
+  ParseColumns,
+  ParseColumnsJson,
+} from './parse-columns'
+export {
+  COLUMN_KINDS,
+  COLUMN_NAMES,
+  PARSE_COLUMNS_SCHEMA,
+  childRows,
+  columnsFromJson,
+  columnsOfAst,
+  columnsToJson,
+  parseColumns,
+  reduceUp,
+  wordUnit,
+} from './parse-columns'
+export type { LikenessRung } from './likeness'
+export { LIKENESS_RUNGS, likeness } from './likeness'
+export type { RhymeSurface, Rhyme, RhymeHole, RhymeInstance, RhymeOptions } from './rhymes'
+export { findRhymes } from './rhymes'

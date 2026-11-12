@@ -29,6 +29,7 @@ import {
   type GeometryReport,
 } from '@spwashi/spw-seed'
 import { formatJsonEnvelope } from './envelope'
+import { runFormColumnModes } from './form-columns'
 import { AUTHORED_DOT_DIRS } from './fs-walk'
 import { printHelpPage } from './help'
 import { emitDetail, emitHeader, emitNext, formatTable, meta } from './view'
@@ -61,6 +62,12 @@ interface GeomArgs {
    * without full resonance (cheap multi-file triage).
    */
   staticOnly: boolean
+  /** --columns, --rhymes and their flags: see form-columns.ts. */
+  columns: boolean
+  rhymes: boolean
+  min: number
+  sigil?: string
+  limitGiven: boolean
 }
 
 function parseArgs(argv: string[]): GeomArgs {
@@ -79,6 +86,10 @@ function parseArgs(argv: string[]): GeomArgs {
     limit: 48,
     maxFiles: 200,
     staticOnly: false,
+    columns: false,
+    rhymes: false,
+    min: 6,
+    limitGiven: false,
   }
   for (let i = 0; i < args.length; i++) {
     const a = args[i]!
@@ -110,6 +121,18 @@ function parseArgs(argv: string[]): GeomArgs {
       parsed.resonance = true
       continue
     }
+    if (a === '--columns' || a === '--rhymes') {
+      parsed[a === '--columns' ? 'columns' : 'rhymes'] = true
+      continue
+    }
+    if (a === '--min') {
+      parsed.min = Math.max(2, Number(args[++i] ?? 6) || 6)
+      continue
+    }
+    if (a === '--sigil') {
+      parsed.sigil = args[++i] ?? ''
+      continue
+    }
     if (a === '--field') {
       parsed.field = true
       parsed.fieldOnly = true
@@ -133,10 +156,12 @@ function parseArgs(argv: string[]): GeomArgs {
     }
     if (a === '--limit' || a === '-n') {
       parsed.limit = Math.max(1, Number(args[++i] ?? 48) || 48)
+      parsed.limitGiven = true
       continue
     }
     if (a.startsWith('--limit=')) {
       parsed.limit = Math.max(1, Number(a.slice('--limit='.length)) || 48)
+      parsed.limitGiven = true
       continue
     }
     if (a === '--max-files') {
@@ -171,6 +196,8 @@ export function printGeometryHelp(): void {
       'spw form prompts --resonance --scheme agent --spw',
       'spw form docs prompts --field --theme probe --spw',
       'cat surface.spw | spw form --stdin --resonance --spw',
+      'spw form <file.spw> --columns [--json]',
+      'spw form <paths> --rhymes [--min N] [--limit N] [--sigil ?] [--json]',
     ],
     sections: [
       {
@@ -189,6 +216,8 @@ export function printGeometryHelp(): void {
           '(default)     full form card per surface',
           '--resonance   bytecode + weighted geometric resonances',
           '--field       aggregate workspace field strands',
+          '--columns     one surface\'s parse columns: bands, or spw.parse-columns/1 with --json (experimental)',
+          '--rhymes      subtrees alike in shape, not content: templates with holes, and refrains (experimental)',
         ],
       },
       {
@@ -201,6 +230,8 @@ export function printGeometryHelp(): void {
           '--theme TOKEN                    filter field by role/type',
           '--limit N                        resonance / strand / static row cap',
           '--max-files N                    directory walk cap (default 200)',
+          '--min N                          --rhymes: smallest shape counted, in nodes (default 6)',
+          '--sigil S                        --rhymes: only shapes that open with S (? for wonders)',
           '--stdin                          read source from stdin',
           '--spw | --json | --ndjson        output form; prefer source-shaped Spw cards',
         ],
@@ -365,6 +396,11 @@ export async function runSpwGeometryCli(argv: string[] = process.argv): Promise<
   if (!sources.length) {
     console.error('spw form: no .spw surfaces found')
     process.exitCode = 1
+    return
+  }
+
+  if (args.columns || args.rhymes) {
+    process.exitCode = runFormColumnModes(sources, { ...args, capped: sources.length >= args.maxFiles }) || process.exitCode
     return
   }
 
