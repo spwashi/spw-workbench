@@ -3,6 +3,7 @@ import { findCommand, knownCommands, printRootHelp } from './commands'
 import { setExitCode } from './exit'
 import { loadLocOverrides } from './loc'
 import { helpLoc } from './help'
+import { printRootHelpJson } from './help-json'
 import { suggestClosest } from './view'
 
 export async function runSpwCli(argv: string[]): Promise<void> {
@@ -11,7 +12,8 @@ export async function runSpwCli(argv: string[]): Promise<void> {
   const common = parseCommonFlags(rawArgs)
 
   if (command === 'help' || command === '--help' || command === '-h') {
-    printRootHelp()
+    if (common.flags.json) printRootHelpJson()
+    else printRootHelp()
     return
   }
 
