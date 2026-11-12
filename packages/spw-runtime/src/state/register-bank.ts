@@ -12,12 +12,11 @@ import type {
   RegisterSnapshot,
   RegisterWriteOptions,
   RuntimeValence,
-  RuntimePacket,
-  RuntimeRecord,
   RuntimeValue,
   ScopeFrame,
 } from './types'
 import { LIMINALITY_ORDER, PHASE_ORDER, normalizeRegisterPhase } from './types'
+import { cloneRuntimeValue, isRuntimeRecord, mergeRuntimeValues, nowIso, runtimeMagnitude } from './runtime-value'
 import { $register } from '@spwashi/spw-seed'
 import {
   planEviction,
@@ -31,90 +30,6 @@ import {
 const DEFAULT_FOCUS_KEY = '"'
 const HISTORY_KEYS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] as const
 
-function nowIso(): string {
-  return new Date().toISOString()
-}
-
-function isRuntimePacket(value: RuntimeValue): value is RuntimePacket {
-  return typeof value === 'object' && value !== null && 'kind' in value
-}
-
-function isScopeFrame(value: RuntimeValue): value is ScopeFrame {
-  return typeof value === 'object' && value !== null && 'observer' in value && 'capturedAt' in value
-}
-
-function isRuntimeRecord(value: RuntimeValue): value is RuntimeRecord {
-  return typeof value === 'object' && value !== null && !Array.isArray(value) && !isRuntimePacket(value) && !isScopeFrame(value)
-}
-
-function cloneRuntimeValue(value: RuntimeValue): RuntimeValue {
-  if (value === undefined || value === null) return value
-  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return value
-
-  if (Array.isArray(value)) {
-    return value.map(item => cloneRuntimeValue(item))
-  }
-
-  if (isScopeFrame(value)) {
-    return {
-      observer: value.observer,
-      capturedAt: value.capturedAt,
-      value: cloneRuntimeValue(value.value),
-    }
-  }
-
-  if (isRuntimePacket(value)) {
-    return {
-      ...value,
-      payload: cloneRuntimeValue(value.payload),
-      tags: value.tags ? [...value.tags] : undefined,
-    }
-  }
-
-  const copy: RuntimeRecord = {}
-  for (const [key, item] of Object.entries(value)) {
-    copy[key] = cloneRuntimeValue(item)
-  }
-  return copy
-}
-
-function cloneValence(valence: RuntimeValence[] | undefined): RuntimeValence[] {
-  return valence ? [...valence] : []
-}
-
-function mergeRuntimeValues(left: RuntimeValue, right: RuntimeValue): RuntimeValue {
-  if (right === undefined) return cloneRuntimeValue(left)
-  if (left === undefined) return cloneRuntimeValue(right)
-
-  if (Array.isArray(left) && Array.isArray(right)) {
-    return [...left.map(cloneRuntimeValue), ...right.map(cloneRuntimeValue)]
-  }
-
-  if (isRuntimeRecord(left) && isRuntimeRecord(right)) {
-    const merged: RuntimeRecord = { ...left }
-    for (const [key, value] of Object.entries(right)) {
-      merged[key] = cloneRuntimeValue(value)
-    }
-    return merged
-  }
-
-  return cloneRuntimeValue(right)
-}
-
-function runtimeMagnitude(value: RuntimeValue): number {
-  /**
-   * @spw:axis[representation=4] - Absolute magnitude as weighted resolution.
-   */
-  if (value === undefined || value === null) return 0
-  if (typeof value === 'number') return Math.abs(value)
-  if (typeof value === 'string') return value.length
-  if (typeof value === 'boolean') return value ? 1 : 0
-  if (Array.isArray(value)) return value.length
-  if (isScopeFrame(value)) return runtimeMagnitude(value.value)
-  if (isRuntimePacket(value)) return runtimeMagnitude(value.payload)
-  return Object.keys(value).length
-}
-
 function clamp01(value: number): number {
   /**
    * @spw:axis[quality=bone] - Normalization clamp for structural stability.
@@ -123,6 +38,10 @@ function clamp01(value: number): number {
   if (value < 0) return 0
   if (value > 1) return 1
   return value
+}
+
+function cloneValence(valence: RuntimeValence[] | undefined): RuntimeValence[] {
+  return valence ? [...valence] : []
 }
 
 function cloneSemanticFrames(
