@@ -118,6 +118,11 @@ describe('spokenLine', () => {
     expect(mirrored.unread + repeated.unread).toBe(0)
   })
 
+  it('names each close by the label it carries, so crossed pairs are said as written', () => {
+    expect(say('{_A x {_B y }_A z }_B')).toBe('definition, labeled A, x, definition, labeled B, y; end A, z; end B')
+    expect(say('{_A x {_B y }_B z }_A')).toBe('definition, labeled A, x, definition, labeled B, y; end B, z; end A')
+  })
+
   it('says parts set beside each other one after another, and a game state line whole', () => {
     expect(say('^board{ @hold[upright] *lanes[3] ~pace[calm] }')).toBe(
       'ascension board, definition, perspective hold, mode upright, value lanes, mode 3, potential pace, mode calm; end board',

@@ -693,5 +693,12 @@ surface reference graph (hubs and adrift surfaces), and the anchor namespace
 a hook — turns the map into a record of how the graph and tree develop.
 
 Flags:
-  -h, --help   this help`)
+  --json              Emit the full snapshot as JSON
+  --advice            Convention findings: orphan indexes, dangling links, ambiguous anchors
+  --html [path]       Write the visual atlas (default ${path.join('.spw', 'gen', 'atlas.html')})
+  --save              Append a snapshot to ${HISTORY_REL}
+  --trend             Show how the measured properties changed across saved snapshots
+  --from <ref>        Diff a revision against the working tree
+  --to <ref>          With --from, diff two revisions
+  --help / -h         This help`)
 }

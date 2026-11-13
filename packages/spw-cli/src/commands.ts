@@ -47,6 +47,9 @@ import { printInspectHelp, runSpwInspectCli } from './inspect'
 import { printFingerprintHelp, runSpwFingerprintCli } from './fingerprint'
 import { printResolveHelp, runSpwResolveCli } from './resolve'
 import { printLintHelp, runSpwLintCli } from './lint'
+import { printSayHelp, runSpwSayCli } from './say'
+import { printPairsHelp, runSpwPairsCli } from './pairs'
+import { printHearHelp, runSpwHearCli } from './hear'
 
 /**
  * Which part of the loop a command belongs to. Groups order the help page and
@@ -176,7 +179,7 @@ export const COMMANDS: CommandSpec[] = [
   // @see docs/runtime/spw/cli-command-surface.spw
   {
     name: 'census',
-    aliases: ['invent', 'inventory', 'inv'],
+    aliases: ['invent', 'inv'],
     group: 'collate',
     summary: 'Count files, lines, references, frames, and graph roles',
     printHelp: () => printInventHelp(),
@@ -199,7 +202,6 @@ export const COMMANDS: CommandSpec[] = [
   },
   {
     name: 'formula',
-    aliases: ['formulas'],
     group: 'collate',
     summary: 'List formulas or scan sources for embedded pattern hits',
     printHelp: () => printFormulaHelp(),
@@ -238,7 +240,7 @@ export const COMMANDS: CommandSpec[] = [
   },
   {
     name: 'measure',
-    aliases: ['mass', 'thrift'],
+    aliases: ['mass'],
     group: 'collate',
     summary: 'Compare declared and observed mass under a selected scheme',
     printHelp: () => printSpwMassHelp(),
@@ -321,7 +323,6 @@ export const COMMANDS: CommandSpec[] = [
   // ── Select ───────────────────────────────────────────────────
   {
     name: 'query',
-    aliases: ['q'],
     group: 'select',
     summary: 'Select and aggregate AST rows across files',
     printHelp: () => printQueryHelp(),
@@ -336,7 +337,6 @@ export const COMMANDS: CommandSpec[] = [
   },
   {
     name: 'select',
-    aliases: ['spwq'],
     group: 'select',
     summary: 'Select structured matches from one .spw file',
     printHelp: () => printSelectUsage(),
@@ -363,6 +363,20 @@ export const COMMANDS: CommandSpec[] = [
           : { argv: argv(invoked, args), entryName: 'spw:ls' },
       ),
   },
+  {
+    name: 'say',
+    group: 'select',
+    summary: 'Say each line in the names of its marks, slots, and joins',
+    printHelp: () => printSayHelp(),
+    run: (_invoked, args) => runSpwSayCli(args),
+  },
+  {
+    name: 'pairs',
+    group: 'select',
+    summary: 'List labeled brace pairs, where they cross, and braces with no partner',
+    printHelp: () => printPairsHelp(),
+    run: (_invoked, args) => runSpwPairsCli(args),
+  },
 
   // ── Shape ────────────────────────────────────────────────────
   {
@@ -381,7 +395,6 @@ export const COMMANDS: CommandSpec[] = [
   },
   {
     name: 'snippet',
-    aliases: ['snip'],
     group: 'shape',
     summary: 'List, generate, or hydrate editor-ready seed templates',
     printHelp: () => printSnippetHelp(),
@@ -430,6 +443,13 @@ export const COMMANDS: CommandSpec[] = [
     summary: 'Advance runtime cadence without writing the source tree',
     printHelp: () => printBeatHelp(),
     run: (invoked, args) => runSpwBeatCli(argv(invoked, args)),
+  },
+  {
+    name: 'hear',
+    group: 'effect',
+    summary: 'Write a click for every brace to a WAV file, tuned by an ear line',
+    printHelp: () => printHearHelp(),
+    run: (_invoked, args) => runSpwHearCli(args),
   },
   {
     name: 'mem',

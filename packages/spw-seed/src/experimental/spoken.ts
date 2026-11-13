@@ -398,7 +398,8 @@ function sayReading(ctx: Ctx, reading: SlotReading, depth: number): boolean {
     }
 
     const held = ctx.clauses.slice(clausesBefore).some((c) => c.role === 'slot')
-    const label = openLabel?.label ?? closeLabel?.label
+    // A close is named by its own label: where labeled pairs cross, the brace that ends this body closes another pair.
+    const label = closeLabel?.label ?? openLabel?.label
     if (closeLabel?.label && closeLabel.spelling === 'mirrored') {
       ctx.implied.push([closeAt - closeLabel.label.length - 1, closeAt])
     }

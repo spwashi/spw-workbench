@@ -37,7 +37,7 @@ export function printRootsHelp(): void {
   printHelpPage({
     title: 'Spw Roots',
     usage: ['spw roots [start-path] [--json]'],
-    sections: [{
+    sections: [{ title: 'Flags', lines: ['--json    The roots as JSON'] }, {
       title: 'Behavior',
       lines: [
         'discovers the owning consumer containing .spw/mount.spw',

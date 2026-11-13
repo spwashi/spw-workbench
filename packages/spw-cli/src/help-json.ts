@@ -14,7 +14,8 @@ import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { COMMAND_GROUPS, COMMANDS, type CommandGroup } from './commands'
+import { COMMAND_GROUPS, COMMANDS, type CommandGroup, type CommandSpec } from './commands'
+import { commandFlags, type HelpFlag } from './help-flags'
 
 export const HELP_JSON_SCHEMA = 'spw.cli.help/1'
 
@@ -24,6 +25,10 @@ export interface HelpJsonCommand {
   summary: string
   aliases: string[]
   help: string
+  /** The flags the command's help page declares, read from that page (help-flags.ts). */
+  flags: HelpFlag[]
+  /** Flags the page names in usage or prose without a line of their own. */
+  mentions: string[]
 }
 
 export interface HelpJson {
@@ -35,6 +40,7 @@ export interface HelpJson {
   commands: HelpJsonCommand[]
   routes: Record<string, string>
   effects: { basis: 'declared'; source: string; note: string }
+  flags: { basis: 'help_page'; note: string }
 }
 
 /** The workbench root this module was loaded from, or null when it cannot be told (a bundle, a copy). */
@@ -77,20 +83,37 @@ export function rootHelpJson(provenance: HelpJson['workbench'] = workbenchProven
     workbench: provenance,
     usage: ['spw <command> [arguments] [options]', 'npm run spw -- <command> [arguments] [options]', 'spw <command> --help'],
     groups: COMMAND_GROUPS.map(({ id, title, blurb }) => ({ id, title, blurb })),
-    commands: COMMANDS.map((spec) => ({
-      name: spec.name,
-      group: spec.group,
-      summary: spec.summary,
-      aliases: [...(spec.aliases ?? [])],
-      help: `spw ${spec.name} --help`,
-    })),
+    commands: COMMANDS.map(commandHelpJson),
     routes: Object.fromEntries(COMMANDS.flatMap((spec) => (spec.aliases ?? []).map((alias) => [alias, spec.name]))),
     effects: {
       basis: 'declared',
       source: 'docs/runtime/spw/cli-command-surface.spw ^groups',
       note: 'A group is the cost band the registry declares for a command, not a tested guarantee that it writes nothing; flags such as --write change what a command touches.',
     },
+    flags: {
+      basis: 'help_page',
+      note: 'Each flag is read from a line of the command\'s help page, so the page and this list agree. writes is true where the flag\'s name says it writes (--write, --out, --save, --apply, --html); it is not tested against what the command does.',
+    },
   }
+}
+
+/** One command as data: its place in the registry and the flags its help page declares. */
+export function commandHelpJson(spec: CommandSpec): HelpJsonCommand {
+  const { flags, mentions } = commandFlags(spec)
+  return {
+    name: spec.name,
+    group: spec.group,
+    summary: spec.summary,
+    aliases: [...(spec.aliases ?? [])],
+    help: `spw ${spec.name} --help`,
+    flags,
+    mentions,
+  }
+}
+
+/** spw <command> --help --json */
+export function printCommandHelpJson(spec: CommandSpec): void {
+  console.log(JSON.stringify({ schema: HELP_JSON_SCHEMA, command: commandHelpJson(spec) }, null, 2))
 }
 
 export function printRootHelpJson(): void {

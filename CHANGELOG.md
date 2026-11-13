@@ -33,6 +33,17 @@ What a host gets by moving its pin from `9ef3d223`, or by importing the dated re
 - The caret lookup behind the editor's form hover and `formAt` now walks a postfix `(scope)` and `<capsule>`. A caret inside `@(topic)` found nothing before.
 - The slot reader (`readLine`) no longer cuts a body at a dot that leads a word after a gap, as in `^kept{ .day[x] .chapter[y] }`. Before, it read those as a tight join and dropped the mark. Lines read differently: 4 of 172,022 here, 198 of 17,267 and 13 of 225,487 in two mounted consumers, and none of one consumer's 1,012 page expressions.
 
+### The command line
+
+- Bare `spw` prints a start page read from the `.spw` tree it runs in, and `spw help` still prints all 44 commands.
+  - Outside a workspace it offers `spw init`.
+  - Inside, it suggests a walk through the workspace's declared roots and index, and lists the three surfaces changed most recently.
+  - It ends with what reading the tree cost, in files and milliseconds.
+  - A `^"start"` frame in `.spw/workspace.spw` gives the workspace its own lines, and `recent: 0` skips the walk.
+- `spw help --json` gives each command's flags as data, and `spw <command> --help --json` gives one command's. The flags are read from each command's help page, so the two agree; 272 flags across 43 of 44 commands.
+- New commands for readers that had none: `spw say` (a line said in the names of its parts), `spw pairs` (labeled pairs, crossings, braces with no partner, the pairs around a place) and `spw hear` (a click per brace written to a WAV file under an ear line). `npm run sound:pairs` now runs `spw hear`.
+- Six alias routes that nothing wrote are gone: `inventory`, `formulas`, `thrift`, `q`, `spwq` and `snip`. `spw measure thrift` still reads. npm scripts named for an alias now run the command by its name.
+
 ### Browser bundles
 
 - `reader.min.js` now also exports the slot reader's sayer, the pair-label scan, the brace sound and the earcons, beside `roles`, `outline`, `anchors`, `highlightHtml` and `readLine`. A host whose own bundle names its exports (a story consumer exports only `parse` and `readBias`) adds the names it wants.

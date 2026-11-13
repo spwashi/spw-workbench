@@ -85,6 +85,16 @@ export function printSnippetHelp(): void {
     ],
     sections: [
       {
+        title: 'Flags',
+        lines: [
+          '--family <name>        With list, only one family',
+          '--bind k=v / -b k=v    With hydrate, fill a slot; repeat for more',
+          '--strict               With hydrate, refuse a slot left unfilled',
+          '--out <path> / -o <path>  With emit, write the catalog to a file',
+          '--json                 Output as JSON',
+        ],
+      },
+      {
         title: 'Vocabulary',
         lines: [
           'snippet   tagged seed (prefix + body + holes) — unit of literate exchange',

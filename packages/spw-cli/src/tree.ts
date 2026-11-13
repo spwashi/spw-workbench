@@ -83,6 +83,15 @@ export function printTreeHelp(): void {
     ],
     sections: [
       {
+        title: 'Flags',
+        lines: [
+          '--from <path>          Start the walk at a path',
+          '--depth N              How many levels to show (default 4)',
+          '--include-workbench    Walk mounted workbench infrastructure, which is skipped otherwise',
+          '--json                 The tree as JSON',
+        ],
+      },
+      {
         title: 'Notes',
         lines: [
           'Shows directories that contain .spw files (and the files themselves).',

@@ -1,13 +1,18 @@
 import { parseCommand, parseCommonFlags } from './args'
 import { findCommand, knownCommands, printRootHelp } from './commands'
+import { printStartPage } from './start'
 import { setExitCode } from './exit'
 import { loadLocOverrides } from './loc'
 import { helpLoc } from './help'
-import { printRootHelpJson } from './help-json'
+import { printCommandHelpJson, printRootHelpJson } from './help-json'
 import { suggestClosest } from './view'
 
 export async function runSpwCli(argv: string[]): Promise<void> {
   loadLocOverrides()
+  if (argv.slice(2).length === 0) {
+    await printStartPage()
+    return
+  }
   const { command, args: rawArgs } = parseCommand(argv)
   const common = parseCommonFlags(rawArgs)
 
@@ -40,7 +45,8 @@ export async function runSpwCli(argv: string[]): Promise<void> {
   }
 
   if (common.flags.help) {
-    spec.printHelp(command)
+    if (common.flags.json) printCommandHelpJson(spec)
+    else spec.printHelp(command)
     return
   }
 

@@ -10,7 +10,7 @@
  gist: "Census, graph and query accept one shared glob selection; verb names and aliases already landed."
  touches: [~"packages/spw-seed/src/ir", ~"packages/spw-cli/src/fs-walk.ts", ~"packages/spw-cli/src/corpus-scan.ts", ~"packages/spw-cli/src/commands.ts", ~"packages/spw-cli/src/emit"]
  entry: ~"./cli-sense-reorientation.spw"
- next: "~[glob_fixture_tests]: census, graph, and query report the same files for a quoted glob and its directory, and a glob that matches nothing says so instead of printing a zero census (census on a quoted prompts glob reports 0 files against 95 today)."
+ next: "~[output_contract_table]: one table test over every command that prints rows, so --json, --quiet and the format flag are spelled one way; then ~[glob_fixture_tests]. Loading command modules only when their command runs would take most of the 0.29 s every command pays before it starts."
 }
 
 ^["edges"]{
@@ -109,6 +109,16 @@
  >>[2026-11-09 18:12] observe — Measured reach by script on 2026-11-09 (journal 2026-11-09-distance): hops from the canon root, lines back to the nearest anchor, and marks to know before a line reads. Here 154 of 1,276 surfaces are unreached and nothing reports it; graph already speaks of spread as near, standard and far. reach_product planned for census and graph, and edge_stance opened: whether an unreached surface says it is arriving or leaving. wonder_trial_distance is homed here.
  >>[2026-11-09 18:13] observe — Tool gap found while measuring reach on 2026-11-09: run from a second mounted consumer, spw query --from .spw --selector pathRefs scanned 3 of its 84 surfaces and returned 16 rows, where a direct scan finds 313 path refs in 54 files. Its refs are written from the repository root and its index routes few surfaces by path ref, so the walk had nothing to follow; the scan count is the part to explain first. reach_product should report scanned against present, so a short scan is never read as a small corpus.
  >>[2026-11-09 19:12] observe — Reach from a centre, measured 2026-11-09 (journal 2026-11-09-distance, from_a_centre): walking the resolved refs from any held surface costs 0.1 to 3.2 ms; from a live plan the rings are 7, 29, 57 and 81 surfaces outward and 6, 16, 34 and 54 inward. Cycles: 13 groups hold 652 of 1,222 surfaces here, the largest being the living caches tree (361 surfaces in one group), and no journal entry sits in any. reach_product should take an origin: the canon root by default, any surface on request. wonder_trial_centre is homed here.
+ >>[2026-11-13 16:49] observe — The surface at d30ebcb5, from spw help --json and each command's --help. 41 top-level verbs in five groups, and 25 alias routes. Bare spw and spw help print the same list, Workspace first; quest, the walk for a newcomer, is the fifth line of 41 and nothing marks it as the start. help --json carries name, group, summary, aliases and prose help for each verb, and no flag as data: an agent learns a flag only by reading prose.
+ >>[2026-11-13 16:49] observe — A product is chosen two ways. form picks one of six products by flag (--static, --resonance, --field, --columns, --rhymes, the default card); inspect picks one of ten planes by subcommand (source, spacing, corpus, cache and six more); mem takes subcommands too. Output is chosen four ways across five verbs read: census and graph take --spw, --table, --json and --quiet; query and select take --format beside --table and --json; form takes --spw and --json and no table.
+ >>[2026-11-13 16:49] observe — What machines write, counted with git grep for spw <verb> and spw:<verb> in this repo and two consumers, archives left out; prose that happens to say spw resolve counts too, so these are upper bounds. inspect 234, resolve 225, graph 184, census 158, query 147; at the other end mount 20, dev 14. Aliases: inventory, formulas, thrift, q, spwq and snip are written nowhere; fp, inv, stats, geom, experimental and catalog once or twice; topo 3. The alias policy in docs/runtime/spw/cli-command-surface.spw already lists a five-step retirement; with no human habit, an alias written nowhere has nothing left to migrate.
+ >>[2026-11-13 16:49] observe — Of 56 npm spw scripts, 7 run a verb by an alias (spw:map, spw:invent, spw:seq, spw:analyze, spw:geometry, spw:surface, spw:skim), and the plan and agent scripts run bash, not the CLI. The readers added since 2026-11-12 have no verb: the spoken form, the brace sound and ear line, and the pair-label scan are reached only from code and from scripts/sound/pair-sound.ts; parse columns and rhymes are modes of form.
+
+ >>[2026-11-13 17:00] implement — help --json gives every command its flags as data, read from the command's own help page so the two cannot disagree: names long and short, spellings, the value a flag takes, what it does, its section, and writes where its name says it writes. Flags a page names only in usage or prose are listed as mentions. spw <command> --help --json prints one command. Five pages that named their flags only in usage (atlas, tree, roots, snippet, beat) gained Flags sections; 272 flags are declared across 43 of 44 commands, and dev takes none.
+ >>[2026-11-13 17:00] implement — Six alias routes written nowhere in three repositories are gone (inventory, formulas, thrift, q, spwq, snip); 19 routes remain, and spw measure thrift still reads as a family under measure. The 7 npm scripts named for an alias run the command by its name.
+ >>[2026-11-13 17:00] implement — Three commands for readers that had none. spw say says each line in the names of its parts (spokenLine), with --clauses, --names site and --json. spw pairs lists labeled pairs, crossings and braces with no partner (scanPairLabels), and --at line:column gives the pairs around a place. spw hear writes a click per brace to a WAV file under an ear line; scripts/sound/pair-sound.ts is retired and npm run sound:pairs runs spw hear. Running say on crossed labels showed the spoken form naming a close by its open's label; it now names each close by the label the close carries.
+ >>[2026-11-13 17:00] implement — Bare spw prints a start page read from the .spw tree it runs in, and spw help still prints all 44 commands. Outside a workspace it offers spw init. Inside, it says whether this is the workbench or a workspace that mounts it, suggests a walk through the workspace's own declared roots and index, lists the three surfaces changed most recently (tool-written folders left out), and ends with what reading the tree cost: 1,386 files in 173 ms here, 168 in 113 ms in a story consumer. A ^"start" frame in .spw/workspace.spw replaces the derived lines with the workspace's own, and recent: 0 skips the walk, leaving two files read.
+ >>[2026-11-13 17:00] verify — Tests: flags read from every help page and named on it once per command; usage never read as a declaration; say matches spokenLine line by line; pairs reads labels, crossings, the unpaired and the pairs around a place; hear writes a RIFF file and reports an unknown ear word; the start page with no workspace, with derived lines, with recency ordered and tool folders left out, and with a ^"start" frame and recent: 0. Time on this machine: bare spw 1.35 s, of which 1.14 s is tsx starting and about 0.29 s is loading every command module before one runs.
 }
 
 ^["examples"]{
@@ -129,6 +139,8 @@
  ?[crystallize_cli]: "Ship crystallize as top-level spw crystallize or as spw stream crystallize? No stream verb exists in commands.ts yet; this fixes the name when the first stream producer lands."
  ?[task_verbs]: "Does the verb map gain the task verbs a mounted consumer names (eval an expression against data, explain each clause and its source, audit a spell's derived clauses, checks and pinned policy), and fold check-shaped verbs (lint, doctor, integrity, format --check) under one check and map-shaped ones (tree, roots, graph, census) under one map, keeping a verb only while a named host uses it?"
  ?[envelope_v2]: "At what point must every --json envelope carry ir and cache blocks? Decides the schemaVersion bump in envelope.ts."
+ ?[grain_axis]: "Should a verb say what it moves by (a line, a surface, a corpus, a workspace, a change) beside its cost group, and should help be read by grain, by cost, or both? wonder_trial_grain asks what a step moves by in the language; this is the same question for the tools."
+ ?[product_spelling]: "One spelling for choosing a product: subcommands (spw form rhymes, as spw inspect source) or flags (spw inspect --source, as spw form --rhymes)? Subcommands make each product its own help page; flags keep a verb's products side by side."
  ?[edge_stance]: "Does an unreached surface declare which edge it is on (arriving or leaving), or do tools infer it from last touch and supersession? wonder_trial_distance holds the readings."
 }
 
@@ -137,6 +149,10 @@
  .[file_sense_plan](08e2bc1c): "&[canon-rewrite-v2] — land tip capability on upstream; phase 0 field clocks (the plan, IR and verb map first appear here) (with sense_verb_aliases)"
  .[sense_verb_aliases](08e2bc1c): "&[canon-rewrite-v2] — land tip capability on upstream; phase 0 field clocks (census, measure and stack aliases first appear here) (with file_sense_plan)"
  .[declare_picomatch](e94b6bfb): "#[cli] — declare picomatch for the shared glob resolver"
+ ~[output_contract_table]: "![cli] — one table test over every verb that prints rows: --json gives a versioned envelope, --quiet drops headers, and the chosen format is spelled one way; proof: the table fails today on query and select (--format beside --table) and on form (no --table), and passes once each is aligned"
+ ~[lazy_command_modules]: "&[cli] — the registry imports a command's module only when that command runs or its help is asked for; proof: a timing test that loading the registry stays under a stated bound, and every command's help and run tests unchanged"
+ ~[product_mode_rule]: "&[cli] — after ?[product_spelling]: the products form picks by flag become subcommands (spw form columns, spw form rhymes), or inspect's planes become flags, so one spelling holds; the old spelling routes for one era; proof: a test that each product is reached one way and the old way prints the new one"
+ ~[grain_column]: "#[cli] — after ?[grain_axis]: each verb declares a grain (line, surface, corpus, workspace, change) beside its group, help --json carries it, and help can list by it; proof: a test that every verb has exactly one grain and the list by grain covers all 41"
  ~[glob_fixture_tests]: "![cli] — fixture tree and failing tests: a quoted glob, its directory form, and a no-match glob select the expected surfaces for census, graph and query"
  ~[shared_glob_resolver]: "#[cli] — one resolveSelection(globs, roots) beside collectSpwFiles in fs-walk.ts returning SelectionIR uris; census, graph and query call it"
  ~[adopt_resolver_everywhere]: "&[cli] — measure and the remaining private collectSpwFiles copies adopt resolveSelection (scope decided by ?[walker_fork])"
@@ -163,9 +179,9 @@
  ~#base_ref: "main@551bb419"
  ~#rebased_at: "2026-10-12"
  ~#files_hot: ".agents/plans/cli-sense-reorientation/PLAN.md, .agents/plans/cli-sense-reorientation/wip.spw, packages/spw-cli/src/fs-walk.ts, packages/spw-seed/src/ir/slices.ts, packages/spw-cli/src/corpus-scan.ts"
- ~#next_commit: "glob_fixture_tests"
- ~#open_count: "8"
- ~#last_stream: "2026-11-09 19:12"
+ ~#next_commit: "output_contract_table"
+ ~#open_count: "10"
+ ~#last_stream: "2026-11-13 17:00"
  ~#taste_debt: "One parser-backed producer now proves the protocol, but a non-parser producer and compatibility review are still needed before the wider IR catalog or CLI rename sequence can rely on it."
 }
 

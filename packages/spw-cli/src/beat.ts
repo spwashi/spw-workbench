@@ -104,6 +104,14 @@ export function printBeatHelp(): void {
     ],
     sections: [
       {
+        title: 'Flags',
+        lines: [
+          '--interval <ms> / -i <ms>  Time between ticks (default 500)',
+          '--count N / -n N   Stop after N ticks; without it, run until Ctrl+C',
+          '--json             One JSON object per tick',
+        ],
+      },
+      {
         title: 'What it does',
         lines: [
           'Emits a timestamped cadence tick every --interval ms (default 500,',
