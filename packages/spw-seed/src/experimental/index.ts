@@ -76,3 +76,6 @@ export type { EarconProblem, EarconReading, EarconWord, PairMove } from './earco
 export { EARCON_WORDS, EARCONS_SCHEMA, pairMoves, readEarcons, writeEarcons } from './earcons'
 export type { ModalEvent, Texture } from './modal-sound'
 export { MODAL_LEVEL_DB, PHRASE_LADDER, TEXTURES, labelPhrase, modalEvents, renderModalClick } from './modal-sound'
+export type { ShapeHit, ShapeMatch, ShapePattern, ShapePatternProblem, ShapeSurface } from './shape-match'
+export { SHAPE_MATCH_SCHEMA, compileShape, findShape, isShapePattern, matchShape, matchShapeAt, wordHolePattern } from './shape-match'
+export { COLUMNS_BYTES_SCHEMA, columnsFromBytes, columnsToBytes } from './columns-bytes'

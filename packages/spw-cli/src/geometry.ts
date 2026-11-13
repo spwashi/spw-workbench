@@ -30,6 +30,7 @@ import {
 } from '@spwashi/spw-seed'
 import { formatJsonEnvelope } from './envelope'
 import { runFormColumnModes } from './form-columns'
+import { printFormMatch } from './form-match'
 import { AUTHORED_DOT_DIRS } from './fs-walk'
 import { printHelpPage } from './help'
 import { emitDetail, emitHeader, emitNext, formatTable, meta } from './view'
@@ -65,6 +66,11 @@ interface GeomArgs {
   /** --columns, --rhymes and their flags: see form-columns.ts. */
   columns: boolean
   rhymes: boolean
+  /** --match: an example with holes; see form-match.ts. */
+  match?: string
+  nested: boolean
+  cache: 'on' | 'read' | 'off'
+  maxFilesGiven: boolean
   min: number
   sigil?: string
   limitGiven: boolean
@@ -88,6 +94,9 @@ function parseArgs(argv: string[]): GeomArgs {
     staticOnly: false,
     columns: false,
     rhymes: false,
+    nested: false,
+    cache: 'on',
+    maxFilesGiven: false,
     min: 6,
     limitGiven: false,
   }
@@ -123,6 +132,20 @@ function parseArgs(argv: string[]): GeomArgs {
     }
     if (a === '--columns' || a === '--rhymes') {
       parsed[a === '--columns' ? 'columns' : 'rhymes'] = true
+      continue
+    }
+    if (a === '--match') {
+      parsed.match = args[++i] ?? ''
+      continue
+    }
+    if (a === '--nested') {
+      parsed.nested = true
+      continue
+    }
+    if (a === '--cache') {
+      const mode = args[++i] ?? 'on'
+      if (mode !== 'on' && mode !== 'read' && mode !== 'off') throw new Error(`spw form: --cache takes on, read or off, not ${mode}`)
+      parsed.cache = mode
       continue
     }
     if (a === '--min') {
@@ -166,10 +189,12 @@ function parseArgs(argv: string[]): GeomArgs {
     }
     if (a === '--max-files') {
       parsed.maxFiles = Math.max(1, Number(args[++i] ?? 200) || 200)
+      parsed.maxFilesGiven = true
       continue
     }
     if (a.startsWith('--max-files=')) {
       parsed.maxFiles = Math.max(1, Number(a.slice('--max-files='.length)) || 200)
+      parsed.maxFilesGiven = true
       continue
     }
     // Explicit write rejection — geometry never mutates the workspace
@@ -198,6 +223,7 @@ export function printGeometryHelp(): void {
       'cat surface.spw | spw form --stdin --resonance --spw',
       'spw form <file.spw> --columns [--json]',
       'spw form <paths> --rhymes [--min N] [--limit N] [--sigil ?] [--json]',
+      "spw form <paths> --match '~garden[_]{_, ...}' [--nested] [--cache on|read|off] [--json]",
     ],
     sections: [
       {
@@ -218,6 +244,7 @@ export function printGeometryHelp(): void {
           '--field       aggregate workspace field strands',
           '--columns     one surface\'s parse columns: bands, or spw.parse-columns/1 with --json (experimental)',
           '--rhymes      subtrees alike in shape, not content: templates with holes, and refrains (experimental)',
+          '--match EX    every place a form is written, given by example with holes: _ any one subtree, ... any further siblings, lens(_) any text inside a word (experimental)',
         ],
       },
       {
@@ -232,6 +259,8 @@ export function printGeometryHelp(): void {
           '--max-files N                    directory walk cap (default 200)',
           '--min N                          --rhymes: smallest shape counted, in nodes (default 6)',
           '--sigil S                        --rhymes: only shapes that open with S (? for wonders)',
+          '--nested                         --match: list matches inside another match too',
+          '--cache on|read|off              --match: keep parsed columns under .spw/gen/session/columns (on), only read them (read), or parse every surface (off)',
           '--stdin                          read source from stdin',
           '--spw | --json | --ndjson        output form; prefer source-shaped Spw cards',
         ],
@@ -365,6 +394,8 @@ export async function runSpwGeometryCli(argv: string[] = process.argv): Promise<
 
   const workspace = await tryDiscoverSpwWorkspace()
   const sources: Array<{ uri: string; text: string }> = []
+  // A match reads every surface it is pointed at unless told otherwise; its columns come from a cache.
+  if (args.match !== undefined && !args.maxFilesGiven) args.maxFiles = 100_000
 
   if (args.stdin) {
     sources.push({ uri: 'stdin', text: await readStdin() })
@@ -396,6 +427,19 @@ export async function runSpwGeometryCli(argv: string[] = process.argv): Promise<
   if (!sources.length) {
     console.error('spw form: no .spw surfaces found')
     process.exitCode = 1
+    return
+  }
+
+  if (args.match !== undefined) {
+    if (sources.length >= args.maxFiles) meta(`# the walk stopped at --max-files ${args.maxFiles}; raise it to read every surface`)
+    process.exitCode = await printFormMatch(sources, {
+      example: args.match,
+      json: args.json,
+      limit: args.limitGiven ? args.limit : 40,
+      nested: args.nested,
+      cacheDir: workspace ? path.join(workspace.consumerRoot, '.spw', 'gen', 'session', 'columns') : null,
+      cacheMode: args.cache,
+    }) || process.exitCode
     return
   }
 

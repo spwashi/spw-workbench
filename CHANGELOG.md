@@ -44,6 +44,12 @@ What a host gets by moving its pin from `9ef3d223`, or by importing the dated re
 - New commands for readers that had none: `spw say` (a line said in the names of its parts), `spw pairs` (labeled pairs, crossings, braces with no partner, the pairs around a place) and `spw hear` (a click per brace written to a WAV file under an ear line). `npm run sound:pairs` now runs `spw hear`.
 - Six alias routes that nothing wrote are gone: `inventory`, `formulas`, `thrift`, `q`, `spwq` and `snip`. `spw measure thrift` still reads. npm scripts named for an alias now run the command by its name.
 
+### Finding a form by example (experimental)
+
+- `spw form <paths> --match '<example>'` lists every place a form is written, given by example with holes: `_` for any one subtree, `...` for any further siblings, and `_` alone inside a word (`lens(_)`) for any text there. Each hit gives where it starts and what filled each hole, and a paradigm lists what each hole was filled with across all hits. An example of several lines matches a run of neighbours. Seed's `compileShape`, `findShape` and `matchShape` (`spw.shape-match/1`) do the matching on parse columns.
+- Parse columns have a byte form (`spw.parse-columns-bytes/1`, `columnsToBytes` / `columnsFromBytes`): every column as its own bytes on a four-byte boundary. Over this repository, reading 1,312 surfaces' columns back took 57 ms where parsing them took 90.7 s.
+- `--match` reads columns from this process's memory, then `.spw/gen/session/columns`, then the parser. The disk key includes a fingerprint of the parser's source, so a parser change is never served a stale tree. `--cache read` never writes, and `--cache off` parses everything. Every run ends with which tiers gave the columns and what they cost: 104.9 s cold and 3.1 s warm for one example over this repository.
+
 ### Browser bundles
 
 - `reader.min.js` now also exports the slot reader's sayer, the pair-label scan, the brace sound and the earcons, beside `roles`, `outline`, `anchors`, `highlightHtml` and `readLine`. A host whose own bundle names its exports (a story consumer exports only `parse` and `readBias`) adds the names it wants.

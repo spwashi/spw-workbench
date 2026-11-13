@@ -921,6 +921,11 @@ export type {
   PairMove,
   ModalEvent,
   Texture,
+  ShapeHit,
+  ShapeMatch,
+  ShapePattern,
+  ShapePatternProblem,
+  ShapeSurface,
 } from './experimental'
 export {
   SYNTAX_CATALOG,
@@ -979,6 +984,16 @@ export {
   labelPhrase,
   modalEvents,
   renderModalClick,
+  SHAPE_MATCH_SCHEMA,
+  compileShape,
+  findShape,
+  isShapePattern,
+  matchShape,
+  matchShapeAt,
+  wordHolePattern,
+  COLUMNS_BYTES_SCHEMA,
+  columnsFromBytes,
+  columnsToBytes,
 } from './experimental'
 
 // Query (spw.q dialect)
