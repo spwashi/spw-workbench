@@ -7,11 +7,11 @@
 #:layer #!pragmatics
 
 ?["card"]{
- phase: #dormant
+ phase: #planning
  gist: "Precipitate, substrate, assay, and resonance name checkable roles in the runtime pipeline."
- touches: [~"packages/spw-runtime/src/pipeline", ~"docs/runtime/spw/runtime-foundation.spw", ~"docs/specs/spw/spec-alignment.spw"]
+ touches: [~"packages/spw-runtime/src/pipeline", ~"docs/runtime/spw/runtime-foundation.spw", ~"docs/specs/spw/spec-alignment.spw", ~"packages/spw-seed/src/math/field.ts"]
  entry: ~"./precipitate-model-alignment.spw"
- next: "Establish failure_continuity and one valid-source IR journey; use actual stage products to trial an artifact passport before adding UI."
+ next: "~[test_flux_sign]: three assertions in field.test.ts for flux, which has no test and no caller; the IR journey and failure_continuity wait behind the field commits."
 }
 
 ^["edges"]{
@@ -70,6 +70,13 @@
  >>[2026-10-19 16:40] revise — Owner welcomes cognitive-surface redesign and IR/memory insight. Ground the proposed IR journey in existing Precipitate fields, distinguish ParseOutput from AST, and keep missing stage mappings explicit.
  >>[2026-10-27 10:24] observe — The order test that test_precipitate_order would add half exists: all four stages on success in src/seed/__tests__/normalize.test.ts (since df7c6056) lists desugar, parse, normalize, interpret literally, but inside if (result.success), so a failed run passes it. At 850077ab the malformed inputs }}}, an unterminated string, { [ } and the empty string all still return parse success true with 0 errors and 4 precipitates, so the parse-failure branch of failure_continuity stays unreached.
  >>[2026-11-09 18:12] note — wonder_trial_threshold_ladders is homed here: the runtime four-rung liminality, the seven surface waypoints and the three retention tiers sit beside six ladders hosts keep, and the liminality bridge declares the only crossing. docs/theory/spw/threshold-distance.spw lists all nine.
+ >>[2026-11-13 12:55] note — Reheated from dormant to planning on the owner's direction of 2026-11-13: physical agility in small steps, each one a quantity that is counted and not only named. This plan's gates (operational truth, metaphor discipline) make it the home for a ledger of physical words; operational-topography holds the first new count, body outbound, and this plan does not repeat its commits.
+ >>[2026-11-13 12:55] observe — Where field code lives: packages/spw-seed/src/math/field.ts, in the seed and not the runtime. Its ten tests pass (vitest.seed.config.ts). They hold: decay halves at one half-life; transfer keeps the sum; one symmetric diffuse step on two sites keeps the sum; capacityStep at rate 0.5 ends between 8 and 10 of 10; affinityAllocate never fills a site past its capacity and a carrier's bound and free amounts add to what it had.
+ >>[2026-11-13 12:55] observe — What the tests do not hold. flux(permeability, upstream, downstream) has no test and no caller in packages. A directed diffuse step loses the sum (a 1, b 0, one edge, kappa 0.25 gives a 0.75, b 0, sum 0.75), as its doc comment allows. A symmetric step with kappa times dt times weight above 1 goes negative (kappa 1.5 gives a -0.5, b 1.5). capacityStep at capacity 10 and rate 2.5 from 1 reads 3.25, 8.73, 11.5, 7.19, 12.24, so the invariant in docs/theory/spw/field-dynamics.spw, stays in 0 to K for r and x above 0, is false as written; it holds when rate times dt is at most 1.
+ >>[2026-11-13 12:55] observe — Ledger of physical words today. Decay, capacity and conservation are computed and tested on numbers a caller supplies; no .spw surface and no runtime state supplies those numbers. Flux and permeability are computed and untested. Membrane is named in field-dynamics as a boundary law and has no code in field.ts. Charge in packages/spw-runtime/src/session/charge.ts is a packet with one of six lifecycle states and a provenance; portabilityHint scores it 0 to 1 and says of itself that it is not a physical force. Heat is one comment in state/memory-policy.ts. None of the seven is measured from a parsed surface.
+ >>[2026-11-13 12:55] observe — Membrane already has two meanings. field-dynamics.spw: a boundary law, what may cross. packages/spw-runtime/src/session/composition-eval.ts: the host file an expression is evaluated in. em-fixity-association gives a third as a profile, the angle pair. Opened membrane_word before any commit adds a fourth.
+ >>[2026-11-13 12:55] note — Breaks, where the likeness to physics stops. Charge here has no sign and no amount: two packets do not sum and none cancels. Conservation holds for transfer and undirected diffuse only; decay, inject and directed diffuse change the sum by design. Capacity is a ceiling the step can pass. Flux has a sign but nothing in the repo gives it a gradient, since no container carries an amplitude. The five valences are qualities and do not add.
+ >>[2026-11-13 12:55] revise — Five planned commits added ahead of align_note_and_spec, one change each with its proof: test_flux_sign, test_capacity_bound, test_diffuse_bounds, correct_field_invariants, physical_word_ledger. Card next and next_commit now name test_flux_sign; touches gains math/field.ts. Opened capacity_bound, membrane_word and ledger_home.
 }
 
 ^["open"]{
@@ -77,11 +84,19 @@
  ?[failure_continuity]: "stage_continuity says each stage MUST produce exactly one precipitate, but the parse-failure branch in runSpwStepped returns before normalize and interpret; do we restate the invariant as at-most-one, or make the failure branch yield empty precipitates?"
  ?[normalize_role]: "Is normalize best described as clarification, crystallization, or simply canonical reduction in the chemistry model?"
  ?[failure_branch_test]: "Which input reaches the parse-failure return in runSpwStepped (six malformed inputs I ran all returned success true), and does that branch get a test before failure_continuity is settled? Tracked at ~\"../lukewarm-backlog/wip.spw\" ?[precipitate_failure_untested]."
+ ?[capacity_bound]: "capacityStep passes its capacity when rate times dt is above 1 (11.5 and 12.24 of 10 at rate 2.5); does the step clamp to the capacity, or does the invariant say rate times dt at most 1 and leave the overshoot as the logistic map it is?"
+ ?[membrane_word]: "Membrane means a boundary law in field-dynamics, the host file of an evaluation in composition-eval, and the angle pair in em-fixity-association; which one keeps the word, and what are the other two called?"
+ ?[ledger_home]: "This plan touches the runtime pipeline and field.ts lives in the seed; does the ledger of physical words stay here beside the chemistry note, or does it earn a plan of its own once a second quantity is counted?"
 }
 
 ^["commits"]{
  .[write_chemistry_note](c0860ec5): ".[plans] &![runtime-axis-traceability] — archive completed axis traceability plan"
  .[runtime_chemistry_layer](97f845e7): "docs[chemistry] — add parallel chemistry vocabulary layer across runtime"
+ ~[test_flux_sign]: "![seed] — flux in math/field.ts has no test and no caller; test that it equals permeability times (downstream minus upstream), that swapping the ends flips the sign, and that zero permeability gives zero; proof: three assertions in field.test.ts"
+ ~[test_capacity_bound]: "![seed] — capacityStep from any x in 0 to K stays in 0 to K when rate times dt is at most 1, and one named case passes K (K 10, rate 2.5, third step 11.5); proof: a law over generated x, K and rate, plus the one counterexample; the clamp waits on ?[capacity_bound]"
+ ~[test_diffuse_bounds]: "![seed] — undirected diffuse keeps the sum on a three-site graph, goes negative when kappa times dt times weight is above 1, and directed diffuse loses the sum; proof: one assertion each, the last two written as the breaks they are"
+ ~[correct_field_invariants]: ".[theory] — docs/theory/spw/field-dynamics.spw test.invariants says what the tests hold: the capacity line gains its condition and flux gains a line; proof: each invariant line names the test that holds it"
+ ~[physical_word_ledger]: ".[precipitate] — the chemistry note gains one frame listing decay, capacity, conservation, flux, permeability, membrane, charge and heat, each named, computed or measured, with where and a breaks line; count: rows that cite a test or a probe over rows in all, 3 of 8 on 2026-11-13"
  ~[align_note_and_spec]: ".[precipitate] — retarget the note's src/runtime paths to packages/spw-runtime and label spec-alignment's distill_extract stages (prime, wonder, extract) as a proposal beside the shipped desugar, parse, normalize, interpret"
  ~[doc_per_stage_precipitate]: "vocab[runtime] — doc-comment Precipitate as strictly per-stage and PipelineProjection as a keyed view, once telemetry_locality and failure_continuity are answered"
  ~[test_precipitate_order]: "![runtime] — test that collectPrecipitates yields desugar, parse, normalize, interpret in STAGE_ORDER for valid source (today all four stages on success in src/seed/__tests__/normalize.test.ts guards on result.success, so a failed run passes it, and lists the stages literally)"
@@ -94,9 +109,9 @@
  ~#rebased_at: ""
  ~#hygiene_split: "none"
  ~#files_hot: "docs/specs/spw/spec-alignment.spw, docs/runtime/spw/runtime-foundation.spw, packages/spw-runtime/src/pipeline/stages.ts, packages/spw-runtime/src/pipeline/types.ts"
- ~#next_commit: "align_note_and_spec"
- ~#open_count: "4"
- ~#last_stream: "2026-11-09 18:12"
+ ~#next_commit: "test_flux_sign"
+ ~#open_count: "7"
+ ~#last_stream: "2026-11-13 12:55"
  ~#taste_debt: "The repo has chemistry-adjacent terms (substrate, resonance, valence, quality), but precipitate boundaries are not yet normalized across docs and code comments."
 }
 

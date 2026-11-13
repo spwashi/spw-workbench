@@ -23,6 +23,7 @@ Taste note:
 
 - In scope: `spokenLine`, `unsaid`, the name tables; `pairSound`, `labelTimbre`, the renderers and `wavBytes`; both in the browser reader slice and the release contract test; a script that writes a WAV file to listen to; a census of how three corpora are said, how far closes sit from opens, and how often a shape was already met; five trial cards and a seen line on a sixth.
 - Fixed on the way: the caret lookup never walked an expression's `scope` or `capsule`, so the editor's form context found nothing inside `@(topic)` (one LSP test had been red since same-line postfix containers landed); the slot reader took the dot of `.day[x] .chapter[y]` for a tight join and dropped the mark.
+- Later slices, sound (added 2026-11-13 after the clicks were measured; figures in the stream at 12:54): keep a click of one kind from matching a click of another; level by RMS; overtones on a bare pair; a click that carries its pair's span; a close with its own onset; a label as a phrase of notes; an echo that grows with span; a listener's usable band in the ear line; one ordered list of clauses and clicks; a tool that renders one source under two ear lines. Each is one commit with a law on rendered samples, named in `wip.spw`. A change to samples lands as a choice in the ear line that defaults to today's samples.
 - Out of scope: a surface said as a tree (rows with level and position for a tree widget), which wants the parse columns; a shape said once and then only its words; sound samples shipped in this repo; any change to the parser; a CLI verb.
 
 ## Files
@@ -45,3 +46,6 @@ Craft guard:
 ## Commits
 
 1. ^seed[seed,lsp,release,trials,journal] — say a line in the names of its parts, give every brace a click whose timbre follows its label, and let a caret find the word inside a scope
+2. ^seed[seed,journal,plans] — read what a mode, a scene and a concept hold, so a mark inside one is said by name
+
+Planned, in order (laws and today's figures in `wip.spw`): `no_audio_in_manifest`, `compare_two`, `kinds_apart`, `level_rms`, `bare_in_band`, `click_span`, `close_struck`, `label_phrase`, `span_echo`, `listener_words`, `said_with_clicks`.

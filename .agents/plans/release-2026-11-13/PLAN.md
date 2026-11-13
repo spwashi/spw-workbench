@@ -43,7 +43,24 @@ Its first open question is: "Which minimal audio-map schema lets a blind program
 
    The workbench writes nothing into either consumer.
 
+## Added after measuring (2026-11-13 12:56)
+
+Slices 1 to 5 landed in `96ff771c` and `61ac9bb6`. The clicks were then measured as samples (figures in [spoken-form's stream](../spoken-form/wip.spw), 12:54). Three more slices sit before the cut. Each keeps `^ear{}` and `PAIR_SOUND` rendering the same samples and moves no contract id.
+
+8. **Sound measures** (tests only). A test file beside `pair-sound.ts` measures rendered clicks: the share of energy between two frequencies, RMS in dB, and the distance between two power spectra. It holds three laws that are true today and prints the figures the changelog quotes.
+9. **Limits said** (words only). The changelog's `2026-11-13` section and `parser-release.md` state where the samples fall short:
+   - a frame at depth d and a scene at depth d + 2 are one click;
+   - 6 of 21 bare clicks hold under half their energy above 300 Hz;
+   - a labeled click sits up to 7.8 dB below a bare one;
+   - a close has no onset;
+   - samples are the same within one engine and untested across two.
+10. **Host words kept.** `readEarcons` returns each word it does not know with its mark and value, so a host reads its own textures (`=wap[pillow]`, `%width[0.3]`) from the same line in one pass. Each is still reported as unknown.
+
+Whether the day is cut with those limits said, or held until two of them are fixed, is the owner's (`?[day_with_limits]`).
+
 ## Out of scope tonight
+
+- Any change to the samples `PAIR_SOUND` renders: kinds kept apart, level by RMS, overtones on a bare pair, a struck close, a label as a phrase, an echo for span, a listener's own band. Each is a slice of spoken-form.
 
 - Earcons in the VS Code, IntelliJ or Neovim extensions. The consumer's `workbench-sync` slice comes after a schema exists.
 - A dwell aura as sound: only the event is provided, and how it sounds is the host's.
@@ -59,3 +76,9 @@ Seed, LSP, CLI, runtime, DOM, parser release, `tsc`, plan check, plan index chec
 
 1. `^seed[seed,release,docs]` — tune the brace sound in one line of Spw, and say which pairs a caret leaves and enters
 2. `.[changelog,plans,journal]` — say what 2026.11.13 holds for a host that picks it up
+
+Landed as `96ff771c` (both, in one commit) and `61ac9bb6` (the ear line's marks). Planned next:
+
+3. `![seed]` — measure rendered clicks and hold the laws that are true today
+4. `.[changelog,docs]` — say what the samples measure and where they fall short
+5. `^seed[seed,release]` — give a host the ear words this reader does not know, with their marks and values

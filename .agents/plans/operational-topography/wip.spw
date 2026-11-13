@@ -11,7 +11,7 @@
  gist: "Spw has one neutral, parser-owned contract for placement, nesting, orientation, and evidence."
  touches: [~"packages/spw-seed/src/canonical/topography-probe.ts", ~"packages/spw-seed/src/types/coupling.ts", ~"packages/spw-seed/src/grammar", ~"docs/theory/spw/operational-topography.spw"]
  entry: ~"./operational-topography.spw"
- next: "Resolve ?[pair_labels_ast]: have the container grammar populate openLabel/closeLabel on Frame, Body, and Scope."
+ next: "~[count_body_outbound]: add bodyOutbound beside pair-labels.ts and prove it on the three-body fixture (stay 1, out 1, unbound 1); ?[pair_labels_ast] stays open behind it."
 }
 
 ^["edges"]{
@@ -150,11 +150,23 @@
  >>[2026-10-12 15:24] revise — Commits named per the convention in 90c58bbc: 10 landed, 4 planned, 1 dropped.
  >>[2026-10-27 10:24] observe — Two files this plan created are gone: packages/spw-seed/src/canonical/operator-ladders.ts was deleted in ca9ae1bd as a re-export no file imported, and scripts/spw-pulse.ts went in b7c5c7df when spw:pulse moved to packages/spw-cli/src/pulse.ts. The VS Code custom requests live at extensions/vscode-spw/src/lsp/custom-requests.ts (since 221128f5), not src/custom-requests.ts. PLAN.md Files and the shared hot files now say so.
  >>[2026-11-12 15:01] observe — For ?[pair_labels_ast], measured 2026-11-12 by an opt-in pass beside the parser (pair-label-reading, scanPairLabels): this repo's .spw surfaces hold 12 pairs labeled at both ends, every close repeated and none crossing, and 10 labels on an open that closes on a bare brace; populating openLabel and closeLabel would change how those 22 places and five lines in a story consumer read, and no other line. A mounted consumer's plans read labeled braces as overlapping scopes, which fields on tree nodes cannot hold: the pass reports each crossing, so a grammar rule could set the fields where a pair nests and leave an overlap to a list beside the tree. wonder_trial_pair_label holds the readings.
+ >>[2026-11-13 12:55] note — Owner direction 2026-11-13 asks for physical agility in small steps: one physical quantity made countable from data that exists, before any is tied to a host. This plan takes the count, since coupling.ts already holds CouplingProfileStatus (interpretive, measured, operational) and a dimension with a method and a falsifier; precipitate-model-alignment takes the ledger of physical words.
+ >>[2026-11-13 12:55] observe — Nothing ties a parsed container to a field site today. packages/spw-seed/src/math/field.ts is imported only by math/index.ts; idioms.ts names it in strings and formula-scan.ts matches its words by regex. docs/theory/spw/field-dynamics.spw lists path-ref to field sites under proposed. The coupling.ts header keeps charge, capacitance and permeability out of Seed facts.
+ >>[2026-11-13 12:55] decide — The first quantity is a count named body outbound: the references written inside a brace body that point outside it. The word reuses outbound in packages/spw-lsp/src/handlers/reference-graph.ts and outDegree in math/corpus.ts, which count the same thing per file. Not crossing (pair-labels.ts uses it for two pairs that overlap), not leak (spw authority uses it for a subject that does what its surface never said), not egress (brace-physics gives it to the close of a stream).
+ >>[2026-11-13 12:55] observe — Definition as probed. A body is a curly pair from scanPairLabels, whole or loose. A path ref is a tilde touching a string or an angle open, and is out by definition since its target is another address. A name reference is an at-sign touching an identifier with no colon after it; its binding is the same at-name followed by a colon outside square brackets, anywhere in the same file. A name stays when a binding lies in the same body, is out when a binding lies only elsewhere in the file, and is unbound when the file binds it nowhere. Each reference is counted once, on the innermost body that holds it.
+ >>[2026-11-13 12:55] verify — Fixture of three bodies (bound and used in one body, bound in a sibling, bound nowhere) read stay 1, out 1, unbound 1, and a nested use read out on the inner body only.
+ >>[2026-11-13 12:55] observe — Measured over 1,312 tracked .spw files (git ls-files, without _archive, node_modules and .claude): 32,155 bodies, 10 of them loose. Path refs out per body: 75.3% of bodies have none, median 0, ninetieth percentile 1, ninety-ninth 6, maximum 50; sum 15,924, and with the 186 written outside any body that is the 16,110 the files hold. Name references: 3,183 written, 2,498 out, 1 stays, 655 unbound, 29 outside any body; 98.2% of bodies have none out, median 0, maximum 243.
+ >>[2026-11-13 12:55] observe — The same count without .spw/caches, which is generated: 643 files, 10,692 bodies, 85.7% with no path ref out, median 0, ninety-ninth percentile 9, maximum 50, sum 5,258; names 2,261 out and 1 stays; 81.4% of bodies have neither kind out. The two largest bodies by names out are in .agents/plans/index.spw (243 and 242), a generated table.
+ >>[2026-11-13 12:55] surprise — Of 2,499 name references whose binding the file holds, one is used in the body that binds it. A body in these surfaces does not bind the names it uses: handles are bound in one frame and used in the others. So a share let through is near 1 for every body that has names at all, and the quantity that varies is the count out, not a ratio.
+ >>[2026-11-13 12:55] note — Breaks, where body outbound stops being like flux. No gradient: no body carries an amplitude, so permeability times gradient has nothing to multiply. No sign: only out is counted, and in needs a target resolved to a body. Not conserved: writing a reference adds one out and takes nothing from anywhere. Does not add under nesting: counted on every enclosing body the path refs sum to 25,907 against 15,924 written, and only the innermost count sums to the file. Path refs are out by definition and names are out by test, so the two columns are kept apart and never summed into one number.
+ >>[2026-11-13 12:55] revise — Six planned commits added ahead of evidence_packets, one change each with its proof: count_body_outbound, outbound_sums_to_file, outbound_in_measure, outbound_dimension, inbound_by_anchor, outbound_host_packet. Card next and next_commit now name count_body_outbound; populate_pair_labels keeps its place and its question. Opened outbound_columns and outbound_host.
 }
 
 ^["open"]{
  ?[rotation_algebra]: "MOBILITY_RULES holds 23 rules and only 10 declare an inverse; which of the other 13 are lossy projections that must say so in their receipt, and which are merely unpaired?"
  ?[pair_labels_ast]: "Should the container grammar populate openLabel/closeLabel on Frame, Body and Scope now (the fields exist in types/ast/nodes.ts, nothing sets them), or wait for parser-to-ONF goldens of pair identity?"
+ ?[outbound_columns]: "Does body outbound keep path refs and name references as two columns (path refs are out by definition, names by test), or does the owner want one number; and do generated surfaces (.spw/caches, the plan index) count in the figure a host is shown?"
+ ?[outbound_host]: "Which host reads the count first: a canvas host that already keeps position, velocity, heat and a sentence per tie, or the spoken form; and on the canvas, is a region the same thing as a brace body, so that a tie with its ends in two regions is one outbound reference?"
 }
 
 ^["resolved"]{
@@ -172,10 +184,16 @@
  .[delegate_parse_health](f96015fc): "&[analyzers] =measure[topography] — delegate parse health to Seed evidence"
  .[preserve_density_receipts](7471a4fd): "^seed[contours] =project[evidence] — preserve honest density receipts"
  .[contour_form_geometry](129a2d20): ".[theory] =contour[form-geometry] — ladders, swap grace, range transform"
+ ~[count_body_outbound]: "^seed[experimental] — bodyOutbound(source) beside pair-labels.ts gives, for every curly pair of scanPairLabels (whole and loose), the path refs and the name references written in it, each on the innermost body; proof: the three-body fixture reads stay 1, out 1, unbound 1"
+ ~[outbound_sums_to_file]: "![seed] — law over generated nestings: per-body counts plus the references outside any body equal the file's written totals, and a count taken on every enclosing body does not; count: 15,924 + 186 = 16,110 path refs over this repo's tracked surfaces"
+ ~[outbound_in_measure]: "&[cli] — spw measure prints bodies, the share with nothing out, and the body with the most out by line, path refs and names in separate columns; count: without .spw/caches this repo reads 10,692 bodies and 81.4% with nothing out"
+ ~[outbound_dimension]: "vocab[seed] — one CouplingSemanticsProfile of status measured over body alone, with one dimension outbound_refs (number, unit references, method bodyOutbound, falsifier: per-body counts that do not sum to the file); proof: validateCouplingSemanticsProfile returns no issues and the profile holds no physical word"
+ ~[inbound_by_anchor]: "^seed[experimental] — a path ref with a fragment resolves to the body that follows the named anchor, so a body gains an inbound count and a reference has two ends; proof: a two-file fixture; count: the share of fragment refs that resolve, with the rest listed"
+ ~[outbound_host_packet]: "&[cli] — one JSON list (file, open line, path refs out, names out) a host can join to what it already keeps; proof: on one canvas host surface the ties with ends in two bodies equal the summed outbound, or the receipt lists each difference; waits on ?[outbound_host]"
  ~[evidence_packets]: "^seed[lsp,query] =sample[topographic-evidence] — exact-first read-only evidence packets over the existing topography-probe.ts scanner (confirm first what spw-probes.ts already returns)"
  ~[hydration_planner]: "&[runtime,cli] =plan[hydration] — compile abstract sequences into previewable effect plans; no hydration planner exists yet (spw emit hydrates templates only)"
  ~[verify_invariants]: "![topography] *verify[semantics,portability,cost] — invariants and negative controls, including the unpaired MOBILITY_RULES of ?[rotation_algebra]"
- ~[populate_pair_labels]: "^seed[grammar] =populate[pair-labels] — set openLabel/closeLabel on Frame, Body and Scope with a parser-to-ONF golden (the card's next move; blocked on ?[pair_labels_ast])"
+ ~[populate_pair_labels]: "^seed[grammar] =populate[pair-labels] — set openLabel/closeLabel on Frame, Body and Scope with a parser-to-ONF golden (blocked on ?[pair_labels_ast])"
 }
 
 ^["done"]{
@@ -188,9 +206,9 @@
  ~#rebased_at: "2026-08-24"
  ~#hygiene_split: "kernel-landed-editor-open"
  ~#files_hot: "packages/spw-seed/src/canonical/form-geometry.ts, packages/spw-seed/src/types/coupling.ts, packages/spw-cli/src/pulse.ts, docs/theory/spw/form-geometry.spw, .agents/plans/form-geometry-editor/PLAN.md"
- ~#next_commit: "evidence_packets"
- ~#open_count: "2"
- ~#last_stream: "2026-11-12 15:01"
+ ~#next_commit: "count_body_outbound"
+ ~#open_count: "4"
+ ~#last_stream: "2026-11-13 12:55"
  ~#taste_debt: "Pair labels still desugar-surface and the editor does not yet project formContext. Gap-class semantics and format-policy migrations are delegated to gap-affinity-tooling."
 }
 

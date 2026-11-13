@@ -11,7 +11,7 @@
  gist: "Measures declare an evaluation scheme, so exact mass and fuzzy invariants share one reconcile loop."
  touches: [~"packages/spw-seed/src/canonical/measure-protocol.ts", ~"packages/spw-seed/src/canonical/self-mass.ts", ~"packages/spw-cli/src/mass.ts", ~"packages/spw-cli/src/authority.ts"]
  entry: ~"./measure-invariant-generalization.spw"
- next: "Route self-mass through EvalScheme with exact, drift, unknown and tolerance controls; keep runtime measurement effects and write authority separate."
+ next: "~[mass_refuses_short_read]: bytes: 8kb, lines: 1e3 and lines: -240 read unmeasurable instead of 8, 1 and 240, with tests that applyMassCorrections leaves each source byte for byte."
 }
 
 ^["edges"]{
@@ -134,12 +134,18 @@
  >>[2026-10-12 19:07] observe — The quest preset (3f2e2082) declares the first real @self with %mass in a consumer scaffold, and 77599452 makes spw measure resolve that target from the consumer root in a mounted run. declare_canon_mass is still open: no canon surface in this repository declares one.
  >>[2026-10-19 16:35] revise — Theory review distinguishes register measurement, file declarations and metric reconciliation. Strengthen route_self_mass_schemes acceptance without treating landed foundations as completed integration.
  >>[2026-10-27 10:20] observe — measures-and-handles.spw in the caches tree (now @percent_profiles) names three profiles of the percent sign: a unit-interval measure in canon, an unbounded world quantity in the caches cut, and the count family that holds %mass in measure-context.spw. It is the theory row taste_debt asks for before plugin hovers; its quantity_noun question (one sigil with profiles, or a quantity noun for unit-bearing cells) stays open.
+ >>[2026-11-13 12:56] observe — How %mass reads a declared number today, run at 61ac9bb6 with npx tsx against readMassDeclarations, reconcileMass and applyMassCorrections over a subject of 120 lines and 240 bytes. A value counts only when it is one bare NUMBER literal (self-mass.ts, the check on token type). density: 0.18 is read as 0.18. scheme: exact and scheme: tol{ abs: 5 } both land in otherKeys, so the scheme key itself reads unmeasurable. lines: 100..140 lands in otherKeys too, so a band written as a range on the value is not read.
+ >>[2026-11-13 12:56] surprise — The lexer splits a number from what is written tight against it, and %mass then takes the short number as the declaration. bytes: 8kb declares 8, lines: 1e3 declares 1, and lines: -240 declares 240 after one lexer error. Each reconciles as drift, and applyMassCorrections rewrites only the digits: 8kb becomes 240kb, 1e3 becomes 120e3, -240 becomes -120. That is a silent agreement followed by a wrong write, which the risk model here lists as a hard failure. The 2026-10-12 probe found no surface in this repository declaring %mass, so nothing is known to have been rewritten this way.
+ >>[2026-11-13 12:56] verify — reconcileMetric called directly at 61ac9bb6. Under tol with abs 5, 100 against 104 is match and 100 against 106 is drift. Under band 0 to 20, an observed 20 is band_ok and 21 is drift. Under ratio with its default 0.9 to 1.1, 100 against 120 is soft_miss, the only scheme that returns it. A profile scheme and an unknown id return scheme_mismatch. PLAN.md says in its demo sequence that a tol miss is soft_miss and refuses --write, which the code does not do. measure-protocol.test.ts holds one scheme test, exact twice and one tol match; no test holds a boundary.
+ >>[2026-11-13 12:56] revise — route_self_mass_schemes is split into five named commits, one control each, since the 2026-10-19 entry asked for exact, drift, unknown and tolerance controls and one commit could not show which of them failed. mass_refuses_short_read goes first: it needs no owner choice and closes the wrong write above. Two of the five wait on new open questions, tol_miss_verdict and band_spelling. Number forms themselves (a sign, an exponent, a unit as one token) are not this plan: they are p18 in syntax-hardware-alignment, and this plan only refuses what it cannot read whole.
 }
 
 ^["open"]{
  ?[facet_shape]: "Should the scheme be a key inside one %mass body or a distinct %measure / %invariant facet? Decide before ~[invariant_template_loader] adds a loader, because it fixes what the loader parses."
  ?[profile_table]: "Where do named eval profiles live — .spw/tuning (holds only corpus/corpus-policy.spw today), seed defaults, or host config? Until it is answered, reconcileMetric in measure-protocol.ts returns scheme_mismatch for a profile scheme, as it does for prior."
  ?[placeholder]: "Formalize &_label subject holes now? The corpus has 10 &_ uses, the first three in docs/research/probes/seeds/grok-compiler-v0.1.spw; is that enough demand or does it wait for ONF hole discipline?"
+ ?[tol_miss_verdict]: "Is a miss under tol a drift, as reconcileMetric returns today, or a soft_miss, as the demo sequence in PLAN.md says? It decides whether spw measure --write may correct a number declared under tol. Answer before ~[mass_tol_scheme]."
+ ?[band_spelling]: "Is a band written as a range on the value (lines: 100..140, two numbers joined by .. to the parser today), as a scheme facet (scheme: band{ lo: 100, hi: 140 }), or either? Today the first reads unmeasurable and the second is not read. wonder_trial_number_forms holds the range form. Answer before ~[mass_band_scheme]."
  ?[corpus_declaration_probe]: "After ~[declare_canon_mass], does spw measure over .spw, docs, prompts and .agents report at least one subject declaring @self with %mass (it reports 0 on 2026-10-12)? Tracked at ~\"../lukewarm-backlog/wip.spw\" ?[mass_undeclared]."
 }
 
@@ -148,7 +154,11 @@
  .[eval_scheme_types](08e2bc1c): "&[canon-rewrite-v2] — land tip capability on upstream; phase 0 field clocks (with plan_artifacts)"
  .[authority_extract_plugs](08e2bc1c): "&[canon-rewrite-v2] — land tip capability on upstream; phase 0 field clocks (with plan_artifacts)"
  .[measure_kernel_theory](08e2bc1c): "&[canon-rewrite-v2] — land tip capability on upstream; phase 0 field clocks (with plan_artifacts)"
- ~[route_self_mass_schemes]: "![seed] — route self-mass verdicts through reconcileMetric/EvalScheme (self-mass.ts declares itself 'not the measure kernel' and mass.ts calls reconcileMass directly), with tests"
+ ~[mass_refuses_short_read]: "![seed] — a declared number with something written tight against it (8kb, 1e3, a minus) is unmeasurable and never read short; proof: self-mass tests where bytes: 8kb, lines: 1e3 and lines: -240 each give unmeasurable and applyMassCorrections returns the source byte for byte, with the existing self-mass tests unchanged"
+ ~[mass_exact_through_metric]: "![seed] — reconcileMass asks reconcileMetric under the exact scheme for lines and bytes, so mass and the kernel share one comparison (self-mass.ts calls itself not the measure kernel and mass.ts calls reconcileMass directly); proof: a parity test over generated declared and measured pairs returns the same match, drift, undeclared and unmeasurable as before"
+ ~[mass_scheme_key_read]: "^seed[seed] — after ?[facet_shape]: scheme: exact in a %mass body is read as the scheme and leaves the unmeasurable list, and a word no scheme owns gives scheme_mismatch, never exact; proof: tests for the scheme absent, exact and unknown"
+ ~[mass_tol_scheme]: "^seed[seed] — after ?[tol_miss_verdict]: scheme: tol{ abs: 5 } is read and handed to reconcileMetric; proof: boundary tests at the tolerance and one past it (100 against 105 and 106) and a rel test at a declared zero"
+ ~[mass_band_scheme]: "^seed[seed] — after ?[band_spelling]: a band is read in the spelling the owner picks; proof: boundary tests at lo, at hi and one outside each"
  ~[invariant_template_loader]: "vocab[seed] — invariant template loader for approx assertions (needs ?[facet_shape])"
  ~[refuse_inexact_write]: "&[cli] — spw measure refuses --write off the exact scheme (the command is already spw measure with mass and thrift aliases)"
  ~[clone_experience_hooks]: ".[spw] — claim-protocol and tooling hooks for clone experience"
@@ -158,6 +168,7 @@
 
 ^["done"]{
  ~#resolved(cli_name): "Extend spw mass vs add spw measure for non-file metrics? — the command is spw measure with mass and thrift aliases; evidence: packages/spw-cli/src/commands.ts name measure"
+ ~#dropped(route_self_mass_schemes): "split into mass_refuses_short_read, mass_exact_through_metric, mass_scheme_key_read, mass_tol_scheme and mass_band_scheme, one control each; evidence: stream 2026-11-13 12:56 revise"
  # In 08e2bc1c: .[eval_scheme_types] is EvalScheme + reconcileMetric (measure-protocol.ts), .[authority_extract_plugs] is authority-extract.ts, .[measure_kernel_theory] is docs/theory/spw/measure-context-kernel.spw
 }
 
@@ -167,9 +178,9 @@
  ~#rebased_at: "2026-10-12"
  ~#hygiene_split: "exclude untracked package *.d.ts noise"
  ~#files_hot: "packages/spw-seed/src/canonical/self-mass.ts, packages/spw-cli/src/mass.ts, packages/spw-seed/src/canonical/authority.ts"
- ~#next_commit: "route_self_mass_schemes"
- ~#open_count: "4"
- ~#last_stream: "2026-10-27 10:20"
+ ~#next_commit: "mass_refuses_short_read"
+ ~#open_count: "6"
+ ~#last_stream: "2026-11-13 12:56"
  ~#taste_debt: "runtime % vs surface %mass naming still dual-product; @percent_profiles names the profiles, but no canon row settles them before plugin hovers"
 }
 
