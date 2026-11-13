@@ -915,6 +915,10 @@ export type {
   PairSound,
   PairSoundSettings,
   RenderOptions,
+  EarconProblem,
+  EarconReading,
+  EarconWord,
+  PairMove,
 } from './experimental'
 export {
   SYNTAX_CATALOG,
@@ -962,6 +966,11 @@ export {
   renderPairSound,
   renderPhrase,
   wavBytes,
+  EARCON_WORDS,
+  EARCONS_SCHEMA,
+  pairMoves,
+  readEarcons,
+  writeEarcons,
 } from './experimental'
 
 // Query (spw.q dialect)

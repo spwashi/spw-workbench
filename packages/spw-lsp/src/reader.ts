@@ -25,6 +25,9 @@ export type { SlotReading, SlotSpan, LineChange, SlotHash, SlotKey, BondName } f
 export { spokenLine, unsaid, SPOKEN_NAMES, SPOKEN_NAMES_SITE, SPOKEN_SCHEMA } from '@spwashi/spw-seed'
 export { scanPairLabels, pairLabelsAround, pairSound, renderClick, renderPairSound, renderPhrase, wavBytes, labelTimbre, PAIR_SOUND } from '@spwashi/spw-seed'
 export type { SpokenLine, SpokenClause, SpokenNames, SpokenOptions, PairLabelScan, PairClick, PairSound } from '@spwashi/spw-seed'
+// The brace sound tuned in one line of Spw, and the pairs a caret leaves and enters. Experimental.
+export { readEarcons, writeEarcons, pairMoves, EARCON_WORDS } from '@spwashi/spw-seed'
+export type { EarconReading, EarconProblem, PairMove, PairSoundSettings } from '@spwashi/spw-seed'
 
 /** One token of the role stream, with its role and modifiers by name. */
 export interface RoleSpan {

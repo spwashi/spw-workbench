@@ -32,5 +32,7 @@ export { PAIR_LABELS_SCHEMA, scanPairLabels, pairLabelsAround } from './experime
 export type { BraceEdge, BracePair, PairLabelScan } from './experimental/pair-labels'
 export { PAIR_SOUND, PAIR_SOUND_SCHEMA, labelTimbre, pairSound, renderClick, renderPairSound, renderPhrase, wavBytes } from './experimental/pair-sound'
 export type { PairClick, PairSound, PairSoundSettings } from './experimental/pair-sound'
+export { EARCON_WORDS, EARCONS_SCHEMA, pairMoves, readEarcons, writeEarcons } from './experimental/earcons'
+export type { EarconProblem, EarconReading, PairMove } from './experimental/earcons'
 export type { Token } from './types'
 export type { ASTNode } from './types/ast'

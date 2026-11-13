@@ -282,6 +282,27 @@ describe('bundle:parser --allow-dirty into a temp directory', () => {
     }
   })
 
+  it('reader tunes the brace sound from one line of Spw and says which pairs a caret leaves and enters', async () => {
+    for (const form of ['min', 'debug']) {
+      const reader = await importBundle<{
+        readEarcons: (text: string) => { settings: { pitch: Record<string, number>; rough: number }; problems: unknown[] }
+        writeEarcons: (settings: unknown) => string
+        scanPairLabels: (text: string) => unknown
+        pairMoves: (scan: unknown, from: number, to: number, settings?: unknown) => { left: Array<{ pair: { label?: string } }>; entered: Array<{ pair: { label?: string }; click: { pitch: number } }> }
+      }>(path.join(releaseDir, `reader.${form}.js`))
+      const line = '^earcons{ .body[300] .rough[off] }'
+      const reading = reader.readEarcons(line)
+      assert.deepEqual(reading.problems, [])
+      assert.equal(reading.settings.pitch['{'], 300)
+      assert.equal(reading.settings.rough, 0)
+      assert.equal(reader.writeEarcons(reading.settings), line)
+      const text = '{_A x {_B y }_A z }_B'
+      const moves = reader.pairMoves(reader.scanPairLabels(text), 0, text.indexOf('y'), reading.settings)
+      assert.deepEqual(moves.entered.map((e) => e.pair.label), ['A', 'B'])
+      assert.equal(Math.round(moves.entered[0].click.pitch), 300)
+    }
+  })
+
   it('workbench runs a program, hashes as node:crypto does, and reads a file', async () => {
     for (const form of ['min', 'debug']) {
       const workbench = await importBundle<{

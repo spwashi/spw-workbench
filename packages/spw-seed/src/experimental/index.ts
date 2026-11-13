@@ -72,3 +72,5 @@ export {
   renderPhrase,
   wavBytes,
 } from './pair-sound'
+export type { EarconProblem, EarconReading, EarconWord, PairMove } from './earcons'
+export { EARCON_WORDS, EARCONS_SCHEMA, pairMoves, readEarcons, writeEarcons } from './earcons'

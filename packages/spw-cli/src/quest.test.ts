@@ -40,7 +40,8 @@ describe('spw quest', () => {
     expect([...order].sort((a, b) => a - b)).toEqual(order)
   })
 
-  it('passes every try and then line on its own check', async () => {
+  // Each line runs the CLI once; the whole walk takes about 1.4 s alone and passed 5 s only narrowly under a full suite.
+  it('passes every try and then line on its own check', { timeout: 30_000 }, async () => {
     for (const step of steps.filter(s => s.check !== 'commands_pass')) {
       for (const line of [step.try, ...step.then]) {
         const { exitCode, out } = await quest('--check', step.id, line)

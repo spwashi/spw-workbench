@@ -4,6 +4,30 @@ This is the consumer-facing record of material workbench changes. `Unreleased` e
 
 Version-local release records remain under `lib/spw-v*/CHANGELOG.md`. Commit `#[episode]{ ... }` blocks are the detailed engineering history behind these summaries.
 
+## 2026-11-13 — parser release 2026.11.13 (prepared, not yet cut)
+
+What a host gets by moving its pin from `9ef3d223`, or by importing the dated release's `reader.min.js`. Everything marked experimental may change its contract id, and none of the sound or speech has been heard by a listener yet.
+
+### Reading a line aloud and by ear (experimental)
+
+- `spokenLine` (`spw.spoken/1`) says one line in the names of its parts: `~garden[care]{seed, water}` → `potential garden, mode care, definition, list of 2: seed, water`. Joins are named, so lines that differ only in their join are said differently. A nested body says where it ends, and a pair label is said on both ends. Every clause carries the span it says. Every word comes from a table a host may replace (`SPOKEN_NAMES`, `SPOKEN_NAMES_SITE`). Over three corpora, no written character goes unsaid.
+- `pairSound` (`spw.pair-sound/1`) gives every brace a click. Kind sets the pitch, depth lowers it and a pair label sets the timbre. A close is its open backward, and an edge with no partner carries a rough tone. A stretch is bounded by a start phrase and the same phrase backward. `renderClick`, `renderPairSound` and `wavBytes` are arithmetic and touch no audio interface. `npm run sound:pairs` writes a WAV file to listen to.
+- `readEarcons` / `writeEarcons` (`spw.earcons/1`) tune that sound in one line of Spw: `^earcons{ .body[392] .frame[523] .scene[659] .step[2] .ms[45] .rough[off] }`. Every number is held to a range, and every word the reader cannot use is reported. A line written and read again gives the same settings.
+- `pairMoves(scan, from, to)` lists, for a caret that moves, the pairs it left (innermost first, with each close's click) and entered (outermost first, with each open's click), and the innermost pair it sits in. An editor or a page plays exits and enters from it, and holds an aura on the pair it sits in.
+
+### Pair labels (experimental)
+
+- `scanPairLabels` (`spw.pair-labels/1`) reads `{_label … }_label` and the mirrored close `{_label … lebal_}` beside the parser, without changing any parse. A label makes a class, so labeled pairs may overlap. Each crossing is listed, a forward and a backward scan return the same pairs on any text, and a missing labeled close loses only its own pair. `pairLabelsAround` says which labeled spans cover an offset.
+
+### Fixes a host will notice
+
+- The caret lookup behind the editor's form hover and `formAt` now walks a postfix `(scope)` and `<capsule>`. A caret inside `@(topic)` found nothing before.
+- The slot reader (`readLine`) no longer cuts a body at a dot that leads a word after a gap, as in `^kept{ .day[x] .chapter[y] }`. Before, it read those as a tight join and dropped the mark. Lines read differently: 4 of 172,022 here, 198 of 17,267 and 13 of 225,487 in two mounted consumers, and none of one consumer's 1,012 page expressions.
+
+### Browser bundles
+
+- `reader.min.js` now also exports the slot reader's sayer, the pair-label scan, the brace sound and the earcons, beside `roles`, `outline`, `anchors`, `highlightHtml` and `readLine`. A host whose own bundle names its exports (a story consumer exports only `parse` and `readBias`) adds the names it wants.
+
 ## Unreleased — development snapshot, 2026-08-24
 
 ### Source fidelity and intermediate products
