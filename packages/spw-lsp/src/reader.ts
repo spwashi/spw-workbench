@@ -27,6 +27,9 @@ export { scanPairLabels, pairLabelsAround, pairSound, renderClick, renderPairSou
 export type { SpokenLine, SpokenClause, SpokenNames, SpokenOptions, PairLabelScan, PairClick, PairSound } from '@spwashi/spw-seed'
 // The brace sound tuned in one line of Spw, and the pairs a caret leaves and enters. Experimental.
 export { readEarcons, writeEarcons, pairMoves, EARCON_WORDS } from '@spwashi/spw-seed'
+// The modal voice's tables and events, for a host that renders with its own audio graph instead of samples.
+export { TEXTURES, labelPhrase, modalEvents, MODAL_LEVEL_DB } from '@spwashi/spw-seed'
+export type { ModalEvent, Texture } from '@spwashi/spw-seed'
 export type { EarconReading, EarconProblem, PairMove, PairSoundSettings } from '@spwashi/spw-seed'
 
 /** One token of the role stream, with its role and modifiers by name. */

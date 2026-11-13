@@ -919,6 +919,8 @@ export type {
   EarconReading,
   EarconWord,
   PairMove,
+  ModalEvent,
+  Texture,
 } from './experimental'
 export {
   SYNTAX_CATALOG,
@@ -971,6 +973,12 @@ export {
   pairMoves,
   readEarcons,
   writeEarcons,
+  MODAL_LEVEL_DB,
+  PHRASE_LADDER,
+  TEXTURES,
+  labelPhrase,
+  modalEvents,
+  renderModalClick,
 } from './experimental'
 
 // Query (spw.q dialect)

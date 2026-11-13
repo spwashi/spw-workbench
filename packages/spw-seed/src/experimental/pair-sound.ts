@@ -30,6 +30,7 @@
  */
 
 import type { BraceEdge, BraceKind, PairLabelScan } from './pair-labels'
+import { renderModalClick } from './modal-sound'
 
 export const PAIR_SOUND_SCHEMA = 'spw.pair-sound/1' as const
 
@@ -51,6 +52,13 @@ export interface PairSoundSettings {
   rough: number
   /** The start phrase, in hertz, each note one click long; the stop phrase is the same notes backward. */
   phrase: readonly number[]
+  /**
+   * Which voice renders a click: the first voice (a tone and overtones, a close its open backward), or the
+   * modal voice (modal-sound.ts: kind as a texture, a label as a phrase, a struck close, one level). Absent is the first.
+   */
+  voice?: 'click' | 'modal'
+  /** The modal voice's level, RMS in dB of full scale. Absent is MODAL_LEVEL_DB. */
+  level?: number
 }
 
 export const PAIR_SOUND: PairSoundSettings = Object.freeze({
@@ -74,6 +82,8 @@ export interface PairClick {
   /** Whether the edge found its partner. */
   paired: boolean
   depth: number
+  /** Lines from the pair's open to its close; 0 on one line and on an edge with no partner. */
+  span: number
   /** The pure tone, in hertz. */
   pitch: number
   /** Strength of each overtone above the pure tone, 0 to 1: the label's timbre. All zero on a bare pair. */
@@ -120,10 +130,13 @@ export function labelTimbre(label?: string): number[] {
 /** The clicks of a scan, in source order, with the phrases that bound them. */
 export function pairSound(scan: PairLabelScan, settings: PairSoundSettings = PAIR_SOUND): PairSound {
   const depthAt = new Map<number, number>()
+  const spanAt = new Map<number, number>()
   const paired = new Set<number>()
   for (const pair of scan.pairs) {
     depthAt.set(pair.open.at, pair.depth)
     depthAt.set(pair.close.at, pair.depth)
+    spanAt.set(pair.open.at, pair.close.line - pair.open.line)
+    spanAt.set(pair.close.at, pair.close.line - pair.open.line)
     paired.add(pair.open.at)
     paired.add(pair.close.at)
   }
@@ -139,6 +152,7 @@ export function pairSound(scan: PairLabelScan, settings: PairSoundSettings = PAI
       ...(edge.label ? { label: edge.label } : {}),
       paired: paired.has(edge.at),
       depth,
+      span: spanAt.get(edge.at) ?? 0,
       pitch: settings.pitch[edge.kind] * 2 ** (-steps / 12),
       timbre: labelTimbre(edge.label),
       seconds: settings.seconds,
@@ -174,8 +188,9 @@ function strike(pitch: number, timbre: readonly number[], rough: number, seconds
   return out
 }
 
-/** The samples of one click. A close is its open's samples backward. */
+/** The samples of one click. In the first voice a close is its open's samples backward; =voice[modal] renders it as modal-sound.ts says. */
 export function renderClick(click: PairClick, sampleRate = 44100, settings: PairSoundSettings = PAIR_SOUND): Float32Array {
+  if (settings.voice === 'modal') return renderModalClick(click, sampleRate, settings)
   const out = strike(click.pitch, click.timbre, click.paired ? 0 : settings.rough, click.seconds, click.gain, settings.decay, sampleRate)
   return click.edge === 'close' ? out.reverse() : out
 }

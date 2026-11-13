@@ -13,6 +13,15 @@ What a host gets by moving its pin from `9ef3d223`, or by importing the dated re
 - `spokenLine` (`spw.spoken/1`) says one line in the names of its parts: `~garden[care]{seed, water}` → `potential garden, mode care, definition, list of 2: seed, water`. Joins are named, so lines that differ only in their join are said differently. A nested body says where it ends, and a pair label is said on both ends. Every clause carries the span it says. Every word comes from a table a host may replace (`SPOKEN_NAMES`, `SPOKEN_NAMES_SITE`). Over three corpora, no written character goes unsaid.
 - `pairSound` (`spw.pair-sound/1`) gives every brace a click. Kind sets the pitch, depth lowers it and a pair label sets the timbre. A close is its open backward, and an edge with no partner carries a rough tone. A stretch is bounded by a start phrase and the same phrase backward. `renderClick`, `renderPairSound` and `wavBytes` are arithmetic and touch no audio interface. `npm run sound:pairs` writes a WAV file to listen to.
 - `readEarcons` / `writeEarcons` (`spw.earcons/1`) tune that sound in one line of Spw: `^ear{ %body[392] %frame[523] %scene[659] %step[2] %ms[45] =rough[off] }`, with a number led by `%` and a choice by `=` as a story consumer's board line writes them, so one `^ear` line can carry that host's textures beside these settings. Every number is held to a range, and every word the reader cannot use is reported. A line written and read again gives the same settings.
+- `=voice[modal]` picks a second voice for those clicks, modelled on struck objects, with every number measured on rendered samples:
+  - kind is a texture (a bar, a string, a drum skin), so no two kinds share a click; the first voice had a `[ ]` at one depth equal to a `( )` two deeper;
+  - every bare click holds at least 0.85 of its energy between 300 and 3,000 Hz, where the first voice's lowest held 0.027;
+  - every click is set to one level (`%level`, default −24 dB RMS), where the first voice's clicks spread 7 dB;
+  - a close is struck and damped, holding over half its energy in its first 10 ms where the first voice's held none;
+  - a pair label is a phrase of up to three notes, and a close plays its open's events backward.
+
+  Without the word, every click renders exactly as before. Nobody has heard either voice.
+- Each click now carries `span`, the lines from its pair's open to its close.
 - `pairMoves(scan, from, to)` lists, for a caret that moves, the pairs it left (innermost first, with each close's click) and entered (outermost first, with each open's click), and the innermost pair it sits in. An editor or a page plays exits and enters from it, and holds an aura on the pair it sits in.
 
 ### Pair labels (experimental)

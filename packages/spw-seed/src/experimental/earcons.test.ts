@@ -22,12 +22,13 @@ describe('readEarcons', () => {
     expect(writeEarcons(PAIR_SOUND)).toBe('^ear{}')
     // Written whole, the default line names every word, so a listener sees what can be tuned.
     const whole = writeEarcons(PAIR_SOUND, { all: true })
-    expect(readEarcons(whole).set).toEqual(Object.keys(EARCON_WORDS))
+    // The voice and its level are written only when set, so a line from before them reads the same.
+    expect(readEarcons(whole).set).toEqual(Object.keys(EARCON_WORDS).filter((w) => w !== 'voice' && w !== 'level'))
     expect(readEarcons(whole).settings).toEqual(PAIR_SOUND)
   })
 
   it('tunes every setting from one line', () => {
-    const reading = readEarcons('^ear{ %body[300] %frame[400] %scene[500] %step[3] %deepest[4] %ms[60] %decay[7] %gain[0.4] =rough[off] %phrase[440, 550] }')
+    const reading = readEarcons('^ear{ %body[300] %frame[400] %scene[500] %step[3] %deepest[4] %ms[60] %decay[7] %gain[0.4] =rough[off] %phrase[440, 550] =voice[modal] %level[-18] }')
     expect(reading.problems).toEqual([])
     expect(reading.set).toEqual(Object.keys(EARCON_WORDS))
     expect(reading.settings).toEqual({
@@ -39,7 +40,10 @@ describe('readEarcons', () => {
       gain: 0.4,
       rough: 0,
       phrase: [440, 550],
+      voice: 'modal',
+      level: -18,
     })
+    expect(readEarcons('^ear{ =voice[organ] }').problems.map((p) => p.problem)).toEqual(['not_a_choice'])
   })
 
   it('reads a term led by %, = or a dot, a binding, and a line laid over three lines alike', () => {
@@ -99,6 +103,7 @@ describe('readEarcons', () => {
         gain: pick(0, 1),
         rough: rand() < 0.2 ? 0 : pick(1.01, 4),
         phrase: Array.from({ length: Math.floor(rand() * 7) }, () => pick(40, 4000)),
+        ...(rand() < 0.5 ? { voice: rand() < 0.5 ? ('click' as const) : ('modal' as const), level: pick(-40, -6) } : {}),
       }
       for (const all of [false, true]) {
         const line = writeEarcons(settings, { all })

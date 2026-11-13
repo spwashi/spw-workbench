@@ -303,6 +303,27 @@ describe('bundle:parser --allow-dirty into a temp directory', () => {
     }
   })
 
+  it('reader renders the modal voice an ear line picks, and gives its events to a host that renders its own', async () => {
+    for (const form of ['min', 'debug']) {
+      const reader = await importBundle<{
+        readEarcons: (text: string) => { settings: { voice?: string } }
+        scanPairLabels: (text: string) => unknown
+        pairSound: (scan: unknown, settings?: unknown) => { clicks: unknown[] }
+        renderPairSound: (sound: unknown, options?: unknown) => Float32Array
+        modalEvents: (click: unknown, settings: unknown) => Array<{ role: string; hertz: number }>
+        TEXTURES: Record<string, { name: string }>
+      }>(path.join(releaseDir, `reader.${form}.js`))
+      const settings = reader.readEarcons('^ear{ =voice[modal] }').settings
+      assert.equal(settings.voice, 'modal')
+      const sound = reader.pairSound(reader.scanPairLabels('{_kept x }_kept'), settings)
+      const [open, close] = sound.clicks
+      const forward = reader.modalEvents(open, settings).map((e) => `${e.role}:${e.hertz}`)
+      assert.deepEqual(reader.modalEvents(close, settings).map((e) => `${e.role}:${e.hertz}`), [...forward].reverse())
+      assert.deepEqual(Object.values(reader.TEXTURES).map((t) => t.name), ['bar', 'string', 'membrane'])
+      assert.ok(reader.renderPairSound(sound, { settings }).length > 0)
+    }
+  })
+
   it('workbench runs a program, hashes as node:crypto does, and reads a file', async () => {
     for (const form of ['min', 'debug']) {
       const workbench = await importBundle<{

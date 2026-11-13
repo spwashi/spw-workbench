@@ -52,6 +52,8 @@ export const EARCON_WORDS = Object.freeze({
   gain: { range: [0, 1] as Range, says: 'the loudest a click may be' },
   rough: { range: [1.01, 4] as Range, says: 'the rough tone of an edge with no partner, as a ratio of its pitch; off for none' },
   phrase: { range: [40, 4000] as Range, says: 'the start phrase, up to six notes in hertz; the stop phrase is the same notes backward' },
+  voice: { range: [0, 0] as Range, says: 'which voice renders a click: click (the first) or modal (kind as a texture, a label as a phrase, a struck close, one level)' },
+  level: { range: [-40, -6] as Range, says: 'the modal voice\'s level, RMS in dB of full scale' },
 })
 
 export type EarconWord = keyof typeof EARCON_WORDS
@@ -60,7 +62,7 @@ export interface EarconProblem {
   word: string
   /** Where the word is written in the text. */
   at: number
-  problem: 'unknown_word' | 'not_a_number' | 'clamped' | 'too_many_notes' | 'repeated' | 'unread'
+  problem: 'unknown_word' | 'not_a_number' | 'not_a_choice' | 'clamped' | 'too_many_notes' | 'repeated' | 'unread'
   /** For clamped: what was written and what is used. */
   written?: string
   used?: number
@@ -144,6 +146,11 @@ function tune(
     settings.rough = 0
     return
   }
+  if (word === 'voice') {
+    if (value === 'click' || value === 'modal') settings.voice = value
+    else problems.push({ word, at, problem: 'not_a_choice', written: value })
+    return
+  }
   if (word === 'phrase') {
     const notes = value.split(/[\s,]+/).filter(Boolean)
     const read: number[] = []
@@ -172,6 +179,7 @@ function tune(
     case 'decay': settings.decay = used; break
     case 'gain': settings.gain = used; break
     case 'rough': settings.rough = used; break
+    case 'level': settings.level = used; break
   }
 }
 
@@ -213,6 +221,9 @@ export function writeEarcons(settings: PairSoundSettings, options: { base?: Pair
   put('gain', num(settings.gain), num(base.gain))
   put('rough', settings.rough ? num(settings.rough) : 'off', base.rough ? num(base.rough) : 'off')
   put('phrase', settings.phrase.map(num).join(', '), base.phrase.map(num).join(', '))
+  // The voice and its level are written only when set, so a line from before they existed reads back the same.
+  if (settings.voice !== undefined && (all || settings.voice !== base.voice)) out.push(`=voice[${settings.voice}]`)
+  if (settings.level !== undefined && (all || settings.level !== base.level)) out.push(`%level[${num(settings.level)}]`)
   const word = options.word ?? '^ear'
   return out.length ? `${word}{ ${out.join(' ')} }` : `${word}{}`
 }

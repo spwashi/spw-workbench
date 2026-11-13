@@ -34,5 +34,7 @@ export { PAIR_SOUND, PAIR_SOUND_SCHEMA, labelTimbre, pairSound, renderClick, ren
 export type { PairClick, PairSound, PairSoundSettings } from './experimental/pair-sound'
 export { EARCON_WORDS, EARCONS_SCHEMA, pairMoves, readEarcons, writeEarcons } from './experimental/earcons'
 export type { EarconProblem, EarconReading, PairMove } from './experimental/earcons'
+export { MODAL_LEVEL_DB, TEXTURES, labelPhrase, modalEvents } from './experimental/modal-sound'
+export type { ModalEvent, Texture } from './experimental/modal-sound'
 export type { Token } from './types'
 export type { ASTNode } from './types/ast'
