@@ -38,7 +38,7 @@ release/parser/<name>/
   full.debug.js.map     external map, linked by a relative sourceMappingURL
   lite.min.js           the scanner (packages/spw-seed/src/lite.ts) + SPW_PARSER_BUILD
   lite.debug.js(.map)
-  reader.min.js         roles, outline, anchors, highlightHtml, parse, parseExpression + SPW_PARSER_BUILD
+  reader.min.js         roles, outline, anchors, highlightHtml, the slot reader, spokenLine, pairSound, parse, parseExpression + SPW_PARSER_BUILD
   reader.debug.js(.map)
   workbench.min.js      seed's whole API, the runtime (runSpw, hot sessions), the reader, formAt and formHover + SPW_PARSER_BUILD
   workbench.debug.js(.map)
@@ -53,6 +53,8 @@ release/parser/<name>/
 - `outline(text)`: the document symbols the editor shows.
 - `anchors(text)`: each `#>name` and where the parser binds it.
 - `highlightHtml(text, { classPrefix })`: the file as escaped HTML, each role a span with classes such as `spw-keyword spw-declaration`. A site styles the classes; no colours are baked in.
+- `spokenLine(text, { names, ends, counts, word })`: one line said in the names of its parts, as `{ text, clauses, unread }`. `~garden[care]{seed, water}` gives `potential garden, mode care, definition, list of 2: seed, water`, a string for an accessible name or a text face. Each clause carries the span it says. `SPOKEN_NAMES` and `SPOKEN_NAMES_SITE` are the two word tables; a page may pass its own. Experimental (`spw.spoken/1`), and heard by nobody yet.
+- `scanPairLabels(text)`, `pairSound(scan)`, `renderPairSound(sound)`, `wavBytes(samples)`: a click for every brace, as numbers a page hands to an oscillator or as samples. A pair label sets the timbre, a close is its open backward, and an edge with no partner carries a rough tone. Experimental (`spw.pair-labels/1`, `spw.pair-sound/1`).
 
 `workbench` is everything that runs without node: seed's whole package (parsing, formatting, fingerprints, geometry, measures, quests), the runtime's root (`runSpw`, `createHotSession`, the pipeline), the reader functions, and caret form context: `formAt(text, { line, character })` returns the node, label, coupling, and mobility rewrites the editor's form hover reads, and `formHover` returns that hover as Markdown. Seed hashes with a synchronous SHA-256 over UTF-8 bytes (`sha256Hex`, the same digest node:crypto gives), so no stored hash changed when seed left node:crypto. The runtime's filesystem surface, mount resolution and composition evaluation, lives at `@spwashi/spw-runtime/node` and stays out. About 411 KB minified, 125 KB gzipped; `reader` stays the small choice for a page that only highlights.
 

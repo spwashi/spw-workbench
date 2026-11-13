@@ -11,6 +11,8 @@ const CHILD_PROPS = [
   'terms',
   'frame',
   'body',
+  'scope',
+  'capsule',
   'content',
   'annotations',
   'modifiers',

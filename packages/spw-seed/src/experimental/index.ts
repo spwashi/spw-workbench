@@ -57,3 +57,18 @@ export {
   scanBraceEdges,
   scanPairLabels,
 } from './pair-labels'
+
+export type { SpokenClause, SpokenLine, SpokenNames, SpokenOptions, SpokenRole } from './spoken'
+export { SPOKEN_NAMES, SPOKEN_NAMES_SITE, SPOKEN_SCHEMA, spokenLine, unsaid } from './spoken'
+export type { PairClick, PairSound, PairSoundSettings, RenderOptions } from './pair-sound'
+export {
+  OVERTONES,
+  PAIR_SOUND,
+  PAIR_SOUND_SCHEMA,
+  labelTimbre,
+  pairSound,
+  renderClick,
+  renderPairSound,
+  renderPhrase,
+  wavBytes,
+} from './pair-sound'

@@ -906,6 +906,15 @@ export type {
   PairLabelOptions,
   PairLabelScan,
   PairScanDirection,
+  SpokenClause,
+  SpokenLine,
+  SpokenNames,
+  SpokenOptions,
+  SpokenRole,
+  PairClick,
+  PairSound,
+  PairSoundSettings,
+  RenderOptions,
 } from './experimental'
 export {
   SYNTAX_CATALOG,
@@ -939,6 +948,20 @@ export {
   pairLabelsAround,
   scanBraceEdges,
   scanPairLabels,
+  SPOKEN_NAMES,
+  SPOKEN_NAMES_SITE,
+  SPOKEN_SCHEMA,
+  spokenLine,
+  unsaid,
+  OVERTONES,
+  PAIR_SOUND,
+  PAIR_SOUND_SCHEMA,
+  labelTimbre,
+  pairSound,
+  renderClick,
+  renderPairSound,
+  renderPhrase,
+  wavBytes,
 } from './experimental'
 
 // Query (spw.q dialect)

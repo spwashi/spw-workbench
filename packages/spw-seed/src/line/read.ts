@@ -279,9 +279,11 @@ function partsOf(source: string, start: number, end: number): { separator: Separ
   for (const separator of SEPARATORS) {
     const cuts: number[] = []
     for (let i = start; i <= end - separator.length; i++) {
-      // A tight dot is a part boundary; .. is a connector, not two of them.
+      // A tight dot is a part boundary; .. is a connector, not two of them. A dot with a gap
+      // on either side joins nothing: after a gap it is the ground mark leading a word (.day[x]).
       const range = separator === '.' && (source[i + 1] === '.' || source[i - 1] === '.')
-      if (top(i) && source.startsWith(separator, i) && !range) {
+      const loose = separator === '.' && (i === start || i + 1 >= end || SPACE.test(source[i - 1]) || SPACE.test(source[i + 1]))
+      if (top(i) && source.startsWith(separator, i) && !range && !loose) {
         cuts.push(i)
         i += separator.length - 1
       }

@@ -78,6 +78,20 @@ function operatorKind(node: ASTNode | null | undefined): string | null {
  * are adjacent expressions under one sequence rather than parent/child.
  */
 function adjacentPrefixOperator(path: ASTNode[], leaf: ASTNode): string | null {
+  // A scope written against an operator on the same line hangs on the expression that holds
+  // the operator: @(topic) is Expression{ terms: [Operation @], scope }. The nearest scope decides.
+  for (let i = path.length - 1; i >= 1; i--) {
+    if (path[i].type !== 'Scope') continue
+    const owner = path[i - 1] as { scope?: ASTNode; terms?: ASTNode[] }
+    if (owner.scope !== path[i] || !Array.isArray(owner.terms)) break
+    const last = owner.terms[owner.terms.length - 1]
+    if (isASTNode(last) && last.type === 'Operation') {
+      const kind = operatorKind(last)
+      if (kind === '@' || kind === '$') return kind
+    }
+    break
+  }
+
   for (let i = path.length - 1; i >= 1; i--) {
     const seq = path[i]
     if (seq.type !== 'Sequence') continue

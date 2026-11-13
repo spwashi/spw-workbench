@@ -21,6 +21,10 @@ export { parse, parseExpression } from '@spwashi/spw-seed'
 // Slot reading and slot hashing, for pages that lay a line out or rewrite one slot of it
 export { readLine, readAt, writeLine, writeAt, joinParts, slotHash, SLOT_KEYS, SLOT_NAMES, BONDS } from '@spwashi/spw-seed'
 export type { SlotReading, SlotSpan, LineChange, SlotHash, SlotKey, BondName } from '@spwashi/spw-seed'
+// A line said in names (an accessible name, a text face) and a click for every brace. Experimental.
+export { spokenLine, unsaid, SPOKEN_NAMES, SPOKEN_NAMES_SITE, SPOKEN_SCHEMA } from '@spwashi/spw-seed'
+export { scanPairLabels, pairLabelsAround, pairSound, renderClick, renderPairSound, renderPhrase, wavBytes, labelTimbre, PAIR_SOUND } from '@spwashi/spw-seed'
+export type { SpokenLine, SpokenClause, SpokenNames, SpokenOptions, PairLabelScan, PairClick, PairSound } from '@spwashi/spw-seed'
 
 /** One token of the role stream, with its role and modifiers by name. */
 export interface RoleSpan {

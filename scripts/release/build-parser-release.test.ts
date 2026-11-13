@@ -255,6 +255,33 @@ describe('bundle:parser --allow-dirty into a temp directory', () => {
     }
   })
 
+  it('reader says a line in names and gives its braces clicks a page can play', async () => {
+    for (const form of ['min', 'debug']) {
+      const reader = await importBundle<{
+        spokenLine: (text: string) => { text: string; unread: number; clauses: Array<{ role: string }> }
+        unsaid: (line: unknown) => number[]
+        scanPairLabels: (text: string) => { pairs: Array<{ label?: string }>; whole: boolean }
+        pairSound: (scan: unknown) => { clicks: Array<{ edge: string; label?: string; timbre: number[] }>; start: number[]; stop: number[] }
+        renderPairSound: (sound: unknown) => Float32Array
+        wavBytes: (samples: Float32Array) => Uint8Array
+      }>(path.join(releaseDir, `reader.${form}.js`))
+      const said = reader.spokenLine('~garden[care]{seed, water}')
+      assert.equal(said.text, 'potential garden, mode care, definition, list of 2: seed, water')
+      assert.deepEqual(reader.unsaid(said), [])
+      const kept = '^kept[thursday]{_thursday *kept_place{ ~warm[4] } yadsruht_}'
+      assert.match(reader.spokenLine(kept).text, /labeled thursday.*end thursday$/)
+      const scan = reader.scanPairLabels(kept)
+      assert.equal(scan.whole, true)
+      const sound = reader.pairSound(scan)
+      const labeled = sound.clicks.filter((click) => click.label === 'thursday')
+      assert.equal(labeled.length, 2)
+      assert.deepEqual(labeled[0].timbre, labeled[1].timbre)
+      assert.deepEqual(sound.stop, [...sound.start].reverse())
+      const bytes = reader.wavBytes(reader.renderPairSound(sound))
+      assert.equal(String.fromCharCode(...bytes.subarray(0, 4)), 'RIFF')
+    }
+  })
+
   it('workbench runs a program, hashes as node:crypto does, and reads a file', async () => {
     for (const form of ['min', 'debug']) {
       const workbench = await importBundle<{

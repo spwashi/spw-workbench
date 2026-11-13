@@ -25,6 +25,23 @@ export interface LineFixture {
 
 export const LINE_FIXTURES: readonly LineFixture[] = [
   {
+    line: '^kept[thursday]{ .day["2026-11-27"] .chapter[15] }',
+    note: 'a dot after a gap is the ground mark leading a word, not a tight join: the body is not split at it',
+    word: '^kept',
+    order: ['word', 'mode', 'body'],
+    slots: { mode: 'thursday', body: '.day["2026-11-27"] .chapter[15]' },
+    parts: ['.day["2026-11-27"] .chapter[15]'],
+    separator: '',
+    whole: true,
+  },
+  {
+    line: 'key{ a.b .c }',
+    note: 'a tight dot still splits where one is written; a led word beside it stays whole',
+    word: 'key',
+    parts: ['a', 'b .c'],
+    separator: '.',
+  },
+  {
     line: 'home[hook]{software.art.practice}(atlas)<person>',
     note: 'the canvas host standing line: every slot, a tight body',
     word: 'home',

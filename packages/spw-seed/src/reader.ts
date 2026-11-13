@@ -24,5 +24,13 @@ export {
   BONDS,
 } from './line'
 export type { SlotReading, SlotSpan, LinePart, LineCompound, LineChange, SlotKey, PairKey, BondName } from './line'
+// A line said in names, and a click for every brace: for a page that gives a line an accessible name or a sound.
+// Both are experimental (spw.spoken/1, spw.pair-sound/1) and may change.
+export { SPOKEN_NAMES, SPOKEN_NAMES_SITE, SPOKEN_SCHEMA, spokenLine, unsaid } from './experimental/spoken'
+export type { SpokenClause, SpokenLine, SpokenNames, SpokenOptions, SpokenRole } from './experimental/spoken'
+export { PAIR_LABELS_SCHEMA, scanPairLabels, pairLabelsAround } from './experimental/pair-labels'
+export type { BraceEdge, BracePair, PairLabelScan } from './experimental/pair-labels'
+export { PAIR_SOUND, PAIR_SOUND_SCHEMA, labelTimbre, pairSound, renderClick, renderPairSound, renderPhrase, wavBytes } from './experimental/pair-sound'
+export type { PairClick, PairSound, PairSoundSettings } from './experimental/pair-sound'
 export type { Token } from './types'
 export type { ASTNode } from './types/ast'
