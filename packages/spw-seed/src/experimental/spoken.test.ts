@@ -71,7 +71,7 @@ describe('spokenLine', () => {
     const line = spokenLine('~garden[care]{seed, water}')
     expect(line.schema).toBe(SPOKEN_SCHEMA)
     expect(line.text).toBe('potential garden, mode care, definition, list of 2: seed, water')
-    expect(line.clauses.map((c) => c.role)).toEqual(['mark', 'word', 'slot', 'slot', 'join', 'word', 'word'])
+    expect(line.clauses.map((c) => c.role)).toEqual(['mark', 'word', 'slot', 'word', 'slot', 'join', 'word', 'word'])
     expect(line.unread).toBe(0)
   })
 
@@ -126,8 +126,17 @@ describe('spokenLine', () => {
     expect(say('#:layer #!semantics')).toBe('lens layer, focus semantics')
   })
 
+  it('reads what a mode, a scene or a concept holds: its marks are named and its join is said', () => {
+    expect(say('touches: [~"a", ~"b"]')).toBe('key touches, mode, list of 2: potential a, potential b')
+    expect(say('home(atlas, ~map)<person.place>')).toBe('home, scene, list of 2: atlas, potential map, concept person.place')
+    expect(say('?[a{b}, c]')).toBe('wonder mode, list of 2: a, definition, b; c')
+    expect(say('x[]{a}')).toBe('x, mode, definition, a')
+    // No mark inside a slot reaches the string as written.
+    for (const line of ['touches: [~"a", ~"b"]', '$%[@a, #b; ^c]', 'home(~map)<*place>']) expect(say(line), line).not.toMatch(/[~@#^*$%]/)
+  })
+
   it('says a join between two lines by its bond', () => {
-    expect(say('ecestudent@ece.120~?[transistors work.how]')).toBe('ecestudent, perspective, ece.120, potential, wonder mode transistors work.how')
+    expect(say('ecestudent@ece.120~?[transistors work.how]')).toBe('ecestudent, perspective, ece.120, potential, wonder mode transistors, work.how')
   })
 
   it('says a mark that stands alone by its name, not as something unread', () => {

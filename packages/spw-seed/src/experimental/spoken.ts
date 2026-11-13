@@ -132,6 +132,8 @@ export interface SpokenClause {
   slot?: PairKey
   /** For a join: how many parts follow. */
   parts?: number
+  /** For a slot: the offset just past its close, so what lies before it is the slot's own. */
+  through?: number
 }
 
 export interface SpokenLine {
@@ -262,6 +264,59 @@ function sayRange(ctx: Ctx, start: number, end: number, depth: number, raw = fal
   }
 }
 
+/**
+ * Where [start, end) is cut by a separator outside every pair and quote: a sequence first, then a list,
+ * then a movement. A tight dot is not a cut here: inside a mode or a scene a dotted word stays one word.
+ */
+function cutsOf(source: string, start: number, end: number): { separator: Separator; parts: Array<[number, number]> } {
+  for (const separator of [';', ',', '~>'] as const) {
+    const cuts: number[] = []
+    let depth = 0
+    let quote = ''
+    for (let i = start; i < end; i++) {
+      const ch = source[i]
+      if (quote) {
+        if (ch === '\\') i++
+        else if (ch === quote) quote = ''
+        continue
+      }
+      if (ch === '"' || ch === '`') quote = ch
+      else if (ch === '{' || ch === '[' || ch === '(') depth++
+      else if (ch === '}' || ch === ']' || ch === ')') depth = Math.max(0, depth - 1)
+      else if (depth === 0 && i + separator.length <= end && source.startsWith(separator, i)) {
+        cuts.push(i)
+        i += separator.length - 1
+      }
+    }
+    if (!cuts.length) continue
+    const parts: Array<[number, number]> = []
+    let from = start
+    for (const cut of [...cuts, end]) {
+      parts.push(trimSpan(source, from, cut))
+      from = cut + separator.length
+    }
+    return { separator, parts }
+  }
+  return { separator: '', parts: [trimSpan(source, start, end)] }
+}
+
+/** Say what a mode, a scene or a concept holds: its join when it has one, then each part. */
+function sayInner(ctx: Ctx, start: number, end: number, depth: number): void {
+  const { separator, parts } = cutsOf(ctx.source, start, end)
+  if (separator === '') {
+    sayRange(ctx, start, end, depth)
+    return
+  }
+  const joinName = ctx.names.joins[separator]
+  for (let i = joinName ? 1 : 0; i + 1 < parts.length; i++) ctx.implied.push([parts[i][1], parts[i + 1][0]])
+  if (joinName) {
+    const [from, to] = trimSpan(ctx.source, parts[0][1], parts[1][0])
+    push(ctx, { role: 'join', says: ctx.counts ? `${joinName} of ${parts.length}` : joinName, start: from, end: to, depth, parts: parts.length })
+  }
+  for (const [from, to] of parts) sayRange(ctx, from, to, depth)
+  ctx.implied.push([parts[parts.length - 1][1], end])
+}
+
 /** Say one reading. Returns whether it said anything. */
 function sayReading(ctx: Ctx, reading: SlotReading, depth: number): boolean {
   const { source, names } = ctx
@@ -298,9 +353,10 @@ function sayReading(ctx: Ctx, reading: SlotReading, depth: number): boolean {
     const openAt = span.start
     const closeAt = span.end - PAIRS[key].close.length
     if (key !== 'body') {
-      const [from, to] = trimSpan(source, span.innerStart, span.innerEnd)
-      const inner = unquote(source.slice(from, to))
-      push(ctx, { role: 'slot', slot: key, says: inner ? `${names.slots[key]} ${inner}` : names.slots[key], start: openAt, end: span.end, depth })
+      // A mode, a scene or a concept: its name, then what it holds, read as a body's parts are read.
+      push(ctx, { role: 'slot', slot: key, says: names.slots[key], start: openAt, end: span.innerStart, depth, through: span.end })
+      sayInner(ctx, span.innerStart, span.innerEnd, depth)
+      ctx.implied.push([closeAt, span.end])
       continue
     }
 
@@ -364,6 +420,7 @@ function joinText(clauses: SpokenClause[]): string {
     if (!clause.says) continue
     if (!last) text = clause.says
     else if (last.role === 'mark' || last.role === 'charge') text += ` ${clause.says}`
+    else if (last.role === 'slot' && last.through !== undefined && clause.start < last.through && clause.role !== 'join') text += ` ${clause.says}`
     else if (last.role === 'join') text += `: ${clause.says}`
     else if (clause.role === 'end' || clause.depth < last.depth) text += `; ${clause.says}`
     else text += `, ${clause.says}`
