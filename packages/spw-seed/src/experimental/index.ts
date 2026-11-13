@@ -79,3 +79,5 @@ export { MODAL_LEVEL_DB, PHRASE_LADDER, TEXTURES, labelPhrase, modalEvents, rend
 export type { ShapeHit, ShapeMatch, ShapePattern, ShapePatternProblem, ShapeSurface } from './shape-match'
 export { SHAPE_MATCH_SCHEMA, compileShape, findShape, isShapePattern, matchShape, matchShapeAt, wordHolePattern } from './shape-match'
 export { COLUMNS_BYTES_SCHEMA, columnsFromBytes, columnsToBytes } from './columns-bytes'
+export type { EditSpan, PairLabelAction, PairLabelEdits, TextEdit } from './structural-edit'
+export { STRUCTURAL_EDIT_SCHEMA, applyTextEdits, pairLabelEdits, selectionSpans } from './structural-edit'

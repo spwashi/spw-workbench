@@ -11,7 +11,7 @@
  gist: "Editors show caret-local form geometry and offer only receipt-gated mobility edits from Seed."
  touches: [~"packages/spw-lsp/src/handlers/form-context.ts", ~"packages/spw-lsp/src/handlers/editing.ts", ~"extensions/vscode-spw/src"]
  entry: ~"./form-geometry-editor.spw"
- next: "Classify and repair the one failing form-context.test.ts case (chains topic to @(topic) to $(topic): no ref_handle site at @(topic), test line 133), then prepare pulse_text_edits with stale-revision and UTF-16 controls; reuse landed formAt/formHover."
+ next: "Try selection by structure and linked pair labels in VS Code against a mounted consumer, and record what feels wrong; then offer rewrite-by-example as a code action over the selection."
 }
 
 ^["edges"]{
@@ -71,6 +71,10 @@
  >>[2026-10-25 21:01] observe — form-context.test.ts fails on main at 39635889: chains topic to @(topic) to $(topic) expects labelPosition.site ref_handle at line 0 character 3 of @(topic) and gets undefined (test line 133). Found while running test:lsp for the consumer plugin asks on 2026-10-25; 376 other LSP tests pass. Unowned until this note.
  >>[2026-10-27 10:18] verify — The chains topic to @(topic) to  case still fails at 850077ab on 2026-10-27 (1 of 6 in form-context.test.ts, same assertion at line 133). It is the known form-context label-mobility failure e810b683 reported as test:lsp 359 of 360, so the baseline the card asked for is done; classifying and repairing it is now the next move.
  >>[2026-10-27 10:19] note — The 2026-10-27 10:18 verify entry lost its last form to shell expansion; the case it names is the chains case of the 2026-10-25 21:01 note, ending at the register form.
+ >>[2026-11-13 17:33] note — The failing form-context case this card named (no ref_handle site at @(topic)) was repaired in e664081f: the caret lookup walked a fixed list of child properties that never gained scope or capsule. LSP has passed 405 of 405 since, and a law now walks every key of the tree.
+ >>[2026-11-13 17:33] implement — The editor moves and edits by structure. textDocument/selectionRange walks out from the word under the caret through every node that holds it, each span strictly larger than the last and none starting or ending on a gap, read from parse columns. textDocument/linkedEditingRange edits a pair label on its open and its repeated close as one while the caret is on either. Code actions on a labeled pair mirror a repeated close, repeat a mirrored one, and give a labeled open's bare close its label (repeated or mirrored). Seed holds the readers (experimental/structural-edit: selectionSpans, pairLabelEdits, applyTextEdits), so the CLI and a page with the workbench bundle move by the same tree.
+ >>[2026-11-13 17:33] implement — spw rewrite replaces every match of an example with a template (_1, _2 the fillers, _0 the whole match). It shows each change and writes nothing without --write. Before writing, each changed file is parsed again, and one that would no longer read complete or would fall back to prose is refused unless --force.
+ >>[2026-11-13 17:33] verify — 7 tests on the structural readers (a law over every line fixture at random carets, mirror and repeat as inverses, a labeled open closed either way reading whole, a parent cut short of its child), 3 on the server handlers, 5 on rewrite. Four mutants each fail a test; the nesting guard needed a hand-built tree to be tested. Seed 1,196, CLI 453, LSP 408, runtime 137, DOM 3, VS Code 73, parser release 25, tsc clean. Not tried in an editor yet.
 }
 
 ^["open"]{
@@ -98,7 +102,7 @@
  ~#files_hot: "packages/spw-lsp/src/handlers/display.ts, packages/spw-lsp/src/handlers/editing.ts, packages/spw-seed/src/canonical/form-geometry.ts, extensions/vscode-spw/src/lsp/custom-requests.ts"
  ~#next_commit: "pulse_text_edits"
  ~#open_count: "2"
- ~#last_stream: "2026-10-27 10:19"
+ ~#last_stream: "2026-11-13 17:33"
  ~#taste_debt: "hover, code actions and formContext landed; pulse TextEdit parity and Pulse Check/Apply commands absent"
 }
 

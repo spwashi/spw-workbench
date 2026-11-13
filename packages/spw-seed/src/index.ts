@@ -926,6 +926,10 @@ export type {
   ShapePattern,
   ShapePatternProblem,
   ShapeSurface,
+  PairLabelAction,
+  PairLabelEdits,
+  EditSpan,
+  TextEdit,
 } from './experimental'
 export {
   SYNTAX_CATALOG,
@@ -994,6 +998,10 @@ export {
   COLUMNS_BYTES_SCHEMA,
   columnsFromBytes,
   columnsToBytes,
+  STRUCTURAL_EDIT_SCHEMA,
+  applyTextEdits,
+  pairLabelEdits,
+  selectionSpans,
 } from './experimental'
 
 // Query (spw.q dialect)

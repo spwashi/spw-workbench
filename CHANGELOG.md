@@ -50,6 +50,14 @@ What a host gets by moving its pin from `9ef3d223`, or by importing the dated re
 - Parse columns have a byte form (`spw.parse-columns-bytes/1`, `columnsToBytes` / `columnsFromBytes`): every column as its own bytes on a four-byte boundary. Over this repository, reading 1,312 surfaces' columns back took 57 ms where parsing them took 90.7 s.
 - `--match` reads columns from this process's memory, then `.spw/gen/session/columns`, then the parser. The disk key includes a fingerprint of the parser's source, so a parser change is never served a stale tree. `--cache read` never writes, and `--cache off` parses everything. Every run ends with which tiers gave the columns and what they cost: 104.9 s cold and 3.1 s warm for one example over this repository.
 
+### Editing by structure
+
+- The language server answers `textDocument/selectionRange`: expanding a selection walks out from the word under the caret through every node that holds it, each span larger than the last and never starting or ending on a gap.
+- It answers `textDocument/linkedEditingRange` for pair labels: with the caret on the label of `{_name … }_name`, both labels change as one.
+- New code actions on a labeled pair: mirror a repeated close (`}_name` → `eman_}`), repeat a mirrored one, and give a labeled open's bare close its label.
+- `spw rewrite <paths> --match '<example>' --into '<template>'` replaces every match with a template, where `_1`, `_2` … are what filled each hole and `_0` is the whole match. It shows each change and writes only with `--write`. A file the rewrite would leave reading worse (no longer complete, or fallen back to prose) is refused unless `--force`.
+- Seed's `selectionSpans`, `pairLabelEdits` and `applyTextEdits` (`spw.structural-edit/1`) hold the readers behind all of it.
+
 ### Browser bundles
 
 - `reader.min.js` now also exports the slot reader's sayer, the pair-label scan, the brace sound and the earcons, beside `roles`, `outline`, `anchors`, `highlightHtml` and `readLine`. A host whose own bundle names its exports (a story consumer exports only `parse` and `readBias`) adds the names it wants.

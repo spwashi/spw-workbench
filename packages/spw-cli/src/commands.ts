@@ -50,6 +50,7 @@ import { printLintHelp, runSpwLintCli } from './lint'
 import { printSayHelp, runSpwSayCli } from './say'
 import { printPairsHelp, runSpwPairsCli } from './pairs'
 import { printHearHelp, runSpwHearCli } from './hear'
+import { printRewriteHelp, runSpwRewriteCli } from './rewrite'
 
 /**
  * Which part of the loop a command belongs to. Groups order the help page and
@@ -443,6 +444,13 @@ export const COMMANDS: CommandSpec[] = [
     summary: 'Advance runtime cadence without writing the source tree',
     printHelp: () => printBeatHelp(),
     run: (invoked, args) => runSpwBeatCli(argv(invoked, args)),
+  },
+  {
+    name: 'rewrite',
+    group: 'effect',
+    summary: 'Replace every place a form is written with a template, shown first and written on request',
+    printHelp: () => printRewriteHelp(),
+    run: (_invoked, args) => runSpwRewriteCli(args),
   },
   {
     name: 'hear',

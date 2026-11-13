@@ -235,6 +235,8 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
             documentHighlightProvider: true,
             inlayHintProvider: true,
             foldingRangeProvider: true,
+            selectionRangeProvider: true,
+            linkedEditingRangeProvider: true,
             semanticTokensProvider: {
               legend: SEMANTIC_TOKENS_LEGEND,
               full: true,
@@ -334,6 +336,14 @@ async function handleRequest(message: JsonRpcRequest): Promise<void> {
 
       case 'workspace/willRenameFiles':
         sendResult(id, await (await import('./handlers/rename-files')).willRenameFiles(message.params, deps))
+        return
+
+      case 'textDocument/selectionRange':
+        sendResult(id, (await import('./handlers/structure')).selectionRanges(message.params, deps))
+        return
+
+      case 'textDocument/linkedEditingRange':
+        sendResult(id, (await import('./handlers/structure')).linkedEditingRanges(message.params, deps))
         return
 
       case 'textDocument/foldingRange':

@@ -5,6 +5,7 @@
  * annotation completion, file-system path completion, and document formatting.
  */
 
+import { pairLabelCodeActions } from './structure'
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import {
@@ -360,6 +361,7 @@ export async function codeAction(params: CodeActionParams, deps: HandlerDeps): P
         actions.push(...formContextCodeActions(doc, caret))
     }
 
+    actions.push(...pairLabelCodeActions(uri, doc.text, range))
     return actions
 }
 
