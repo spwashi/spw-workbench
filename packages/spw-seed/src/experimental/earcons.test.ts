@@ -15,11 +15,11 @@ const seeded = (seed: number) => () => {
 
 describe('readEarcons', () => {
   it('reads an empty line as the default sound', () => {
-    const reading = readEarcons('^earcons{}')
+    const reading = readEarcons('^ear{}')
     expect(reading.schema).toBe(EARCONS_SCHEMA)
     expect(reading.settings).toEqual(PAIR_SOUND)
     expect(reading.problems).toEqual([])
-    expect(writeEarcons(PAIR_SOUND)).toBe('^earcons{}')
+    expect(writeEarcons(PAIR_SOUND)).toBe('^ear{}')
     // Written whole, the default line names every word, so a listener sees what can be tuned.
     const whole = writeEarcons(PAIR_SOUND, { all: true })
     expect(readEarcons(whole).set).toEqual(Object.keys(EARCON_WORDS))
@@ -27,7 +27,7 @@ describe('readEarcons', () => {
   })
 
   it('tunes every setting from one line', () => {
-    const reading = readEarcons('^earcons{ .body[300] .frame[400] .scene[500] .step[3] .deepest[4] .ms[60] .decay[7] .gain[0.4] .rough[off] .phrase[440, 550] }')
+    const reading = readEarcons('^ear{ %body[300] %frame[400] %scene[500] %step[3] %deepest[4] %ms[60] %decay[7] %gain[0.4] =rough[off] %phrase[440, 550] }')
     expect(reading.problems).toEqual([])
     expect(reading.set).toEqual(Object.keys(EARCON_WORDS))
     expect(reading.settings).toEqual({
@@ -42,14 +42,24 @@ describe('readEarcons', () => {
     })
   })
 
-  it('reads a binding as it reads a bracket, and a line laid over three lines as one', () => {
-    const bracket = readEarcons('^earcons{ .body[300] .gain[0.3] }').settings
-    expect(readEarcons('^earcons{ body: 300, gain: 0.3 }').settings).toEqual(bracket)
-    expect(readEarcons('^earcons{\n .body[300]\n .gain[0.3] }').settings).toEqual(bracket)
+  it('reads a term led by %, = or a dot, a binding, and a line laid over three lines alike', () => {
+    const measured = readEarcons('^ear{ %body[300] %gain[0.3] }').settings
+    expect(readEarcons('^ear{ =body[300] =gain[0.3] }').settings).toEqual(measured)
+    expect(readEarcons('^ear{ .body[300] .gain[0.3] }').settings).toEqual(measured)
+    expect(readEarcons('^ear{ body: 300, gain: 0.3 }').settings).toEqual(measured)
+    expect(readEarcons('^ear{\n %body[300]\n %gain[0.3] }').settings).toEqual(measured)
+  })
+
+  it('shares one ear line with a host\'s own textures, reporting theirs and keeping its own', () => {
+    const reading = readEarcons('^ear{ =wap[pillow] =steps[tiptoe] %width[0.3] %body[330] =rough[off] }')
+    expect(reading.set).toEqual(['body', 'rough'])
+    expect(reading.settings.pitch['{']).toBe(330)
+    expect(reading.problems.map((p) => [p.word, p.problem])).toEqual([['wap', 'unknown_word'], ['steps', 'unknown_word'], ['width', 'unknown_word']])
+    expect(writeEarcons(reading.settings)).toBe('^ear{ %body[330] =rough[off] }')
   })
 
   it('holds every number to its range, and says so', () => {
-    const reading = readEarcons('^earcons{ .body[9000] .gain[2] .step[-1] }')
+    const reading = readEarcons('^ear{ %body[9000] %gain[2] %step[-1] }')
     expect(reading.settings.pitch['{']).toBe(4000)
     expect(reading.settings.gain).toBe(1)
     expect(reading.settings.stepPerDepth).toBe(0)
@@ -61,7 +71,7 @@ describe('readEarcons', () => {
   })
 
   it('reports what it cannot use and never drops a word in silence', () => {
-    const reading = readEarcons('^earcons{ .tempo[3] .ms[x] .body[300] .body[310] } trailing')
+    const reading = readEarcons('^ear{ %tempo[3] %ms[x] %body[300] %body[310] } trailing')
     expect(reading.settings.seconds).toBe(PAIR_SOUND.seconds)
     expect(reading.settings.pitch['{']).toBe(310)
     expect(reading.problems.map((p) => [p.word, p.problem])).toEqual([
@@ -71,7 +81,7 @@ describe('readEarcons', () => {
       ['body', 'repeated'],
     ])
     expect(readEarcons('no body here').problems.map((p) => p.problem)).toEqual(['unread'])
-    const notes = readEarcons('^earcons{ .phrase[1, 2, 3, 4, 5, 6, 7] }')
+    const notes = readEarcons('^ear{ %phrase[1, 2, 3, 4, 5, 6, 7] }')
     expect(notes.settings.phrase).toHaveLength(6)
     expect(notes.problems.some((p) => p.problem === 'too_many_notes')).toBe(true)
   })
@@ -100,7 +110,7 @@ describe('readEarcons', () => {
   })
 
   it('reads the line a host would offer in under three lines of Spw', () => {
-    const line = '^earcons{ .body[392] .frame[523] .scene[659] .step[2] .ms[45] .rough[off] }'
+    const line = '^ear{ %body[392] %frame[523] %scene[659] %step[2] %ms[45] =rough[off] }'
     expect(line.split('\n')).toHaveLength(1)
     const reading = readEarcons(line)
     expect(reading.problems).toEqual([])

@@ -6,12 +6,17 @@
  * bracket open, body aura and exit cues in under three lines of Spw. This is
  * that line:
  *
- *   ^earcons{ .body[392] .frame[523] .scene[659] .step[2] .ms[45] .rough[off] }
+ *   ^ear{ %body[392] %frame[523] %scene[659] %step[2] %ms[45] =rough[off] }
  *
- * A binding reads the same: ^earcons{ body: 392, frame: 523 }.
+ * The marks are a story consumer's: its game's board line writes a chosen
+ * texture with = and a number with % (^board{ =cues[shaped] %width[0.3] }), and
+ * its proposed ear line uses the same head, so one ^ear line can hold its
+ * textures and these brace settings together. A word this reader does not know,
+ * such as =wap, is reported and left for the host. A term may also be led by a
+ * dot, and a binding reads the same: ^ear{ body: 392, frame: 523 }.
  *
  * Each word names one setting of pairSound (pair-sound.ts). A word left out
- * keeps its default, so ^earcons{} is PAIR_SOUND itself. Every number is held
+ * keeps its default, so ^ear{} is PAIR_SOUND itself. Every number is held
  * to a range: a value outside it is clamped and reported, a value that is not
  * a number is reported and ignored, and a word this reader does not know is
  * reported and never dropped in silence. writeEarcons writes settings back as
@@ -76,7 +81,7 @@ const clamp = (value: number, [low, high]: Range): number => Math.min(high, Math
 /**
  * Read the earcon settings a line of Spw writes. Line breaks are read as spaces,
  * so the line may be laid over two or three lines. The word before the body is
- * not checked: ^earcons, ~earcons and earcons read alike.
+ * not checked: ^ear, ^earcons and ear read alike.
  */
 export function readEarcons(text: string, base: PairSoundSettings = PAIR_SOUND): EarconReading {
   const source = text.replace(/\r?\n/g, ' ')
@@ -98,7 +103,7 @@ export function readEarcons(text: string, base: PairSoundSettings = PAIR_SOUND):
     while (at < body.innerEnd && /[\s,;]/.test(source[at])) at++
     if (at >= body.innerEnd) break
     const part = readRange(source, at, body.innerEnd)
-    const written = part.word.text.replace(/^\./, '').replace(/:$/, '')
+    const written = part.word.text.replace(/^[.=%]/, '').replace(/:$/, '')
     const next = Math.max(part.restStart, part.word.end, at + 1)
     const mode = part.slots.mode
     if (!(written in EARCON_WORDS)) {
@@ -187,15 +192,16 @@ const msOf = (seconds: number): number => Number((seconds * 1000).toPrecision(12
 const num = (n: number): string => String(n)
 
 /**
- * Write settings as one line of Spw. Only what differs from `base` is written
- * unless `all` is set, so the defaults write as ^earcons{}.
+ * Write settings as one line of Spw: a number led by %, a choice (rough off) by =.
+ * Only what differs from `base` is written unless `all` is set, so the defaults
+ * write as ^ear{}.
  */
 export function writeEarcons(settings: PairSoundSettings, options: { base?: PairSoundSettings; all?: boolean; word?: string } = {}): string {
   const base = options.base ?? PAIR_SOUND
   const all = options.all ?? false
   const out: string[] = []
   const put = (word: EarconWord, value: string, baseValue: string): void => {
-    if (all || value !== baseValue) out.push(`.${word}[${value}]`)
+    if (all || value !== baseValue) out.push(`${/^[\d.\-, ]+$/.test(value) ? '%' : '='}${word}[${value}]`)
   }
   put('body', num(settings.pitch['{']), num(base.pitch['{']))
   put('frame', num(settings.pitch['[']), num(base.pitch['[']))
@@ -207,7 +213,7 @@ export function writeEarcons(settings: PairSoundSettings, options: { base?: Pair
   put('gain', num(settings.gain), num(base.gain))
   put('rough', settings.rough ? num(settings.rough) : 'off', base.rough ? num(base.rough) : 'off')
   put('phrase', settings.phrase.map(num).join(', '), base.phrase.map(num).join(', '))
-  const word = options.word ?? '^earcons'
+  const word = options.word ?? '^ear'
   return out.length ? `${word}{ ${out.join(' ')} }` : `${word}{}`
 }
 

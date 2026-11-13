@@ -290,7 +290,7 @@ describe('bundle:parser --allow-dirty into a temp directory', () => {
         scanPairLabels: (text: string) => unknown
         pairMoves: (scan: unknown, from: number, to: number, settings?: unknown) => { left: Array<{ pair: { label?: string } }>; entered: Array<{ pair: { label?: string }; click: { pitch: number } }> }
       }>(path.join(releaseDir, `reader.${form}.js`))
-      const line = '^earcons{ .body[300] .rough[off] }'
+      const line = '^ear{ %body[300] =rough[off] }'
       const reading = reader.readEarcons(line)
       assert.deepEqual(reading.problems, [])
       assert.equal(reading.settings.pitch['{'], 300)
