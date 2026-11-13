@@ -38,3 +38,22 @@ export type { RhymeSurface, Rhyme, RhymeHole, RhymeInstance, RhymeOptions } from
 export { findRhymes } from './rhymes'
 export type { SurfaceReadings, ReadingsSnapshot, DriftStatus, SurfaceDrift } from './readings'
 export { READINGS_SCHEMA, compareReadings, driftedLines, nodeReading, readingsOf, readingsOfColumns } from './readings'
+
+export type {
+  BraceEdge,
+  BraceEvent,
+  BraceKind,
+  BracePair,
+  PairCloseSpelling,
+  PairLabelOptions,
+  PairLabelScan,
+  PairScanDirection,
+} from './pair-labels'
+export {
+  PAIR_LABELS_SCHEMA,
+  braceEdges,
+  mirrorPairLabel,
+  pairLabelsAround,
+  scanBraceEdges,
+  scanPairLabels,
+} from './pair-labels'

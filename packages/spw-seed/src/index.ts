@@ -898,6 +898,14 @@ export type {
   ReadingsSnapshot,
   DriftStatus,
   SurfaceDrift,
+  BraceEdge,
+  BraceEvent,
+  BraceKind,
+  BracePair,
+  PairCloseSpelling,
+  PairLabelOptions,
+  PairLabelScan,
+  PairScanDirection,
 } from './experimental'
 export {
   SYNTAX_CATALOG,
@@ -925,6 +933,12 @@ export {
   nodeReading,
   readingsOf,
   readingsOfColumns,
+  PAIR_LABELS_SCHEMA,
+  braceEdges,
+  mirrorPairLabel,
+  pairLabelsAround,
+  scanBraceEdges,
+  scanPairLabels,
 } from './experimental'
 
 // Query (spw.q dialect)

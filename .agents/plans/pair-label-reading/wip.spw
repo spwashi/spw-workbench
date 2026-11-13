@@ -1,0 +1,75 @@
+# wip — pair-label-reading
+# Started: 2026-11-12
+
+#>plan_pair_label_reading
+#:plan #!public_interest_research
+#:layer #!syntax
+
+?["card"]{
+ phase: #active
+ gist: "The label a brace pair already carries is read by an opt-in pass from either end of a text, beside the parser, with overlap allowed and its meaning held as trials"
+ touches: [~"packages/spw-seed/src/experimental/pair-labels.ts", ~"packages/spw-seed/src/experimental/syntax-catalog.ts", ~".agents/plans/interpretation-trials/interpretation-trials.spw"]
+ entry: ~"./PLAN.md"
+ next: "The owner reads wonder_trial_pair_label, wonder_trial_underscore, wonder_trial_operator_label and wonder_trial_reader_modes. Until then the pass stays experimental and spw.pair-labels/1 may change."
+}
+
+^["edges"]{
+ shares: [~"../interpretation-trials/wip.spw", ~"../brace-slot-reading/wip.spw", ~"../syntax-hardware-alignment/wip.spw"]
+ feeds: [~"../operational-topography/wip.spw", ~"../host-receipts/wip.spw", ~"../reading-drift/wip.spw"]
+}
+
+^["roots"]{
+ @plan: ~".agents/plans/pair-label-reading/PLAN.md"
+ @trials: ~".agents/plans/interpretation-trials/interpretation-trials.spw"
+ @desugar: ~"packages/spw-seed/src/normalize.ts"
+ @geometry: ~"packages/spw-seed/src/canonical/form-geometry.ts"
+ @nodes: ~"packages/spw-seed/src/types/ast/nodes.ts"
+ @topography: ~".agents/plans/operational-topography/wip.spw"
+ @theory: ~"docs/theory/spw/brace-charge-crawl.spw"
+ @physics: ~".spw/registries/brace-physics.spw"
+ @identifiers: ~"packages/spw-seed/src/lexer/matchers/identifiers.ts"
+ @hints: ~"packages/spw-lsp/src/handlers/display.ts"
+}
+
+^["intent"]{
+ ~#goal: "A label on a brace pair can be read, checked and scanned from either end today, and nothing a corpus already writes parses differently"
+ ~#taste: "Measure the reading beside the parser first; a mark earns grammar by what it costs and what it opens"
+}
+
+^["open"]{
+ ?[half_labels]: "Ten theory surfaces here label the open alone and close on a bare brace. The pass leaves such a label without a partner and offers the pair as advisory. Should a labeled open close on a bare brace, which lets a bare close hide a missing labeled one, or should those surfaces gain their closing labels?"
+ ?[angle_pairs]: "Angle capsules are left out, since > also ends a particle and an arrow at the token level. Does a labeled capsule want its own reader?"
+ ?[digit_tails]: "A label that ends in a digit has no mirrored spelling the lexer keeps whole (2wor_ is a number then a word). Forbid it, or wait on wonder_trial_hash_format?"
+ ?[relation_words]: "A story consumer writes (_in \"boon.land\") and (_from \"bane.land\"): a leading word that names a relation, not the pair. Is that a second use of the mark, or the same one?"
+}
+
+^["commits"]{
+ ~[pair_labels]: "^seed[seed,trials,journal] — read the label a brace pair already carries, from either end of a text and beside the parser, and hold what it should mean as trials"
+}
+
+^["stream"]{
+ >>[2026-11-12 14:31] observe — Seed today, three forms parsed at c14d5b6d: in {_label a b }_label the body's first member is the word _label and a second _label is a loose term after the body; in {_label a b lebal_} the body has four members; in {_a {_b x b_} a_} the outer word _a takes the inner body as its own, as any word followed by a brace does. All read complete with no error and no prose fallback. A lone _ is a hole, and _x is a word.
+ >>[2026-11-12 14:31] observe — The editor already writes a closing label, derived: at depth three or more an inlay hint at a closing line names the frame it leaves (spw-lsp display.ts, the brace depth hints). An authored closing label is that hint kept in the text, where a diff hunk, a skim window or a pasted line can still read it.
+ >>[2026-11-12 14:31] decide — Names, first pass. Its two events are accumulate and release: brace-physics.spw calls its charge table a historical profile name and prefers accumulate and release, and docs/theory/spw/brace-charge-crawl.spw keeps charge for the portable packet. The owner's words, charge and discharge, are quoted where they asked. Not plugin: the plugin protocol means a .spw plugin that selects and emits. The pass returns plain events a host folds over.
+ >>[2026-11-12 14:31] observe — A reading that changes how the inside of a brace is lexed cannot be a pass over tokens. Measured: an apostrophe in a plain body sends the whole surface to prose fallback under both lex profiles, with or without a label on the brace, so by the time a pass runs the inside has been read. A mirrored close can be found by a text search without lexing what is inside, as a heredoc terminator is. Out of scope here; wonder_trial_reader_modes holds it.
+ >>[2026-11-12 14:40] surprise — The form is old and partly built, found only when the census ran. desugar (normalize.ts) writes A{} as {_A }_A and ?_query as ?(query); form geometry has pair-label moves (egress.pair_labels, pair_label_publish); container nodes reserve openLabel and closeLabel and nothing sets them, which operational-topography holds as ?[pair_labels_ast] with ~[populate_pair_labels] waiting on it; the operator-lattice skill says to treat _ as the intrinsic operator carrier and to favor labeled brace symmetry when block identity must survive projection. Twelve surfaces here already wrap themselves in {_name … }_name. A mounted consumer's plans record the owner's reading that labeled braces may overlap without nesting, {_A {_B }_A }_B, and that its selection spans rest on it; its brace-semantics plan had already measured that the parser puts each label on the wrong pair there, silently.
+ >>[2026-11-12 14:40] revise — Renamed before anything was committed: the plan and the pass were brace labels and are pair labels, the noun form geometry and operational-topography already use. The first draft also let a labeled close reach past whatever was left open above its own open and report it as skipped, which makes an overlap damage. That contradicted the owner's recorded reading, so it is gone.
+ >>[2026-11-12 14:44] decide — A label makes a class. A brace pairs only with a brace of its kind that carries the same label; bare braces pair with bare braces; within a class the pairing is ordinary bracket matching. Classes do not see each other, so labeled pairs may overlap, and the scan lists each crossing and says whether the pairs still form a tree. Both directions then return the same pairs on any text, which the tests hold over generated and garbled input; what differs by direction is the order of events and which edges a cut text leaves waiting.
+ >>[2026-11-12 14:47] decide — A label on one end finds no partner, and the scan says what the leftover edges would pair as by kind alone, under loose. Advisory because it is weaker: with a bare open in hand a bare close pairs with it and the labeled open stays waiting, but with none the labeled open would take the bare close, and a missing closing label would pass unseen. ?[half_labels] is the owner's.
+ >>[2026-11-12 14:47] verify — 21 tests on the pass; two mutants (labels make no class; one crossing dropped) fail 8 and 2 of them. Seed 1,115 pass; tsc clean. Census, .spw files only, worktrees and archives left out, each surface lexed under the prose profile: here 1,368 surfaces and 148,819 braces, 12 pairs labeled at both ends (all the repeated close, none mirrored, none crossing) and 10 labels on an open that closes bare; a story consumer 164 surfaces and 15,002 braces, no labeled pair and 5 leading relation words; the site consumer 2,254 surfaces and 151,088 braces, no labeled pair, the same five lines in a reference copy and one macro-like word. No corpus writes an overlap in .spw; the consumer's selection spans live in its page scripts, which were not read.
+ >>[2026-11-12 15:10] verify — One text under two parser builds, the committed seed in a throwaway worktree and this tree, every .spw surface of the three corpora read with its path: here 1,368 surfaces and 141,040 lines with a reading, a story consumer 164 and 14,300, the site consumer 2,254 and 202,977; no line drifted in any of them.
+ >>[2026-11-12 21:33] verify — End of day: 22 tests on the pass, one of them a line a story consumer's game seals with a label and its mirror; seed 1,116 pass, CLI 419, runtime 137, tsc clean. LSP 404 of 405: form-context label mobility (topic → @(topic) → $(topic)) fails the same way on the committed tree with this plan's three source edits taken out, so it is not this plan's. The consumer's seal is read three ways (this pass, its own small reader, its highlighter); after its season what plays is the season's own residue, the line being the key and not the spell.
+}
+
+^["cache"]{
+ ~#status: "active"
+ ~#base_ref: "main@c14d5b6d"
+ ~#rebased_at: ""
+ ~#files_hot: "packages/spw-seed/src/experimental/pair-labels.ts"
+ ~#next_commit: "pair_labels"
+ ~#open_count: "4"
+ ~#last_stream: "2026-11-12 21:33"
+}
+
+^["done"]{
+}

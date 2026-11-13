@@ -191,6 +191,13 @@ export const SYNTAX_CATALOG: readonly SyntaxCatalogEntry[] = [
     summary: 'Paired bounds as capture (charge in) vs shield (channel/membrane wall)',
   },
   {
+    id: 'brace.pair_labels',
+    status: 'partial',
+    docs: '.agents/plans/pair-label-reading/PLAN.md',
+    runtimeHook: 'none',
+    summary: 'A label on a brace pair, {_A … }_A or mirrored {_A … A_}: desugar writes it, an opt-in scan reads it from either end and lets pairs overlap, and the parser still reads the labels as members',
+  },
+  {
     id: 'charge.portable_triple',
     status: 'partial',
     docs: 'docs/theory/spw/brace-charge-crawl.spw',
