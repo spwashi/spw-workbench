@@ -7,11 +7,11 @@
 #:layer #!pragmatics
 
 !["card"]{
- phase: #planning
+ phase: #active
  gist: "Local ids follow one rule (labels are identity, ordinals are derived for display), and every version-control touchpoint reads the VCS from .spw/workspace.spw, detected by default, so plans, lexer, LSP, CLI, and hooks work in git, jj, or no VCS."
  touches: [~".spw/workspace.spw", ~"packages/spw-seed/src/lexer/commit-ref.ts", ~"packages/spw-lsp/src/handlers/commit-refs.ts", ~".agents/scripts/agent-lib.sh"]
  entry: ~"./PLAN.md"
- next: "~[schema_numbering_rule]: state the rule in the plan schema and drop its stale ~[N] section; then ~[vcs_settings] and ~[vcs_adapter]."
+ next: "Move callers onto vcs.ts one per commit: ~[scripts_adapter] (the release builder still runs its own git), ~[agent_lib_adapter], ~[lsp_adapter]; ~[vcs_settings] only if detection ever needs overriding; ~[schema_numbering_rule] stands apart."
 }
 
 ^["edges"]{
@@ -107,6 +107,7 @@
  >>[2026-10-13 12:05] observe — VCS touchpoints: the seed commit-ref lexer accepts 7 to 40 lowercase hex (commit-ref.ts:5), so SHA-256 git ids and jj change ids do not lex; the LSP shells out to git in handlers/commit-refs.ts and upstream-bridge.ts; the CLI in atlas.ts, doctor.ts, and init.ts (which installs .git/hooks/pre-commit and git submodules); agent-lib.sh hardcodes main for base refs; the commit gate, commit-review scripts, the parser release builder, and the episode corpus analyzer call git directly. Nothing reads a VCS setting.
  >>[2026-10-13 15:06] note — plan-plugin-integration escalated git hashes in VS Code on 2026-10-13 and lands links and a commit view on the current git calls in commit-refs.ts; lsp_adapter moves them behind the adapter later, and commit_ref_pattern widens the form to SHA-256 and jj ids without changing those affordances.
  >>[2026-10-27 10:21] revise — numbering_inventory landed with the plan in 6068a378: its episode says the artifact inventories every numbering scheme and VCS touchpoint, which the numbering and vcs_touchpoints frames hold, so it is a landed line now, and the plan line quotes the subject as committed. ~[schema_numbering_rule] stays next: the schema still teaches ~[N] in its COMMIT SYNTAX section.
+ >>[2026-11-13 23:27] implement — vcs_adapter landed in f53aaa1c as packages/spw-cli/src/vcs.ts behind spw vcs: detection walks up for .jj (colocated when .git sits beside it) or .git; head with its branch, default branch, ancestry, a revision resolved, and status with each path's age all run git, so a colocated jj workspace gets them too. Not in it: log, and any jj command, since jj is not installed where it was written; a jj workspace with no .git is detected and its gaps named. spw vcs --since keeps only paths changed since a time, which is what a session stages when other sessions' files sit in the tree. spw vcs at <rev> -- <command> runs a command in a clean checkout under .claude/worktrees/ with the checkout's own workspace packages linked and only that checkout removed. spw doctor calls a jj workspace without .git detected instead of advising git init; git targets read as before (git_default_unchanged holds).
 }
 
 ^["open"]{
@@ -120,7 +121,7 @@
  .[numbering_inventory](6068a378): ".[plans] — local-numbering-vcs plans one numbering rule and a workspace VCS setting; the index drift clears (the artifact numbering and vcs_touchpoints frames)"
  ~[schema_numbering_rule]: "#[plans] — the plan schema states the rule (labels are identity, ordinals are derived, authored numbers are monotonic per scope) and drops its stale ~[N] section"
  ~[vcs_settings]: "#[workspace] — .spw/workspace.spw gains ^[vcs] with kind auto (git, jj, hg, none), default_branch auto, and an id pattern; detection reads .git, .jj, and .hg"
- ~[vcs_adapter]: "&[cli] — one adapter (detect, head, default branch, is-ancestor, short id, status, log) behind spw vcs --json; spw doctor reports what it detected"
+ .[vcs_adapter](f53aaa1c): "^seed[cli,release,scripts] — resolve workspace packages inside the tree a release is built from and refuse sources from outside it, and add spw vcs: status with ages, and a command run in a clean checkout of a revision"
  ~[agent_lib_adapter]: "&[agents] — agent-lib.sh asks the adapter for the default branch and base sha instead of hardcoding main"
  ~[lsp_adapter]: "&[lsp] — commit-refs.ts and upstream-bridge.ts go through the adapter; with no VCS a commit ref shows as an unresolved id, not an error"
  ~[commit_ref_pattern]: "^seed[lexer] — the commit-ref id pattern is a lexer option (default hex 7 to 40, as today); callers pass hex 7 to 64 or the jj change-id alphabet from the workspace setting"
@@ -136,7 +137,7 @@
  ~#files_hot: ".spw/workspace.spw, .agents/scripts/agent-lib.sh, packages/spw-seed/src/lexer/commit-ref.ts"
  ~#next_commit: "schema_numbering_rule"
  ~#open_count: "3"
- ~#last_stream: "2026-10-27 10:21"
+ ~#last_stream: "2026-11-13 23:27"
  ~#taste_debt: ""
 }
 

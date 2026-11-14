@@ -10,7 +10,7 @@
  gist: "The dated parser release 2026.11.13: brace earcons a listener tunes in one line of Spw, caret enter and exit events, a consumer-facing changelog, and a clean cut"
  touches: [~"packages/spw-seed/src/experimental/sound/pair-sound.ts", ~"packages/spw-seed/src/experimental/sound/earcons.ts", ~"packages/spw-seed/src/reader.ts", ~"packages/spw-lsp/src/reader.ts", ~"CHANGELOG.md", ~"scripts/release/build-parser-release.test.ts"]
  entry: ~"./PLAN.md"
- next: "The owner pushes main and cuts the day: npm run bundle:parser -- --release 2026.11.13 from a clean detached worktree at 031c1e94 (pre.5 is that commit; a later commit that touches only plans changes no bundle), then the receipt in host-receipts goes with the pin moves."
+ next: "The owner pushes main and cuts the day from the main checkout, untracked files and all: npm run spw -- vcs at f53aaa1c -- node --import tsx scripts/release/build-parser-release.ts --release 2026.11.13 --out {origin}/release/parser (pre.6 was cut this way at f53aaa1c; a later commit that touches only plans changes no bundle); then the receipt in host-receipts goes with the pin moves. Not the nested worktree recipe: pre.1 to pre.5 carry duplicate seed modules in workbench.min.js."
 }
 
 ^["edges"]{
@@ -70,6 +70,8 @@
  >>[2026-11-13 20:52] decide — The next step is the day itself, not more slices: the owner pushes and cuts 2026.11.13 from a clean detached worktree at the head of main, and the hosts move their pins. sound_measures, limits_said, host_words_kept and sealed_check stay planned and can land in a patch or the next day; none changes what the cut holds.
  >>[2026-11-13 22:37] verify — Prepared the day. At 202e7973: tsc and typecheck:refs clean; seed 1,259 pass, runtime 137, DOM 3, CLI 458, LSP 408, parser release 27; lint:spw 1,385 files pass. 2026.11.13-pre.4 cut from a clean detached worktree at that commit: full.min.js 86,852 B, reader.min.js 131,814 B, workbench.min.js 687,461 B. Loaded in Node, the full bundle parses x(a(b)) with no error and the workbench bundle reads a measured pendulum as 2.0061(23). The changelog's day section now lists the double close among the fixes and says which bundle holds the physics and GPU readers.
  >>[2026-11-13 23:11] verify — pre.5 cut at 031c1e94 from a clean detached worktree, after the number scanner and its percent fix. Since pre.4: readNumberForm reads measured numbers and shares one scanner with quantity sheets, and a percent divides by 100 to the last bit (114 of 1,001 had briefly moved and are held by a sweep). The full parser bundle differs from pre.4 only by its stamps and an unused regex now gone; reader.min.js grows 617 bytes. Gate at that commit: tsc and typecheck:refs clean; seed 1,269, runtime 137, DOM 3, CLI 458, LSP 408, VS Code 73, parser release 27; lint:spw 1,385 files. Loaded in Node, reader.min.js reads 57 percent as 0.57 and a measured G with its uncertainty, and full.min.js parses a nested call closing two parentheses with no error.
+ >>[2026-11-13 23:28] surprise — Every prerelease of the day carried seed twice in workbench.min.js. Each was cut in a worktree nested in the main checkout, where @spwashi/spw-seed resolved up to the main checkout's node_modules and so to its working files: pre.1 to pre.3 bundled 95 or 96 seed files from there beside the worktree's own, pre.4 and pre.5 bundled 104, about 185 KB of a 687 KB bundle. full, lite and reader were clean (they reach seed by path, or by the reader's substitution). Runtime results on sampled lines matched a clean build, so this was duplication and a provenance gap (source from the main checkout's files under a manifest naming one commit), not a change in behaviour. The release tests never saw it because they build from the repository root. Fixed in f53aaa1c: workspace names resolve inside the build root, and the builder refuses any source from outside it.
+ >>[2026-11-13 23:28] verify — pre.6 cut at f53aaa1c through spw vcs at, from the main checkout with two untracked files present: workbench.min.js 502,408 bytes with no source from outside its root; every variant's content equals a main-checkout build of the same commit, stamps aside; the checkout was removed. The same commit built from the main checkout and from a nested worktree with the fixed builder gave identical bytes. Gate at f53aaa1c: tsc and typecheck:refs clean; seed 1,269, runtime 137, DOM 3, CLI 464, VS Code 73, LSP 408, parser release 30. pre.1 to pre.5 stay in place; a host on any of them should move to pre.6 or the day.
 }
 
 ^["cache"]{
@@ -79,7 +81,7 @@
  ~#files_hot: "packages/spw-seed/src/experimental/sound/pair-sound.ts, packages/spw-seed/src/experimental/sound/earcons.ts"
  ~#next_commit: "sound_measures"
  ~#open_count: "3"
- ~#last_stream: "2026-11-13 23:11"
+ ~#last_stream: "2026-11-13 23:28"
 }
 
 ^["done"]{
