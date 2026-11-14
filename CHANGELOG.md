@@ -54,6 +54,17 @@ What a host gets by moving its pin from `9ef3d223`, or by importing the dated re
 
 - `readSettingsLine(text, vocabulary)` reads a line of a head and marked terms, such as `^board{ =cues[shaped] @hold[upright] }`, `?find[haggle]{ @carrier[genie] %count[3] }` or `^ear{ %body[392] }`, against a host's own vocabulary of numbers held to ranges, choices and text. Every term comes back with its mark, word, value and span, known or not. The problems name unknown words, values it could not use, clamps, repeats, and marks other than the vocabulary gives. `writeSettingsLine` writes values back as a line that reads to the same values. The ear line reads its terms this way. It is in the browser reader bundle.
 
+### Numbers (experimental)
+
+- `readNumberForm` reads one written value whole, beside the parser:
+  - a number with its sign, exponent, percent and unit (`45ms`, `50%`, `1e3`);
+  - a ratio (`4/3`);
+  - a range (`20..80ms`);
+  - and it refuses, with a reason, hex, `1_000`, `1/0` and `3:4`.
+
+  Settings lines and the ear line take every number through it, and a word may list the units it accepts with their scale, so `%ms[0.045s]` reads as 45. The lexer is unchanged, so no line reads differently.
+- A declared mass with anything written against its number (`8kb`, `1e3`, `50%`, a sign) is now unmeasurable. Before, it was read short, so a correction rewrote only its digits.
+
 ### Spw on the GPU (experimental)
 
 - `columnsToGpu` widens parse columns into fixed rows of eight u32 that a WGSL storage buffer reads (`WGSL_ROW` declares them).

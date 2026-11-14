@@ -31,6 +31,9 @@ export { readEarcons, writeEarcons, pairMoves, EARCON_WORDS } from '@spwashi/spw
 export { TEXTURES, labelPhrase, modalEvents, MODAL_LEVEL_DB } from '@spwashi/spw-seed'
 // A settings line (^board{ … }, ?find[id]{ … }, ^ear{ … }) read against a host's own vocabulary. Experimental.
 export { readSettingsLine, writeSettingsLine, readSettingsTerms, SETTINGS_LINE_SCHEMA } from '@spwashi/spw-seed'
+// A written number read whole: sign, exponent, ratio, percent, range and unit. Experimental.
+export { readNumberForm, isNumberForm, settingNumber, NUMBER_FORM_SCHEMA } from '@spwashi/spw-seed'
+export type { NumberForm } from '@spwashi/spw-seed'
 export type { SettingsLine, SettingsVocabulary, SettingWord } from '@spwashi/spw-seed'
 export type { ModalEvent, Texture } from '@spwashi/spw-seed'
 export type { EarconReading, EarconProblem, PairMove, PairSoundSettings } from '@spwashi/spw-seed'

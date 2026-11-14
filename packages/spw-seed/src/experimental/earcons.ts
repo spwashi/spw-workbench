@@ -33,26 +33,27 @@
  */
 
 import { readRange } from '../line/read'
-import { readSettingsTerms } from './settings-line'
+import { readSettingsTerms, settingNumber } from './settings-line'
 import type { BracePair, PairLabelScan } from './pair-labels'
 import { PAIR_SOUND, pairSound, type PairClick, type PairSoundSettings } from './pair-sound'
 
 export const EARCONS_SCHEMA = 'spw.earcons/1' as const
 
 type Range = readonly [number, number]
+const HERTZ: Readonly<Record<string, number>> = Object.freeze({ hz: 1, Hz: 1, khz: 1000, kHz: 1000 })
 
 /** Each word, the setting it tunes, and the range its value is held to. */
 export const EARCON_WORDS = Object.freeze({
-  body: { range: [40, 4000] as Range, says: 'pitch of { } at depth zero, in hertz' },
-  frame: { range: [40, 4000] as Range, says: 'pitch of [ ] at depth zero, in hertz' },
-  scene: { range: [40, 4000] as Range, says: 'pitch of ( ) at depth zero, in hertz' },
-  step: { range: [0, 12] as Range, says: 'semitones one depth lowers a pitch' },
+  body: { range: [40, 4000] as Range, says: 'pitch of { } at depth zero, in hertz', units: HERTZ },
+  frame: { range: [40, 4000] as Range, says: 'pitch of [ ] at depth zero, in hertz', units: HERTZ },
+  scene: { range: [40, 4000] as Range, says: 'pitch of ( ) at depth zero, in hertz', units: HERTZ },
+  step: { range: [0, 12] as Range, says: 'semitones one depth lowers a pitch', units: { st: 1 } },
   deepest: { range: [0, 16] as Range, says: 'the deepest depth that still lowers it' },
-  ms: { range: [5, 500] as Range, says: 'how long a click lasts, in milliseconds' },
+  ms: { range: [5, 500] as Range, says: 'how long a click lasts, in milliseconds', units: { ms: 1, s: 1000 } },
   decay: { range: [0.5, 20] as Range, says: 'how fast a click dies away; larger is shorter' },
   gain: { range: [0, 1] as Range, says: 'the loudest a click may be' },
   rough: { range: [1.01, 4] as Range, says: 'the rough tone of an edge with no partner, as a ratio of its pitch; off for none' },
-  phrase: { range: [40, 4000] as Range, says: 'the start phrase, up to six notes in hertz; the stop phrase is the same notes backward' },
+  phrase: { range: [40, 4000] as Range, says: 'the start phrase, up to six notes in hertz; the stop phrase is the same notes backward', units: HERTZ },
   voice: { range: [0, 0] as Range, says: 'which voice renders a click: click (the first) or modal (kind as a texture, a label as a phrase, a struck close, one level)' },
   level: { range: [-40, -6] as Range, says: 'the modal voice\'s level, RMS in dB of full scale' },
 })
@@ -63,7 +64,7 @@ export interface EarconProblem {
   word: string
   /** Where the word is written in the text. */
   at: number
-  problem: 'unknown_word' | 'not_a_number' | 'not_a_choice' | 'clamped' | 'too_many_notes' | 'repeated' | 'unread'
+  problem: 'unknown_word' | 'not_a_number' | 'not_a_unit' | 'not_a_choice' | 'clamped' | 'too_many_notes' | 'repeated' | 'unread'
   /** For clamped: what was written and what is used. */
   written?: string
   used?: number
@@ -126,6 +127,7 @@ function tune(
   problems: EarconProblem[],
 ): void {
   const range = EARCON_WORDS[word].range
+  const units = (EARCON_WORDS[word] as { units?: Readonly<Record<string, number>> }).units
   if (word === 'rough' && value === 'off') {
     settings.rough = 0
     return
@@ -139,20 +141,21 @@ function tune(
     const notes = value.split(/[\s,]+/).filter(Boolean)
     const read: number[] = []
     for (const note of notes) {
-      const n = Number(note)
-      if (!Number.isFinite(n)) problems.push({ word, at, problem: 'not_a_number', written: note })
-      else read.push(held(word, n, note, range, at, problems))
+      const n = settingNumber(note, units)
+      if ('problem' in n) problems.push({ word, at, problem: n.problem, written: note })
+      else read.push(held(word, n.value, note, range, at, problems))
     }
     if (read.length > PHRASE_MOST) problems.push({ word, at, problem: 'too_many_notes', written: String(read.length), used: PHRASE_MOST })
     settings.phrase = read.slice(0, PHRASE_MOST)
     return
   }
-  const n = Number(value)
-  if (!value || !Number.isFinite(n)) {
-    problems.push({ word, at, problem: 'not_a_number', written: value })
+  // One reader says what a written number is (number-form.ts): 1e3, a ratio, a percent, a unit the word lists.
+  const read = settingNumber(value, units)
+  if ('problem' in read) {
+    problems.push({ word, at, problem: read.problem, written: value })
     return
   }
-  const used = held(word, n, value, range, at, problems)
+  const used = held(word, read.value, value, range, at, problems)
   switch (word) {
     case 'body': pitch['{'] = used; break
     case 'frame': pitch['['] = used; break

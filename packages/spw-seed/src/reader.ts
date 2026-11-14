@@ -36,7 +36,9 @@ export { EARCON_WORDS, EARCONS_SCHEMA, pairMoves, readEarcons, writeEarcons } fr
 export type { EarconProblem, EarconReading, PairMove } from './experimental/earcons'
 export { MODAL_LEVEL_DB, TEXTURES, labelPhrase, modalEvents } from './experimental/modal-sound'
 // A settings line read against a host's own vocabulary (spw.settings-line/1, experimental).
-export { SETTINGS_LINE_SCHEMA, readSettingsLine, readSettingsTerms, writeSettingsLine } from './experimental/settings-line'
+export { SETTINGS_LINE_SCHEMA, readSettingsLine, readSettingsTerms, settingNumber, writeSettingsLine } from './experimental/settings-line'
+export { NUMBER_FORM_SCHEMA, isNumberForm, readNumberForm } from './experimental/number-form'
+export type { NumberForm, NumberProblem } from './experimental/number-form'
 export type { SettingsLine, SettingsProblem, SettingsTerm, SettingsVocabulary, SettingWord } from './experimental/settings-line'
 export type { ModalEvent, Texture } from './experimental/modal-sound'
 export type { Token } from './types'

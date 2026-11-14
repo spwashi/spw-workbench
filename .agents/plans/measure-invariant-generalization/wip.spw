@@ -11,7 +11,7 @@
  gist: "Measures declare an evaluation scheme, so exact mass and fuzzy invariants share one reconcile loop."
  touches: [~"packages/spw-seed/src/canonical/measure-protocol.ts", ~"packages/spw-seed/src/canonical/self-mass.ts", ~"packages/spw-cli/src/mass.ts", ~"packages/spw-cli/src/authority.ts"]
  entry: ~"./measure-invariant-generalization.spw"
- next: "~[mass_refuses_short_read]: bytes: 8kb, lines: 1e3 and lines: -240 read unmeasurable instead of 8, 1 and 240, with tests that applyMassCorrections leaves each source byte for byte."
+ next: "~[mass_exact_through_metric] next, mass_refuses_short_read having landed; was: bytes: 8kb, lines: 1e3 and lines: -240 read unmeasurable instead of 8, 1 and 240, with tests that applyMassCorrections leaves each source byte for byte."
 }
 
 ^["edges"]{
@@ -138,6 +138,7 @@
  >>[2026-11-13 12:56] surprise — The lexer splits a number from what is written tight against it, and %mass then takes the short number as the declaration. bytes: 8kb declares 8, lines: 1e3 declares 1, and lines: -240 declares 240 after one lexer error. Each reconciles as drift, and applyMassCorrections rewrites only the digits: 8kb becomes 240kb, 1e3 becomes 120e3, -240 becomes -120. That is a silent agreement followed by a wrong write, which the risk model here lists as a hard failure. The 2026-10-12 probe found no surface in this repository declaring %mass, so nothing is known to have been rewritten this way.
  >>[2026-11-13 12:56] verify — reconcileMetric called directly at 61ac9bb6. Under tol with abs 5, 100 against 104 is match and 100 against 106 is drift. Under band 0 to 20, an observed 20 is band_ok and 21 is drift. Under ratio with its default 0.9 to 1.1, 100 against 120 is soft_miss, the only scheme that returns it. A profile scheme and an unknown id return scheme_mismatch. PLAN.md says in its demo sequence that a tol miss is soft_miss and refuses --write, which the code does not do. measure-protocol.test.ts holds one scheme test, exact twice and one tol match; no test holds a boundary.
  >>[2026-11-13 12:56] revise — route_self_mass_schemes is split into five named commits, one control each, since the 2026-10-19 entry asked for exact, drift, unknown and tolerance controls and one commit could not show which of them failed. mass_refuses_short_read goes first: it needs no owner choice and closes the wrong write above. Two of the five wait on new open questions, tol_miss_verdict and band_spelling. Number forms themselves (a sign, an exponent, a unit as one token) are not this plan: they are p18 in syntax-hardware-alignment, and this plan only refuses what it cannot read whole.
+ >>[2026-11-13 21:06] implement — mass_refuses_short_read landed: a declared number with anything written against it, letters or a decimal point or a percent after it or a sign before it, is unmeasurable, so 8kb, 1e3, 50% and a negative are never read short, never reconciled as drift, and a correction leaves the source byte for byte. A plain number, a decimal and one set apart by spaces still read. 2 tests over five such forms; the mass suite passes 18 of 18.
 }
 
 ^["open"]{
@@ -154,7 +155,7 @@
  .[eval_scheme_types](08e2bc1c): "&[canon-rewrite-v2] — land tip capability on upstream; phase 0 field clocks (with plan_artifacts)"
  .[authority_extract_plugs](08e2bc1c): "&[canon-rewrite-v2] — land tip capability on upstream; phase 0 field clocks (with plan_artifacts)"
  .[measure_kernel_theory](08e2bc1c): "&[canon-rewrite-v2] — land tip capability on upstream; phase 0 field clocks (with plan_artifacts)"
- ~[mass_refuses_short_read]: "![seed] — a declared number with something written tight against it (8kb, 1e3, a minus) is unmeasurable and never read short; proof: self-mass tests where bytes: 8kb, lines: 1e3 and lines: -240 each give unmeasurable and applyMassCorrections returns the source byte for byte, with the existing self-mass tests unchanged"
+ .[mass_refuses_short_read](next commit): "landed, see the stream of the same time"
  ~[mass_exact_through_metric]: "![seed] — reconcileMass asks reconcileMetric under the exact scheme for lines and bytes, so mass and the kernel share one comparison (self-mass.ts calls itself not the measure kernel and mass.ts calls reconcileMass directly); proof: a parity test over generated declared and measured pairs returns the same match, drift, undeclared and unmeasurable as before"
  ~[mass_scheme_key_read]: "^seed[seed] — after ?[facet_shape]: scheme: exact in a %mass body is read as the scheme and leaves the unmeasurable list, and a word no scheme owns gives scheme_mismatch, never exact; proof: tests for the scheme absent, exact and unknown"
  ~[mass_tol_scheme]: "^seed[seed] — after ?[tol_miss_verdict]: scheme: tol{ abs: 5 } is read and handed to reconcileMetric; proof: boundary tests at the tolerance and one past it (100 against 105 and 106) and a rel test at a declared zero"
@@ -180,7 +181,7 @@
  ~#files_hot: "packages/spw-seed/src/canonical/self-mass.ts, packages/spw-cli/src/mass.ts, packages/spw-seed/src/canonical/authority.ts"
  ~#next_commit: "mass_refuses_short_read"
  ~#open_count: "6"
- ~#last_stream: "2026-11-13 12:56"
+ ~#last_stream: "2026-11-13 21:06"
  ~#taste_debt: "runtime % vs surface %mass naming still dual-product; @percent_profiles names the profiles, but no canon row settles them before plugin hovers"
 }
 

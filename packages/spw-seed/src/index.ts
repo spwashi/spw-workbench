@@ -939,6 +939,8 @@ export type {
   GpuColumns,
   UniformField,
   UniformLayout,
+  NumberForm,
+  NumberProblem,
 } from './experimental'
 export {
   SYNTAX_CATALOG,
@@ -1023,6 +1025,10 @@ export {
   packUniforms,
   uniformLayout,
   wgslStruct,
+  NUMBER_FORM_SCHEMA,
+  isNumberForm,
+  readNumberForm,
+  settingNumber,
 } from './experimental'
 
 // Query (spw.q dialect)

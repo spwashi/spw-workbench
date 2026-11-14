@@ -94,6 +94,13 @@ function walk(node: unknown, visit: (n: Record<string, unknown>) => void): void 
 }
 
 /** Sole term of a single-term expression, or undefined. */
+/** Whether a number token is all that is written there: nothing touching it on either side. */
+function writtenWhole(source: string, span: Span): boolean {
+  const before = source[span.start.offset - 1] ?? ' '
+  const after = source[span.end.offset] ?? ' '
+  return !/[A-Za-z0-9_.+\-]/.test(before) && !/[A-Za-z0-9_.%]/.test(after)
+}
+
 function loneTerm(expr: unknown): Record<string, unknown> | undefined {
   const e = expr as { terms?: unknown[] } | undefined
   if (!e?.terms || e.terms.length !== 1) return undefined
@@ -156,7 +163,9 @@ export function readMassDeclarations(source: string): MassDeclaration[] {
         if (!key) continue
         const valueTerm = loneTerm(term.value)
         const token = (valueTerm as { token?: { type?: string; value?: string } } | undefined)?.token
-        if (valueTerm?.type === 'Literal' && token?.type === 'NUMBER') {
+        // A number with anything written against it (8kb, 1e3, a minus before it) is not the number the
+        // token holds: read short it reconciles as drift and a correction rewrites only its digits.
+        if (valueTerm?.type === 'Literal' && token?.type === 'NUMBER' && writtenWhole(source, valueTerm.span as Span)) {
           measures[key] = {
             key,
             value: Number(token.value),

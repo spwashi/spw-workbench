@@ -85,3 +85,6 @@ export type { SettingsLine, SettingsProblem, SettingsProblemKind, SettingsTerm, 
 export { SETTINGS_LINE_SCHEMA, readSettingsLine, readSettingsTerms, writeSettingsLine } from './settings-line'
 export type { GpuColumns, UniformField, UniformLayout } from './gpu-pack'
 export { GPU_PACK_SCHEMA, GPU_ROW_FIELDS, GPU_ROW_WORDS, WGSL_ROW, columnsToGpu, packUniforms, uniformLayout, wgslStruct } from './gpu-pack'
+export type { NumberForm, NumberProblem } from './number-form'
+export { NUMBER_FORM_SCHEMA, isNumberForm, readNumberForm } from './number-form'
+export { settingNumber } from './settings-line'

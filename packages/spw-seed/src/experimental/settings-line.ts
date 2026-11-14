@@ -12,7 +12,9 @@
  * @ word. This reads every one the same way, through the slot reader (line kit),
  * and checks each term against the host's own vocabulary:
  *
- *   number  a value held to a range: out of range is clamped and reported
+ *   number  a value held to a range: out of range is clamped and reported; written
+ *           with a sign, an exponent, as a ratio (4/3) or a percent (50%), or in a
+ *           unit the word lists (number-form.ts reads it)
  *   choice  one of a list of words
  *   text    any value, kept as written
  *
@@ -28,11 +30,20 @@
  */
 
 import { readRange, type SlotReading } from '../line/read'
+import { isNumberForm, readNumberForm } from './number-form'
 
 export const SETTINGS_LINE_SCHEMA = 'spw.settings-line/1' as const
 
 export type SettingWord =
-  | { kind: 'number'; range: readonly [number, number]; says?: string; marks?: readonly string[]; integer?: boolean }
+  | {
+      kind: 'number'
+      range: readonly [number, number]
+      says?: string
+      marks?: readonly string[]
+      integer?: boolean
+      /** Units a value may be written in, each with what one of it is in the word's own unit: { ms: 1, s: 1000 }. */
+      units?: Readonly<Record<string, number>>
+    }
   | { kind: 'choice'; choices: readonly string[]; says?: string; marks?: readonly string[] }
   | { kind: 'text'; says?: string; marks?: readonly string[] }
 
@@ -48,7 +59,19 @@ export interface SettingsTerm {
   end: number
 }
 
-export type SettingsProblemKind = 'no_line' | 'unread' | 'unknown_word' | 'not_a_number' | 'not_a_choice' | 'clamped' | 'repeated' | 'other_mark'
+export type SettingsProblemKind = 'no_line' | 'unread' | 'unknown_word' | 'not_a_number' | 'not_a_unit' | 'not_a_choice' | 'clamped' | 'repeated' | 'other_mark'
+
+/**
+ * A number written in a value, read by readNumberForm (number-form.ts): a sign, an exponent, a ratio
+ * (4/3), a percent (50%), and a unit the word's table converts. A range is not one number.
+ */
+export function settingNumber(written: string, units: Readonly<Record<string, number>> = {}): { value: number } | { problem: 'not_a_number' | 'not_a_unit' } {
+  const form = readNumberForm(written)
+  if (!isNumberForm(form) || form.kind === 'range') return { problem: 'not_a_number' }
+  if (!form.unit || form.unit === '%') return { value: form.value }
+  const scale = units[form.unit]
+  return scale === undefined ? { problem: 'not_a_unit' } : { value: form.value * scale }
+}
 
 export interface SettingsProblem {
   problem: SettingsProblemKind
@@ -147,11 +170,12 @@ export function readSettingsLine(text: string, vocabulary: SettingsVocabulary): 
       problems.push({ problem: 'other_mark', word: term.word, at: term.start, written: term.mark, used: spec.marks[0] })
     }
     if (spec.kind === 'number') {
-      const n = Number(term.value)
-      if (!term.value || !Number.isFinite(n)) {
-        problems.push({ problem: 'not_a_number', word: term.word, at: term.start, written: term.value })
+      const read = settingNumber(term.value, spec.units)
+      if ('problem' in read) {
+        problems.push({ problem: read.problem, word: term.word, at: term.start, written: term.value })
         continue
       }
+      const n = read.value
       const [low, high] = spec.range
       let used = Math.min(high, Math.max(low, n))
       if (spec.integer) used = Math.round(used)

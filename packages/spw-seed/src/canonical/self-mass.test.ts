@@ -139,3 +139,21 @@ describe('applyMassCorrections', () => {
     expect(source).toContain('bytes: 999999')
   })
 })
+
+describe('a declared number with something written against it', () => {
+  it('is unmeasurable, never read short, and a correction leaves the source byte for byte', () => {
+    for (const value of ['8kb', '1e3', '-240', '50%', '1.2.3']) {
+      const source = `self: ~"./a.spw"\n%mass{ lines: ${value}, bytes: ${value} }\n`
+      const [declaration] = readMassDeclarations(source)
+      expect(Object.keys(declaration!.measures), value).toEqual([])
+      const entries = reconcileMass(declaration!, { lines: 120, bytes: 240 })
+      expect(entries.every((e) => e.verdict !== 'drift'), value).toBe(true)
+      expect(applyMassCorrections(source, entries).source, value).toBe(source)
+    }
+  })
+
+  it('still reads a plain number, a decimal, and one set apart by spaces', () => {
+    const [declaration] = readMassDeclarations('self: ~"./a.spw"\n%mass{ lines: 120, bytes: 12.5 }\n')
+    expect(Object.keys(declaration!.measures).sort()).toEqual(['bytes', 'lines'])
+  })
+})
