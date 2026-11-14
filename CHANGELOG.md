@@ -32,6 +32,7 @@ What a host gets by moving its pin from `9ef3d223`, or by importing the dated re
 
 - The caret lookup behind the editor's form hover and `formAt` now walks a postfix `(scope)` and `<capsule>`. A caret inside `@(topic)` found nothing before.
 - The slot reader (`readLine`) no longer cuts a body at a dot that leads a word after a gap, as in `^kept{ .day[x] .chapter[y] }`. Before, it read those as a tight join and dropped the mark. Lines read differently: 4 of 172,022 here, 198 of 17,267 and 13 of 225,487 in two mounted consumers, and none of one consumer's 1,012 page expressions.
+- The lexer reads a double close `))` as an n-range close only while an n-range `((` is open; otherwise it is two parentheses, so `x(a(b))` and a bracket holding `(a/(b))` read whole again. Lines read differently: 0 of 141,723 here, 89 of 14,784 and 109 of 203,342 in two mounted consumers, every one a call closing two parentheses; no file changed completeness.
 
 ### The command line
 
@@ -87,10 +88,6 @@ What a host gets by moving its pin from `9ef3d223`, or by importing the dated re
 - `docs/theory/spw/dimensional-analysis.spw` holds the model and worked sheets.
 - Measured numbers carry uncertainty: write `6.67430(15)e-11`, or `9.81 ± 0.02` on the command line (inside a `.spw` file the concise form is the one the parser lexes), and every derived value shows its propagated standard uncertainty (forward-mode derivatives, so an input used twice is counted once). The SI sheet carries CODATA uncertainties; the Planck length comes out `1.616255(18)e-35`.
 
-### Lexer
-
-- A double close `))` is an n-range close only when an n-range `((` is open; otherwise it is two parentheses. `x(a(b))` and a bracket holding `(a/(b))` read whole again. Drift: 0 lines in the workbench, 89 and 109 in the two consumer corpora, all calls closing two parentheses.
-
 ### Spw on the GPU (experimental)
 
 - `columnsToGpu` widens parse columns into fixed rows of eight u32 that a WGSL storage buffer reads (`WGSL_ROW` declares them).
@@ -107,7 +104,8 @@ What a host gets by moving its pin from `9ef3d223`, or by importing the dated re
 
 ### Browser bundles
 
-- `reader.min.js` now also exports the slot reader's sayer, the pair-label scan, the brace sound and the earcons, beside `roles`, `outline`, `anchors`, `highlightHtml` and `readLine`. A host whose own bundle names its exports (a story consumer exports only `parse` and `readBias`) adds the names it wants.
+- `reader.min.js` now also exports the slot reader's sayer, the pair-label scan, the brace sound, the earcons and modal voice, the settings-line reader and writer, the number and quantity readers and the CSS property writer, beside `roles`, `outline`, `anchors`, `highlightHtml` and `readLine`. A host whose own bundle names its exports (a story consumer exports only `parse` and `readBias`) adds the names it wants.
+- The physics readers (quantity sheets, dimensional analysis, uncertainty) and the GPU packers are in `workbench.min.js` and the seed package, not in `reader.min.js`.
 
 ## Unreleased — development snapshot, 2026-08-24
 
