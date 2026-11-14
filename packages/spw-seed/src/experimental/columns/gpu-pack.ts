@@ -28,7 +28,7 @@
  */
 
 import type { ParseColumns } from './parse-columns'
-import type { SettingsLine, SettingsVocabulary } from './settings-line'
+import type { SettingsLine, SettingsVocabulary } from '../settings-line'
 
 export const GPU_PACK_SCHEMA = 'spw.gpu-pack/1' as const
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { LINE_FIXTURES } from '../line/fixtures'
+import { LINE_FIXTURES } from '../../line/fixtures'
 import { columnsToJson, parseColumns } from './parse-columns'
 import { COLUMNS_BYTES_SCHEMA, columnsFromBytes, columnsToBytes } from './columns-bytes'
 

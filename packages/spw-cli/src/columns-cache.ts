@@ -8,7 +8,7 @@
  * another parser. Where the parser's source cannot be read (a bundle, a copy),
  * the disk tier is off and only memory is used.
  *
- * The disk form is spw.parse-columns-bytes/1 (seed experimental/columns-bytes):
+ * The disk form is spw.parse-columns-bytes/1 (seed experimental/columns/columns-bytes):
  * a column read back is copied out of a buffer, not parsed. Measured over this
  * repository's 1,312 tracked surfaces: parsing them took 90.7 s, reading the
  * same columns back from bytes 57 ms.

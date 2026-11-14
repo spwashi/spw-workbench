@@ -968,6 +968,7 @@ export {
   nodeReading,
   readingsOf,
   readingsOfColumns,
+  BRACE_CLOSE,
   PAIR_LABELS_SCHEMA,
   braceEdges,
   mirrorPairLabel,
@@ -1029,6 +1030,7 @@ export {
   isNumberForm,
   readNumberForm,
   settingNumber,
+  soundMeasures,
 } from './experimental'
 
 // Query (spw.q dialect)

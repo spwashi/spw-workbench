@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { canonicalize } from '../index'
+import { canonicalize } from '../../index'
 import { columnsFromJson, columnsToJson, parseColumns } from './parse-columns'
 import {
   compareReadings,

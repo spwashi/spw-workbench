@@ -5,49 +5,21 @@
  * what samples hold, not how they sound.
  */
 import { describe, expect, it } from 'vitest'
-import { scanPairLabels, type BraceKind } from './pair-labels'
+import { BRACE_CLOSE, scanPairLabels, type BraceKind } from '../pair-labels'
+import { bandShare, halfEnergyAt, onsetShare, power as measurePower, spectralDistance, spectrum as measureSpectrum } from './measure'
 import { PAIR_SOUND, pairSound, renderClick, type PairClick, type PairSoundSettings } from './pair-sound'
 import { readEarcons } from './earcons'
 import { MODAL_LEVEL_DB, PHRASE_LADDER, TEXTURES, labelPhrase, modalEvents, renderModalClick, rms } from './modal-sound'
 
 const RATE = 44100
 const MODAL: PairSoundSettings = { ...PAIR_SOUND, voice: 'modal' }
-const CLOSE: Record<BraceKind, string> = { '{': '}', '[': ']', '(': ')' }
+const CLOSE = BRACE_CLOSE
 const KINDS: BraceKind[] = ['{', '[', '(']
 
-function power(samples: Float32Array, hertz: number): number {
-  const w = (2 * Math.PI * hertz) / RATE
-  const c = 2 * Math.cos(w)
-  let s1 = 0
-  let s2 = 0
-  for (const x of samples) {
-    const s0 = x + c * s1 - s2
-    s2 = s1
-    s1 = s0
-  }
-  return Math.max(0, s1 * s1 + s2 * s2 - c * s1 * s2)
-}
-
-/** Power at 160 log-spaced frequencies from 80 Hz to 8 kHz, scaled to length one. */
-const BINS = Array.from({ length: 160 }, (_, i) => 80 * 100 ** (i / 159))
-function spectrum(samples: Float32Array): number[] {
-  const v = BINS.map((f) => power(samples, f))
-  const n = Math.hypot(...v)
-  return v.map((x) => x / n)
-}
-const distance = (a: number[], b: number[]): number => Math.hypot(...a.map((x, i) => x - b[i]))
-
-/** Share of energy between two frequencies, on a 10 Hz grid up to 20 kHz. */
-function inBand(samples: Float32Array, low = 300, high = 3000): number {
-  let inside = 0
-  let all = 0
-  for (let f = 20; f < 20000; f += 10) {
-    const p = power(samples, f)
-    all += p
-    if (f >= low && f <= high) inside += p
-  }
-  return inside / all
-}
+const power = (samples: Float32Array, hertz: number): number => measurePower(samples, hertz, RATE)
+const spectrum = (samples: Float32Array): number[] => measureSpectrum(samples, RATE)
+const distance = spectralDistance
+const inBand = (samples: Float32Array, low = 300, high = 3000): number => bandShare(samples, low, high, RATE)
 
 /** The open (or close) click of the pair at a depth, written inside depth bare pairs of the same kind. */
 function clickAt(kind: BraceKind, depth: number, edge: 'open' | 'close', label = '', settings = MODAL): PairClick {
@@ -56,17 +28,8 @@ function clickAt(kind: BraceKind, depth: number, edge: 'open' | 'close', label =
   return pairSound(scanPairLabels(text), settings).clicks.find((c) => c.depth === depth && c.edge === edge && (c.label ?? '') === label)!
 }
 
-const energy = (s: Float32Array): number => s.reduce((sum, x) => sum + x * x, 0)
-const firstShare = (s: Float32Array, seconds: number): number => energy(s.subarray(0, Math.round(seconds * RATE))) / energy(s)
-const halfAt = (s: Float32Array): number => {
-  const total = energy(s)
-  let acc = 0
-  for (let i = 0; i < s.length; i++) {
-    acc += s[i] * s[i]
-    if (acc >= total / 2) return i
-  }
-  return s.length
-}
+const firstShare = (s: Float32Array, seconds: number): number => onsetShare(s, seconds, RATE)
+const halfAt = halfEnergyAt
 
 describe('the modal voice', () => {
   it('is chosen only by =voice[modal]: without it every click renders the samples it rendered before', () => {

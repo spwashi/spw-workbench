@@ -36,7 +36,7 @@
  * decision.
  */
 
-import { parseColumns, type ParseColumns } from './parse-columns'
+import { childRows as children, parseColumns, type ParseColumns } from './parse-columns'
 
 export const SHAPE_MATCH_SCHEMA = 'spw.shape-match/1' as const
 
@@ -80,13 +80,6 @@ export interface ShapeHit extends ShapeMatch {
 }
 
 const WRAPPERS = new Set(['Seed', 'Sequence', 'Expression'])
-
-function children(tree: ParseColumns, row: number): number[] {
-  const out: number[] = []
-  const end = row + tree.size[row]!
-  for (let c = row + 1; c < end; c += tree.size[c]!) out.push(c)
-  return out
-}
 
 const kindOf = (tree: ParseColumns, row: number): string => tree.kinds[tree.kind[row]!] ?? ''
 

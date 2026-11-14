@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { parseColumns } from './parse-columns'
-import { readSettingsLine, type SettingsVocabulary } from './settings-line'
+import { readSettingsLine, type SettingsVocabulary } from '../settings-line'
 import { GPU_ROW_WORDS, WGSL_ROW, columnsToGpu, packUniforms, uniformLayout, wgslStruct } from './gpu-pack'
 
 const SHADER: SettingsVocabulary = {

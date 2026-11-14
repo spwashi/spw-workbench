@@ -7,13 +7,13 @@
  * Experimental (spw.pair-labels/1).
  */
 
-import { PAIR_LABELS_SCHEMA, scanPairLabels, type BracePair, type PairLabelScan } from '@spwashi/spw-seed'
+import { BRACE_CLOSE, PAIR_LABELS_SCHEMA, scanPairLabels, type BracePair, type PairLabelScan } from '@spwashi/spw-seed'
 import { formatJsonEnvelope } from './envelope'
 import { printHelpPage } from './help'
 import { readLineInput, splitArgs } from './line-input'
 import { meta } from './view'
 
-const CLOSE: Record<string, string> = { '{': '}', '[': ']', '(': ')' }
+const CLOSE: Readonly<Record<string, string>> = BRACE_CLOSE
 
 export function printPairsHelp(): void {
   printHelpPage({

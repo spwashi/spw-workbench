@@ -32,13 +32,13 @@
  *
  * @see packages/spw-seed/src/canonical/fingerprint.ts — the node count the rows must equal
  * @see packages/spw-seed/src/canonical/slot-hash.ts — the per-line unit the word column shares
- * @see packages/spw-seed/src/experimental/likeness.ts — identities of a subtree at each rung
+ * @see packages/spw-seed/src/experimental/columns/likeness.ts — identities of a subtree at each rung
  */
 
-import { getNodeChildren } from '../instrumentation/audit'
-import { parse } from '../parser'
-import type { ASTNode } from '../types'
-import { textHash } from '../canonical/content-hash'
+import { getNodeChildren } from '../../instrumentation/audit'
+import { parse } from '../../parser'
+import type { ASTNode } from '../../types'
+import { textHash } from '../../canonical/content-hash'
 
 export const PARSE_COLUMNS_SCHEMA = 'spw.parse-columns/1' as const
 

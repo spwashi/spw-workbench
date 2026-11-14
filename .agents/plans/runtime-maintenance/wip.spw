@@ -79,6 +79,8 @@
  >>[2026-11-09 17:50] implement — legacy_tests_home landed as 891e93b9 and retire_src_shims as 1a1b95bb, on feature/runtime-maintenance, authorized by the owner. Next is the value algebra.
  >>[2026-11-11 23:54] implement — runtime_value_module, uncommitted on main: state/runtime-value.ts holds the record, frame and packet guards, the deep copy, the merge, the uncapped magnitude and nowIso, and register-bank imports them (899 to 818 lines). Two behaviours changed, each with a test: a packet is told by its closed kind set, so a plain record with a kind field (kind: note) is copied whole with only its own keys instead of gaining payload and tags and sharing its nested values; and a record merge copies the left side too, so the result shares nothing with either. The two magnitudes are named for their difference rather than reconciled: the bank's is uncapped and reads through frames and packets for measure, memory-policy's caps and scales down for residency cost. The interpreter keeps its own looser record guard (any non-array object), which this slice did not touch.
  >>[2026-11-12 00:11] observe — Correction to the 23:54 entry: the two magnitudes were documented for their difference in runtime-value.ts, not renamed. The packet guard also changes access, record merge and magnitude for a record that carries a kind outside the six packet kinds; no runtime source builds a packet with another kind. No feature/runtime-maintenance branch exists, so the slice sits on main beside the earlier ones.
+ >>[2026-11-13 21:13] hygiene — Seed's experimental folder had grown to 18 modules side by side. The two families with one subject each now have a folder: columns/ (parse columns, likeness, rhymes, readings, the byte form, shape match, GPU packing) and sound/ (the brace clicks, the modal voice, the ear line, and a new measure module); the text readers stay at the top (pair labels, spoken form, structural edit, settings line, number form). Moved with git, imports rewritten by script, path references in plan cards and comments updated, dated stream entries left as written.
+ >>[2026-11-13 21:13] hygiene — Primitives given one home: BRACE_CLOSE beside BraceKind in pair-labels (three copies gone, one in the CLI); the shape matcher uses childRows instead of its own walker; sound/measure holds power at a frequency, band share, RMS, onset share, the half-energy point and spectral distance, which two test files had each written for themselves, exported as soundMeasures so the generic names do not enter seed's API; seeded-random replaces six copies of one generator in the tests. Every test reads the same numbers as before: seed 1,231, CLI 453, LSP 408, runtime 137, DOM 3, VS Code 73, parser release 26, tsc clean, typecheck:refs clean.
 }
 
 ^["open"]{
@@ -116,7 +118,7 @@
  ~#files_hot: "packages/spw-runtime/src/state/register-bank.ts, packages/spw-runtime/src/session/hot-session.ts"
  ~#next_commit: "runtime_value_module"
  ~#open_count: "2"
- ~#last_stream: "2026-11-12 00:11"
+ ~#last_stream: "2026-11-13 21:13"
  ~#taste_debt: "register-bank.ts is 899 lines, past the 600-line guard; hot-session.ts has 17 imports, past the 12-import guard"
 }
 

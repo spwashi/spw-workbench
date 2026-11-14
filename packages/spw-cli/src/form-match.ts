@@ -1,7 +1,7 @@
 /**
  * spw form --match '<example>' — every place the surfaces write a form, given by example.
  *
- * The example is Spw with holes (seed experimental/shape-match): _ for any one
+ * The example is Spw with holes (seed experimental/columns/shape-match): _ for any one
  * subtree, ... for any further siblings, and _ alone inside a word (lens(_)) for
  * any text there. Each hit prints where it starts and what filled each hole;
  * the paradigm lists what each hole was filled with across all hits, most

@@ -36,8 +36,11 @@
  * Every function is arithmetic on numbers; no audio interface is touched.
  */
 
-import type { BraceKind } from './pair-labels'
+import type { BraceKind } from '../pair-labels'
 import type { PairClick, PairSoundSettings } from './pair-sound'
+import { rms } from './measure'
+
+export { rms } from './measure'
 
 /** One texture: mode ratios to the pitch, each mode's strength, and how much faster each higher mode dies. */
 export interface Texture {
@@ -148,13 +151,6 @@ function sound(event: ModalEvent, texture: Texture, decay: number, sampleRate: n
   for (let i = 0; i < tail; i++) out[length - 1 - i] *= i / tail
   for (let i = 0; i < length; i++) out[i] *= event.weight
   return out
-}
-
-/** Root mean square of samples. */
-export function rms(samples: Float32Array): number {
-  let sum = 0
-  for (const x of samples) sum += x * x
-  return Math.sqrt(sum / Math.max(1, samples.length))
 }
 
 /** The samples of one click in the modal voice, scaled to the ear line's level. */

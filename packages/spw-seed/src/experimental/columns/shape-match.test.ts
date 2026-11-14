@@ -4,8 +4,8 @@
  * matches the line, and the hole is filled with the part that was replaced.
  */
 import { describe, expect, it } from 'vitest'
-import { LINE_FIXTURES } from '../line/fixtures'
-import { readLine } from '../line/read'
+import { LINE_FIXTURES } from '../../line/fixtures'
+import { readLine } from '../../line/read'
 import { parseColumns } from './parse-columns'
 import { compileShape, findShape, isShapePattern, matchShape, wordHolePattern, type ShapePattern } from './shape-match'
 

@@ -3,7 +3,7 @@
  *
  *   spw rewrite <paths> --match '~garden[_]{_, ...}' --into '~garden[_1]{_2; _3}'
  *
- * The example is read as spw form --match reads it (seed experimental/shape-match):
+ * The example is read as spw form --match reads it (seed experimental/columns/shape-match):
  * _ for any one subtree, ... for further siblings, _ alone inside a word for any
  * text there. In the template, _1, _2, … are the text that filled each hole, in
  * the example's order, and _0 is the whole match. Nothing is written without

@@ -7,25 +7,15 @@
  * they sound.
  */
 import { describe, expect, it } from 'vitest'
-import { scanPairLabels } from './pair-labels'
+import { seededRandom } from '../seeded-random'
+import { scanPairLabels } from '../pair-labels'
+import { amplitude } from './measure'
 import { OVERTONES, PAIR_SOUND, PAIR_SOUND_SCHEMA, labelTimbre, pairSound, renderClick, renderPairSound, renderPhrase, wavBytes, type PairClick } from './pair-sound'
 
 const RATE = 44100
 const KEPT = '^kept[thursday]{_thursday .day["2026-11-27"] *kept_place{ ~warm[4] } yadsruht_}'
 
-/** How strongly one frequency sounds in the samples (Goertzel), per sample. */
-function strength(samples: Float32Array, hertz: number): number {
-  const w = (2 * Math.PI * hertz) / RATE
-  const coeff = 2 * Math.cos(w)
-  let s1 = 0
-  let s2 = 0
-  for (const x of samples) {
-    const s0 = x + coeff * s1 - s2
-    s2 = s1
-    s1 = s0
-  }
-  return Math.sqrt(Math.max(0, s1 * s1 + s2 * s2 - coeff * s1 * s2)) / samples.length
-}
+const strength = (samples: Float32Array, hertz: number): number => amplitude(samples, hertz, RATE)
 
 const overtones = (click: PairClick, samples = renderClick(click, RATE)): number[] => {
   const pure = strength(samples, click.pitch)
@@ -34,10 +24,7 @@ const overtones = (click: PairClick, samples = renderClick(click, RATE)): number
 
 const clicksOf = (source: string): PairClick[] => pairSound(scanPairLabels(source)).clicks
 
-const seeded = (seed: number) => () => {
-  seed = (seed * 16807) % 2147483647
-  return (seed - 1) / 2147483646
-}
+const seeded = seededRandom
 
 describe('pairSound', () => {
   it('gives every brace a click, in source order, bounded by a phrase and the same phrase backward', () => {

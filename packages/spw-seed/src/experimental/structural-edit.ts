@@ -17,8 +17,8 @@
  * Experimental (spw.structural-edit/1).
  */
 
-import { parseColumns, type ParseColumns } from './parse-columns'
-import { mirrorPairLabel, scanPairLabels, type BracePair, type PairLabelScan } from './pair-labels'
+import { parseColumns, type ParseColumns } from './columns/parse-columns'
+import { BRACE_CLOSE, mirrorPairLabel, scanPairLabels, type BracePair, type PairLabelScan } from './pair-labels'
 
 export const STRUCTURAL_EDIT_SCHEMA = 'spw.structural-edit/1' as const
 
@@ -90,8 +90,6 @@ function labelSpans(pair: BracePair): { open: EditSpan; close: EditSpan | null }
   return { open, close }
 }
 
-const CLOSE: Record<string, string> = { '{': '}', '[': ']', '(': ')' }
-
 /** For a caret on or inside a labeled pair: what must change together, and the edits that reshape its close. */
 export function pairLabelEdits(text: string, offset: number, scan: PairLabelScan = scanPairLabels(text)): PairLabelEdits {
   const holds = (p: BracePair) => p.open.at <= offset && offset <= p.close.at + 1 + (p.close.label?.length ?? 0) + 1
@@ -103,7 +101,7 @@ export function pairLabelEdits(text: string, offset: number, scan: PairLabelScan
   const label = (pair.label ?? pair.open.label)!
   const spans = labelSpans(pair)!
   const actions: PairLabelAction[] = []
-  const closeBrace = CLOSE[pair.kind]!
+  const closeBrace = BRACE_CLOSE[pair.kind]
   const mirror = mirrorPairLabel(label)
 
   if (!pair.close.label) {

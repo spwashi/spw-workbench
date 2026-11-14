@@ -14,7 +14,7 @@
  * so equal keys nominate and do not prove: a reader that groups by a key
  * compares the columns before it calls two subtrees alike (rhymes.ts does).
  *
- * @see packages/spw-seed/src/experimental/parse-columns.ts
+ * @see packages/spw-seed/src/experimental/columns/parse-columns.ts
  * @see packages/spw-seed/src/canonical/nest-path.ts — the skeleton rung
  * @see packages/spw-seed/src/canonical/fingerprint.ts — the census rung
  */

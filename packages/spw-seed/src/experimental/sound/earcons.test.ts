@@ -4,14 +4,12 @@
  * move lists its pairs in.
  */
 import { describe, expect, it } from 'vitest'
-import { scanPairLabels } from './pair-labels'
+import { seededRandom } from '../seeded-random'
+import { scanPairLabels } from '../pair-labels'
 import { PAIR_SOUND, pairSound, type PairSoundSettings } from './pair-sound'
 import { EARCON_WORDS, EARCONS_SCHEMA, pairMoves, readEarcons, writeEarcons } from './earcons'
 
-const seeded = (seed: number) => () => {
-  seed = (seed * 16807) % 2147483647
-  return (seed - 1) / 2147483646
-}
+const seeded = seededRandom
 
 describe('readEarcons', () => {
   it('reads an empty line as the default sound', () => {

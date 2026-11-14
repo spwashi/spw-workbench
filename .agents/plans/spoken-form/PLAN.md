@@ -29,7 +29,7 @@ Taste note:
 ## Files
 
 [NEW] packages/spw-seed/src/experimental/spoken.ts, spoken.test.ts
-[NEW] packages/spw-seed/src/experimental/pair-sound.ts, pair-sound.test.ts
+[NEW] packages/spw-seed/src/experimental/sound/pair-sound.ts, pair-sound.test.ts
 [NEW] packages/spw-seed/src/canonical/geometry-inspect-position.test.ts
 [NEW] scripts/sound/pair-sound.ts
 [MOD] packages/spw-seed/src/canonical/geometry-inspect-position.ts, geometry-resolver.ts

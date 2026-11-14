@@ -5,7 +5,7 @@
  *
  * One rectangle per node: across, where the node is written in the source; down,
  * how deep it sits; its colour from its kind and its word. The rows are the
- * file's parse columns widened to u32 (seed experimental/gpu-pack), inlined into
+ * file's parse columns widened to u32 (seed experimental/columns/gpu-pack), inlined into
  * the page, so the page needs no parser. The ^shader line in the page's text
  * field is read by seed's readSettingsLine and packed by packUniforms into the
  * uniform buffer the shader declares with wgslStruct, both bundled in, so the
@@ -114,7 +114,7 @@ await fs.mkdir(out, { recursive: true })
 await fs.writeFile(
   entry,
   `import { readSettingsLine } from ${JSON.stringify(path.join(root, 'packages/spw-seed/src/experimental/settings-line.ts'))}
-import { packUniforms, uniformLayout } from ${JSON.stringify(path.join(root, 'packages/spw-seed/src/experimental/gpu-pack.ts'))}
+import { packUniforms, uniformLayout } from ${JSON.stringify(path.join(root, 'packages/spw-seed/src/experimental/columns/gpu-pack.ts'))}
 const DATA = (globalThis as any).SPW_GPU_DATA
 const words = DATA.words
 const layout = uniformLayout(words, DATA.defaults)

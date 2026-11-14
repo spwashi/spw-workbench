@@ -1,13 +1,11 @@
 import { describe, expect, it } from 'vitest'
+import { seededRandom } from './seeded-random'
 import { LINE_FIXTURES } from '../line/fixtures'
-import { parseColumns } from './parse-columns'
+import { parseColumns } from './columns/parse-columns'
 import { scanPairLabels } from './pair-labels'
 import { applyTextEdits, pairLabelEdits, selectionSpans } from './structural-edit'
 
-const seeded = (seed: number) => () => {
-  seed = (seed * 16807) % 2147483647
-  return (seed - 1) / 2147483646
-}
+const seeded = seededRandom
 
 describe('selectionSpans', () => {
   const line = '^kept[thursday]{_thursday *kept_place{ ~warm[4] } }_thursday'

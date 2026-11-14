@@ -49,6 +49,9 @@ import { lex } from '../lexer'
 export const PAIR_LABELS_SCHEMA = 'spw.pair-labels/1' as const
 
 export type BraceKind = '{' | '[' | '('
+
+/** The close of each brace kind. */
+export const BRACE_CLOSE: Readonly<Record<BraceKind, string>> = Object.freeze({ '{': '}', '[': ']', '(': ')' })
 export type PairScanDirection = 'forward' | 'backward'
 export type PairCloseSpelling = 'repeated' | 'mirrored'
 

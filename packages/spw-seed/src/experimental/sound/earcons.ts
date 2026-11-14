@@ -32,9 +32,9 @@
  * has been heard.
  */
 
-import { readRange } from '../line/read'
-import { readSettingsTerms, settingNumber } from './settings-line'
-import type { BracePair, PairLabelScan } from './pair-labels'
+import { readRange } from '../../line/read'
+import { readSettingsTerms, settingNumber } from '../settings-line'
+import type { BracePair, PairLabelScan } from '../pair-labels'
 import { PAIR_SOUND, pairSound, type PairClick, type PairSoundSettings } from './pair-sound'
 
 export const EARCONS_SCHEMA = 'spw.earcons/1' as const

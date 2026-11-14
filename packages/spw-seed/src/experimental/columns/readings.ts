@@ -27,7 +27,7 @@
  * layout until the columns leave experimental.
  */
 
-import { textHash } from '../canonical/content-hash'
+import { textHash } from '../../canonical/content-hash'
 import { parseColumns, type ParseColumns } from './parse-columns'
 
 export const READINGS_SCHEMA = 'spw.readings/1' as const

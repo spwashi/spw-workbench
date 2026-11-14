@@ -49,6 +49,7 @@ prompts/             # Prompt templates and surfaces
 ### Build & Test
 ```bash
 npm run build                    # tsc --noEmit (type check)
+npm run typecheck:refs           # rebuild the project-reference declarations (cli, lsp, scripts) so their own checks and editors see seed's current exports
 npm run test:run                 # Full test suite (runtime + dom)
 npm run test:seed                # Parser kernel tests
 npm run test:runtime             # Runtime tests

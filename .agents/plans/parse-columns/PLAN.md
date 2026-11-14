@@ -22,9 +22,9 @@ Taste note:
 
 ## Files
 
-[NEW] packages/spw-seed/src/experimental/parse-columns.ts, parse-columns.test.ts
-[NEW] packages/spw-seed/src/experimental/likeness.ts
-[NEW] packages/spw-seed/src/experimental/rhymes.ts, rhymes.test.ts
+[NEW] packages/spw-seed/src/experimental/columns/parse-columns.ts, parse-columns.test.ts
+[NEW] packages/spw-seed/src/experimental/columns/likeness.ts
+[NEW] packages/spw-seed/src/experimental/columns/rhymes.ts, rhymes.test.ts
 [NEW] packages/spw-cli/src/form-columns.ts, form-columns.test.ts
 [NEW] .spw/caches/journal/2026-11-11-columns-likeness-rhymes.spw
 [MOD] packages/spw-seed/src/combinators/transform.ts, combinators/index.ts (`sepByOptionalKept`)

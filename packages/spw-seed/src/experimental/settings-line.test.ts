@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { seededRandom } from './seeded-random'
 import { readSettingsLine, writeSettingsLine, type SettingsVocabulary } from './settings-line'
 
 // A board in the shape a story consumer's game writes, with words of each kind.
@@ -11,10 +12,7 @@ const BOARD: SettingsVocabulary = {
   note: { kind: 'text' },
 }
 
-const seeded = (seed: number) => () => {
-  seed = (seed * 16807) % 2147483647
-  return (seed - 1) / 2147483646
-}
+const seeded = seededRandom
 
 describe('readSettingsLine', () => {
   it('reads a head, every term, and the values the vocabulary knows, typed', () => {

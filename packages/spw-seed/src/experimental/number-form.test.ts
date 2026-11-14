@@ -1,11 +1,9 @@
 import { describe, expect, it } from 'vitest'
+import { seededRandom } from './seeded-random'
 import { isNumberForm, readNumberForm } from './number-form'
 import { settingNumber } from './settings-line'
 
-const seeded = (seed: number) => () => {
-  seed = (seed * 16807) % 2147483647
-  return (seed - 1) / 2147483646
-}
+const seeded = seededRandom
 
 describe('readNumberForm', () => {
   it.each([

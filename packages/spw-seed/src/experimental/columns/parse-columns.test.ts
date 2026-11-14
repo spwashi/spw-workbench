@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { fingerprintSource } from '../canonical/fingerprint'
+import { fingerprintSource } from '../../canonical/fingerprint'
 import {
   childRows,
   columnsFromJson,

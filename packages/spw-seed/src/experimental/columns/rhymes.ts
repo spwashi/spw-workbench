@@ -13,11 +13,11 @@
  * compared column by column before they count as one shape, so a collision
  * never merges two shapes; a hole is a row whose word column differs.
  *
- * @see packages/spw-seed/src/experimental/likeness.ts — the shape and content rungs
- * @see packages/spw-seed/src/experimental/parse-columns.ts
+ * @see packages/spw-seed/src/experimental/columns/likeness.ts — the shape and content rungs
+ * @see packages/spw-seed/src/experimental/columns/parse-columns.ts
  */
 
-import { lex } from '../lexer/lex'
+import { lex } from '../../lexer/lex'
 import { likeness } from './likeness'
 import type { ParseColumns } from './parse-columns'
 

@@ -5,6 +5,7 @@
  * does with the words.
  */
 import { describe, expect, it } from 'vitest'
+import { seededRandom } from './seeded-random'
 import { LINE_FIXTURES } from '../line/fixtures'
 import { BONDS, SLOT_NAMES } from '../line/names'
 import { OPERATOR_READER_NAMES } from '../learn/readers'
@@ -52,10 +53,7 @@ function overlaps(line: SpokenLine): string[] {
   return out
 }
 
-const seeded = (seed: number) => () => {
-  seed = (seed * 16807) % 2147483647
-  return (seed - 1) / 2147483646
-}
+const seeded = seededRandom
 
 const PIECES = ['home', 'seed', 'water', 'kept_place', '_a', 'a_', '~', '#', '.', '?', '!', '*', '&', '@', '^', '$', '%', '=', '#>', '{', '}', '[', ']', '(', ')', '<', '>', ',', ';', '~>', ':', ' ', ' ', '"', 'x: ', '12', '..']
 

@@ -29,7 +29,7 @@
  * numbers are a first guess. Nothing here was heard by anyone.
  */
 
-import type { BraceEdge, BraceKind, PairLabelScan } from './pair-labels'
+import type { BraceEdge, BraceKind, PairLabelScan } from '../pair-labels'
 import { renderModalClick } from './modal-sound'
 
 export const PAIR_SOUND_SCHEMA = 'spw.pair-sound/1' as const
