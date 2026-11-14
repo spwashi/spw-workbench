@@ -4,6 +4,8 @@
 #
 # The corpus is not evidence of preference here: a combination is rare because the grammar never read it, as negative numbers were rare while no minus sign lexed. Counts are what a change must carry across, not what the model should favour.
 #
+# The owner's judgments of 2026-11-14 shape it: side is read by arms; particles and fused pairs are read from their parts, fusion being a lexing convenience; and chaining is a setting of each dialect and of a project's rules, not a universal.
+#
 # Builds on fixity-brace-phrases.spw (prefix, postfix, interior, membrane and infix placements; a postfix chain associates left to right), em-fixity-association.spw (+{ } source leads, { }+ the act follows inhabit), operator-brace-composition.spw, the particle lattice in packages/spw-seed/src/lexer/matchers/particles.ts, and the trial cards attachment, joins, observer_postfix and operator_label.
 
 #>act_chains
@@ -13,8 +15,10 @@
 ^"units"{
  act = `one of the twelve marks ! ^ ~ ? * = @ # . & $ %, an operation on what it is written against`
  operand = `what a chain is written against: a name, or a bound [x] {x} (x) <x>`
- particle = `a pair the lexicon fixes as one token: # with an aim > : ! (deixis, case, mood), and the aspect ~#; a particle is read whole, never as a chain`
- fused = `pairs the lexer reads as one connector or comparison: .. ... -> ~> => || <> and == != <= >=; a fused pair is another word, not a chain`
+ relation = `the punctuation marks with a fundamental of their own: : binds, | offers an alternative, / projects, ; sequences, , lists, > points toward, < receives; > and < alone have no reading today and appear only inside pairs`
+ particle = `a pair the lexer fuses today: # with an aim > : ! (deixis, case, mood), and the aspect ~#`
+ fused = `pairs the lexer fuses today as one connector or comparison: .. ... -> ~> => || <> and == != <= >=`
+ fusion = `fusion is a lexing heuristic, not a fundamental: every fused pair is read from its parts first, and a dialect that fuses a pair says whether the fused reading agrees with its parts or is an idiom against them (^"decomposition")`
  chain = `two or more acts glued to each other and to one operand, with no space between`
  spaced = `a mark set apart by a space is in no chain: it is a bond between expressions or an act on what follows it (wonder_trial_joins)`
 }[reg=facet]
@@ -43,16 +47,17 @@
  nearest = `inside a chain the mark nearest the operand binds first: a prefix chain reads right to left, a postfix chain left to right (x~! is !(~(x)) in fixity-brace-phrases)`
  sides = `on one operand the bound binds first, then the postfix chain, then the prefix chain (fixity-brace-phrases precedence_sketch), so $[x]# is $ over ([x]#)`
  whole = `every mark written appears in the tree, in the order and on the side it was written; nothing is absorbed or lost`
- lexicon = `particles and fused pairs are the only pairs the lexicon reads; any other pair is a chain, so $%, $#, %$ and #$ are read alike`
+ parts_first = `every pair is a chain of its parts; no pair is privileged by the lexicon, so $%, $#, %$, #$, #!, ~> and != are all read from what each mark is, and a dialect's fused tokens are a convenience over that reading`
  prose = `prose opens only at # followed by a space or the end of a line; a ? or # before another mark starts a chain`
- shape = `the test any author can make: two chains with the same number of marks in the same positions build the same shape of tree, whichever marks they are`
+ shape = `the test any author can make: within one dialect, two chains with the same number of marks in the same positions build the same shape of tree, whichever marks they are`
+ configured = `the laws above are defaults; whether chains form, how long they run, what fuses, what a chain between two operands means, and where prose opens are settings of a dialect and of a project's rules (^"profiles")`
  infix_open = `a chain touching operands on both sides waits on a reading: arithmetic inside a measure frame, and elsewhere a bond, the right operand's prefix chain, or a warning`
 }[reg=facet]
 
 ^"meaning"{
- # Two readings of side; the parser can record side and order so either is laid over the same tree.
- mirror = `side is style: $#[x] and #[x]$ name one thing, and a chain reads the same from either side of its operand`
+ # Side is read by arms: the owner judged it the more accurate reading on 2026-11-14. Mirror stays recorded as the reading not taken.
  arms = `prefix acts before the operand is evaluated (intent: address, defer, schedule, declare) and postfix after it (consequence: commit, measure, gather, hand over); fixity-brace-phrases already says prefix arms before the bound captures and postfix discharges after`
+ mirror = `not taken: side as style, so $#[x] and #[x]$ would name one thing`
  order = `within a chain the outer mark is the stance, when or how, and the inner mark the act, what happens; three agents briefed apart read it so (journal 2026-11-14)`
  commute = `two reads commute; a read and a write do not, nor a deferral and any memory act; order carries meaning exactly where acts do not commute`
 }[reg=facet]
@@ -82,19 +87,59 @@
 }[reg=facet]
 
 ^"four_forms"{
- # $[x], $#[x], $[x]# and #[x]$ under the structure laws, then under each reading of side.
- dollar_frame = .{ structure = `$ over [x]`, mirror = `an address of x`, arms = `the address of x, its value unread` }
- dollar_hash_frame = .{ structure = `$ over (# over [x])`, mirror = `an address of the set x`, arms = `the address of the set x, pointed at before its members are read` }
- dollar_frame_hash = .{ structure = `$ over ([x] then #)`, mirror = `the same as $#[x]`, arms = `the address of what x gathers once read: the set of its consequences` }
- hash_frame_dollar = .{ structure = `(# over [x]) then $`, mirror = `the same as $#[x]`, arms = `the set x, evaluated, then handed over with where it came from` }
- count = `under mirror the four are two meanings, $[x] and the other three alike; under arms they are four`
+ # $[x], $#[x], $[x]# and #[x]$ under the structure laws, read by arms: four forms, four meanings.
+ dollar_frame = .{ structure = `$ over [x]`, arms = `the address of x, its value unread` }
+ dollar_hash_frame = .{ structure = `$ over (# over [x])`, arms = `the address of the set x, pointed at before its members are read` }
+ dollar_frame_hash = .{ structure = `$ over ([x] then #)`, arms = `the address of what x gathers once read: the set of its consequences` }
+ hash_frame_dollar = .{ structure = `(# over [x]) then $`, arms = `the set x, evaluated, then handed over with where it came from` }
+ time = `the two prefix forms act before x is read, the two with a postfix after; the two with $ outermost hand back an address, the one with $ last hands back a value with its provenance`
+}[reg=facet]
+
+^"decomposition"{
+ # Each pair the lexer fuses today, read from its parts by arms and the nearest law, against the reading the fusion gives it.
+ hash_aim_point = .{ pair = `#>`, parts = `a lens over what points toward the name`, fused = `deixis, an anchor`, verdict = `agrees` }
+ hash_aim_bind = .{ pair = `#:`, parts = `a lens over a binding`, fused = `case, a lens that classifies`, verdict = `agrees` }
+ hash_bang = .{ pair = `#!`, parts = `a lens over an act: the act filed under a lens`, fused = `mood, pragmatic force asserted`, verdict = `agrees` }
+ tilde_hash = .{ pair = `~#`, parts = `a potential over a lens: how a lens may unfold`, fused = `aspect`, verdict = `agrees` }
+ tilde_point = .{ pair = `~>`, parts = `a potential directed toward`, fused = `project-join, movement between stations`, verdict = `agrees` }
+ couple = .{ pair = `<>`, parts = `receiving and pointing face each other`, fused = `couple, a concept's membrane`, verdict = `agrees` }
+ dot_dot = .{ pair = `..`, parts = `ground then ground: the extent between two grounds`, fused = `range or sequence`, verdict = `agrees loosely` }
+ dots = .{ pair = `...`, parts = `ground repeated: the rest of the ground`, fused = `spread`, verdict = `agrees loosely` }
+ bars = .{ pair = `||`, parts = `alternatives set side by side`, fused = `parallel schedule`, verdict = `agrees loosely` }
+ equals_point = .{ pair = `=>`, parts = `a setting directed toward`, fused = `projection or enrichment arrow`, verdict = `partly: an arrow borrowed from other languages` }
+ dash_point = .{ pair = `->`, parts = `no reading for a lone dash yet`, fused = `transform`, verdict = `unsettled until the minus sign has a reading (minus_sign)` }
+ equals_equals = .{ pair = `==`, parts = `a setting set again: confirmation`, fused = `equality`, verdict = `partly` }
+ bang_equals = .{ pair = `!=`, parts = `an act on a setting: a forced choice`, fused = `not equal`, verdict = `against its parts: nothing in ! negates` }
+ less_equals = .{ pair = `<=`, parts = `a setting received`, fused = `at most`, verdict = `against its parts` }
+ more_equals = .{ pair = `>=`, parts = `a setting directed toward`, fused = `at least`, verdict = `against its parts` }
+ finding = `every # particle, ~> and <> read from their parts as the fusion reads them, so fusing them loses nothing; the comparisons borrowed from other languages read against their parts, which is where fusion hides a mark's fundamentals (wonder_trial_comparison)`
+}[reg=facet]
+
+^"profiles"{
+ # Chain settings a dialect or a project's rules choose; the structure laws are the defaults. Proposed, per dialect in syntax-profile-stack.spw and MetasyntaxFlags (packages/spw-seed/src/dialect/types.ts).
+ settings = .{ chains = `whether glued marks form chains`, length = `the longest chain read`, fuse = `which pairs lex as one token, and whether each agrees with its parts`, infix = `what a chain between two operands is: arithmetic, a bond, the right operand's prefix, or a warning`, prose = `where prose opens`, spacing = `whether a newline ends a chain` }
+ author = `Spw.b: chains of two, fuse only pairs that agree with their parts, infix as arithmetic inside a measure frame and a warning elsewhere`
+ line = `Spw.l: as Spw.b, and a newline is a space, so a chain never crosses a line`
+ machine = `Spw.m: chains of any length and no fusion, every pair written out as its parts, so the normal form shows each mark's fundamental`
+ selector = `Spw.q: fuse the path pairs (~> and ->) that a query reads as steps`
+ executable = `Spw.x: chains carry their effects by arms; infix as arithmetic inside a measure frame`
+ flow = `Spw.f: fuse the schedules || and ; that a flow reads`
+ plan = `Spw.p: the stream marker and commit refs keep their readers; chains elsewhere as Spw.b`
+ template = `Spw.t: chains of any length, holes kept as holes`
+ project = `a project's rules choose a dialect per path, as the VCS plan proposes a workspace setting for version control (local-numbering-vcs vcs_settings); a host such as factshift.center, whose canvas obeys a chain's first mark, declares its own profile`
 }[reg=facet]
 
 ?["Is $#[x] the same as #[x]$?"]{
  #:depth #!syntax ~#lens(comparison)
  ~#readings: ["mirror: yes, side is style, and $#[x], $[x]# and #[x]$ are one meaning", "arms: no, prefix acts before the operand is evaluated and postfix after, so all four differ", "both: they denote one thing, and side says when its effect happens"]
- ~#judgment: _
+ ~#judgment: "arms, the owner, 2026-11-14: the more accurate reading"
  $%[mirror, arms, both]
+}
+
+?["Which pairs, if any, does a dialect fuse into one token?"]{
+ ~#readings: ["none: every pair is read from its parts in every dialect", "agreeing: a dialect may fuse a pair only where the fused reading agrees with its parts", "declared idioms: a dialect may also fuse a pair against its parts if it names it as an idiom", "per dialect: each dialect lists its own"]
+ ~#asked: "the owner, 2026-11-14: clustering particles and fused pairs together is a parsing heuristic that ignores the fundamentals of each operator; chaining depends on the lexing and parsing context across dialects and project rules"
+ $%[none, agreeing, declared_idioms, per_dialect]
 }
 
 ?["What is a chain touching an operand on both sides?"]{
