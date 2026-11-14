@@ -52,6 +52,7 @@ import { printPairsHelp, runSpwPairsCli } from './pairs'
 import { printHearHelp, runSpwHearCli } from './hear'
 import { printRewriteHelp, runSpwRewriteCli } from './rewrite'
 import { printSheetHelp, runSpwSheetCli } from './sheet'
+import { printVcsHelp, runSpwVcsCli } from './vcs-cli'
 
 /**
  * Which part of the loop a command belongs to. Groups order the help page and
@@ -153,6 +154,13 @@ export const COMMANDS: CommandSpec[] = [
     summary: 'List workspace roots, path kinds, and authority roles',
     printHelp: () => printRootsHelp(),
     run: (invoked, args) => runSpwRootsCli(argv(invoked, args)),
+  },
+  {
+    name: 'vcs',
+    group: 'workspace',
+    summary: 'Show what version control holds here, and run a command in a clean checkout of a revision',
+    printHelp: () => printVcsHelp(),
+    run: (_invoked, args) => runSpwVcsCli(args),
   },
   {
     name: 'mount',

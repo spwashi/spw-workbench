@@ -41,6 +41,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import { gzipSync } from 'node:zlib'
+import { outsideRoot, readWorkspacePackages, workspaceInRoot } from './workspace-in-root'
 
 const execFileAsync = promisify(execFile)
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
@@ -162,7 +163,7 @@ interface VariantSpec {
   source: string
   /** Entry module body; the stamp export is appended per form. */
   exports: string
-  /** Module substitutions for this variant only, as esbuild aliases. */
+  /** Workspace names this variant substitutes, exact name to a path under the root (workspace-in-root.ts). */
   alias?: Readonly<Record<string, string>>
 }
 
@@ -329,8 +330,18 @@ async function bundleVariant(
     banner: { js: banner },
     logLevel: 'silent',
     tsconfig: path.join(rootDir, 'tsconfig.json'),
-    ...(spec.alias ? { alias: { ...spec.alias } } : {}),
+    // Workspace names resolve inside this tree, the variant's substitutions first (workspace-in-root.ts).
+    plugins: [workspaceInRoot(rootDir, await readWorkspacePackages(rootDir), spec.alias)],
+    metafile: true,
   })
+
+  const outside = outsideRoot(result.metafile!)
+  if (outside.length) {
+    throw new Error(
+      `${spec.variant} ${form} bundled ${outside.length} sources from outside ${rootDir}; a release holds one tree.\n` +
+        outside.slice(0, 5).map((input) => `    ${input}`).join('\n'),
+    )
+  }
 
   const code = result.outputFiles.find((file) => file.path.endsWith('.js'))
   const map = result.outputFiles.find((file) => file.path.endsWith('.js.map'))

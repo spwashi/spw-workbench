@@ -7,6 +7,7 @@ import { facet, formatSpwCard, type SpwCardPart } from '@spwashi/spw-seed'
 import { loadSpwMountResolution } from '@spwashi/spw-runtime/node'
 import { parseCommonFlags } from './args'
 import { printHelpPage } from './help'
+import { detectVcs } from './vcs'
 import { WalkStats, walkStatsHelpLine } from './walk-stats'
 
 type CheckStatus = 'ok' | 'warn' | 'fail'
@@ -242,11 +243,13 @@ export async function inspectDoctorTarget(
   const checks: DoctorCheck[] = []
 
   const hasGit = await exists(path.join(root, '.git'))
+  // A jj workspace with no .git is version-controlled too; say so instead of asking for git init (vcs.ts).
+  const jjAlone = !hasGit && detectVcs(root).kind === 'jj' && detectVcs(root).root === root
   checks.push({
     id: 'git-root',
-    status: hasGit ? 'ok' : 'warn',
-    summary: hasGit ? 'git repository detected' : 'target is not a git repository yet',
-    fix: hasGit ? undefined : 'git init',
+    status: hasGit || jjAlone ? 'ok' : 'warn',
+    summary: hasGit ? 'git repository detected' : jjAlone ? 'jj workspace detected, no .git beside it (spw vcs names what that leaves out)' : 'target is not a git repository yet',
+    fix: hasGit || jjAlone ? undefined : 'git init',
   })
 
   const hasSpwRoot = await exists(spwRoot)
