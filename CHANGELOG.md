@@ -4,17 +4,17 @@ This is the consumer-facing record of material workbench changes. `Unreleased` e
 
 Version-local release records remain under `lib/spw-v*/CHANGELOG.md`. Commit `#[episode]{ ... }` blocks are the detailed engineering history behind these summaries.
 
-## After 2026.11.13 — version control from inside Spw files (not in the day's cut at `f53aaa1c`)
+## 2026-11-13 — parser release 2026.11.13
+
+What a host gets by moving its pin from `9ef3d223`, or by importing the dated release's `reader.min.js`. Everything marked experimental may change its contract id, and none of the sound or speech has been heard by a listener yet.
+
+### Version control from inside Spw files
 
 - **Landing a planned commit.** On a planned line in a plan's commits block, `~[label]: "…"`, editors offer *Land label as <id> (HEAD)* and *as* any recent commit whose message names the label; the line becomes `.[label](id): "subject as committed"`, quotes escaped, nothing else touched. `spw vcs land <plan> [<label>] [--rev <rev>] [--write]` does the same from a terminal and lists a plan's planned lines. Seed's `readCommitLines`, `landedLineText` and `landCommit` (`spw.commit-lines/1`) hold the text half, so neither caller asks a version-control system to write a line.
 - **Revision ids by workspace.** `REVISION_ID_FORMS` in seed's lexer names the shapes an id is written in: git SHA-1 hex (the default, so every file lexes as before), SHA-256 hex, and jj change ids (letters k to z, taken from jj's documentation; no jj was run). `lex(text, { planStream: true, commitRefForms })` reads a landed ref in the forms given. `@spwashi/spw-runtime/node` gains `detectVcs`, which reads from the workspace's files which forms it uses (SHA-256 from git's config, jj from a `.jj` directory); the language server passes them to highlighting, hover, links and diagnostics. A jj change id is read only where a line claims a commit, never in prose, since words such as "tomorrows" are spelled in the same letters; it hovers as a change, takes no link, and is never reported missing, because nothing asks git about it.
 - **Ranges.** Both ends of `16fd5f8..aae308a9` (or with three dots) are cited hashes now; the second end was dropped before.
 - **Git reading Spw.** `.gitattributes` sends `.spw` files through a `spw` diff driver, and `spw vcs diff-driver` prints the two `git config` lines that define it (per clone; git never takes a driver from a repository). Hunk headers then name the frame or anchor a change sits in: over this repository's last 60 commits touching `.spw` files, git's default named nothing for 1,102 of 1,104 hunks, and the driver names a frame or anchor for 1,024. `--word-diff` keeps `#>`, `..`, `~>` and the other marks whole, isolates `392` inside `%body[392]`, and does not split an em dash, under a UTF-8 or the C locale. The word pattern is derived from the lexer's operator and connector tables (`spwWordPattern`, `SPW_FRAME_LINE`). `--check` says whether a clone has it.
 - Gap: the IntelliJ plugin maps no colour to the `commitRef` and `hashlike` token types; VS Code reads them as numbers and Neovim links them to `@number`.
-
-## 2026-11-13 — parser release 2026.11.13 (prepared, not yet cut)
-
-What a host gets by moving its pin from `9ef3d223`, or by importing the dated release's `reader.min.js`. Everything marked experimental may change its contract id, and none of the sound or speech has been heard by a listener yet.
 
 ### Reading a line aloud and by ear (experimental)
 

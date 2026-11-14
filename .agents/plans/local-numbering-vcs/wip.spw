@@ -11,7 +11,7 @@
  gist: "Local ids follow one rule (labels are identity, ordinals are derived for display), and every version-control touchpoint reads the VCS from .spw/workspace.spw, detected by default, so plans, lexer, LSP, CLI, and hooks work in git, jj, or no VCS."
  touches: [~".spw/workspace.spw", ~"packages/spw-seed/src/lexer/commit-ref.ts", ~"packages/spw-lsp/src/handlers/commit-refs.ts", ~".agents/scripts/agent-lib.sh"]
  entry: ~"./PLAN.md"
- next: "Move callers onto vcs.ts one per commit: ~[scripts_adapter] (the release builder still runs its own git), ~[agent_lib_adapter], ~[lsp_adapter]; ~[vcs_settings] only if detection ever needs overriding; ~[schema_numbering_rule] stands apart."
+ next: "~[lsp_adapter] (upstream-bridge.ts still asks git itself), ~[scripts_adapter], ~[agent_lib_adapter]; then a commit ref that names its repository, since the ids git here does not hold are the site consumer's commits; IntelliJ token colours stand apart."
 }
 
 ^["edges"]{
@@ -108,6 +108,9 @@
  >>[2026-10-13 15:06] note — plan-plugin-integration escalated git hashes in VS Code on 2026-10-13 and lands links and a commit view on the current git calls in commit-refs.ts; lsp_adapter moves them behind the adapter later, and commit_ref_pattern widens the form to SHA-256 and jj ids without changing those affordances.
  >>[2026-10-27 10:21] revise — numbering_inventory landed with the plan in 6068a378: its episode says the artifact inventories every numbering scheme and VCS touchpoint, which the numbering and vcs_touchpoints frames hold, so it is a landed line now, and the plan line quotes the subject as committed. ~[schema_numbering_rule] stays next: the schema still teaches ~[N] in its COMMIT SYNTAX section.
  >>[2026-11-13 23:27] implement — vcs_adapter landed in f53aaa1c as packages/spw-cli/src/vcs.ts behind spw vcs: detection walks up for .jj (colocated when .git sits beside it) or .git; head with its branch, default branch, ancestry, a revision resolved, and status with each path's age all run git, so a colocated jj workspace gets them too. Not in it: log, and any jj command, since jj is not installed where it was written; a jj workspace with no .git is detected and its gaps named. spw vcs --since keeps only paths changed since a time, which is what a session stages when other sessions' files sit in the tree. spw vcs at <rev> -- <command> runs a command in a clean checkout under .claude/worktrees/ with the checkout's own workspace packages linked and only that checkout removed. spw doctor calls a jj workspace without .git detected instead of advising git init; git targets read as before (git_default_unchanged holds).
+ >>[2026-11-13 23:50] implement — commit_ref_pattern landed in 6716d590, and was landed with spw vcs land, the first commit line in this repository not written by hand. Revision id forms are data in seed's lexer (git_sha1 by default, git_sha256, jj_change), detectVcs in spw-runtime/node reads which a workspace uses from its files, and the language server passes them to highlighting, hover, links and diagnostics; a jj change id is read only in the landed position, never confirmed, never reported missing. Editors offer to land a planned line as HEAD or a commit naming its label. A spw diff driver lets git name the frame a hunk sits in (1,024 of 1,104 hunks over 60 commits, where git's default named 2) and keeps marks whole in word diffs.
+ >>[2026-11-13 23:50] observe — Identity against content, measured on the plans: 238 distinct landed ids, 4 that git here does not hold, 3 of those commits in the site consumer's repository. A landed line is label plus id: the label is the change's identity (it survives amend and rebase, as a jj change id does), the id is the commit's content identity (it does not). History rewrites have not stranded ids here; ids that name another repository have, so the next resolution gap is a commit ref that says which repository it names, not a rebind after rewrite.
+ >>[2026-11-13 23:50] observe — Gaps named: the IntelliJ plugin maps no colour to the commitRef and hashlike token types (VS Code reads them as numbers, Neovim links them to the number group); no jj command runs anywhere, so a jj change id is read and coloured but not resolved; landing offers git commits only, so a jj workspace without .git gets no candidates.
 }
 
 ^["open"]{
@@ -124,7 +127,7 @@
  .[vcs_adapter](f53aaa1c): "^seed[cli,release,scripts] — resolve workspace packages inside the tree a release is built from and refuse sources from outside it, and add spw vcs: status with ages, and a command run in a clean checkout of a revision"
  ~[agent_lib_adapter]: "&[agents] — agent-lib.sh asks the adapter for the default branch and base sha instead of hardcoding main"
  ~[lsp_adapter]: "&[lsp] — commit-refs.ts and upstream-bridge.ts go through the adapter; with no VCS a commit ref shows as an unresolved id, not an error"
- ~[commit_ref_pattern]: "^seed[lexer] — the commit-ref id pattern is a lexer option (default hex 7 to 40, as today); callers pass hex 7 to 64 or the jj change-id alphabet from the workspace setting"
+ .[commit_ref_pattern](6716d590): "^seed[seed,lsp,cli,runtime] — land a planned commit from its line in a plan, read revision ids in the forms a workspace uses (git SHA-1 or SHA-256, jj change ids), and let git name the Spw frame a change sits in"
  ~[scripts_adapter]: "&[scripts] — the parser release builder and the episode corpus analyzer use the adapter; the commit-gate scripts stay git-only and say so"
  ~[vcs_fixtures]: "![vcs] — fixtures for a git repo, a jj-colocated repo, and a plain directory; the adapter, spw doctor, and plan:index agree on each"
 }
@@ -137,7 +140,7 @@
  ~#files_hot: ".spw/workspace.spw, .agents/scripts/agent-lib.sh, packages/spw-seed/src/lexer/commit-ref.ts"
  ~#next_commit: "schema_numbering_rule"
  ~#open_count: "3"
- ~#last_stream: "2026-11-13 23:27"
+ ~#last_stream: "2026-11-13 23:50"
  ~#taste_debt: ""
 }
 
