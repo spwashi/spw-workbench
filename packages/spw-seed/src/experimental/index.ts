@@ -81,3 +81,5 @@ export { SHAPE_MATCH_SCHEMA, compileShape, findShape, isShapePattern, matchShape
 export { COLUMNS_BYTES_SCHEMA, columnsFromBytes, columnsToBytes } from './columns-bytes'
 export type { EditSpan, PairLabelAction, PairLabelEdits, TextEdit } from './structural-edit'
 export { STRUCTURAL_EDIT_SCHEMA, applyTextEdits, pairLabelEdits, selectionSpans } from './structural-edit'
+export type { SettingsLine, SettingsProblem, SettingsProblemKind, SettingsTerm, SettingsVocabulary, SettingWord } from './settings-line'
+export { SETTINGS_LINE_SCHEMA, readSettingsLine, readSettingsTerms, writeSettingsLine } from './settings-line'

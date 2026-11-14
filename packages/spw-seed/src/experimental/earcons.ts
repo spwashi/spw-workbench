@@ -33,6 +33,7 @@
  */
 
 import { readRange } from '../line/read'
+import { readSettingsTerms } from './settings-line'
 import type { BracePair, PairLabelScan } from './pair-labels'
 import { PAIR_SOUND, pairSound, type PairClick, type PairSoundSettings } from './pair-sound'
 
@@ -100,35 +101,18 @@ export function readEarcons(text: string, base: PairSoundSettings = PAIR_SOUND):
   }
   if (line.rest.trim()) problems.push({ word: line.rest.trim(), at: line.restStart, problem: 'unread' })
 
-  let at = body.innerStart
-  for (let guard = 0; guard < 256; guard++) {
-    while (at < body.innerEnd && /[\s,;]/.test(source[at])) at++
-    if (at >= body.innerEnd) break
-    const part = readRange(source, at, body.innerEnd)
-    const written = part.word.text.replace(/^[.=%]/, '').replace(/:$/, '')
-    const next = Math.max(part.restStart, part.word.end, at + 1)
-    const mode = part.slots.mode
-    if (!(written in EARCON_WORDS)) {
-      problems.push({ word: written || source.slice(at, next).trim(), at, problem: 'unknown_word' })
-      at = next
+  // Terms are read as every settings line is (settings-line.ts): a mark, a word, a value in brackets or after a colon.
+  const { terms, unread } = readSettingsTerms(source, body.innerStart, body.innerEnd)
+  for (const u of unread) problems.push({ word: u.text, at: u.at, problem: 'unread' })
+  for (const term of terms) {
+    if (!(term.word in EARCON_WORDS)) {
+      problems.push({ word: term.word, at: term.start, problem: 'unknown_word' })
       continue
     }
-    const word = written as EarconWord
-    if (set.includes(word)) problems.push({ word, at, problem: 'repeated' })
+    const word = term.word as EarconWord
+    if (set.includes(word)) problems.push({ word, at: term.start, problem: 'repeated' })
     else set.push(word)
-    let value = mode ? source.slice(mode.innerStart, mode.innerEnd).trim() : ''
-    let after = next
-    if (!mode && part.word.text.endsWith(':')) {
-      // A binding, body: 300, gives its value as the next word.
-      const valueAt = after
-      const rest = source.slice(valueAt, body.innerEnd).match(/^\s*([^\s,;]+)/)
-      if (rest) {
-        value = rest[1]
-        after = valueAt + rest[0].length
-      }
-    }
-    tune(settings, pitch, word, value, at, problems)
-    at = after
+    tune(settings, pitch, word, term.value, term.start, problems)
   }
   return { schema: EARCONS_SCHEMA, settings: freeze(settings), set, problems }
 }

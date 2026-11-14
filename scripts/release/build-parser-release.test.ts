@@ -303,6 +303,21 @@ describe('bundle:parser --allow-dirty into a temp directory', () => {
     }
   })
 
+  it('reader reads a settings line against a host\'s own vocabulary and writes it back', async () => {
+    for (const form of ['min', 'debug']) {
+      const reader = await importBundle<{
+        readSettingsLine: (text: string, vocabulary: unknown) => { head: { word: string } | null; values: Record<string, unknown>; problems: Array<{ problem: string }> }
+        writeSettingsLine: (head: string, values: unknown, vocabulary: unknown) => string
+      }>(path.join(releaseDir, `reader.${form}.js`))
+      const vocabulary = { cues: { kind: 'choice', choices: ['shaped', 'off'] }, width: { kind: 'number', range: [0, 1] }, hold: { kind: 'choice', choices: ['upright'], marks: ['@'] } }
+      const line = reader.readSettingsLine('^board{ =cues[shaped] %width[2] @hold[upright] =zoom[1] }', vocabulary)
+      assert.equal(line.head?.word, 'board')
+      assert.deepEqual(line.values, { cues: 'shaped', width: 1, hold: 'upright' })
+      assert.deepEqual(line.problems.map((p) => p.problem), ['clamped', 'unknown_word'])
+      assert.equal(reader.writeSettingsLine('^board', line.values, vocabulary), '^board{ =cues[shaped] %width[1] @hold[upright] }')
+    }
+  })
+
   it('reader renders the modal voice an ear line picks, and gives its events to a host that renders its own', async () => {
     for (const form of ['min', 'debug']) {
       const reader = await importBundle<{

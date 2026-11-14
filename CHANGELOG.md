@@ -50,6 +50,10 @@ What a host gets by moving its pin from `9ef3d223`, or by importing the dated re
 - Parse columns have a byte form (`spw.parse-columns-bytes/1`, `columnsToBytes` / `columnsFromBytes`): every column as its own bytes on a four-byte boundary. Over this repository, reading 1,312 surfaces' columns back took 57 ms where parsing them took 90.7 s.
 - `--match` reads columns from this process's memory, then `.spw/gen/session/columns`, then the parser. The disk key includes a fingerprint of the parser's source, so a parser change is never served a stale tree. `--cache read` never writes, and `--cache off` parses everything. Every run ends with which tiers gave the columns and what they cost: 104.9 s cold and 3.1 s warm for one example over this repository.
 
+### Settings lines (experimental)
+
+- `readSettingsLine(text, vocabulary)` reads a line of a head and marked terms, such as `^board{ =cues[shaped] @hold[upright] }`, `?find[haggle]{ @carrier[genie] %count[3] }` or `^ear{ %body[392] }`, against a host's own vocabulary of numbers held to ranges, choices and text. Every term comes back with its mark, word, value and span, known or not. The problems name unknown words, values it could not use, clamps, repeats, and marks other than the vocabulary gives. `writeSettingsLine` writes values back as a line that reads to the same values. The ear line reads its terms this way. It is in the browser reader bundle.
+
 ### Editing by structure
 
 - The language server answers `textDocument/selectionRange`: expanding a selection walks out from the word under the caret through every node that holds it, each span larger than the last and never starting or ending on a gap.

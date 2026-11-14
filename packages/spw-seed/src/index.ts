@@ -930,6 +930,12 @@ export type {
   PairLabelEdits,
   EditSpan,
   TextEdit,
+  SettingsLine,
+  SettingsProblem,
+  SettingsProblemKind,
+  SettingsTerm,
+  SettingsVocabulary,
+  SettingWord,
 } from './experimental'
 export {
   SYNTAX_CATALOG,
@@ -1002,6 +1008,10 @@ export {
   applyTextEdits,
   pairLabelEdits,
   selectionSpans,
+  SETTINGS_LINE_SCHEMA,
+  readSettingsLine,
+  readSettingsTerms,
+  writeSettingsLine,
 } from './experimental'
 
 // Query (spw.q dialect)
