@@ -969,3 +969,40 @@
  ~#answer: _
  $%[names, declared_scale, axes, numbers_underneath]
 }
+
+#>wonder_trial_evaluation_core
+?["What does a Spw file evaluate to, and by what rule: is there one computational model beneath the readers?"]{
+ #:depth #!computational ~#lens(projection)
+ ~#asked: "the owner, 2026-11-14, after a reader on X said Spw is not a programming language: software engineers will ask how an algorithm is written and run; the evidence below shows the underlying computational model is weak"
+ ~#readings: ["readers only (today): the parser gives a tree, and computation lives in readers beside it, each with its own rule: the quantity sheet (acyclic dataflow), settings lines, selectors, and lowerings to CSS, GPU buffers, audio and WGSL", "records and references, as Jsonnet and Nix: a file is a lazily evaluated record; @name: binds, @name in an expression reads, a body with holes is a function, filling its holes applies it, and recursion goes through names", "total dataflow, as CUE, Dhall and a spreadsheet: the sheet's rule made general, definitions in any order and cycles refused, with iteration only by folding a finite set, so every program ends", "rewriting: a program is rules from a pattern to a template applied until none matches, as spw rewrite already does to whole files", "effects: an operator is a request a host handles (!draw, ~spin) and evaluation is the order of the requests, as the runtime's channels and substrate half say"]
+ ~#grounded: "a language is judged by binding, scope, evaluation order, abstraction, iteration or recursion, data and state; Jsonnet, Nix, CUE and Dhall are configuration languages engineers accept as languages, two of them total by design"
+ ~#interactive: "an engineer asking for a map, a fold, a recursion or a search gets an answer in Spw's own marks, run by the workbench, with the same file read by the editor, the sheet and a host"
+ ~#forms: ["@side: 1.5", "@height: @side", "^double{ %x[_] %out[@x] }", "#[1, 2, 3] / @double", "&sum[#[1, 2, 3]]", "?[@small]{ @n } | { @n }"]
+ ~#pairs: ["@height: @side / %height[@side]: a binding the runtime cannot read back, or a term the sheet can", "^double{ %x[_] … } / a function: a sheet with an open term, or a template", "&sum[#[…]] / a fold: a merge into a register, or a reduction over a set"]
+ ~#readers_today: .{ runtime: "no environment: through runSpw, *x{5} then @x writes 5 to the focus register and observes x as null; =total[3] writes a register named 3; a record evaluates to its last value, a set to nothing; .{ a = 1, b = 2 } / a evaluates to the string a; !, ^ and ~ return their argument, wrapped or bare; ?[true]{ yes } evaluates to true", sheet: "the one evaluator with references: %term[expression] over @names, arithmetic, pi, rational powers and uncertainty, in any order, a cycle refused, so no recursion and no loop", parser: "the forms above parse, but @double[x = 4]/out floats its frame onto the whole expression and splits x = 4 into three parameters, @x*2 reads * as the crystallize operator, ?[@n < 2] degrades its line to prose, *@side is two statements, and no minus sign lexes", corpus_2026_11_14: "@name: binds 3,210 times here, 634 in the story consumer, 9,052 in the site consumer; @ reads a value inside a measure frame 15, 0 and 1 times" }
+ ~#breaks: "a general evaluator walks the parser's tree, not text re-read inside brackets, or it is the embedded language the owner set aside for the triangle; it needs a minus sign, a comparison, and an answer to the spaced = before a single recurrence can be written"
+ ~#cost: "a runtime environment and an evaluation rule; the operators keep their metadata (valence, descriptors) as annotations on values rather than as the only thing evaluation produces"
+ ~#depends: [~"./interpretation-trials.spw#wonder_trial_spaced_equals", ~"./interpretation-trials.spw#wonder_trial_math_scope", ~"./interpretation-trials.spw#wonder_trial_comparison", ~"./interpretation-trials.spw#wonder_trial_pipe", ~"./interpretation-trials.spw#wonder_trial_typed_hole"]
+ ~#home: ~"./wip.spw"
+ ~#judgment: _
+ ~#answer: _
+ $%[readers_only, records_and_references, total_dataflow, rewriting, effects]
+}
+
+#>wonder_trial_reference_position
+?["Does @name point or read, and does / take a field, apply a function, or map over a set?"]{
+ #:depth #!semantics ~#lens(projection)
+ ~#readings: ["by position: at the head of a binding @name points; in an expression it reads the value, as the sheet already does; anywhere else it is a perspective", "by mark: a read is always marked, $(@id) as reference-deref-geometry settles, so a value never arrives unseen; *@id reads today as two statements", "/ projects: a / b is b of a, a field of a record, a function given a, or each item of a set given to b, one mark for field access, application and map, as a pipeline in jq or a step in XPath", "/ divides only inside a measure frame, and between two numbers it is a ratio (ratio_spelling)"]
+ ~#grounded: "names in expression position denote their values in nearly every programming language, and spreadsheets read a cell by mention; a path step, a field selector and function application are one operation in jq and XPath, and uniform call syntax makes a.f() and f(a) one"
+ ~#interactive: "@point/x, points / @norm / @sum and #[1, 2, 3] / @double read left to right as a value travelling through projections, and the editor can show each step's value on hover"
+ ~#forms: ["@point/x", "points / @norm / @sum", "#[1, 2, 3] / @double", "$(@side)", "@height: @side"]
+ ~#pairs: ["@side in a binding head / @side inside a term: pointing, or reading", "a / b between names / a / b inside %x[…]: projection, or division", "$(@side) / @side: a marked read, or a read by position"]
+ ~#readers_today: .{ parser: "@point/x folds into one reference path; points / @norm / @sum is three terms joined by /; $(@side) is select with a scope holding @side", runtime: "/ returns its right side when the left is not a runtime record, so .{ a = 1 } / a is the string a; @x observes rather than reads", corpus_2026_11_14: "/ between names or forms 1,820 here, 525 in the story consumer, 494 in the site consumer; inside a measure frame 8, 0 and 4; between two numbers once. @name elsewhere than a binding head or a measure frame 3,522, 942 and 5,618" }
+ ~#cost: "the theory's anti-pattern list names invisible deref; reading by position contradicts it unless an expression position counts as a visible mark"
+ ~#depends: [~"./interpretation-trials.spw#wonder_trial_evaluation_core", ~"./interpretation-trials.spw#wonder_trial_observer_postfix"]
+ ~#evidence: ~"../../../docs/theory/spw/reference-deref-geometry.spw"
+ ~#home: ~"./wip.spw"
+ ~#judgment: _
+ ~#answer: _
+ $%[by_position, by_mark, slash_projects, slash_divides_in_measure]
+}
