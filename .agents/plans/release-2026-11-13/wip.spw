@@ -6,11 +6,11 @@
 #:layer #!pragmatics
 
 !["card"]{
- phase: #active
+ phase: #landed
  gist: "The dated parser release 2026.11.13: brace earcons a listener tunes in one line of Spw, caret enter and exit events, a consumer-facing changelog, and a clean cut"
  touches: [~"packages/spw-seed/src/experimental/sound/pair-sound.ts", ~"packages/spw-seed/src/experimental/sound/earcons.ts", ~"packages/spw-seed/src/reader.ts", ~"packages/spw-lsp/src/reader.ts", ~"CHANGELOG.md", ~"scripts/release/build-parser-release.test.ts"]
  entry: ~"./PLAN.md"
- next: "The day is cut at the commit that lands this card (spw vcs at, the stream says which); the owner pushes main and publishes it on spw.quest, then the receipt in host-receipts goes with the pin moves."
+ next: "Cut at 0bb93f60 (release/parser/2026.11.13). The owner pushes main and publishes the day on spw.quest; then the receipt in host-receipts goes with the pin moves, and a host on pre.1 to pre.5 moves to the day."
 }
 
 ^["edges"]{
@@ -73,6 +73,7 @@
  >>[2026-11-13 23:28] surprise — Every prerelease of the day carried seed twice in workbench.min.js. Each was cut in a worktree nested in the main checkout, where @spwashi/spw-seed resolved up to the main checkout's node_modules and so to its working files: pre.1 to pre.3 bundled 95 or 96 seed files from there beside the worktree's own, pre.4 and pre.5 bundled 104, about 185 KB of a 687 KB bundle. full, lite and reader were clean (they reach seed by path, or by the reader's substitution). Runtime results on sampled lines matched a clean build, so this was duplication and a provenance gap (source from the main checkout's files under a manifest naming one commit), not a change in behaviour. The release tests never saw it because they build from the repository root. Fixed in f53aaa1c: workspace names resolve inside the build root, and the builder refuses any source from outside it.
  >>[2026-11-13 23:28] verify — pre.6 cut at f53aaa1c through spw vcs at, from the main checkout with two untracked files present: workbench.min.js 502,408 bytes with no source from outside its root; every variant's content equals a main-checkout build of the same commit, stamps aside; the checkout was removed. The same commit built from the main checkout and from a nested worktree with the fixed builder gave identical bytes. Gate at f53aaa1c: tsc and typecheck:refs clean; seed 1,269, runtime 137, DOM 3, CLI 464, VS Code 73, LSP 408, parser release 30. pre.1 to pre.5 stay in place; a host on any of them should move to pre.6 or the day.
  >>[2026-11-13 23:51] decide — The owner said the day is ready to release. It is cut at the head of main rather than at f53aaa1c: everything after f53aaa1c passed the full gate at 6716d590 (seed 1,277, runtime 137, DOM 3, CLI 467, VS Code 73, LSP 414, parser release 30, lint:spw 1,385 files), the default lexer reading is unchanged, and the later work (landing commit lines, revision id forms, the diff driver) is what the owner asked for tonight. The changelog folds it into the day's section. Pushing and publishing stay the owner's.
+ >>[2026-11-13 23:52] verify — Parser release 2026.11.13 cut at 0bb93f60 through spw vcs at, from a clean checkout while the main checkout held two untracked files. Manifest spw.parser-release/2, kind release, not dirty, 13 files: full.min.js 87,105 bytes, lite.min.js 3,346, reader.min.js 132,964, workbench.min.js 504,657, parser.js the same bytes as full.min.js. No variant holds a source from outside its tree. Loaded in Node: full parses a nested call closing two parentheses with no error, reader reads 57 percent as 0.57 and marks a landed ref in a plan as commitRef, workbench reads a measured pendulum period as 2.0061(23). The checkout was removed.
 }
 
 ^["cache"]{
@@ -82,7 +83,7 @@
  ~#files_hot: "packages/spw-seed/src/experimental/sound/pair-sound.ts, packages/spw-seed/src/experimental/sound/earcons.ts"
  ~#next_commit: "sound_measures"
  ~#open_count: "3"
- ~#last_stream: "2026-11-13 23:51"
+ ~#last_stream: "2026-11-13 23:52"
 }
 
 ^["done"]{
