@@ -15,6 +15,8 @@ export interface LexerState {
   offset: number
   line: number
   column: number
+  /** N-ranges (( … )) open and not yet closed: )) closes one only while one is open, and is two ) otherwise. */
+  nrangeDepth?: number
 }
 
 export function createLexerState(input: string): LexerState {
@@ -23,6 +25,7 @@ export function createLexerState(input: string): LexerState {
     offset: 0,
     line: 1,
     column: 1,
+    nrangeDepth: 0,
   }
 }
 

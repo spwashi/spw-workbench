@@ -14,6 +14,8 @@ import path from 'node:path'
 import {
   SI_CONSTANTS,
   formatDimension,
+  formatUncertain,
+  uncertainty,
   inNaturalUnits,
   inUnit,
   piGroups,
@@ -43,6 +45,7 @@ export function printSheetHelp(): void {
           '--natural <names>      Also show each term in natural units, the named constants set to 1 (c,hbar or c,hbar,G)',
           '--unit <unit>          With --natural, the unit left dimensions are measured in (GeV)',
           '--pi                   The dimensionless groups the last sheet\'s own terms form',
+          'Uncertainties: write 6.67430(15)e-11 or 9.81 ± 0.02 (or +-); every value derived from it shows its propagated standard uncertainty',
           '--json                 Everything as JSON',
         ],
       },
@@ -121,9 +124,11 @@ export async function runSpwSheetCli(args: string[]): Promise<void> {
     .filter((name) => last.quantities[name])
     .map((name) => {
       const q = last.quantities[name]!
+      const sigma = uncertainty(q, last.inputs)
       const inGiven = unitText ? inUnit(q, unitText) : null
+      const unitScale = inGiven !== null && inGiven !== undefined ? q.scale / inGiven : 1
       const natural = naturalNames ? inNaturalUnits(q, constants, unitQuantity) : null
-      return { name, own: fileTerms.has(name), si: q.scale, dimension: formatDimension(q.dim), ...(unitText ? { in: inGiven } : {}), ...(naturalNames ? { natural } : {}) }
+      return { name, own: fileTerms.has(name), si: q.scale, uncertainty: sigma, dimension: formatDimension(q.dim), ...(unitText ? { in: inGiven, inUncertainty: inGiven === null ? null : sigma / unitScale } : {}), ...(naturalNames ? { natural } : {}) }
     })
   const groups = has('--pi') ? piGroups(Object.fromEntries(own.filter((n) => last.quantities[n]).map((n) => [n, last.quantities[n]!]))) : []
 
@@ -135,8 +140,9 @@ export async function runSpwSheetCli(args: string[]): Promise<void> {
   const shown = rows.filter((r) => r.own || !has('--si'))
   const width = Math.max(4, ...shown.map((r) => r.name.length))
   for (const r of shown) {
-    let line = `${r.name.padEnd(width)}  ${sig(r.si).padStart(14)}  ${r.dimension}`
-    if (unitText) line += `   ${r.in === null || r.in === undefined ? `(not ${unitText})` : `${sig(r.in)} ${unitText}`}`
+    const shownValue = r.uncertainty ? formatUncertain(r.si, r.uncertainty) : sig(r.si)
+    let line = `${r.name.padEnd(width)}  ${shownValue.padStart(18)}  ${r.dimension}`
+    if (unitText) line += `   ${r.in === null || r.in === undefined ? `(not ${unitText})` : `${r.inUncertainty ? formatUncertain(r.in, r.inUncertainty) : sig(r.in)} ${unitText}`}`
     if (r.natural !== undefined) line += r.natural ? `   ${sig(r.natural.value)}${naturalUnit && r.natural.unitPower !== '0' ? ` ${naturalUnit}${r.natural.unitPower === '1' ? '' : `^${r.natural.unitPower}`}` : ''}` : '   (not reachable)'
     console.log(line)
   }

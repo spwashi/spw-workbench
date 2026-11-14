@@ -85,6 +85,11 @@ What a host gets by moving its pin from `9ef3d223`, or by importing the dated re
 - `spw sheet <file.spw> [--si] [--in GeV] [--natural c,hbar --unit GeV] [--pi]` shows values, dimensions, units, natural units and groups.
 - Checked against known values: the Planck units, 1/α = 137.035999084, the Sun's Schwarzschild radius, the Bohr radius, and the pendulum's T²g/L = 4π².
 - `docs/theory/spw/dimensional-analysis.spw` holds the model and worked sheets.
+- Measured numbers carry uncertainty: write `6.67430(15)e-11`, or `9.81 ± 0.02` on the command line (inside a `.spw` file the concise form is the one the parser lexes), and every derived value shows its propagated standard uncertainty (forward-mode derivatives, so an input used twice is counted once). The SI sheet carries CODATA uncertainties; the Planck length comes out `1.616255(18)e-35`.
+
+### Lexer
+
+- A double close `))` is an n-range close only when an n-range `((` is open; otherwise it is two parentheses. `x(a(b))` and a bracket holding `(a/(b))` read whole again. Drift: 0 lines in the workbench, 89 and 109 in the two consumer corpora, all calls closing two parentheses.
 
 ### Spw on the GPU (experimental)
 

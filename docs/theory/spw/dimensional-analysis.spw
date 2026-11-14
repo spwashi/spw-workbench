@@ -21,6 +21,7 @@
  sheet = `an environment of named definitions, read in any order, each an expression over the others; a cycle is reported once per term`
  composition = `a sheet extends the sheets before it, so constants are written once and a theory is written on top of them`
  groups = `the dimensionless products of a set of quantities are the null space of the matrix of their dimensions (Buckingham pi)`
+ uncertainty = `a measured number carries a derivative of one with respect to itself, and every operation carries derivatives forward, so a value knows how it moves with each input; its standard uncertainty is the root of the sum over inputs of (derivative × the input's uncertainty) squared, exact to first order, and an input used twice is counted once with its sign`
  natural = `setting constants to one is solving a quantity's dimension as powers of those constants and of one unit; what is left of the scale is its value in natural units`
 }[reg=facet]
 
@@ -43,6 +44,14 @@
  %E_e[@m_e*@c^2]
  %lambda_C[@h/(@m_e*@c)]
  %a_0[@hbar/(@m_e*@c*@alpha)]
+}
+
+# ── Measured inputs and what they carry (spw sheet --si) ──────────
+
+^measured{
+ %L_rod[1.000(1) m]
+ %g_local[9.810(20) m/s^2]
+ %period[2*pi*(@L_rod/@g_local)^(1/2)]
 }
 
 # ── A sheet of its own, for dimensionless groups (spw sheet --pi) ─

@@ -1065,6 +1065,8 @@ export {
   evaluateQuantity,
   inUnit,
   readQuantitySheet,
+  uncertainty,
+  formatUncertain,
   inNaturalUnits,
   piGroups,
   SI_CONSTANTS,

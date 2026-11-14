@@ -24,7 +24,7 @@
 
 import { readSettingsTerms } from '../settings-line'
 import { ONE, parseRational, rational } from './rational'
-import { formatDimension, over, pure, raise, sameDimension, times, unit, type Quantity } from './dimension'
+import { formatDimension, measured, over, plus, pure, raise, sameDimension, times, unit, type Quantity } from './dimension'
 
 export const QUANTITY_SHEET_SCHEMA = 'spw.quantity-sheet/1' as const
 
@@ -43,10 +43,38 @@ export interface QuantitySheet {
   quantities: Record<string, Quantity>
   /** Each term's expression as written. */
   written: Record<string, string>
+  /** The standard uncertainty of each measured input, by id (term.k for the k-th measured number in a term). */
+  inputs: Record<string, number>
   problems: SheetProblem[]
 }
 
-type Token = { kind: 'number'; value: number } | { kind: 'name'; value: string } | { kind: 'ref'; value: string } | { kind: 'op'; value: string }
+/**
+ * The standard uncertainty of a quantity, to first order: the square root of the sum over inputs of
+ * (derivative × the input's uncertainty)². Inputs are taken as independent of each other; a quantity that
+ * uses one input twice is correlated with itself through the derivative, which is exact.
+ */
+export function uncertainty(quantity: Quantity, inputs: Readonly<Record<string, number>>): number {
+  let sum = 0
+  for (const [id, d] of Object.entries(quantity.grad ?? {})) {
+    const sigma = inputs[id] ?? 0
+    sum += (d * sigma) ** 2
+  }
+  return Math.sqrt(sum)
+}
+
+/** value(uncertainty) in the concise form, the uncertainty to two digits: 6.67430(15)e-11. */
+export function formatUncertain(value: number, sigma: number): string {
+  if (!sigma || !Number.isFinite(sigma)) return String(Number(value.toPrecision(7)))
+  const exponent = Math.floor(Math.log10(Math.abs(value) || sigma))
+  const sigmaExponent = Math.floor(Math.log10(sigma)) - 1
+  const digits = Math.round(sigma / 10 ** sigmaExponent)
+  // A number of ordinary size is written plainly, 137.035999084(20); a large or small one with an exponent.
+  if (exponent >= -3 && exponent <= 5) return `${value.toFixed(Math.max(0, -sigmaExponent))}(${digits})`
+  const mantissa = value / 10 ** exponent
+  return `${mantissa.toFixed(Math.max(0, exponent - sigmaExponent))}(${digits})e${exponent}`
+}
+
+type Token = { kind: 'number'; value: number; sigma?: number } | { kind: 'name'; value: string } | { kind: 'ref'; value: string } | { kind: 'op'; value: string }
 
 function tokenize(text: string): Token[] | string {
   const out: Token[] = []
@@ -57,10 +85,21 @@ function tokenize(text: string): Token[] | string {
       i++
       continue
     }
-    const num = text.slice(i).match(/^(\d+(?:\.\d+)?|\.\d+)(?:[eE][+-]?\d+)?/)
-    if (num) {
-      out.push({ kind: 'number', value: Number(num[0]) })
+    // A number, with its uncertainty in parentheses as physics writes it: 6.67430(15)e-11 is 6.67430e-11 ± 0.00015e-11.
+    const num = text.slice(i).match(/^(\d*)(?:\.(\d+))?(?:\((\d+)\))?([eE][+-]?\d+)?/)
+    if (num && num[0] && /\d/.test(num[1]! + (num[2] ?? ''))) {
+      const exponent = num[4] ? Number(num[4].slice(1)) : 0
+      const value = Number(`${num[1] || '0'}.${num[2] ?? '0'}e${exponent}`)
+      const token: Token = { kind: 'number', value }
+      if (num[3]) token.sigma = Number(num[3]) * 10 ** (exponent - (num[2]?.length ?? 0))
       i += num[0].length
+      // Or after it: 9.81 ± 0.02, or 9.81 +- 0.02.
+      const pm = text.slice(i).match(/^\s*(?:±|\+-)\s*(\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)/)
+      if (pm) {
+        token.sigma = Number(pm[1])
+        i += pm[0].length
+      }
+      out.push(token)
       continue
     }
     if (ch === '@') {
@@ -92,8 +131,11 @@ class Failure extends Error {
   }
 }
 
-/** Evaluate an expression; `lookup` gives another term's quantity. */
-export function evaluate(text: string, lookup: (name: string) => Quantity): Quantity {
+/**
+ * Evaluate an expression; `lookup` gives another term's quantity, and `input` names a measured number
+ * (one written with an uncertainty) and is told its uncertainty, returning the id its derivative is kept by.
+ */
+export function evaluate(text: string, lookup: (name: string) => Quantity, input?: (sigma: number) => string): Quantity {
   const tokens = tokenize(text)
   if (typeof tokens === 'string') throw new Failure('syntax', tokens)
   let at = 0
@@ -133,7 +175,7 @@ export function evaluate(text: string, lookup: (name: string) => Quantity): Quan
   const atom = (): Quantity => {
     const t = tokens[at++]
     if (!t) throw new Failure('syntax', 'expression ends too soon')
-    if (t.kind === 'number') return pure(t.value)
+    if (t.kind === 'number') return t.sigma !== undefined && input ? measured(t.value, input(t.sigma)) : pure(t.value)
     if (t.kind === 'ref') return lookup(t.value)
     if (t.kind === 'name') {
       if (t.value === 'pi') return pure(Math.PI)
@@ -182,7 +224,7 @@ export function evaluate(text: string, lookup: (name: string) => Quantity): Quan
       if (!sameDimension(value.dim, right.dim)) {
         throw new Failure('mixed_dimensions', `${formatDimension(value.dim)} ${op} ${formatDimension(right.dim)}`)
       }
-      value = { scale: op === '+' ? value.scale + right.scale : value.scale - right.scale, dim: value.dim }
+      value = plus(value, right, op === '+' ? 1 : -1)
     }
     return value
   }
@@ -201,7 +243,7 @@ export function readQuantitySheet(text: string, base: QuantitySheet | null = nul
   const problems: SheetProblem[] = []
   const head = open > 0 ? source.slice(0, open).trim().replace(/^[\^~%#@.]/, '') : ''
   if (open < 0 || close < open) {
-    return { schema: QUANTITY_SHEET_SCHEMA, name: head, quantities: {}, written: {}, problems: [{ problem: 'syntax', term: '', detail: 'no { … } body' }] }
+    return { schema: QUANTITY_SHEET_SCHEMA, name: head, quantities: {}, written: {}, inputs: {}, problems: [{ problem: 'syntax', term: '', detail: 'no { … } body' }] }
   }
   const { terms } = readSettingsTerms(source, open + 1, close)
   const written: Record<string, string> = {}
@@ -209,6 +251,7 @@ export function readQuantitySheet(text: string, base: QuantitySheet | null = nul
   const quantities: Record<string, Quantity> = {}
   const failed = new Map<string, SheetProblemKind>()
   const resolving = new Set<string>()
+  const inputs: Record<string, number> = {}
 
   const resolve = (name: string): Quantity => {
     if (quantities[name]) return quantities[name]!
@@ -221,7 +264,12 @@ export function readQuantitySheet(text: string, base: QuantitySheet | null = nul
     if (resolving.has(name)) throw new Failure('cycle', `@${name} refers back to itself`)
     resolving.add(name)
     try {
-      const value = evaluate(written[name]!, resolve)
+      let k = 0
+      const value = evaluate(written[name]!, resolve, (sigma) => {
+        const id = `${name}.${k++}`
+        inputs[id] = sigma
+        return id
+      })
       quantities[name] = value
       return value
     } finally {
@@ -243,6 +291,7 @@ export function readQuantitySheet(text: string, base: QuantitySheet | null = nul
     name: head,
     quantities: { ...(base?.quantities ?? {}), ...quantities },
     written: { ...(base?.written ?? {}), ...written },
+    inputs: { ...(base?.inputs ?? {}), ...inputs },
     problems,
   }
 }

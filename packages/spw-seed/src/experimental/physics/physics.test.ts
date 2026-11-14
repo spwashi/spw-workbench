@@ -8,7 +8,7 @@ import { seededRandom } from '../seeded-random'
 import { SI_CONSTANTS } from './constants'
 import { BASE, dimension, formatDimension, isDimensionless, sameDimension, unit } from './dimension'
 import { inNaturalUnits, piGroups } from './analysis'
-import { evaluate, inUnit, readQuantitySheet } from './sheet'
+import { evaluate, formatUncertain, inUnit, readQuantitySheet, uncertainty } from './sheet'
 import { add, format, mul, nullSpace, rational, solve, toNumber } from './rational'
 
 const C = readQuantitySheet(SI_CONSTANTS)
@@ -125,5 +125,55 @@ describe('natural units', () => {
   it('agrees with inUnit where both apply', () => {
     expect(inUnit(q('E_P'), 'GeV')! / 1.220890e19).toBeCloseTo(1, 5)
     expect(inUnit(q('E_P'), 'm')).toBeNull()
+  })
+})
+
+describe('uncertainty', () => {
+  const read = (body: string) => readQuantitySheet(`^m{ ${body} }`)
+  const sigmaOf = (sheet: ReturnType<typeof read>, name: string) => uncertainty(sheet.quantities[name]!, sheet.inputs)
+
+  it('reads a measured number in the concise form and with ±, and an exact one as exact', () => {
+    const s = read('%G[6.67430(15)e-11 m^3/(kg*s^2)] %g[9.81 ± 0.02 m/s^2] %h[9.81 +- 0.02 m/s^2] %c[299792458 m/s]')
+    expect(sigmaOf(s, 'G')).toBeCloseTo(1.5e-15, 25)
+    expect(sigmaOf(s, 'g')).toBeCloseTo(0.02, 12)
+    expect(sigmaOf(s, 'h')).toBeCloseTo(0.02, 12)
+    expect(sigmaOf(s, 'c')).toBe(0)
+  })
+
+  it('counts an input used twice once, with its sign: x/x is exact, x*x doubles the relative uncertainty, x+x keeps it', () => {
+    const s = read('%x[2.0 ± 0.1 m] %ratio[@x/@x] %area[@x*@x] %twice[@x+@x] %y[3.0 ± 0.4 m] %both[@x+@y]')
+    expect(sigmaOf(s, 'ratio')).toBe(0)
+    expect(sigmaOf(s, 'area') / s.quantities.area!.scale).toBeCloseTo(0.1, 12)
+    expect(sigmaOf(s, 'twice')).toBeCloseTo(0.2, 12)
+    expect(sigmaOf(s, 'both')).toBeCloseTo(Math.hypot(0.1, 0.4), 12)
+  })
+
+  it('propagates the CODATA uncertainties of the constants sheet into the Planck units and alpha', () => {
+    expect(formatUncertain(q('l_P').scale, uncertainty(q('l_P'), C.inputs))).toBe('1.616255(18)e-35')
+    expect(formatUncertain(q('m_P').scale, uncertainty(q('m_P'), C.inputs))).toBe('2.176434(24)e-8')
+    const inverse = readQuantitySheet('^i{ %inv[1/@alpha] }', C)
+    expect(uncertainty(inverse.quantities.inv!, inverse.inputs) / 2.1e-8).toBeCloseTo(1, 0)
+  })
+
+  it('agrees with a finite difference on generated expressions', () => {
+    const rand = seededRandom(23)
+    for (let k = 0; k < 100; k++) {
+      const a = 1 + rand() * 5
+      const b = 1 + rand() * 5
+      const p = 1 + Math.floor(rand() * 3)
+      const sheet = read(`%a[${a} ± 0.001 m] %b[${b} ± 0.002 m] %f[(@a*@b + @a^2)^(1/2) / @b^${p}]`)
+      const f = (x: number, y: number) => Math.sqrt(x * y + x * x) / y ** p
+      const h = 1e-6
+      const da = (f(a + h, b) - f(a - h, b)) / (2 * h)
+      const db = (f(a, b + h) - f(a, b - h)) / (2 * h)
+      expect(sigmaOf(sheet, 'f') / Math.hypot(da * 0.001, db * 0.002)).toBeCloseTo(1, 5)
+    }
+  })
+
+  it('writes value(uncertainty) to two digits of the uncertainty', () => {
+    expect(formatUncertain(6.6743e-11, 1.5e-15)).toBe('6.67430(15)e-11')
+    expect(formatUncertain(9.81, 0.02)).toBe('9.810(20)')
+    expect(formatUncertain(4, 0)).toBe('4')
+    expect(formatUncertain(137.035999084, 2.06e-8)).toBe('137.035999084(21)')
   })
 })

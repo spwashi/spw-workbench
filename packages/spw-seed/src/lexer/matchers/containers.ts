@@ -60,6 +60,7 @@ export function* matchContainer(
   // N-range (( ))
   if (two === '((') {
     advance(state, 2)
+    state.nrangeDepth = (state.nrangeDepth ?? 0) + 1
     const token: Token<'NRANGE_OPEN'> = {
       type: 'NRANGE_OPEN',
       value: '((',
@@ -76,8 +77,10 @@ export function* matchContainer(
     }
     return token
   }
-  if (two === '))') {
+  // )) closes an n-range only while one is open; otherwise it is two scope closes, as in x(a(b)), read one ) at a time.
+  if (two === '))' && (state.nrangeDepth ?? 0) > 0) {
     advance(state, 2)
+    state.nrangeDepth = (state.nrangeDepth ?? 0) - 1
     const token: Token<'NRANGE_CLOSE'> = {
       type: 'NRANGE_CLOSE',
       value: '))',

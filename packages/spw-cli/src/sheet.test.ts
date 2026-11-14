@@ -33,6 +33,13 @@ describe('spw sheet', () => {
     expect(data.rows.find((r: { name: string }) => r.name === 'proton').natural.value).toBeCloseTo(0.93827, 4)
   })
 
+  it('shows each derived value\'s propagated uncertainty, a nested expression included', async () => {
+    const data = await json('--si', '--line', '^check{ %pend[2*pi*(1.000(1) m/(9.81 ± 0.02 m/s^2))^(1/2)] %lP[@l_P] }')
+    const row = (name: string) => data.rows.find((r: { name: string }) => r.name === name)
+    expect(row('pend').uncertainty / 0.0023).toBeCloseTo(1, 1)
+    expect(row('lP').uncertainty / 1.8e-40).toBeCloseTo(1, 1)
+  })
+
   it('refuses natural units named by constants no sheet defines', async () => {
     vi.spyOn(console, 'log').mockImplementation(() => undefined)
     await expect(runSpwSheetCli(['--line', '^x{ %a[1 m] }', '--natural', 'c'])).rejects.toThrow('--si')

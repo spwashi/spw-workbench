@@ -86,6 +86,7 @@ export function scan(source: string): LiteToken[] {
   const n = source.length
   let i = 0
   let streams = 0
+  let nranges = 0
 
   const push = (kind: LiteTokenKind, start: number, end: number, bound?: LiteBoundKind) => {
     const tok: LiteToken = { kind, value: source.slice(start, end), start, end }
@@ -184,7 +185,10 @@ export function scan(source: string): LiteToken[] {
       continue
     }
 
-    const bound = matchBound(source, i)
+    let bound = matchBound(source, i)
+    // )) closes an n-range only while one is open; otherwise it is a scope's ), and the next ) is read on its own.
+    if (bound && bound.kind === 'nrange' && bound.closing && nranges === 0) bound = { text: ')', kind: 'scope', closing: true }
+    if (bound && bound.kind === 'nrange') nranges = Math.max(0, nranges + (bound.closing ? -1 : 1))
     if (bound) {
       i += bound.text.length
       if (bound.kind === 'stream') streams = Math.max(0, streams + (bound.closing ? -1 : 1))

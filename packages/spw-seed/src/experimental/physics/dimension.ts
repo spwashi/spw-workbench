@@ -47,7 +47,26 @@ export interface Quantity {
   /** The value in SI base units (m, kg, s, A, K, mol, cd). */
   scale: number
   dim: Dimension
+  /**
+   * The derivative of scale with respect to each measured input, by the input's id (forward-mode
+   * differentiation). Absent for an exact quantity. Carried through every operation, so an input used
+   * twice is counted once with its sign: @x/@x has none, @x*@x twice the relative uncertainty of x.
+   */
+  grad?: Readonly<Record<string, number>>
 }
+
+type Grad = Readonly<Record<string, number>> | undefined
+
+/** a·ga + b·gb, over the inputs either names. */
+function combine(ga: Grad, a: number, gb: Grad, b: number): Grad {
+  if (!ga && !gb) return undefined
+  const out: Record<string, number> = {}
+  for (const [k, v] of Object.entries(ga ?? {})) out[k] = (out[k] ?? 0) + v * a
+  for (const [k, v] of Object.entries(gb ?? {})) out[k] = (out[k] ?? 0) + v * b
+  return out
+}
+
+const withGrad = (q: { scale: number; dim: Dimension }, grad: Grad): Quantity => (grad ? { ...q, grad } : q)
 
 const q = (scale: number, exponents: Partial<Record<BaseQuantity, number>>): Quantity => ({ scale, dim: dimension(exponents) })
 
@@ -101,9 +120,19 @@ export function unit(name: string): Quantity | null {
   return null
 }
 
-export const times = (a: Quantity, b: Quantity): Quantity => ({ scale: a.scale * b.scale, dim: multiply(a.dim, b.dim) })
-export const over = (a: Quantity, b: Quantity): Quantity => ({ scale: a.scale / b.scale, dim: multiply(a.dim, inverse(b.dim)) })
-export const raise = (a: Quantity, p: Rational): Quantity => ({ scale: a.scale ** (p.n / p.d), dim: power(a.dim, p) })
+export const times = (a: Quantity, b: Quantity): Quantity =>
+  withGrad({ scale: a.scale * b.scale, dim: multiply(a.dim, b.dim) }, combine(a.grad, b.scale, b.grad, a.scale))
+export const over = (a: Quantity, b: Quantity): Quantity =>
+  withGrad({ scale: a.scale / b.scale, dim: multiply(a.dim, inverse(b.dim)) }, combine(a.grad, 1 / b.scale, b.grad, -a.scale / (b.scale * b.scale)))
+export const raise = (a: Quantity, p: Rational): Quantity => {
+  const e = p.n / p.d
+  return withGrad({ scale: a.scale ** e, dim: power(a.dim, p) }, combine(a.grad, e * a.scale ** (e - 1), undefined, 0))
+}
+/** a + b, or a − b with sign −1; the caller has checked the dimensions agree. */
+export const plus = (a: Quantity, b: Quantity, sign: 1 | -1 = 1): Quantity =>
+  withGrad({ scale: a.scale + sign * b.scale, dim: a.dim }, combine(a.grad, 1, b.grad, sign))
 export const pure = (n: number): Quantity => ({ scale: n, dim: DIMENSIONLESS })
+/** A measured number: its value, and a derivative of one with respect to its own input id. */
+export const measured = (n: number, id: string): Quantity => ({ scale: n, dim: DIMENSIONLESS, grad: { [id]: 1 } })
 export const ONE_UNIT: Quantity = pure(1)
 export { ONE }
