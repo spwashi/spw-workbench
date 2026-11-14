@@ -18,10 +18,17 @@
  *   unit      45ms, 392hz, 2st: letters after the number, kept as written and
  *             never converted here; a reader that knows the unit converts it
  *   range     1..5, 0.2..0.8: two numbers, each read as above
+ *   measured  9.810(20), 6.67430(15)e-11, 9.81 ± 0.02, 9.81+-0.02: a number with
+ *             its standard uncertainty, in parentheses in the last digits as
+ *             physics writes it, or after ± (or +-); a unit after it covers both
  *
  * It refuses, with a reason, what it cannot read whole: 0x1f (hex), 1_000 (a
  * joiner in digits), 1/0, 3:4, a word, two signs. Every form keeps the text it
  * was read from, so a reader can write a value back as it was written.
+ *
+ * scanNumber reads the unsigned core (decimal, uncertainty, exponent, ±) at a
+ * place in longer text; readNumberForm and the quantity sheet's expressions both
+ * read numbers through it, so a number reads the same in either.
  *
  * Experimental (spw.number-form/1).
  */
@@ -38,6 +45,8 @@ export interface NumberForm {
   unit: string
   /** For a ratio, its two terms. */
   ratio?: [number, number]
+  /** For a measured number, its standard uncertainty, in the value's units (a percent's is a hundredth too). */
+  uncertainty?: number
   text: string
 }
 
@@ -45,9 +54,55 @@ export type NumberProblem = 'empty' | 'hex' | 'joined_digits' | 'zero_denominato
 
 const DECIMAL = String.raw`(?:\d+(?:\.\d+)?|\.\d+)`
 const SIGNED = String.raw`[+\-]?${DECIMAL}(?:[eE][+\-]?\d+)?`
-const SINGLE = new RegExp(String.raw`^(${SIGNED})(%|[A-Za-z]+)?$`)
 const RATIO = new RegExp(String.raw`^([+\-]?)(${DECIMAL})/(${DECIMAL})([A-Za-z]+)?$`)
 const RANGE = new RegExp(String.raw`^(${SIGNED})\.\.(${SIGNED})(%|[A-Za-z]+)?$`)
+
+// The unsigned core: digits, a decimal part, an uncertainty in its last digits, an exponent.
+const CORE = /^(\d*)(?:\.(\d+))?(?:\((\d+)\))?([eE][+-]?\d+)?/
+// An uncertainty after the number: ± 0.02, +- 0.02.
+const PLUS_MINUS = /^\s*(?:±|\+-)\s*(\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)/
+
+export interface ScannedNumber {
+  /** Where the number ends in the text scanned. */
+  end: number
+  value: number
+  /** The standard uncertainty, when one is written. */
+  uncertainty?: number
+}
+
+/**
+ * The unsigned number that starts at `at`, or null: 12, .5, 6.02e23, 6.67430(15)e-11 (the uncertainty is 15 in the
+ * last written digits, 0.00015e-11), and 9.81 ± 0.02 or 9.81 +- 0.02. A sign is the caller's: an expression reads
+ * it as an operator, a written value as part of the value.
+ */
+export function scanNumber(text: string, at = 0): ScannedNumber | null {
+  const rest = text.slice(at)
+  const core = rest.match(CORE)
+  if (!core || !core[0] || !/\d/.test(core[1]! + (core[2] ?? ''))) return null
+  const exponent = core[4] ? Number(core[4].slice(1)) : 0
+  const scanned: ScannedNumber = { end: at + core[0].length, value: Number(`${core[1] || '0'}.${core[2] ?? '0'}e${exponent}`) }
+  if (core[3]) scanned.uncertainty = Number(core[3]) * 10 ** (exponent - (core[2]?.length ?? 0))
+  const pm = text.slice(scanned.end).match(PLUS_MINUS)
+  if (pm) {
+    scanned.uncertainty = Number(pm[1])
+    scanned.end += pm[0].length
+  }
+  return scanned
+}
+
+/** A signed single number with its unit, read through scanNumber: the whole text or nothing. */
+function readSingle(text: string): NumberForm | null {
+  const sign = text[0] === '-' ? -1 : text[0] === '+' ? 1 : 0
+  const scanned = scanNumber(text, sign ? 1 : 0)
+  if (!scanned) return null
+  const unit = text.slice(scanned.end)
+  // A unit is letters or a percent, written against the number.
+  if (unit && !/^(?:%|[A-Za-z]+)$/.test(unit)) return null
+  const scale = unit === '%' ? 1 / 100 : 1
+  const form: NumberForm = { kind: 'number', value: (sign || 1) * scanned.value * scale, unit, text }
+  if (scanned.uncertainty !== undefined) form.uncertainty = scanned.uncertainty * scale
+  return form
+}
 
 /** Read one written value; a form, or why it is not one. */
 export function readNumberForm(written: string): NumberForm | { problem: NumberProblem; text: string } {
@@ -56,13 +111,9 @@ export function readNumberForm(written: string): NumberForm | { problem: NumberP
   if (/^[+\-]?0[xX][0-9a-fA-F]+$/.test(text)) return { problem: 'hex', text }
   if (/\d_\d/.test(text)) return { problem: 'joined_digits', text }
 
-  const single = text.match(SINGLE)
-  // A unit made only of e and digits would be an exponent; SIGNED takes the exponent first, so 1e3 is a number.
-  if (single) {
-    const unit = single[2] ?? ''
-    const n = Number(single[1])
-    return { kind: 'number', value: unit === '%' ? n / 100 : n, unit, text }
-  }
+  // The exponent is read before a unit, so 1e3 is a number and 5em is 5 with the unit em.
+  const single = readSingle(text)
+  if (single) return single
   const ratio = text.match(RATIO)
   if (ratio) {
     const top = Number(ratio[2])

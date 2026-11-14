@@ -44,6 +44,30 @@ describe('readNumberForm', () => {
     expect(readNumberForm(text)).toEqual({ problem, text })
   })
 
+  it.each([
+    ['9.810(20)', 9.81, 0.02, ''],
+    ['6.67430(15)e-11', 6.6743e-11, 1.5e-15, ''],
+    ['9.81 ± 0.02', 9.81, 0.02, ''],
+    ['9.81+-0.02', 9.81, 0.02, ''],
+    ['-6(1)dB', -6, 1, 'dB'],
+    ['50(2)%', 0.5, 0.02, '%'],
+    ['1.000(1)m', 1, 0.001, 'm'],
+  ])('reads %s as a measured number', (text, value, uncertainty, unit) => {
+    const form = readNumberForm(text)
+    expect(isNumberForm(form) && form.kind).toBe('number')
+    if (!isNumberForm(form)) return
+    expect(form.value).toBeCloseTo(value, 15)
+    expect(form.uncertainty! / uncertainty).toBeCloseTo(1, 12)
+    expect(form.unit).toBe(unit)
+  })
+
+  it('reads an uncertainty only where it is written whole', () => {
+    expect(readNumberForm('9.81 ±')).toEqual({ problem: 'not_a_number', text: '9.81 ±' })
+    expect(readNumberForm('9.81 ± 0.02 ms')).toEqual({ problem: 'not_a_number', text: '9.81 ± 0.02 ms' })
+    expect(readNumberForm('9.81()')).toEqual({ problem: 'not_a_number', text: '9.81()' })
+    expect(readNumberForm('12')).not.toHaveProperty('uncertainty')
+  })
+
   it('reads back every finite number JavaScript writes, and every ratio of two decimals', () => {
     const rand = seeded(3)
     for (let i = 0; i < 2000; i++) {

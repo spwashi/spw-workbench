@@ -22,6 +22,7 @@
  * Experimental (spw.quantity-sheet/1).
  */
 
+import { scanNumber } from '../number-form'
 import { readSettingsTerms } from '../settings-line'
 import { ONE, parseRational, rational } from './rational'
 import { formatDimension, measured, over, plus, pure, raise, sameDimension, times, unit, type Quantity } from './dimension'
@@ -85,20 +86,12 @@ function tokenize(text: string): Token[] | string {
       i++
       continue
     }
-    // A number, with its uncertainty in parentheses as physics writes it: 6.67430(15)e-11 is 6.67430e-11 ± 0.00015e-11.
-    const num = text.slice(i).match(/^(\d*)(?:\.(\d+))?(?:\((\d+)\))?([eE][+-]?\d+)?/)
-    if (num && num[0] && /\d/.test(num[1]! + (num[2] ?? ''))) {
-      const exponent = num[4] ? Number(num[4].slice(1)) : 0
-      const value = Number(`${num[1] || '0'}.${num[2] ?? '0'}e${exponent}`)
-      const token: Token = { kind: 'number', value }
-      if (num[3]) token.sigma = Number(num[3]) * 10 ** (exponent - (num[2]?.length ?? 0))
-      i += num[0].length
-      // Or after it: 9.81 ± 0.02, or 9.81 +- 0.02.
-      const pm = text.slice(i).match(/^\s*(?:±|\+-)\s*(\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)/)
-      if (pm) {
-        token.sigma = Number(pm[1])
-        i += pm[0].length
-      }
+    // A number, read as every written value is (number-form.ts), with its uncertainty: 6.67430(15)e-11, 9.81 ± 0.02.
+    const scanned = scanNumber(text, i)
+    if (scanned) {
+      const token: Token = { kind: 'number', value: scanned.value }
+      if (scanned.uncertainty !== undefined) token.sigma = scanned.uncertainty
+      i = scanned.end
       out.push(token)
       continue
     }

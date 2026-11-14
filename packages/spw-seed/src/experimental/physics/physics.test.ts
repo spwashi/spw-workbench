@@ -4,6 +4,7 @@
  * textbook ones, natural-unit readings, and the algebra's own laws.
  */
 import { describe, expect, it } from 'vitest'
+import { isNumberForm, readNumberForm } from '../number-form'
 import { seededRandom } from '../seeded-random'
 import { SI_CONSTANTS } from './constants'
 import { BASE, dimension, formatDimension, isDimensionless, sameDimension, unit } from './dimension'
@@ -153,6 +154,24 @@ describe('uncertainty', () => {
     expect(formatUncertain(q('m_P').scale, uncertainty(q('m_P'), C.inputs))).toBe('2.176434(24)e-8')
     const inverse = readQuantitySheet('^i{ %inv[1/@alpha] }', C)
     expect(uncertainty(inverse.quantities.inv!, inverse.inputs) / 2.1e-8).toBeCloseTo(1, 0)
+  })
+
+  it('reads a written number exactly as readNumberForm does, value and uncertainty, on generated numbers', () => {
+    const rand = seededRandom(29)
+    for (let i = 0; i < 500; i++) {
+      const digits = String(Math.floor(rand() * 1e6))
+      const point = Math.floor(rand() * digits.length)
+      const mantissa = point ? `${digits.slice(0, point)}.${digits.slice(point)}` : digits
+      const sigma = 1 + Math.floor(rand() * 99)
+      const exponent = rand() < 0.5 ? '' : `e${rand() < 0.5 ? '-' : ''}${Math.floor(rand() * 30)}`
+      const written = [`${mantissa}(${sigma})${exponent}`, `${mantissa}${exponent} ± ${sigma / 100}`, `${mantissa}${exponent}`][i % 3]!
+      const form = readNumberForm(written)
+      const s = read(`%x[${written}]`)
+      expect(isNumberForm(form), written).toBe(true)
+      if (!isNumberForm(form)) continue
+      expect(s.quantities.x!.scale, written).toBe(form.value)
+      expect(sigmaOf(s, 'x'), written).toBe(form.uncertainty ?? 0)
+    }
   })
 
   it('agrees with a finite difference on generated expressions', () => {
