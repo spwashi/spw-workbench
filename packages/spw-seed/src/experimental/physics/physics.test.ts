@@ -129,6 +129,14 @@ describe('natural units', () => {
   })
 })
 
+describe('a sheet beside other settings', () => {
+  it('reads only the terms led by %, so a choice on the same line is left to its own reader', () => {
+    const s = readQuantitySheet('^look{ =apex[coral] %spin[0.1] =clear[ink] %scale[2 m] }')
+    expect(Object.keys(s.quantities)).toEqual(['spin', 'scale'])
+    expect(s.problems).toEqual([])
+  })
+})
+
 describe('uncertainty', () => {
   const read = (body: string) => readQuantitySheet(`^m{ ${body} }`)
   const sigmaOf = (sheet: ReturnType<typeof read>, name: string) => uncertainty(sheet.quantities[name]!, sheet.inputs)

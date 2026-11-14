@@ -240,7 +240,8 @@ export function readQuantitySheet(text: string, base: QuantitySheet | null = nul
   }
   const { terms } = readSettingsTerms(source, open + 1, close)
   const written: Record<string, string> = {}
-  for (const term of terms) written[term.word] = term.value
+  // A quantity is a term led by %; a choice (=palette[ink]) or a reference on the same line is another reader's.
+  for (const term of terms) if (term.mark === '%') written[term.word] = term.value
   const quantities: Record<string, Quantity> = {}
   const failed = new Map<string, SheetProblemKind>()
   const resolving = new Set<string>()
