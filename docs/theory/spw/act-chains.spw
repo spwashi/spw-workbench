@@ -19,6 +19,7 @@
  particle = `a pair the lexer fuses today: # with an aim > : ! (deixis, case, mood), and the aspect ~#`
  fused = `pairs the lexer fuses today as one connector or comparison: .. ... -> ~> => || <> and == != <= >=`
  fusion = `fusion is a lexing heuristic, not a fundamental: every fused pair is read from its parts first, and a dialect that fuses a pair says whether the fused reading agrees with its parts or is an idiom against them (^"decomposition")`
+ never_one = `two adjacent marks are never read as one operator: each keeps its fundamental and acts in turn, so a pair is a composition of two acts, not a compound (the owner, 2026-11-14)`
  chain = `two or more acts glued to each other and to one operand, with no space between`
  spaced = `a mark set apart by a space is in no chain: it is a bond between expressions or an act on what follows it (wonder_trial_joins)`
 }[reg=facet]
@@ -43,7 +44,7 @@
 
 ^"structure"{
  # Laws a reader of any chain can rely on. Proposed; they decide shape, not meaning.
- glue = `a chain attaches to the operand it touches; a space ends it`
+ glue = `a chain attaches to the operand it touches; a space ends it, after a postfix chain as before a prefix one, so in name$ next the $ stays on name and next is a new term`
  nearest = `inside a chain the mark nearest the operand binds first: a prefix chain reads right to left, a postfix chain left to right (x~! is !(~(x)) in fixity-brace-phrases)`
  sides = `on one operand the bound binds first, then the postfix chain, then the prefix chain (fixity-brace-phrases precedence_sketch), so $[x]# is $ over ([x]#)`
  whole = `every mark written appears in the tree, in the order and on the side it was written; nothing is absorbed or lost`
@@ -138,13 +139,27 @@
 
 ?["Which pairs, if any, does a dialect fuse into one token?"]{
  ~#readings: ["none: every pair is read from its parts in every dialect", "agreeing: a dialect may fuse a pair only where the fused reading agrees with its parts", "declared idioms: a dialect may also fuse a pair against its parts if it names it as an idiom", "per dialect: each dialect lists its own"]
+ ~#judgment: "toward none as meaning, the owner, 2026-11-14: not interested in interpreting two operators as one; a dialect may still lex a pair as one token for speed, and reads it as two acts"
  ~#asked: "the owner, 2026-11-14: clustering particles and fused pairs together is a parsing heuristic that ignores the fundamentals of each operator; chaining depends on the lexing and parsing context across dialects and project rules"
  $%[none, agreeing, declared_idioms, per_dialect]
 }
 
 ?["What is a chain touching an operand on both sides?"]{
- ~#readings: ["arithmetic inside a measure frame, as the quantity sheet reads 2*@G", "a bond between the two operands (wonder_trial_joins)", "the right operand's prefix chain", "a warning until it is written with a space"]
- $%[arithmetic, bond, prefix_of_right, warning]
+ ~#readings: ["arithmetic inside a measure frame, as the quantity sheet reads 2*@G", "a bond between the two operands (wonder_trial_joins)", "the right operand's prefix chain", "a warning until it is written with a space", "a pivot: the run splits at a relation mark (: | / ; > <) into the left operand's postfix and the right operand's prefix", "a pipeline: the left operand's value flows through the run into the right"]
+ ~#raised: "a second model's review (a Gemini model through Antigravity, 2026-11-14) offered the pivot and the pipeline, and noted that distance alone cannot split a run between two operands"
+ $%[arithmetic, bond, prefix_of_right, warning, pivot, pipeline]
+}
+
+?["What does a mark acting twice in a row mean?"]{
+ ~#readings: ["iteration: the act happens twice, so ~~x defers a deferral", "intensity: the act is stronger or wider, as .. reaches further than .", "idempotent: twice is once, as two marks side by side condense in Laws of Form", "refused: a repeat is a warning until a dialect gives it a reading"]
+ ~#raised: "the same review: .., **, ~~ and == are acts repeated, and under never_one they need a reading of their own"
+ $%[iteration, intensity, idempotent, refused]
+}
+
+?["Do = & . ^ act on one side, or between two?"]{
+ ~#readings: ["one side: every mark is a unary act by its position, and a relation between two operands is spelled with a relation mark", "two sides: = & . ^ are relations by nature and take an operand on each side when written between two", "by dialect: each dialect says which marks may take two sides"]
+ ~#raised: "the same review: choose, join, ground and frame read naturally as relations, which strains a rule where every mark is a unary act"
+ $%[one_side, two_sides, by_dialect]
 }
 
 ?["How long may a chain be?"]{
