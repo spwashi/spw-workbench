@@ -318,6 +318,19 @@ describe('bundle:parser --allow-dirty into a temp directory', () => {
     }
   })
 
+  it('reader writes a settings line of quantities and derivations as CSS custom properties', async () => {
+    for (const form of ['min', 'debug']) {
+      const reader = await importBundle<{
+        readSettingsLine: (text: string, vocabulary: unknown) => { problems: unknown[] }
+        writeCssProperties: (line: unknown, vocabulary: unknown, options?: unknown) => string
+      }>(path.join(releaseDir, `reader.${form}.js`))
+      const vocabulary = { body: { kind: 'quantity', dimension: 'length' }, scale: { kind: 'number', range: [1, 3] }, h1: { kind: 'quantity', dimension: 'length' }, beat: { kind: 'quantity', dimension: 'time' } }
+      const line = reader.readSettingsLine('^type{ %body[1rem] %scale[5/4] %h1[@body*@scale^3] %beat[1rem] }', vocabulary)
+      assert.equal(line.problems.length, 1)
+      assert.equal(reader.writeCssProperties(line, vocabulary), '--spw-body: 1rem;\n--spw-scale: 1.25;\n--spw-h1: calc(var(--spw-body) * 1.953125);')
+    }
+  })
+
   it('reader renders the modal voice an ear line picks, and gives its events to a host that renders its own', async () => {
     for (const form of ['min', 'debug']) {
       const reader = await importBundle<{

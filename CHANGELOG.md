@@ -63,6 +63,14 @@ What a host gets by moving its pin from `9ef3d223`, or by importing the dated re
   - and it refuses, with a reason, hex, `1_000`, `1/0` and `3:4`.
 
   Settings lines and the ear line take every number through it, and a word may list the units it accepts with their scale, so `%ms[0.045s]` reads as 45. The lexer is unchanged, so no line reads differently.
+- A settings word can be a quantity of a dimension: length, time, angle, frequency, interval or ratio.
+  - An absolute unit converts to its base and a relative one is kept as written.
+  - A unit of another dimension is refused, so a beat written in `rem` is caught.
+- A quantity can be derived from other words: `@body*1.5`, `@body/2`, `@body*@scale^3`.
+- `writeCssProperties` writes the line as CSS custom properties:
+  - a derivation as `calc()` over the property it names;
+  - a range as `clamp()`;
+  - and so `^type{ %body[1rem] %scale[5/4] %h1[@body*@scale^3] }` is a modular type scale in one line of Spw.
 - A declared mass with anything written against its number (`8kb`, `1e3`, `50%`, a sign) is now unmeasurable. Before, it was read short, so a correction rewrote only its digits.
 
 ### Spw on the GPU (experimental)

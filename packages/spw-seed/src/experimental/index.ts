@@ -91,3 +91,7 @@ export { NUMBER_FORM_SCHEMA, isNumberForm, readNumberForm } from './number-form'
 export { settingNumber } from './settings-line'
 /** Measures of rendered samples (power at a frequency, band share, RMS, onset, spectra), under one name. */
 export * as soundMeasures from './sound/measure'
+export type { Derivation, Dimension, Quantity, QuantityProblem } from './quantity'
+export { QUANTITY_SCHEMA, UNITS, cssNumber, derivationFactor, readDerivation, readQuantity } from './quantity'
+export type { CssPropertiesOptions } from './css-properties'
+export { CSS_PROPERTIES_SCHEMA, cssDeclarations, writeCssProperties } from './css-properties'

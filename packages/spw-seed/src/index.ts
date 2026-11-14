@@ -941,6 +941,11 @@ export type {
   UniformLayout,
   NumberForm,
   NumberProblem,
+  Derivation,
+  Dimension,
+  Quantity,
+  QuantityProblem,
+  CssPropertiesOptions,
 } from './experimental'
 export {
   SYNTAX_CATALOG,
@@ -1031,6 +1036,15 @@ export {
   readNumberForm,
   settingNumber,
   soundMeasures,
+  QUANTITY_SCHEMA,
+  UNITS,
+  cssNumber,
+  derivationFactor,
+  readDerivation,
+  readQuantity,
+  CSS_PROPERTIES_SCHEMA,
+  cssDeclarations,
+  writeCssProperties,
 } from './experimental'
 
 // Query (spw.q dialect)

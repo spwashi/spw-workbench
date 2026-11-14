@@ -115,6 +115,9 @@
  >>[2026-11-13 21:06] implement — number_form_reader landed as readNumberForm (seed experimental, spw.number-form/1): one written value read whole, beside the parser, as a number with its sign, exponent, percent and unit, a ratio of two decimals, or a range of two numbers; hex, a joiner in digits, a zero denominator, n:m and a doubled sign are refused by name. The lexer is unchanged, so no line reads differently. earcons_one_number_reader landed with it: settings lines and the ear line take every number through it, and a vocabulary word may list units with their scale (the ear line takes ms and s, hz and khz, st). So %ms[0.045s], %frame[4/3] and a negative value in brackets now read; a unit the word does not list is not_a_unit.
  >>[2026-11-13 21:06] decide — number_authority, as practice and not as the lexer's answer: every reader that takes a value from text uses readNumberForm, so what such a reader accepts is written in one place. Whether the lexer should take the same forms (a sign, an exponent, a unit as one token) stays open at minus_sign, unit_place and ratio_spelling, and the p18 fixtures still wait on them.
  >>[2026-11-13 21:06] verify — 22 tests on the number reader, one a law that it reads back 2,000 numbers as JavaScript writes them and 2,000 ratios; three mutants each fail a test. Seed 1,231 pass, tsc clean.
+ >>[2026-11-13 21:22] implement — Quantities, beside the parser. A settings word may be a quantity of a dimension (length, time, angle, frequency, interval, ratio), read by readQuantity: an absolute unit is converted to the dimension's base (px, ms, deg, hz, st), a relative one (rem, em, ch, vw, %) kept as written, and a unit of another dimension refused as wrong_dimension, so a beat written in rem is caught. A range of a quantity is kept whole. A quantity may be derived from another word: @body, @body*1.5, @body/2, @body*@scale^3; derivations resolve after every term is read, a cycle is reported once per word, and a derivation across dimensions is refused. writeCssProperties writes the line as custom properties, a derivation as calc() over the property it names with its factor worked out once, a range as clamp() with its midpoint, so a modular type scale (a body size and a ratio such as 5/4, a major third) is one line of Spw and moves as one when the body changes.
+ >>[2026-11-13 21:22] note — This answers part of unit_place and ratio_spelling for values read from text (in a word, as a quantity; a ratio as two decimals joined by /), and decides nothing for the lexer: 45ms and 4/3 in ordinary Spw text read as they did. The minus sign works inside a settings line's brackets for the same reason.
+ >>[2026-11-13 21:22] verify — 8 tests on quantities, one a law over 200 generated type scales; four mutants each fail a test; a release-contract case reads a type line and writes its CSS from the browser bundle. Seed 1,239 pass, CLI 453, LSP 408, runtime 137, parser release 27, tsc and typecheck:refs clean.
 }
 
 ^["open"]{
@@ -179,7 +182,7 @@
  ~#files_hot: "packages/spw-seed/src/canonical/particles.ts, scripts/analyzers/spw-cut-gate.ts"
  ~#next_commit: "p1_p7_verdicts"
  ~#open_count: "13"
- ~#last_stream: "2026-11-13 21:06"
+ ~#last_stream: "2026-11-13 21:22"
  ~#taste_debt: ""
 }
 

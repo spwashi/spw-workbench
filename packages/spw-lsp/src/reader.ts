@@ -34,6 +34,9 @@ export { readSettingsLine, writeSettingsLine, readSettingsTerms, SETTINGS_LINE_S
 // A written number read whole: sign, exponent, ratio, percent, range and unit. Experimental.
 export { readNumberForm, isNumberForm, settingNumber, NUMBER_FORM_SCHEMA } from '@spwashi/spw-seed'
 export type { NumberForm } from '@spwashi/spw-seed'
+// Quantities, derivations, and a settings line as CSS custom properties. Experimental.
+export { readQuantity, readDerivation, UNITS, writeCssProperties, cssDeclarations } from '@spwashi/spw-seed'
+export type { Quantity, Dimension, Derivation } from '@spwashi/spw-seed'
 export type { SettingsLine, SettingsVocabulary, SettingWord } from '@spwashi/spw-seed'
 export type { ModalEvent, Texture } from '@spwashi/spw-seed'
 export type { EarconReading, EarconProblem, PairMove, PairSoundSettings } from '@spwashi/spw-seed'

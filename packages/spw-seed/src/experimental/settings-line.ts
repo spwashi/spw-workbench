@@ -31,6 +31,7 @@
 
 import { readRange, type SlotReading } from '../line/read'
 import { isNumberForm, readNumberForm } from './number-form'
+import { derivationFactor, readDerivation, readQuantity, type Derivation, type Dimension, type Quantity } from './quantity'
 
 export const SETTINGS_LINE_SCHEMA = 'spw.settings-line/1' as const
 
@@ -45,6 +46,15 @@ export type SettingWord =
       units?: Readonly<Record<string, number>>
     }
   | { kind: 'choice'; choices: readonly string[]; says?: string; marks?: readonly string[] }
+  | {
+      kind: 'quantity'
+      /** What the value measures (quantity.ts): a unit of another dimension is refused. */
+      dimension: Dimension
+      /** Held to a range in the dimension's base unit (px, ms, deg, hz, st), checked when the unit is absolute. */
+      range?: readonly [number, number]
+      says?: string
+      marks?: readonly string[]
+    }
   | { kind: 'text'; says?: string; marks?: readonly string[] }
 
 export type SettingsVocabulary = Readonly<Record<string, SettingWord>>
@@ -59,7 +69,20 @@ export interface SettingsTerm {
   end: number
 }
 
-export type SettingsProblemKind = 'no_line' | 'unread' | 'unknown_word' | 'not_a_number' | 'not_a_unit' | 'not_a_choice' | 'clamped' | 'repeated' | 'other_mark'
+export type SettingsProblemKind =
+  | 'no_line'
+  | 'unread'
+  | 'unknown_word'
+  | 'not_a_number'
+  | 'not_a_unit'
+  | 'wrong_dimension'
+  | 'not_a_derivation'
+  | 'unknown_reference'
+  | 'cycle'
+  | 'not_a_choice'
+  | 'clamped'
+  | 'repeated'
+  | 'other_mark'
 
 /**
  * A number written in a value, read by readNumberForm (number-form.ts): a sign, an exponent, a ratio
@@ -87,8 +110,14 @@ export interface SettingsLine {
   head: { mark: string; word: string; mode: string } | null
   /** Every term written, in order, known or not. */
   terms: SettingsTerm[]
-  /** The values of the known words, typed by the vocabulary. */
+  /** The values of the known words, typed by the vocabulary; a quantity's value is in its base unit when it has one. */
   values: Record<string, number | string>
+  /** A quantity word's value with its unit, as written or as derived. */
+  quantities: Record<string, Quantity>
+  /** A quantity word written as a derivation (@body*@scale^3), with the factor it resolved to. */
+  derivations: Record<string, Derivation & { resolved: number }>
+  /** The value of every known word as written, for writing the line back. */
+  written: Record<string, string>
   problems: SettingsProblem[]
 }
 
@@ -148,7 +177,7 @@ export function readSettingsLine(text: string, vocabulary: SettingsVocabulary): 
   const body = line.slots.body
   if (!body) {
     problems.push({ problem: 'no_line', word: source.trim(), at: 0 })
-    return { schema: SETTINGS_LINE_SCHEMA, head: null, terms: [], values, problems }
+    return { schema: SETTINGS_LINE_SCHEMA, head: null, terms: [], values, quantities: {}, derivations: {}, written: {}, problems }
   }
   const { mark, word } = splitWord(line.word.text)
   const mode = line.slots.mode
@@ -158,6 +187,10 @@ export function readSettingsLine(text: string, vocabulary: SettingsVocabulary): 
   const { terms, unread } = readSettingsTerms(source, body.innerStart, body.innerEnd)
   for (const u of unread) problems.push({ problem: 'unread', word: u.text, at: u.at })
   const seen = new Set<string>()
+  const quantities: Record<string, Quantity> = {}
+  const derivations: Record<string, Derivation & { resolved: number }> = {}
+  const written: Record<string, string> = {}
+  const pending = new Map<string, { derivation: Derivation; at: number }>()
   for (const term of terms) {
     const spec = vocabulary[term.word]
     if (!spec) {
@@ -168,6 +201,33 @@ export function readSettingsLine(text: string, vocabulary: SettingsVocabulary): 
     seen.add(term.word)
     if (spec.marks && term.mark && !spec.marks.includes(term.mark)) {
       problems.push({ problem: 'other_mark', word: term.word, at: term.start, written: term.mark, used: spec.marks[0] })
+    }
+    written[term.word] = term.value
+    if (spec.kind === 'quantity') {
+      if (term.value.startsWith('@')) {
+        const derivation = readDerivation(term.value)
+        if (!derivation) problems.push({ problem: 'not_a_derivation', word: term.word, at: term.start, written: term.value })
+        else pending.set(term.word, { derivation, at: term.start })
+        continue
+      }
+      const read = readQuantity(term.value, spec.dimension)
+      if ('problem' in read) {
+        problems.push({ problem: read.problem, word: term.word, at: term.start, written: term.value })
+        continue
+      }
+      let quantity = read
+      if (spec.range && read.base !== undefined && read.high === undefined) {
+        const [low, high] = spec.range
+        const held = Math.min(high, Math.max(low, read.base))
+        if (held !== read.base) {
+          const scale = read.base / read.value || 1
+          quantity = { ...read, base: held, value: Number((held / scale).toPrecision(12)) }
+          problems.push({ problem: 'clamped', word: term.word, at: term.start, written: term.value, used: `${quantity.value}${quantity.unit}` })
+        }
+      }
+      quantities[term.word] = quantity
+      values[term.word] = quantity.base ?? quantity.value
+      continue
     }
     if (spec.kind === 'number') {
       const read = settingNumber(term.value, spec.units)
@@ -191,7 +251,54 @@ export function readSettingsLine(text: string, vocabulary: SettingsVocabulary): 
       values[term.word] = term.value
     }
   }
-  return { schema: SETTINGS_LINE_SCHEMA, head, terms, values, problems }
+  // Derivations resolve after every term is read, so a word may derive from one written after it.
+  const numberOf = (word: string): number | undefined => (typeof values[word] === 'number' ? (values[word] as number) : undefined)
+  const resolving = new Set<string>()
+  // Each word fails once, with one reason; a word derived from a word in a cycle is in the cycle too.
+  const failed = new Map<string, 'cycle' | 'unknown_reference' | 'wrong_dimension'>()
+  const fail = (word: string, at: number, kind: 'cycle' | 'unknown_reference' | 'wrong_dimension', written: string): undefined => {
+    if (!failed.has(word)) {
+      failed.set(word, kind)
+      problems.push({ problem: kind, word, at, written })
+    }
+    return undefined
+  }
+  const resolve = (word: string): Quantity | undefined => {
+    if (quantities[word]) return quantities[word]
+    if (failed.has(word)) return undefined
+    const entry = pending.get(word)
+    if (!entry) return undefined
+    const spec = vocabulary[word] as Extract<SettingWord, { kind: 'quantity' }>
+    const { derivation, at } = entry
+    if (resolving.has(word)) return fail(word, at, 'cycle', derivation.text)
+    resolving.add(word)
+    try {
+      const fromSpec = vocabulary[derivation.from]
+      if (!fromSpec || fromSpec.kind !== 'quantity') return fail(word, at, 'unknown_reference', derivation.from)
+      if (fromSpec.dimension !== spec.dimension) return fail(word, at, 'wrong_dimension', derivation.text)
+      const from = resolve(derivation.from)
+      if (derivation.factor.by === 'word') resolve(derivation.factor.word)
+      const factor = derivationFactor(derivation, numberOf)
+      if (!from || factor === null) {
+        const upstream = failed.get(derivation.from) === 'cycle' || resolving.has(derivation.from) ? 'cycle' : 'unknown_reference'
+        return fail(word, at, upstream, derivation.text)
+      }
+      const quantity: Quantity = {
+        value: Number((from.value * factor).toPrecision(12)),
+        unit: from.unit,
+        ...(from.base !== undefined ? { base: from.base * factor } : {}),
+        text: derivation.text,
+      }
+      quantities[word] = quantity
+      values[word] = quantity.base ?? quantity.value
+      derivations[word] = { ...derivation, resolved: factor }
+      return quantity
+    } finally {
+      resolving.delete(word)
+    }
+  }
+  for (const word of pending.keys()) resolve(word)
+  return { schema: SETTINGS_LINE_SCHEMA, head, terms, values, quantities, derivations, written, problems }
 }
 
 /** Write values as a settings line, in the vocabulary's order. A number is led by %, anything else by =, unless the word names its marks. */
@@ -199,7 +306,7 @@ export function writeSettingsLine(head: string, values: Readonly<Record<string, 
   const terms: string[] = []
   for (const [word, spec] of Object.entries(vocabulary)) {
     if (!(word in values)) continue
-    const mark = spec.marks?.[0] ?? (spec.kind === 'number' ? '%' : '=')
+    const mark = spec.marks?.[0] ?? (spec.kind === 'number' || spec.kind === 'quantity' ? '%' : '=')
     terms.push(`${mark}${word}[${String(values[word])}]`)
   }
   return terms.length ? `${head}{ ${terms.join(' ')} }` : `${head}{}`

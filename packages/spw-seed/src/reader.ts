@@ -38,6 +38,10 @@ export { MODAL_LEVEL_DB, TEXTURES, labelPhrase, modalEvents } from './experiment
 // A settings line read against a host's own vocabulary (spw.settings-line/1, experimental).
 export { SETTINGS_LINE_SCHEMA, readSettingsLine, readSettingsTerms, settingNumber, writeSettingsLine } from './experimental/settings-line'
 export { NUMBER_FORM_SCHEMA, isNumberForm, readNumberForm } from './experimental/number-form'
+// Quantities with dimensions, derivations between words, and a settings line written as CSS custom properties.
+export { QUANTITY_SCHEMA, UNITS, readDerivation, readQuantity } from './experimental/quantity'
+export type { Derivation, Dimension, Quantity } from './experimental/quantity'
+export { CSS_PROPERTIES_SCHEMA, cssDeclarations, writeCssProperties } from './experimental/css-properties'
 export type { NumberForm, NumberProblem } from './experimental/number-form'
 export type { SettingsLine, SettingsProblem, SettingsTerm, SettingsVocabulary, SettingWord } from './experimental/settings-line'
 export type { ModalEvent, Texture } from './experimental/sound/modal-sound'

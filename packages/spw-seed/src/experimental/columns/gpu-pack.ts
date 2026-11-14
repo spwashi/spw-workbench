@@ -63,9 +63,10 @@ export function uniformLayout(vocabulary: SettingsVocabulary, defaults: Readonly
   const fields: UniformField[] = []
   let offset = 0
   for (const [word, spec] of Object.entries(vocabulary)) {
-    if (spec.kind === 'number') {
+    if (spec.kind === 'number' || spec.kind === 'quantity') {
+      // A quantity packs as its base unit (px, ms, deg, hz, st), which a shader can rely on; a relative unit has none.
       const given = defaults[word]
-      fields.push({ word, type: 'f32', offset, fallback: typeof given === 'number' ? given : spec.range[0] })
+      fields.push({ word, type: 'f32', offset, fallback: typeof given === 'number' ? given : spec.range?.[0] ?? 0 })
     } else if (spec.kind === 'choice') {
       const given = defaults[word]
       const index = typeof given === 'string' ? spec.choices.indexOf(given) : -1
