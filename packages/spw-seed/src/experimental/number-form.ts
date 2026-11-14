@@ -98,9 +98,10 @@ function readSingle(text: string): NumberForm | null {
   const unit = text.slice(scanned.end)
   // A unit is letters or a percent, written against the number.
   if (unit && !/^(?:%|[A-Za-z]+)$/.test(unit)) return null
-  const scale = unit === '%' ? 1 / 100 : 1
-  const form: NumberForm = { kind: 'number', value: (sign || 1) * scanned.value * scale, unit, text }
-  if (scanned.uncertainty !== undefined) form.uncertainty = scanned.uncertainty * scale
+  // A percent divides by 100, as written: 57% is 57 / 100, which is 0.57; times 1/100 would be one bit above it.
+  const percent = (n: number) => (unit === '%' ? n / 100 : n)
+  const form: NumberForm = { kind: 'number', value: percent((sign || 1) * scanned.value), unit, text }
+  if (scanned.uncertainty !== undefined) form.uncertainty = percent(scanned.uncertainty)
   return form
 }
 

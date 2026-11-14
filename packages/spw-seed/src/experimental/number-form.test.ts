@@ -61,6 +61,14 @@ describe('readNumberForm', () => {
     expect(form.unit).toBe(unit)
   })
 
+  it('reads a percent as its number divided by 100, to the last bit', () => {
+    for (let i = 0; i <= 1000; i++) {
+      const written = String(i / 10)
+      const form = readNumberForm(`${written}%`)
+      expect(isNumberForm(form) && form.value, `${written}%`).toBe(Number(written) / 100)
+    }
+  })
+
   it('reads an uncertainty only where it is written whole', () => {
     expect(readNumberForm('9.81 ±')).toEqual({ problem: 'not_a_number', text: '9.81 ±' })
     expect(readNumberForm('9.81 ± 0.02 ms')).toEqual({ problem: 'not_a_number', text: '9.81 ± 0.02 ms' })

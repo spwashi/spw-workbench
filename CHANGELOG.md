@@ -64,7 +64,7 @@ What a host gets by moving its pin from `9ef3d223`, or by importing the dated re
   - a measured number with its standard uncertainty (`9.810(20)`, `6.67430(15)e-11`, `9.81 ± 0.02`), a unit after it covering both;
   - and it refuses, with a reason, hex, `1_000`, `1/0` and `3:4`.
 
-  Settings lines and the ear line take every number through it, and a word may list the units it accepts with their scale, so `%ms[0.045s]` reads as 45. A quantity sheet's expressions read their numbers through the same scanner, so a number reads the same in both. The lexer is unchanged, so no line reads differently: a value with a minus sign or `±` reads whole inside a term's brackets, but the parser still reports that character as a recoverable error, so the commit gate's strict check refuses a changed `.spw` file holding one (the open question `minus_sign`).
+  Settings lines and the ear line take every number through it, and a word may list the units it accepts with their scale, so `%ms[0.045s]` reads as 45. A quantity sheet's expressions read their numbers through the same scanner, so a number reads the same in both. The lexer is unchanged, so no line reads differently: a value with a minus sign or `±` reads whole inside a term's brackets, but the parser still reports that character as a recoverable error: `lint:spw` passes such a file, and the strict parse check agents run before committing (`poll-review`) fails it (the open question `minus_sign`).
 - A settings word can be a quantity of a dimension: length, time, angle, frequency, interval or ratio.
   - An absolute unit converts to its base and a relative one is kept as written.
   - A unit of another dimension is refused, so a beat written in `rem` is caught.
