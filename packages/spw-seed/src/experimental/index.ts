@@ -83,3 +83,5 @@ export type { EditSpan, PairLabelAction, PairLabelEdits, TextEdit } from './stru
 export { STRUCTURAL_EDIT_SCHEMA, applyTextEdits, pairLabelEdits, selectionSpans } from './structural-edit'
 export type { SettingsLine, SettingsProblem, SettingsProblemKind, SettingsTerm, SettingsVocabulary, SettingWord } from './settings-line'
 export { SETTINGS_LINE_SCHEMA, readSettingsLine, readSettingsTerms, writeSettingsLine } from './settings-line'
+export type { GpuColumns, UniformField, UniformLayout } from './gpu-pack'
+export { GPU_PACK_SCHEMA, GPU_ROW_FIELDS, GPU_ROW_WORDS, WGSL_ROW, columnsToGpu, packUniforms, uniformLayout, wgslStruct } from './gpu-pack'

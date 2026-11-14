@@ -936,6 +936,9 @@ export type {
   SettingsTerm,
   SettingsVocabulary,
   SettingWord,
+  GpuColumns,
+  UniformField,
+  UniformLayout,
 } from './experimental'
 export {
   SYNTAX_CATALOG,
@@ -1012,6 +1015,14 @@ export {
   readSettingsLine,
   readSettingsTerms,
   writeSettingsLine,
+  GPU_PACK_SCHEMA,
+  GPU_ROW_FIELDS,
+  GPU_ROW_WORDS,
+  WGSL_ROW,
+  columnsToGpu,
+  packUniforms,
+  uniformLayout,
+  wgslStruct,
 } from './experimental'
 
 // Query (spw.q dialect)

@@ -54,6 +54,12 @@ What a host gets by moving its pin from `9ef3d223`, or by importing the dated re
 
 - `readSettingsLine(text, vocabulary)` reads a line of a head and marked terms, such as `^board{ =cues[shaped] @hold[upright] }`, `?find[haggle]{ @carrier[genie] %count[3] }` or `^ear{ %body[392] }`, against a host's own vocabulary of numbers held to ranges, choices and text. Every term comes back with its mark, word, value and span, known or not. The problems name unknown words, values it could not use, clamps, repeats, and marks other than the vocabulary gives. `writeSettingsLine` writes values back as a line that reads to the same values. The ear line reads its terms this way. It is in the browser reader bundle.
 
+### Spw on the GPU (experimental)
+
+- `columnsToGpu` widens parse columns into fixed rows of eight u32 that a WGSL storage buffer reads (`WGSL_ROW` declares them).
+- `uniformLayout`, `wgslStruct` and `packUniforms` turn a settings line, such as `^shader{ %zoom[4] %pan[-0.6] =palette[dusk] }`, into a uniform buffer and its WGSL struct from one table. Negative values written inside a settings line's brackets are kept.
+- `npm run gpu:page -- <file.spw>` writes one page that draws the file's parse tree with WebGPU and retunes it live from a `^shader` line. Seen in Chrome.
+
 ### Editing by structure
 
 - The language server answers `textDocument/selectionRange`: expanding a selection walks out from the word under the caret through every node that holds it, each span larger than the last and never starting or ending on a gap.

@@ -86,6 +86,9 @@
  >>[2026-11-13 17:21] implement — spw form --match reads columns from the nearest of three tiers: this process's memory, .spw/gen/session/columns, then the parser. The disk key is the text's hash under a fingerprint of the parser's own source (182 files, 14 ms to hash), so a parser change is a miss and never a stale tree; where that source cannot be read the disk tier is off and says why. --cache read never writes, --cache off parses everything. Over this repository the same example took 104.9 s cold and 3.1 s warm (566 ms reading columns), with the same 29 hits; the last line of every run says which tiers gave the columns and what they cost.
  >>[2026-11-13 17:21] verify — 9 tests on shape match (holes of each kind, separators, runs, word holes, outermost and nested; every line fixture matches itself with nothing to fill; a fixture with its first part replaced by _ matches with that part as the filler), 4 on the bytes, 7 on the cache and the match output. Four mutants each fail a test; a fifth found a rule that never ran (a one-part body has its own sequence node), which was removed. Seed 1,189 pass, CLI 448, LSP 405, runtime 137, DOM 3, parser release 25, tsc clean.
  >>[2026-11-13 17:21] note — Not built, and each could start from these: a match heard (each hit's span through pairSound or the spoken form); the fingerprint and geometry bytecode derived from the cached columns instead of a fresh parse, which would carry the cache's gain to census and graph; matches as edits (fill a hole with new text and write the line back through the line kit); a host reading spw.parse-columns-bytes/1 in a worker. The cache keys parse products only; runtime consequence (what a run does with a tree) has no key yet.
+ >>[2026-11-13 21:01] implement — The columns reach a GPU. columnsToGpu widens each row to eight u32 (kind, glyph, parent as i32, depth, size, start, end, word), the array<Row> a WGSL storage buffer reads, with WGSL_ROW declaring it; kind and glyph are u8 and u16 on the CPU and WGSL storage has neither. A settings line packs as a uniform buffer: uniformLayout lays a vocabulary out as f32 for numbers and u32 for a choice's index, sixteen-byte rounded; wgslStruct writes the struct from the same table; packUniforms writes a line's values, a word left out taking its default. A value in a settings line's brackets is read from its text, so a negative survives there although the lexer drops a minus elsewhere.
+ >>[2026-11-13 21:01] verify — npm run gpu:page writes one self-contained page that draws a file's parse tree with WebGPU, one rectangle per node, retuned live by a ^shader line read and packed in the browser by the same seed code. Seen in Chrome over a 363-node plan file: the tree draws; ^shader{ %zoom[4] %pan[0.6] written with a hyphen-minus %gap[0.4] =palette[meadow] =color[word] } redraws zoomed, panned left by that negative value and coloured by word in under a millisecond of reading and packing; =blur is reported unknown. The first draw showed a tiny block: the page decoded base64 rows one u32 per byte, fixed before anything was kept. 4 tests on the packing; WebGPU itself is not tested in node.
+ >>[2026-11-13 21:01] note — Not built: a compute pass over the bands (one dispatch per depth) and the likeness keys on the GPU; drawing HTML into the canvas, which waits on an API behind a flag; the source text beside each rectangle.
 }
 
 ^["open"]{
@@ -108,7 +111,7 @@
  ~#files_hot: "packages/spw-seed/src/index.ts, packages/spw-cli/src/commands.ts, packages/spw-seed/src/grammar/containers.ts, packages/spw-seed/src/types/ast/nodes.ts"
  ~#next_commit: "columns_probe"
  ~#open_count: "5"
- ~#last_stream: "2026-11-13 17:21"
+ ~#last_stream: "2026-11-13 21:01"
  ~#taste_debt: ""
 }
 
