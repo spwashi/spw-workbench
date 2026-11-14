@@ -1,0 +1,64 @@
+# Dimensional Analysis — quantities defined in Spw, and what follows from their dimensions alone
+#
+# A sheet is a line of terms, each a quantity written as an expression over
+# units, numbers and other terms. Sheets compose: each reads on top of the ones
+# before it. From dimensions alone follow two analyses, dimensionless groups and
+# natural units, both linear algebra over the rationals.
+#
+# Machine: packages/spw-seed/src/experimental/physics/
+# CLI: spw sheet docs/theory/spw/dimensional-analysis.spw --si --pi
+# Tests read the sheets below: packages/spw-cli/src/sheet.test.ts
+
+#:layer #!semantics
+#:status #!proposed
+
+#>dimensional_analysis
+
+^"model"{
+ rational = `an exponent, exact: a square root is a power of 1/2, and a rounded exponent would be a wrong dimension`
+ dimension = `a vector of rational exponents over the seven SI base quantities; multiplying quantities adds dimensions, a power scales them`
+ quantity = `a scale in SI base units with a dimension; two quantities add only when their dimensions are equal`
+ sheet = `an environment of named definitions, read in any order, each an expression over the others; a cycle is reported once per term`
+ composition = `a sheet extends the sheets before it, so constants are written once and a theory is written on top of them`
+ groups = `the dimensionless products of a set of quantities are the null space of the matrix of their dimensions (Buckingham pi)`
+ natural = `setting constants to one is solving a quantity's dimension as powers of those constants and of one unit; what is left of the scale is its value in natural units`
+}[reg=facet]
+
+^"readings"{
+ percent = `% leads a term: a measure, as the operator table reads %`
+ reference = `@ names another term: a derivation reads from its perspective`
+ power = `^ raises: a rational exponent, so (1/2) is a root`
+ caution = `these are readings of marks inside a sheet's brackets, read from text beside the parser; they decide nothing about the marks elsewhere`
+}[reg=facet]
+
+# ── A theory on top of the SI constants (spw sheet --si) ──────────
+
+^gravity{
+ %M_sun[1.98847e30 kg]
+ %r_s[2*@G*@M_sun/@c^2]
+ %g_earth[@G*5.9722e24 kg/(6.371e6 m)^2]
+}
+
+^quantum{
+ %E_e[@m_e*@c^2]
+ %lambda_C[@h/(@m_e*@c)]
+ %a_0[@hbar/(@m_e*@c*@alpha)]
+}
+
+# ── A sheet of its own, for dimensionless groups (spw sheet --pi) ─
+
+^pendulum{
+ %T[2.006 s]
+ %L[1 m]
+ %m[1 kg]
+ %g[9.81 m/s^2]
+}
+
+?["Is a unit system a choice of basis, and a constant set to one a quotient of the group of dimensions?"]{
+ #:depth #!mathematical ~#lens(projection)
+ ~#readings: ["basis: SI, CGS and Planck units are bases of the same space of dimensions, and conversion is a change of basis", "quotient: setting c to one identifies length with time, a quotient of the group by the subgroup c generates", "both: a basis of the quotient is a natural unit system"]
+ ~#grounded: "inNaturalUnits solves exactly that system; with c, hbar and G set to one the quotient is trivial and every quantity is a pure number"
+ ~#judgment: _
+ ~#answer: _
+ $%[basis, quotient, both]
+}

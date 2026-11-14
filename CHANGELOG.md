@@ -73,6 +73,19 @@ What a host gets by moving its pin from `9ef3d223`, or by importing the dated re
   - and so `^type{ %body[1rem] %scale[5/4] %h1[@body*@scale^3] }` is a modular type scale in one line of Spw.
 - A declared mass with anything written against its number (`8kb`, `1e3`, `50%`, a sign) is now unmeasurable. Before, it was read short, so a correction rewrote only its digits.
 
+### Dimensional analysis (experimental)
+
+- A quantity sheet is a Spw line whose terms define quantities as expressions over SI units (with prefixes), numbers, `pi` and other terms, such as `^planck{ %l_P[(@hbar*@G/@c^3)^(1/2)] }`.
+  - Exponents are exact rationals.
+  - A sum of different dimensions is refused.
+  - Terms read in any order, and a sheet extends the ones before it.
+- The SI constants ship as such a sheet, with the Planck units derived inside it.
+- `piGroups` gives the dimensionless groups of a set of quantities (Buckingham π).
+- `inNaturalUnits` reads a quantity with chosen constants set to one.
+- `spw sheet <file.spw> [--si] [--in GeV] [--natural c,hbar --unit GeV] [--pi]` shows values, dimensions, units, natural units and groups.
+- Checked against known values: the Planck units, 1/α = 137.035999084, the Sun's Schwarzschild radius, the Bohr radius, and the pendulum's T²g/L = 4π².
+- `docs/theory/spw/dimensional-analysis.spw` holds the model and worked sheets.
+
 ### Spw on the GPU (experimental)
 
 - `columnsToGpu` widens parse columns into fixed rows of eight u32 that a WGSL storage buffer reads (`WGSL_ROW` declares them).

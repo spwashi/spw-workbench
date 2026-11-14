@@ -95,3 +95,13 @@ export type { Derivation, Dimension, Quantity, QuantityProblem } from './quantit
 export { QUANTITY_SCHEMA, UNITS, cssNumber, derivationFactor, readDerivation, readQuantity } from './quantity'
 export type { CssPropertiesOptions } from './css-properties'
 export { CSS_PROPERTIES_SCHEMA, cssDeclarations, writeCssProperties } from './css-properties'
+/** Dimensional analysis: rationals, SI dimensions and units, quantity sheets written in Spw, π groups and natural units. */
+export type { BaseQuantity, Dimension as PhysicalDimension, Quantity as PhysicalQuantity } from './physics/dimension'
+export { BASE as PHYSICAL_BASE, UNITS as PHYSICAL_UNITS, dimension as physicalDimension, formatDimension, isDimensionless, sameDimension, unit as physicalUnit } from './physics/dimension'
+export type { QuantitySheet, SheetProblem, SheetProblemKind } from './physics/sheet'
+export { QUANTITY_SHEET_SCHEMA, evaluate as evaluateQuantity, inUnit, readQuantitySheet } from './physics/sheet'
+export type { NaturalReading, PiGroup } from './physics/analysis'
+export { inNaturalUnits, piGroups } from './physics/analysis'
+export { SI_CONSTANTS } from './physics/constants'
+export type { Rational } from './physics/rational'
+export { nullSpace, parseRational, rational, solve as solveRational } from './physics/rational'

@@ -51,6 +51,7 @@ import { printSayHelp, runSpwSayCli } from './say'
 import { printPairsHelp, runSpwPairsCli } from './pairs'
 import { printHearHelp, runSpwHearCli } from './hear'
 import { printRewriteHelp, runSpwRewriteCli } from './rewrite'
+import { printSheetHelp, runSpwSheetCli } from './sheet'
 
 /**
  * Which part of the loop a command belongs to. Groups order the help page and
@@ -377,6 +378,13 @@ export const COMMANDS: CommandSpec[] = [
     summary: 'List labeled brace pairs, where they cross, and braces with no partner',
     printHelp: () => printPairsHelp(),
     run: (_invoked, args) => runSpwPairsCli(args),
+  },
+  {
+    name: 'sheet',
+    group: 'collate',
+    summary: 'Read quantities defined in Spw, with their dimensions, units, natural units, and dimensionless groups',
+    printHelp: () => printSheetHelp(),
+    run: (_invoked, args) => runSpwSheetCli(args),
   },
 
   // ── Shape ────────────────────────────────────────────────────
