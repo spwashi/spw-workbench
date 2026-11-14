@@ -4,6 +4,14 @@ This is the consumer-facing record of material workbench changes. `Unreleased` e
 
 Version-local release records remain under `lib/spw-v*/CHANGELOG.md`. Commit `#[episode]{ ... }` blocks are the detailed engineering history behind these summaries.
 
+## After 2026.11.13 — version control from inside Spw files (not in the day's cut at `f53aaa1c`)
+
+- **Landing a planned commit.** On a planned line in a plan's commits block, `~[label]: "…"`, editors offer *Land label as <id> (HEAD)* and *as* any recent commit whose message names the label; the line becomes `.[label](id): "subject as committed"`, quotes escaped, nothing else touched. `spw vcs land <plan> [<label>] [--rev <rev>] [--write]` does the same from a terminal and lists a plan's planned lines. Seed's `readCommitLines`, `landedLineText` and `landCommit` (`spw.commit-lines/1`) hold the text half, so neither caller asks a version-control system to write a line.
+- **Revision ids by workspace.** `REVISION_ID_FORMS` in seed's lexer names the shapes an id is written in: git SHA-1 hex (the default, so every file lexes as before), SHA-256 hex, and jj change ids (letters k to z, taken from jj's documentation; no jj was run). `lex(text, { planStream: true, commitRefForms })` reads a landed ref in the forms given. `@spwashi/spw-runtime/node` gains `detectVcs`, which reads from the workspace's files which forms it uses (SHA-256 from git's config, jj from a `.jj` directory); the language server passes them to highlighting, hover, links and diagnostics. A jj change id is read only where a line claims a commit, never in prose, since words such as "tomorrows" are spelled in the same letters; it hovers as a change, takes no link, and is never reported missing, because nothing asks git about it.
+- **Ranges.** Both ends of `16fd5f8..aae308a9` (or with three dots) are cited hashes now; the second end was dropped before.
+- **Git reading Spw.** `.gitattributes` sends `.spw` files through a `spw` diff driver, and `spw vcs diff-driver` prints the two `git config` lines that define it (per clone; git never takes a driver from a repository). Hunk headers then name the frame or anchor a change sits in: over this repository's last 60 commits touching `.spw` files, git's default named nothing for 1,102 of 1,104 hunks, and the driver names a frame or anchor for 1,024. `--word-diff` keeps `#>`, `..`, `~>` and the other marks whole, isolates `392` inside `%body[392]`, and does not split an em dash, under a UTF-8 or the C locale. The word pattern is derived from the lexer's operator and connector tables (`spwWordPattern`, `SPW_FRAME_LINE`). `--check` says whether a clone has it.
+- Gap: the IntelliJ plugin maps no colour to the `commitRef` and `hashlike` token types; VS Code reads them as numbers and Neovim links them to `@number`.
+
 ## 2026-11-13 — parser release 2026.11.13 (prepared, not yet cut)
 
 What a host gets by moving its pin from `9ef3d223`, or by importing the dated release's `reader.min.js`. Everything marked experimental may change its contract id, and none of the sound or speech has been heard by a listener yet.
@@ -36,6 +44,7 @@ What a host gets by moving its pin from `9ef3d223`, or by importing the dated re
 
 ### The command line
 
+- `spw vcs` shows what version control holds here: kind (git, jj colocated or not, none), head and branch, the default branch, and every changed or untracked path with its age; `--since 30m` (or a clock time) keeps only what changed since then, which is what a session stages when other sessions' files share the tree. `spw vcs at <rev> -- <command>` runs a command in a clean checkout of a revision, with `{origin}` and `{checkout}` filled in and the checkout's own workspace packages linked, and removes it afterwards. A jj workspace is detected and its gaps named; no jj command runs yet.
 - Bare `spw` prints a start page read from the `.spw` tree it runs in, and `spw help` still prints all 44 commands.
   - Outside a workspace it offers `spw init`.
   - Inside, it suggests a walk through the workspace's declared roots and index, and lists the three surfaces changed most recently.
@@ -107,6 +116,7 @@ What a host gets by moving its pin from `9ef3d223`, or by importing the dated re
 
 - `reader.min.js` now also exports the slot reader's sayer, the pair-label scan, the brace sound, the earcons and modal voice, the settings-line reader and writer, the number and quantity readers and the CSS property writer, beside `roles`, `outline`, `anchors`, `highlightHtml` and `readLine`. A host whose own bundle names its exports (a story consumer exports only `parse` and `readBias`) adds the names it wants.
 - The physics readers (quantity sheets, dimensional analysis, uncertainty) and the GPU packers are in `workbench.min.js` and the seed package, not in `reader.min.js`.
+- Every `2026.11.13` prerelease up to `pre.5` carries seed twice in `workbench.min.js` (95 to 104 files, about 185 KB): each was cut in a worktree nested in the main checkout, where `@spwashi/spw-seed` resolved to the outer checkout's files. `full`, `lite` and `reader` are unaffected, and sampled runtime results match a clean build. The builder now resolves workspace packages inside the tree it builds from and refuses any source from outside it; `pre.6` is the first clean cut, and a host on an earlier prerelease should move to it or to the day.
 
 ## Unreleased — development snapshot, 2026-08-24
 

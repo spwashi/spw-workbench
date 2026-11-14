@@ -20,7 +20,17 @@
 
 import { execFile } from 'node:child_process'
 import type { LspDiagnostic, LspHover, LspPosition, LspRange } from '../types'
-import { allCommitRefsIn, resetCommitRefForms, COMMIT_REF_STRATEGY, commitRefAt, type CommitRef } from './commit-ref-forms'
+import { detectVcs } from '@spwashi/spw-runtime/node'
+import { allCommitRefsIn, askGit, resetCommitRefForms, COMMIT_REF_STRATEGY, commitRefAt, type CommitRef } from './commit-ref-forms'
+
+/** A workspace's revision id forms, detected once per root from its files. */
+const formsByRoot = new Map<string, ReturnType<typeof detectVcs>['idForms']>()
+function refsIn(text: string, filePath: string | null | undefined, root: string | undefined): CommitRef[] {
+  if (!root) return allCommitRefsIn(text, filePath)
+  let forms = formsByRoot.get(root)
+  if (!forms) formsByRoot.set(root, (forms = detectVcs(root).idForms))
+  return allCommitRefsIn(text, filePath, forms)
+}
 import { codeSpan } from './wonder'
 
 export * from './commit-ref-forms'
@@ -224,6 +234,7 @@ export async function readCommit(root: string, hash: string): Promise<CommitInfo
 
 /** Forget every git answer — for tests that build repositories of their own. */
 export function resetCommitRefCaches(): void {
+  formsByRoot.clear()
   resetCommitRefForms()
   workTrees.clear()
   existenceChecks.clear()
@@ -280,8 +291,14 @@ export async function hoverCommitRef(
   position: LspPosition,
   workspaceRoot: string,
 ): Promise<LspHover | null> {
-  const ref = commitRefAt(allCommitRefsIn(text, filePath), position)
+  const ref = commitRefAt(refsIn(text, filePath, workspaceRoot), position)
   if (!ref) return null
+  if (!askGit(ref)) {
+    return {
+      contents: { kind: 'markdown', value: `**jj change \`${ref.hash}\`** — a change id, which names this change across rewrites; nothing here runs jj, so its current commit is not shown` },
+      range: ref.range,
+    }
+  }
   const rule = COMMIT_REF_STRATEGY[ref.source]
   if (rule.confirmBeforeShowing) {
     const verdict = (await confirmCommits(workspaceRoot, [ref.hash])).get(ref.hash)
@@ -322,7 +339,7 @@ export async function commitRefLinks(
   filePath: string | null | undefined,
   workspaceRoot: string,
 ): Promise<Array<{ range: LspRange; target: string; tooltip: string }>> {
-  const refs = allCommitRefsIn(text, filePath)
+  const refs = refsIn(text, filePath, workspaceRoot).filter(askGit)
   if (refs.length === 0) return []
   const verdicts = await confirmCommits(workspaceRoot, refs.map((ref) => ref.hash))
   return refs.flatMap((ref) => verdicts.get(ref.hash) === true
@@ -336,7 +353,8 @@ export async function commitRefDiagnostics(
   filePath: string | null | undefined,
   workspaceRoot: string,
 ): Promise<LspDiagnostic[]> {
-  const refs = allCommitRefsIn(text, filePath).filter((ref) => COMMIT_REF_STRATEGY[ref.source].diagnoseMissing)
+  // A jj change id is not a git object, so git's silence about it is not an absence.
+  const refs = refsIn(text, filePath, workspaceRoot).filter((ref) => COMMIT_REF_STRATEGY[ref.source].diagnoseMissing && askGit(ref))
   if (refs.length === 0) return []
 
   // A long plan cites dozens of commits; ask git a few at a time.

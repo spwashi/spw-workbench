@@ -306,3 +306,51 @@ describe('hashlike tokens', () => {
     ])
   })
 })
+
+describe('jj workspaces and ranges', () => {
+  const JJ_ID = 'kkmpptxzrspx'
+  const jjPlan = () => ['^["commits"]{', ` .[jj_landed](${JJ_ID}): "&[x] — landed in jj"`, ` .[git_landed](${hash}): "#[plans] — land the notes"`, '}', ''].join('\n')
+
+  it('reads a jj change id as a landed ref only when the workspace uses jj, and never as a cited id', () => {
+    expect(commitRefsIn(jjPlan(), planPath(repo)).map((ref) => ref.hash)).toEqual([hash])
+    const refs = commitRefsIn(jjPlan(), planPath(repo), ['git_sha1', 'jj_change'])
+    expect(refs.map((ref) => [ref.hash, ref.form])).toEqual([[JJ_ID, 'jj_change'], [hash, 'git_sha1']])
+    expect(citedRefsIn(`landed in ${JJ_ID} yesterday`)).toEqual([])
+  })
+
+  it('in a jj workspace, a jj id hovers as a change, takes no link, and is never reported missing', async () => {
+    const jj = mkdtempSync(path.join(tmpdir(), 'spw-jj-'))
+    try {
+      execFileSync('mkdir', ['-p', path.join(jj, '.jj'), path.dirname(planPath(jj))])
+      // Colocated: git is here too, and would call the jj id missing if it were asked.
+      execFileSync('git', ['init', '--quiet'], { cwd: jj })
+      const text = jjPlan()
+      const shown = await hoverCommitRef(text, planPath(jj), { line: 1, character: 15 }, jj)
+      expect(shown?.contents.value).toMatch(/^\*\*jj change `kkmpptxzrspx`\*\* — a change id/)
+      expect(await commitRefLinks(text, planPath(jj), jj)).toEqual([])
+      const diagnostics = await commitRefDiagnostics(text, planPath(jj), jj)
+      expect(diagnostics.map((d) => d.message)).not.toContain(`commit ${JJ_ID} is not in this repository`)
+      // The semantic token for the jj id is a commitRef when the server passes the workspace's forms.
+      const uri = `file://${planPath(jj)}`
+      const serverIndex = new ServerIndex(jj)
+      serverIndex.openDocument(uri, planPath(jj), text, 1)
+      const { data } = semanticTokens({ textDocument: { uri } }, { serverIndex, revisionIdForms: ['git_sha1', 'jj_change'] } as unknown as HandlerDeps)
+      const commitRef = SEMANTIC_TOKENS_LEGEND.tokenTypes.indexOf('commitRef')
+      const lines: number[] = []
+      let line = 0
+      for (let i = 0; i < data.length; i += 5) {
+        line += data[i]!
+        if (data[i + 3] === commitRef) lines.push(line)
+      }
+      expect(lines).toEqual([1, 2])
+    } finally {
+      rmSync(jj, { recursive: true, force: true })
+    }
+  })
+
+  it('reads both ends of a range of hashes, with two dots or three', () => {
+    expect(citedRefsIn('between 16fd5f8..aae308a9 and 1a2b3c4...5d6e7f8').map((ref) => ref.hash)).toEqual(['16fd5f8', 'aae308a9', '1a2b3c4', '5d6e7f8'])
+    // A path or a file name still keeps its hex: only a range's second end follows dots.
+    expect(citedRefsIn('see ./1a2b3c4d and notes.5d6e7f8a')).toEqual([])
+  })
+})

@@ -1043,6 +1043,11 @@ export {
   NUMBER_FORM_SCHEMA,
   isNumberForm,
   readNumberForm,
+  COMMIT_LINES_SCHEMA,
+  landCommit,
+  landedLineText,
+  quoteSubject,
+  readCommitLines,
   settingNumber,
   soundMeasures,
   QUANTITY_SCHEMA,
@@ -1205,3 +1210,8 @@ export type {
   BondName,
   Separator,
 } from './line'
+
+// Version-control ids a plan file may name (lexer/commit-ref.ts), and a plan's commit lines.
+export { DEFAULT_REVISION_ID_FORMS, REVISION_ID_FORMS, revisionIdForm, type RevisionIdForm } from './lexer/commit-ref'
+export type { CommitLine } from './experimental'
+export { SPW_FRAME_LINE, multiCharacterMarks, spwWordPattern } from './lexer/word-pattern'

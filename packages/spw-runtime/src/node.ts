@@ -19,3 +19,5 @@ export {
   type CompositionEvalOptions,
   type CompositionEvalResult,
 } from './session/composition-eval'
+
+export { detectVcs, type VcsInfo, type VcsKind, type WorkspaceIdForm } from './workspace-vcs'

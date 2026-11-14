@@ -6,6 +6,7 @@
  */
 
 import { pairLabelCodeActions } from './structure'
+import { landCommitActions } from './land-commit'
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import {
@@ -362,6 +363,8 @@ export async function codeAction(params: CodeActionParams, deps: HandlerDeps): P
     }
 
     actions.push(...pairLabelCodeActions(uri, doc.text, range))
+    // A planned commit line lands as HEAD or a commit naming its label (land-commit.ts).
+    actions.push(...await landCommitActions(uri, doc.text, doc.filePath, range, deps.workspaceRoot))
     return actions
 }
 

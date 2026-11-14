@@ -6,7 +6,7 @@
  * @see ./commit-refs.ts — the git half
  */
 
-import { lex, type Token } from '@spwashi/spw-seed'
+import { DEFAULT_REVISION_ID_FORMS, lex, revisionIdForm, type RevisionIdForm, type Token } from '@spwashi/spw-seed'
 import type { LspPosition, LspRange } from '../types'
 
 /** Plan files whose commit refs are remembered between requests. */
@@ -45,7 +45,12 @@ export interface CommitRef {
   hash: string
   range: LspRange
   source: CommitRefSource
+  /** The id's form: a git hash, or a jj change id (only ever landed). */
+  form: RevisionIdForm
 }
+
+/** Whether git can be asked about this ref: a jj change id is not a git object. */
+export const askGit = (ref: Pick<CommitRef, 'form'>): boolean => ref.form !== 'jj_change'
 
 /** True for a plan stream: a `wip.spw` under `.agents/plans/`. */
 export function isPlanStreamFile(filePath: string | null | undefined): boolean {
@@ -57,7 +62,7 @@ export function isPlanStreamFile(filePath: string | null | undefined): boolean {
 
 // ── Reading refs from a plan file ───────────────────────────────
 
-const refCache = new Map<string, { text: string; refs: CommitRef[] }>()
+const refCache = new Map<string, { text: string; forms: string; refs: CommitRef[] }>()
 
 function lineStarts(text: string): number[] {
   const starts = [0]
@@ -78,15 +83,16 @@ function positionAt(starts: number[], offset: number): LspPosition {
   return { line: lo, character: offset - starts[lo] }
 }
 
-/** Every landed commit ref in a plan file, with its exact range; none elsewhere. */
-export function commitRefsIn(text: string, filePath: string | null | undefined): CommitRef[] {
+/** Every landed commit ref in a plan file, with its exact range; none elsewhere. `forms` are the workspace's id forms. */
+export function commitRefsIn(text: string, filePath: string | null | undefined, forms: readonly RevisionIdForm[] = DEFAULT_REVISION_ID_FORMS): CommitRef[] {
   if (!filePath || !isPlanStreamFile(filePath)) return []
+  const formsKey = forms.join(',')
   const cached = refCache.get(filePath)
-  if (cached && cached.text === text) return cached.refs
+  if (cached && cached.text === text && cached.forms === formsKey) return cached.refs
 
   let tokens: Token[]
   try {
-    tokens = lex(text, { planStream: true, eventPolicy: 'none' }).tokens
+    tokens = lex(text, { planStream: true, eventPolicy: 'none', commitRefForms: forms }).tokens
   } catch {
     return []
   }
@@ -100,20 +106,22 @@ export function commitRefsIn(text: string, filePath: string | null | undefined):
         end: positionAt(starts, token.span.end.offset),
       },
       source: 'landed',
+      form: revisionIdForm(token.value, forms) ?? 'git_sha1',
     }))
 
   if (refCache.size >= REF_CACHE_LIMIT) refCache.clear()
-  refCache.set(filePath, { text, refs })
+  refCache.set(filePath, { text, forms: formsKey, refs })
   return refs
 }
 
 /**
  * A cited hash: 7 to 40 lowercase hex, not glued to a word, a path, a `#`
  * colour, a sigil (so no `#>name` anchor or `$slot`), or a hyphenated id,
+ * except that both ends of a range (`16fd5f8..aae308a9`, or with three dots) count,
  * with at least one digit and one letter, so neither a date nor a hex word
  * like `deadbeef` is a candidate.
  */
-const CITED_HASH = /(?<![0-9A-Za-z_#./\\>!$@~%-])[0-9a-f]{7,40}(?![0-9A-Za-z_/\\-])/g
+const CITED_HASH = /(?:(?<=[0-9a-f]\.\.\.?)|(?<![0-9A-Za-z_#./\\>!$@~%-]))[0-9a-f]{7,40}(?![0-9A-Za-z_/\\-])/g
 
 /** Candidate hashes anywhere in a file's text; git decides which are commits. */
 export function citedRefsIn(text: string): CommitRef[] {
@@ -127,6 +135,7 @@ export function citedRefsIn(text: string): CommitRef[] {
       hash,
       range: { start: positionAt(starts, offset), end: positionAt(starts, offset + hash.length) },
       source: 'cited',
+      form: 'git_sha1',
     })
     if (refs.length >= CITED_LIMIT) break
   }
@@ -139,16 +148,17 @@ function overlaps(a: LspRange, b: LspRange): boolean {
 }
 
 /** How each source reads its hashes from a file, in the order sources are consulted. */
-const READERS: ReadonlyArray<readonly [CommitRefSource, (text: string, filePath: string | null | undefined) => CommitRef[]]> = [
+const READERS: ReadonlyArray<readonly [CommitRefSource, (text: string, filePath: string | null | undefined, forms: readonly RevisionIdForm[]) => CommitRef[]]> = [
   ['landed', commitRefsIn],
+  // Cited ids are read as git hashes only: a jj change id is spelled in letters ordinary words use.
   ['cited', (text) => citedRefsIn(text)],
 ]
 
-/** Every hash a file names, earlier sources first; a later source never reclaims a range. */
-export function allCommitRefsIn(text: string, filePath: string | null | undefined): CommitRef[] {
+/** Every id a file names, earlier sources first; a later source never reclaims a range. `forms` are the workspace's id forms. */
+export function allCommitRefsIn(text: string, filePath: string | null | undefined, forms: readonly RevisionIdForm[] = DEFAULT_REVISION_ID_FORMS): CommitRef[] {
   const refs: CommitRef[] = []
   for (const [, read] of READERS) {
-    for (const ref of read(text, filePath)) {
+    for (const ref of read(text, filePath, forms)) {
       if (!refs.some((known) => overlaps(known.range, ref.range))) refs.push(ref)
     }
   }

@@ -1,10 +1,11 @@
 import { execFileSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, readdirSync, realpathSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
+import { pathToFileURL } from 'node:url'
 import { afterEach, describe, expect, it } from 'vitest'
 import { at, defaultBranch, detectVcs, head, isAncestor, resolveRevision, status } from './vcs'
-import { readSince } from './vcs-cli'
+import { diffDriverConfig, readSince } from './vcs-cli'
 
 const made: string[] = []
 afterEach(() => {
@@ -57,6 +58,24 @@ describe('detectVcs', () => {
     expect(colocated.gaps.join(' ')).toMatch(/no commit hooks/)
 
     expect(detectVcs(scratch())).toMatchObject({ kind: 'none', root: null })
+  })
+
+  it('says which forms a revision id takes: SHA-1 hex, SHA-256 when the repository says so, and jj change ids in a jj workspace', () => {
+    const git = repo()
+    expect(detectVcs(git).idForms).toEqual(['git_sha1'])
+    const sha256 = scratch()
+    run(sha256, 'init', '--quiet', '--object-format=sha256')
+    expect(detectVcs(sha256).idForms).toEqual(['git_sha256'])
+    const jj = scratch()
+    mkdirSync(path.join(jj, '.jj'))
+    expect(detectVcs(jj).idForms).toEqual(['git_sha1', 'jj_change'])
+    // A worktree's .git is a file pointing at its git dir; the format is read from the common one.
+    const wt = path.join(sha256, 'wt')
+    writeFileSync(path.join(sha256, 'x'), 'x')
+    run(sha256, 'add', 'x')
+    run(sha256, '-c', 'user.email=t@example.invalid', '-c', 'user.name=t', '-c', 'core.hooksPath=/dev/null', 'commit', '--quiet', '-m', 'x')
+    run(sha256, 'worktree', 'add', '--quiet', '--detach', wt)
+    expect(detectVcs(wt)).toMatchObject({ kind: 'git', root: wt, idForms: ['git_sha256'] })
   })
 })
 
@@ -147,5 +166,61 @@ describe('readSince', () => {
     expect(readSince('1d', now)).toEqual(new Date(2026, 10, 12, 23, 30))
     expect(readSince('21:05', now)).toEqual(new Date(2026, 10, 13, 21, 5))
     expect(readSince('soon', now)).toBeNull()
+  })
+})
+
+describe('spw vcs land', () => {
+  const main = path.resolve(__dirname, 'main.ts')
+  // The command runs in a throwaway repository, where a bare --import tsx would not resolve; name the loader whole.
+  const tsx = pathToFileURL(path.resolve(__dirname, '../../../node_modules/tsx/dist/loader.mjs')).href
+  const spw = (cwd: string, ...args: string[]) => {
+    try {
+      return { out: execFileSync(process.execPath, ['--import', tsx, main, 'vcs', ...args], { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }), code: 0 }
+    } catch (error) {
+      const e = error as { stdout?: string; stderr?: string; status?: number }
+      return { out: `${e.stdout ?? ''}${e.stderr ?? ''}`, code: e.status ?? 1 }
+    }
+  }
+
+  it('lists planned lines, previews a landing, writes it with --write, and names a label it cannot find', () => {
+    const dir = repo()
+    const plan = path.join(dir, '.agents', 'plans', 'demo', 'wip.spw')
+    mkdirSync(path.dirname(plan), { recursive: true })
+    const text = ['^["commits"]{', ' ~[first_pass]: "^seed[x] — planned"', '}', ''].join('\n')
+    writeFileSync(plan, text)
+    const id = head(dir).id.slice(0, 8)
+
+    expect(spw(dir, 'land', 'demo').out).toContain('~[first_pass]  ^seed[x] — planned')
+    const preview = spw(dir, 'land', 'demo', 'first_pass')
+    expect(preview.out).toContain(`+ .[first_pass](${id}): "first"`)
+    expect(readFileSync(plan, 'utf8')).toBe(text)
+
+    expect(spw(dir, 'land', '.agents/plans/demo/wip.spw', 'first_pass', '--write').code).toBe(0)
+    expect(readFileSync(plan, 'utf8').split('\n')[1]).toBe(` .[first_pass](${id}): "first"`)
+
+    const missing = spw(dir, 'land', 'demo', 'nowhere')
+    expect(missing.code).not.toBe(0)
+    expect(missing.out).toContain('no ~[nowhere] or .[nowhere] line in the commits block')
+  }, 30_000)
+})
+
+describe('the diff driver', () => {
+  it('makes git name the frame a change sits in and diff words without splitting marks or an em dash', () => {
+    const dir = repo()
+    writeFileSync(path.join(dir, '.gitattributes'), '*.spw diff=spw\n')
+    const body = ['#>anchor_one', '^["notes"]{', ' a: 1', ' b: 2', ' c: 3', ' d: 4', ' claim: "one claim — and its reason — on one line, with #>marks, %body[392] and a..b"', '}', ''].join('\n')
+    writeFileSync(path.join(dir, 'n.spw'), body)
+    run(dir, 'add', '-A')
+    run(dir, '-c', 'core.hooksPath=/dev/null', 'commit', '--quiet', '-m', 'notes')
+    writeFileSync(path.join(dir, 'n.spw'), body.replace('its reason', 'its cause').replace('a..b', 'a..c').replace('[392]', '[440]'))
+    const config = Object.entries(diffDriverConfig()).flatMap(([key, value]) => ['-c', `${key}=${value}`])
+    const diff = run(dir, ...config, 'diff', '--word-diff=porcelain')
+    expect(diff).toMatch(/^@@ [^@]+ @@ \^\["notes"\]\{$/m)
+    const changed = diff.split('\n').filter((line) => /^[-+][^-+]/.test(line))
+    expect(changed).toEqual(['-reason', '+cause', '-392', '+440', '-b', '+c'])
+    // Without the driver git names nothing and diffs whitespace-separated words.
+    const plain = run(dir, 'diff', '--word-diff=porcelain')
+    expect(plain).toMatch(/^@@ [^@]+ @@$/m)
+    expect(plain.split('\n').filter((line) => /^[-+][^-+]/.test(line))).toContain('-%body[392]')
   })
 })

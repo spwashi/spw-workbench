@@ -11,6 +11,7 @@
  */
 
 import path from 'node:path'
+import { detectVcs } from '@spwashi/spw-runtime/node'
 import { selectPathRefs, type SpwSelectorHit } from './spw-selector'
 import { ServerIndex } from './server-index'
 
@@ -153,11 +154,19 @@ async function getDocumentText(uri: string) {
 // Single integration point between legacy globals and typed handler clusters.
 // An LLM agent reading HandlerDeps knows every dependency available.
 
+/** The workspace's revision id forms, detected once per root from its files (spw-runtime workspace-vcs.ts). */
+let idForms: { root: string; forms: readonly ('git_sha1' | 'git_sha256' | 'jj_change')[] } | null = null
+function revisionIdForms() {
+  if (!idForms || idForms.root !== WORKSPACE_ROOT) idForms = { root: WORKSPACE_ROOT, forms: detectVcs(WORKSPACE_ROOT).idForms }
+  return idForms.forms
+}
+
 function getDeps(): HandlerDeps {
   return {
     serverIndex,
     config: CONFIG,
     workspaceRoot: WORKSPACE_ROOT,
+    revisionIdForms: revisionIdForms(),
     pathFromUri,
     uriFromPath,
     resolveReferencePath,

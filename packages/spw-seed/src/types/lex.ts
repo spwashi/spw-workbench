@@ -39,6 +39,8 @@ export interface LexOptions {
   profile?: LexProfile | string
   /** Lex plan-file tokens: commit refs `.[name](hash)`. Stream entries lex in every dialect. */
   planStream?: boolean
+  /** The id forms a landed commit ref may take (lexer/commit-ref.ts); git's SHA-1 form when omitted. */
+  commitRefForms?: readonly ('git_sha1' | 'git_sha256' | 'jj_change')[]
   /** Retained event detail; generation counts remain visible for cost accounting. */
   eventPolicy?: ParseEventPolicy
 }

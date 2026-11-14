@@ -17,52 +17,14 @@
 
 import { spawn, spawnSync } from 'node:child_process'
 import { randomBytes } from 'node:crypto'
-import { existsSync, promises as fs, statSync } from 'node:fs'
+import { promises as fs, statSync } from 'node:fs'
 import path from 'node:path'
 
 export const VCS_SCHEMA = 'spw.vcs/1' as const
 
-export type VcsKind = 'git' | 'jj' | 'none'
-
-export interface VcsInfo {
-  kind: VcsKind
-  /** The workspace root: the directory holding .git or .jj; null for none. */
-  root: string | null
-  /** jj with a .git beside it, so git commands see the same commits. */
-  colocated: boolean
-  /** What does not work here, in words. */
-  gaps: string[]
-}
-
-const JJ_GAPS_COLOCATED = [
-  'jj has no commit hooks: the commit gate (Touch ID, episode block) runs only when committing through git (open: jj_hooks)',
-]
-const JJ_GAPS_ALONE = [
-  ...JJ_GAPS_COLOCATED,
-  'no .git beside .jj: status, head and at() run git and are not available; a colocated workspace (jj git init --colocate) has them',
-]
-
-/** The version-control system holding a directory, found by walking up. */
-export function detectVcs(dir: string): VcsInfo {
-  let at = path.resolve(dir)
-  for (;;) {
-    const jj = isDirectory(path.join(at, '.jj'))
-    const git = existsSync(path.join(at, '.git'))
-    if (jj) return { kind: 'jj', root: at, colocated: git, gaps: git ? JJ_GAPS_COLOCATED : JJ_GAPS_ALONE }
-    if (git) return { kind: 'git', root: at, colocated: false, gaps: [] }
-    const up = path.dirname(at)
-    if (up === at) return { kind: 'none', root: null, colocated: false, gaps: ['no version control: nothing to read a revision from'] }
-    at = up
-  }
-}
-
-function isDirectory(p: string): boolean {
-  try {
-    return statSync(p).isDirectory()
-  } catch {
-    return false
-  }
-}
+// Detection is shared with the language server, which imports the same module (spw-runtime workspace-vcs.ts).
+export { detectVcs, type VcsInfo, type VcsKind, type WorkspaceIdForm } from '@spwashi/spw-runtime/node'
+import type { VcsInfo } from '@spwashi/spw-runtime/node'
 
 /** True when git commands can answer for this workspace. */
 export const gitReady = (vcs: VcsInfo): vcs is VcsInfo & { root: string } => vcs.root !== null && (vcs.kind === 'git' || vcs.colocated)
@@ -78,6 +40,11 @@ export function resolveRevision(root: string, rev: string): string {
   const run = spawnSync('git', ['rev-parse', '--verify', '--quiet', `${rev}^{commit}`], { cwd: root, encoding: 'utf8' })
   if (run.status !== 0) throw new Error(`${JSON.stringify(rev)} names no commit here`)
   return run.stdout.trim()
+}
+
+/** A commit's subject line. */
+export function commitSubject(root: string, rev: string): string {
+  return git(root, ['log', '-1', '--format=%s', resolveRevision(root, rev)]).trim()
 }
 
 export function head(root: string): { id: string; short: string; branch: string | null } {

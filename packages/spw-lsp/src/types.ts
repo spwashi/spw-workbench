@@ -253,6 +253,8 @@ export interface HandlerDeps {
     serverIndex: ServerIndex
     config: Required<SpwConfig>
     workspaceRoot: string
+    /** The forms a revision id takes in this workspace (git SHA-1 or SHA-256 hex, jj change ids), detected from its files. */
+    revisionIdForms?: readonly ('git_sha1' | 'git_sha256' | 'jj_change')[]
 
     // Path resolution
     pathFromUri(uri: string): string | null

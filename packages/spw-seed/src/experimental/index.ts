@@ -88,6 +88,8 @@ export type { GpuColumns, UniformField, UniformLayout } from './columns/gpu-pack
 export { GPU_PACK_SCHEMA, GPU_ROW_FIELDS, GPU_ROW_WORDS, WGSL_ROW, columnsToGpu, packUniforms, uniformLayout, wgslStruct } from './columns/gpu-pack'
 export type { NumberForm, NumberProblem } from './number-form'
 export { NUMBER_FORM_SCHEMA, isNumberForm, readNumberForm } from './number-form'
+export type { CommitLine } from './commit-lines'
+export { COMMIT_LINES_SCHEMA, landCommit, landedLineText, quoteSubject, readCommitLines } from './commit-lines'
 export { settingNumber } from './settings-line'
 /** Measures of rendered samples (power at a frequency, band share, RMS, onset, spectra), under one name. */
 export * as soundMeasures from './sound/measure'

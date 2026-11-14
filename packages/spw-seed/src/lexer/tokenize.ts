@@ -99,7 +99,7 @@ export function* tokenize(
 
   /** One token by the ordinary rules: a commit ref in plan files, then the matchers in order. */
   function* lexOne(): Generator<ParseEvent, void, void> {
-    const commitRef = options.planStream ? readCommitRef(state) : null
+    const commitRef = options.planStream ? readCommitRef(state, options.commitRefForms) : null
     if (commitRef) {
       yield* push(commitRef, 'commitRef')
       return

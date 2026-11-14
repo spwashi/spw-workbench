@@ -31,6 +31,7 @@
  */
 
 import type { DocumentParams, HandlerDeps } from '../types'
+import type { RevisionIdForm } from '@spwashi/spw-seed'
 import { COMMIT_REF_STRATEGY, allCommitRefsIn, type CommitRef } from './commit-ref-forms'
 
 // ── Token type / modifier indices ──────────────────────────────
@@ -118,7 +119,7 @@ export function semanticTokens(params: DocumentParams, deps: HandlerDeps): LspSe
     const text = doc?.text ?? null
     if (text === null) return { data: [] }
 
-    return { data: encodeTokens(roleTokens(text, doc?.filePath)) }
+    return { data: encodeTokens(roleTokens(text, doc?.filePath, deps.revisionIdForms)) }
 }
 
 /**
@@ -126,7 +127,7 @@ export function semanticTokens(params: DocumentParams, deps: HandlerDeps): LspSe
  * refs overlaid. Text in, tokens out, with no server state, so the parser
  * release ships the same roles the editor paints.
  */
-export function roleTokens(text: string, filePath?: string | null): AbsoluteToken[] {
+export function roleTokens(text: string, filePath?: string | null, idForms?: readonly RevisionIdForm[]): AbsoluteToken[] {
     const lines = text.split('\n')
     /** Tokens at absolute positions; commit refs overlay them before encoding. */
     const tokens: AbsoluteToken[] = []
@@ -478,7 +479,7 @@ export function roleTokens(text: string, filePath?: string | null): AbsoluteToke
         }
     }
 
-    return overlayCommitRefs(tokens, text, filePath ?? undefined)
+    return overlayCommitRefs(tokens, text, filePath ?? undefined, idForms)
 }
 
 // ── Commit refs and encoding ────────────────────────────────────
@@ -499,8 +500,8 @@ export interface AbsoluteToken {
  * a token the hash overlaps is cut around it, so what surrounds it keeps its
  * own role.
  */
-function overlayCommitRefs(tokens: AbsoluteToken[], text: string, filePath: string | undefined): AbsoluteToken[] {
-    const refs = allCommitRefsIn(text, filePath)
+function overlayCommitRefs(tokens: AbsoluteToken[], text: string, filePath: string | undefined, idForms?: readonly RevisionIdForm[]): AbsoluteToken[] {
+    const refs = allCommitRefsIn(text, filePath, idForms)
     if (refs.length === 0) return tokens
     const byLine = new Map<number, CommitRef[]>()
     for (const ref of refs) {

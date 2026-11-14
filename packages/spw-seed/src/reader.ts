@@ -8,6 +8,7 @@
  */
 
 export { lex } from './lexer/lex'
+export { DEFAULT_REVISION_ID_FORMS, REVISION_ID_FORMS, revisionIdForm, type RevisionIdForm } from './lexer/commit-ref'
 export { parse, parseExpression } from './parser'
 export { significantTokens } from './types/token'
 export { deixisTable } from './canonical/particles'

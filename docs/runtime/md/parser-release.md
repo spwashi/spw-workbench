@@ -26,6 +26,7 @@ npm run test:parser-release     # node:test: builds into temp dirs and checks th
 - `--release` is a calendar day written `YYYY.MM.DD`. A day is cut once.
 - `--pre` and `--patch` take the day from `--target` and number the cut among that day's cuts of the same kind. The same revision cut again keeps its number; any other revision takes the next one.
 - `--allow-dirty` builds from an uncommitted tree; the manifest and every stamp then say `"dirty": true`. Without it, a dirty tree is refused.
+- To cut from a checkout that holds other work, run the builder in a clean checkout of the commit: `npm run spw -- vcs at <sha> -- node --import tsx scripts/release/build-parser-release.ts --release YYYY.MM.DD --out {origin}/release/parser`. Workspace packages resolve inside the tree being built, and the builder refuses a source from outside it.
 - `--out` replaces the default `release/parser` root (gitignored).
 
 ## Layout
