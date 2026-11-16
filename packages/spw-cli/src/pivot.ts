@@ -23,8 +23,9 @@ export function printPivotHelp(): void {
         lines: [
           'Fragments: each name the line holds, with the marks before it, the marks after it, its walls ([ ] mode, { } body, ( ) scene, < > concept) and which side of a bond it sits on.',
           'Bonds: a mark joining two expressions (@ perspective, ~ potential, ^ ascension, & subject); a tight bond touches both sides, so both attachments are listed as open.',
-          'Pivots: a mark moved to the other side of its name, a mark turned to its neighbours in an order, the innermost wall turned, a bond turned, spaced or exchanged.',
-          'Each pivot is read back three ways: line (the line reader finds it where the pivot put it), parser (no error, no warning, no more statements than before), spoken (each moved mark is named). A pivot the line reader cannot read back is not read.',
+          'Fragments also carry marks written outside their walls: = in =(foo) sits before the walls, in (foo)= after them.',
+          'Pivots: a mark moved to the other side of its name or its walls, a mark turned to its neighbours in an order, the innermost wall turned (never into a pair already held), a bond turned, spaced or exchanged, or a tight bond written onto one side (attach).',
+          'Each pivot is read back three ways: line (the line reader reads it whole, finds it where the pivot put it, and loses no name), parser (no error, no warning, no more statements than before), spoken (each moved mark is said, as a mark or a bond, as often as before). A pivot the line reader cannot read back is not read.',
         ],
       },
       {
@@ -61,6 +62,8 @@ export async function runSpwPivotCli(args: string[]): Promise<void> {
     const around = [
       f.before.length ? `before: ${named(f.before)}` : '',
       f.after.length ? `after: ${named(f.after)}` : '',
+      f.outside.before.length ? `before the walls: ${named(f.outside.before)}` : '',
+      f.outside.after.length ? `after the walls: ${named(f.outside.after)}` : '',
       f.walls.length ? `walls: ${f.walls.map((w) => PIVOT_NAMES.walls[w]).join(' then ')}` : '',
       f.sides.length ? `side: ${f.sides.join(' then ')}` : '',
     ].filter(Boolean)

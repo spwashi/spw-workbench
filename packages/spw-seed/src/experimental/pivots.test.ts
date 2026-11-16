@@ -12,20 +12,26 @@ describe('fragments', () => {
   it('reads each name of =foo@(<bar>) with what surrounds it, and the bond between them with both attachments open', () => {
     const read = readFragments('=foo@(<bar>)')
     expect(read.fragments).toEqual([
-      { before: ['='], name: 'foo', after: [], walls: [], sides: ['left'], slot: 'word' },
-      { before: [], name: 'bar', after: [], walls: ['scene', 'concept'], sides: ['right'], slot: 'word' },
+      { before: ['='], name: 'foo', after: [], walls: [], outside: { before: [], after: [] }, sides: ['left'], slot: 'word' },
+      { before: [], name: 'bar', after: [], walls: ['scene', 'concept'], outside: { before: [], after: [] }, sides: ['right'], slot: 'word' },
     ])
     expect(read.bonds).toEqual([{ mark: '@', bond: 'perspective', spaced: false, sides: [], attaches: ['after_left', 'before_right'] }])
     // A spaced bond touches neither side, so it lists no attachment.
     expect(readFragments('=foo @ bar').bonds[0]!.attaches).toEqual([])
   })
 
-  it('reads the rooms a story consumer writes', () => {
-    expect(readFragments('=(oath_stone)@boof').fragments.map((f) => [f.name, f.walls, f.sides])).toEqual([
-      ['oath_stone', ['scene'], ['left']],
-      ['boof', [], ['right']],
+  it('reads the rooms a story consumer writes, with a mark outside the walls kept on the name they hold', () => {
+    expect(readFragments('=(oath_stone)@boof').fragments.map((f) => [f.name, f.walls, f.outside, f.sides])).toEqual([
+      ['oath_stone', ['scene'], { before: ['='], after: [] }, ['left']],
+      ['boof', [], { before: [], after: [] }, ['right']],
     ])
-    expect(readFragments('~<long_alley>@the_stranger').fragments.map((f) => f.name)).toEqual(['long_alley', 'the_stranger'])
+    // The line reader reads (oath_stone)= with the same word and slot; its spans tell the side.
+    expect(readFragments('(oath_stone)=').fragments[0]!.outside).toEqual({ before: [], after: ['='] })
+    expect(readFragments('~<long_alley>@the_stranger').fragments.map((f) => [f.name, f.outside.before])).toEqual([['long_alley', ['~']], ['the_stranger', []]])
+  })
+
+  it('reads each part of a body as its own fragment', () => {
+    expect(readFragments('$runway{months, team}').fragments.map((f) => [f.name, f.walls])).toEqual([['runway', []], ['months', ['body']], ['team', ['body']]])
   })
 })
 
@@ -37,6 +43,10 @@ describe('pivots', () => {
     expect(byKind('side').map((p) => p.line)).toEqual(['foo=@(<bar>)'])
     expect(byKind('mark').map((p) => p.line).sort()).toEqual(['*foo@(<bar>)', '@foo@(<bar>)'])
     expect(byKind('walls').map((p) => p.line)).toEqual(['=foo@([bar])'])
+    expect(byKind('attach').map((p) => [p.line, p.to.attaches, p.status])).toEqual([
+      ['=foo@ (<bar>)', 'after_left', 'read'],
+      ['=foo @(<bar>)', 'before_right', 'not_read'],
+    ])
     expect(byKind('bond').map((p) => p.line)).toEqual(['=foo~(<bar>)', '=foo^(<bar>)', '=foo&(<bar>)'])
     expect(byKind('spacing').map((p) => p.line)).toEqual(['=foo @ (<bar>)'])
     expect(byKind('exchange').map((p) => p.line)).toEqual(['(<bar>)@=foo'])
@@ -53,6 +63,26 @@ describe('pivots', () => {
     expect(side.read).toEqual({ line: true, parser: false, spoken: false })
     expect(side.from).toEqual({ before: ['='] })
     expect(side.to).toEqual({ after: ['='] })
+  })
+
+  it('moves and turns a mark outside the walls, and on a story consumer\'s line the postfix form reads in all three readers', () => {
+    const story = pivotsOf('=(oath_stone)@boof')
+    const side = story.find((p) => p.kind === 'side')!
+    expect(side.line).toBe('(oath_stone)=@boof')
+    expect(side.from).toEqual({ before: ['='], around: 'walls' })
+    expect(side.read).toEqual({ line: true, parser: true, spoken: true })
+    expect(story.filter((p) => p.kind === 'mark').map((p) => p.line).sort()).toEqual(['*(oath_stone)@boof', '@(oath_stone)@boof'])
+    // Back the other way.
+    expect(pivotsOf('(oath_stone)=@boof').find((p) => p.kind === 'side')!.line).toBe('=(oath_stone)@boof')
+  })
+
+  it('loses no name: a wall never turns into a pair its reading already holds', () => {
+    expect(pivotsOf('!hold[x]{y}(z)<w>').filter((p) => p.kind === 'walls')).toEqual([])
+    expect(pivotsOf('kept~[pace]{quiet}').filter((p) => p.kind === 'walls').map((p) => p.line)).toEqual(['kept~{quiet}<pace>', 'kept~[pace]<quiet>'])
+    const names = (line: string) => readFragments(line).fragments.map((f) => f.name).sort()
+    for (const line of ['!hold[x]{y}(z)<w>', 'kept~[pace]{quiet}', '$runway{months, team}', '=(oath_stone)@boof', '=foo@(<bar>)']) {
+      for (const p of pivotsOf(line).filter((q) => q.status === 'read')) expect(names(p.line), p.line).toEqual(names(line))
+    }
   })
 
   it('turns marks along the order a host supplies, and offers none for a mark outside it', () => {
@@ -73,9 +103,17 @@ describe('pivots', () => {
     expect(PIVOT_NAMES.marks['=']).toBe('configuration')
     expect(PIVOT_NAMES.walls.concept).toBe('concept')
     expect(PIVOT_NAMES.bonds['@']).toBe('perspective')
-    // A host's own word for a mark changes what the spoken read-back looks for, never the pivots offered.
-    const named = pivotsOf('=foo@(<bar>)', {}, { ...PIVOT_NAMES, marks: { ...PIVOT_NAMES.marks, '~': 'deferral' } })
-    expect(named.map((p) => p.line)).toEqual(pivots.map((p) => p.line))
+    // A host's own words change nothing the readers find: the spoken reader is asked in the same words.
+    const named = pivotsOf('=foo@(<bar>)', {}, { ...PIVOT_NAMES, marks: { ...PIVOT_NAMES.marks, '=': 'setting', '@': 'view' }, bonds: { ...PIVOT_NAMES.bonds, '~': 'deferral' } })
+    expect(named.map((p) => [p.line, p.read])).toEqual(pivots.map((p) => [p.line, p.read]))
+  })
+
+  it('counts a turned mark in the spoken read-back as a mark, not as the bond beside it', () => {
+    // @foo@(<bar>) says perspective twice, once as a mark and once as a bond; the turn is read back only when the mark is said.
+    const turned = pivots.find((p) => p.line === '@foo@(<bar>)')!
+    expect(turned.read.spoken).toBe(true)
+    const side = byKind('side')[0]!
+    expect(side.read.spoken).toBe(false)
   })
 
   it('never throws and never returns the line it was given, over lines of every slot and bond', () => {
