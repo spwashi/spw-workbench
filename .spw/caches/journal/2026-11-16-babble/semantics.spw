@@ -1,0 +1,706 @@
+# Babble semantics (2026-11-16)
+#
+# The semantics lens on the babble seed: what forms mean, which forms have no reading yet, and what a line needs in order to compute.
+# Every Spw line here was run through babble/probe.mts in the workbench at cf41ca22. Readings are options for the owner; nothing here is decided.
+# A probe row is written: the line -- parser errors/warnings/statements -- the line reader -- said: the spoken reader's text. Timings are left out.
+
+#>babble_semantics_2026_11_16
+#:journal #!babble
+#:layer #!semantics
+
+^"found"{
+ measured_at: "Workbench cf41ca22, 2026-11-16, default dialect; the seed measured at f0bba2d3."
+ rerun: "Seed rows run again here: separators, action_potential, trailing, loop_label, crossing, nest, word_joins and three lines of pivots_foo. Two are corrected and one card row is narrowed, under broken."
+ join_rule: "!~ba is a join because the line reader takes any text as a join's left side, a bare mark included."
+ join_extent: "Of the 144 prefix pairs before a name, the 48 whose second mark is ^ ~ @ or & read as a bond with a nameless left side, 95 as two marks, and 1 (#!) as one fused name."
+ lost_mark: "In those 48 the first mark sits in no fragment: !~ba has one fragment, ba, with no mark on it, so no pivot can turn the !."
+ postfix_unheard: "No reader names a mark glued after a name; the spoken reader keeps it inside the word and counts nothing unread, so ba!! passes as read."
+ postfix_forward: "A mark after walls is named only as a new reading beside, and before a spaced word it is said as that word's prefix."
+ one_level_of_time: "The line reader knows four separators (; then , then ~> then a tight dot) and splits a body once, by the first that occurs; a list inside a sequence is not read."
+ flat_in_the_tree: "The parser keeps the same body as one flat run with its separators in order, so neither reader nests one kind of time inside another."
+ bar_is_read: "The bar is read below the line reader: the lexer makes | a connector, the parser chains it inside one expression, and the runtime returns the first side that holds."
+ lanes_by_grammar: "|| is the grammar's parallel separator beside ; and is named so in two theory surfaces, but not by value: the runtime gives ||, ;, a comma and a gap the same result."
+ crossing_is_said: "A crossing does not break the spoken reader; the wall kind does: two crossed body pairs are said whole, each end named, in the order they end."
+ streams_need_not_cross: "Two streams fit on one line with no crossing, and a crossing merges them where they cross: the crossed words sit in both spans."
+ underscore_not_hump: "Of 150,953 names in this repo's 1,316 tracked .spw surfaces, 17.9% join by an underscore and 0.4% by a capital alone."
+ kernel_count: "Of six kernel constructs, sequence and a way to refer back read in every reader; choice reads in the parser and the runtime only; binding and reference compute only in the quantity sheet; application and loop have no form that computes."
+ said_alike: "_node, node_ and node are each said node, and ^_A and ^A are both said ascension A: the underscore that would mark a label or a way back is not heard."
+}
+
+^"threads"{
+ separators: .{
+  comma: "day{wake, eat, sleep} -- parser 0/0/1 -- line whole, separator , parts 3 -- said: day, definition, list of 3: wake, eat, sleep"
+  semicolon: "day{wake; eat; sleep} -- parser 0/0/1 -- line whole, separator ; parts 3 -- said: day, definition, sequence of 3: wake, eat, sleep"
+  tight_dot: "day{wake.eat.sleep} -- parser 0/0/1 -- line whole, separator . parts 3 -- said: day, definition, tight of 3: wake, eat, sleep"
+  movement: "day{wake ~> eat ~> sleep} -- parser 0/0/1 -- line whole, separator ~> parts 3 -- said: day, definition, movement of 3: wake, eat, sleep"
+  loose_dot: "day{wake. eat. sleep} -- parser 0/0/1 -- line whole, no separator, parts 1 -- said: day, definition, wake., eat., sleep"
+  loose_dot_tree: "The parser's tree for that body is wake, then one ground mark with eat and sleep as its modifiers: two dots written, one in the tree."
+  gap: "day{wake eat sleep} -- parser 0/0/1 -- line whole, no separator, parts 1 -- said: day, definition, wake, eat, sleep"
+  gap_tree: "The parser's body there holds three expressions with nothing recorded between them; the line reader's one part is wake."
+  bar: "day{wake | eat | sleep} -- parser 0/0/1 -- line whole, no separator, parts 1 -- said: day, definition, wake, unread |, eat, unread |, sleep [unread 2]"
+  bar_alone: "wake | eat -- parser 0/0/1 -- line rest ' | eat' -- said: wake, unread |, eat [unread 1]"
+  bar_tree: "The tree for wake | eat is one expression of two terms chained by a | connector."
+  double_bar: "day{wake || eat || sleep} -- parser 0/0/1 -- line whole, no separator, parts 1 -- said: day, definition, wake, unread ||, eat, unread ||, sleep [unread 4]"
+  double_bar_alone: "wake || eat -- parser 0/0/2 -- line rest ' || eat' -- said: wake, unread ||, eat [unread 2]"
+  double_bar_tree: "The tree for wake || eat is two sibling expressions with || recorded as their separator, as ; is."
+  stream: "<< wake || eat ; sleep >> -- parser 0/0/1 -- line rest, the whole line -- said: unread <<, wake, unread ||, eat, unread ;, sleep, unread >> [unread 7]"
+  stream_tree: "The tree for that stream is three steps with separators || then ;."
+  mixed: "day{wake; eat, nap; sleep} -- parser 0/0/1 -- line whole, separator ; parts 3 -- said: day, definition, sequence of 3: wake, eat,, nap, sleep"
+  mixed_other_way: "day{wake, eat; sleep} -- parser 0/0/1 -- line whole, separator ; parts 2 -- said: day, definition, sequence of 2: wake,, eat, sleep"
+  mixed_tree: "The parser's tree for day{wake, eat; sleep} is one flat run of three with separators , then ;."
+  matrix: "m{ 1 0 0; 0 1 0; 0 0 1 } -- parser 0/0/1 -- line whole, separator ; parts 3 -- said: m, definition, sequence of 3: 1, 0, 0, 0, 1, 0, 0, 0, 1"
+  matrix_heard: "The matrix's rows are counted and then not heard: one joiner sits between all nine."
+  top_level: "a, b, c -- parser 0/0/3 -- line rest ' b, c' -- said: a,, b,, c"
+  top_level_rule: "The line reader reads separators inside a body only."
+  mode: "day[wake, eat, sleep] -- parser 0/0/1 -- line whole, parts 0 -- said: day, mode, list of 3: wake, eat, sleep"
+  mode_rule: "The spoken reader cuts a mode or a scene itself, by ; , and ~> and never by a tight dot; the line reader gives parts for a body only."
+  runtime_in_a_body: [
+   "{ a; b; c } -- parser 0/0/1 -- line whole, separator ; parts 3 -- said: definition, sequence of 3: a, b, c -- runSpw value c",
+   "{ a, b, c } -- parser 0/0/1 -- line whole, separator , parts 3 -- said: definition, list of 3: a, b, c -- runSpw value c",
+   "{ a || b } -- parser 0/0/1 -- line whole, parts 1 -- said: definition, a, unread ||, b [unread 2] -- runSpw value b",
+   "{ a | b } -- parser 0/0/1 -- line whole, parts 1 -- said: definition, a, unread |, b [unread 1] -- runSpw value a"
+  ]
+  runtime_at_top: [
+   "a || b -- parser 0/0/2 -- line rest ' || b' -- said: a, unread ||, b [unread 2] -- runSpw value a and b",
+   "a ; b -- parser 0/0/2 -- line rest ' ; b' -- said: a, unread ;, b [unread 1] -- runSpw value a and b",
+   "a b -- parser 0/0/2 -- line rest ' b' -- said: a, b -- runSpw value a and b",
+   "a | b -- parser 0/0/1 -- line rest ' | b' -- said: a, unread |, b [unread 1] -- runSpw value a"
+  ]
+  runtime_rule: "The runtime gives the bar a value of its own and gives ||, ;, a comma and a gap one result: the last in a body, all of them at the top."
+  beside: "The spoken reader's table names a gap beside, and no line is ever said with it: only a named separator is announced."
+  readings_time: [
+   "clock, as the babble has it: a comma is lanes, a semicolon a strip, a gap an overlap",
+   "schedule pair, as the grammar has it: ; is a strip and || is lanes, a comma is company whose order says nothing, and the gap stays its own question",
+   "axis: each looser separator is one more dimension, a gap inside a comma inside a semicolon, which needs the nesting neither reader does today",
+   "layout only: a separator is how a host lays a body out and says nothing about time"
+  ]
+  readings_bar: [
+   "choice: the first side that holds, which the runtime does today",
+   "partition: the answers a question chooses among",
+   "pipe: the left flows into the right",
+   "fork: both sides go on apart, which || says in the grammar and no evaluator carries out"
+  ]
+  prior: [
+   "wonder_trial_gap holds the gap with five readings, the axis among them",
+   "wonder_trial_gap also records factshift.center's layout by separator: a comma a ring, a semicolon a row, a dot a tight chain, ~> a rising path",
+   "wonder_trial_pipe holds the bar with three readings",
+   "wonder_trial_dot holds the tight dot",
+   "line-kit's agreement law names three known partings: the dot, the gap, a bare mark before a body",
+   "mutation-flow-automata cont_schedule and flow-protocol-sigils name ; sequential and || parallel",
+   "act-chains units call | the mark that offers an alternative",
+   "journal 2026-11-14 says scheduled is already the separators ; and ||"
+  ]
+  new: [
+   "The line reader's separators are four, and the seed's dot row covers only the loose dot.",
+   "Time has one level in both readers: mixed separators are split once or kept flat, never nested.",
+   "The bar, the double bar, a mixed body and a top-level list are partings between the parser and the line reader outside the three the agreement law names.",
+   "The runtime tells | from every separator and tells no separator from another."
+  ]
+ }
+
+ loops: .{
+  label_back_edge: "loop{_A ~again ^_A }_A -- parser 0/0/2 -- line rest '_A' -- said: loop, definition, labeled A, potential again, ascension A; end A"
+  label_back_edge_tree: "The parser reads ^_A there as an ascension operation whose label is _A, and the close label as a loose second statement."
+  label_back_edge_scan: "The pair-label scan finds one pair on that line; no reader ties ^_A to the label on the brace."
+  name_back_edge: "loop{ ~again @loop } -- parser 0/0/1 -- line whole, parts 1 -- said: loop, definition, potential again, perspective loop"
+  name_back_edge_tree: "The parser's tree holds a Reference to loop inside loop's own body; no reader resolves it to the body it sits in, and through runSpw the value is loop and nothing repeats."
+  nest: "day{wake{eat{sleep{day}}}} -- parser 0/0/1 -- line whole, parts 1 -- said: day, definition, wake, definition, eat, definition, sleep, definition, day; end eat; end wake; end day"
+  nest_read: "The inner day is a plain word in every reader, and sleep's end is not said because its body held no pair."
+  tail_reference: "day{wake; eat; @day} -- parser 0/0/1 -- line whole, separator ; parts 3 -- said: day, definition, sequence of 3: wake, eat, perspective day"
+  path_that_returns: "day{wake ~> eat ~> sleep ~> wake} -- parser 0/0/1 -- line whole, separator ~> parts 4 -- said: day, definition, movement of 4: wake, eat, sleep, wake"
+  path_read: "No reader notes that the path returns to its first station."
+  modulus_glued: "chapter%13 -- parser 0/0/3 -- line whole, one word -- said: chapter%13"
+  modulus_glued_tree: "The parser's three statements are chapter, a bare measure mark, and 13."
+  modulus_in_mode: "chapter[%13] -- parser 0/0/1 -- line whole -- said: chapter, mode measure 13"
+  measure_first: "%chapter[13] -- parser 0/0/1 -- line whole -- said: measure chapter, mode 13"
+  range: "step[i=1..13]{ ~again } -- parser 0/0/1 -- line whole, parts 1 -- said: step, mode i=1..13, definition, potential again"
+  range_tree: "The parser's mode there holds three parameters: i, a bare =, and 1..13."
+  nested_frames: "sum[i=1..n]{ x_i } -- parser 0/0/1 -- line whole, parts 1 -- said: sum, mode i=1..n, definition, x i"
+  n_range: "((1..13)) -- parser 0/0/1 -- line rest, the whole line -- said: unread ((1..13)) [unread 9]"
+  sheet_refuses: "^day{ %n[@n+1] } -- parser 0/0/1 -- line whole, parts 1 -- said: ascension day, definition, measure n, mode perspective n+1; end day"
+  sheet_refuses_result: "The quantity sheet reports a cycle on n and gives no value."
+  sheet_modulus: "^day{ %chapter[14] %turn[@chapter%13] } -- parser 0/0/1 -- line whole, parts 1 -- said: ascension day, definition, measure chapter, mode 14, measure turn, mode perspective chapter%13; end day"
+  sheet_modulus_result: "The sheet gives chapter 14 and a syntax problem on turn."
+  not_a_loop_surface: "docs/theory/spw/looper-architecture.spw is about the shader's render loop as a gain chain and holds no loop form."
+  loop_in_code: "packages/spw-seed/src/math/loop.ts holds fixed point, range fold and orbit as TypeScript probes with no written Spw form."
+  readings: [
+   "back-edge by label: ^_A inside {_A … }_A returns to the open",
+   "back-edge by name: @loop inside loop{ … } is the loop, since the parser already holds that reference",
+   "recursion as a nest that meets its own name",
+   "fold: no loop at all, only a walk over a finite set or a range, so every program ends",
+   "clock: a measure after a name counts beats, and the modulus is the mode it counts in",
+   "a path that returns: a movement whose last station is its first"
+  ]
+  prior: [
+   "wonder_trial_evaluation_core holds recursion through names, and iteration only by folding a finite set",
+   "wonder_trial_until asks where a line says when it ends",
+   "wonder_trial_operator_label holds ^_name as a marked label",
+   "wonder_trial_math_scope holds nested frames such as the sum row above",
+   "act-chains asks what a mark acting twice means, with iteration as one reading",
+   "act-chains gives % the effect of a read that counts, sampled each beat",
+   "journal 2026-11-14 says the sheet is acyclic by design"
+  ]
+  new: [
+   "The label back-edge collides with a card: ^_A is a label being given under wonder_trial_operator_label and a label being referred to under the babble, and the parser takes the first.",
+   "The name back-edge is the only one with a reference in the tree today, and that reference is unresolved.",
+   "The glued modulus is three statements; inside a mode it reads in every reader.",
+   "The quantity reader already takes a percent sign after a number as a percent of a length, and the sheet marks each term with %, so a modulus there would need another spelling."
+  ]
+ }
+
+ crossing: .{
+  mixed_kinds: "{_A [_B }_A ]_B -- parser 0/1/prose -- line rest, the whole line -- said: unread {_A, mode B, } A, B [unread 3]"
+  mixed_kinds_scan: "The scan finds two pairs and one crossing on that line."
+  same_kind: "{_A {_B x }_A }_B -- parser 0/0/2 -- line rest '_B' -- said: definition, labeled A, definition, labeled B, x; end A; end B"
+  same_kind_scan: "Nothing is unread there, and the scan finds the same one crossing."
+  nested: "{_A {_B x }_B }_A -- parser 0/0/2 -- line rest '_A' -- said: definition, labeled A, definition, labeled B, x; end B; end A"
+  nested_heard: "Crossed and nested differ in speech only by the order of the ends."
+  disjoint: "{_A a }_A {_B b }_B -- parser 0/0/3 -- line rest '_A {_B b }_B' -- said: definition, labeled A, a; end A, definition, labeled B, b; end B"
+  interleaved: "{_A la }_A {_B tum }_B {_A la }_A {_B tum }_B -- parser 0/0/5 -- line rest after the first pair -- said: definition, labeled A, la; end A, definition, labeled B, tum; end B, definition, labeled A, la; end A, definition, labeled B, tum; end B"
+  interleaved_scan: "The scan finds four pairs and no crossing there, each word under its own label."
+  shared_stretch: "{_A la {_B tum la }_A tum }_B -- parser 0/0/2 -- line rest '_B' -- said: definition, labeled A, la, definition, labeled B, tum, la; end A, tum; end B"
+  shared_stretch_scan: "The scan finds one crossing there and puts the middle tum and la under A and B both."
+  two_bodies: "voice{la; la} || drum{tum; tum} -- parser 0/0/2 -- line rest ' || drum{tum; tum}' -- said: voice, definition, sequence of 2: la, la; unread ||, drum, definition, sequence of 2: tum, tum [unread 2]"
+  mode_label: "[_B b ]_B -- parser 0/0/2 -- line rest '_B' -- said: mode B, b, B"
+  mode_label_heard: "A label on a mode is said as a word, not as a label; only body pairs are labeled in speech."
+  mirrored: "{_A a A_} -- parser 0/0/1 -- line whole, parts 1 -- said: definition, labeled A, a; end A"
+  mirrored_read: "With the mirrored close the parser reads one statement and the line reader reads the line whole; with the repeated close it reads two and leaves the label as rest."
+  overlap_in_code: "Overlap is allowed in one place in code: the pair-label scan, where a label makes a class and classes do not see each other."
+  overlap_on_record: "It is recorded as the owner's reading in the pair-label plan's stream, taken from the site consumer's plans."
+  overlap_not_elsewhere: "Desugar only writes a label onto an empty body, and operational-topography only asks whether the tree's label fields should be set; neither allows overlap."
+  readings_crossing: [
+   "shared stretch: the crossed words belong to both spans, a chord",
+   "handover: one span ends inside the next, a relay",
+   "two axes read at once, each label a dimension",
+   "damage: a tree holds only what nests, so a crossing is something to repair"
+  ]
+  readings_two_streams: [
+   "schedule: two bodies with || between them",
+   "voices by label: one label per stream, reopened for each event",
+   "crossing spans",
+   "two lines under one framing line"
+  ]
+  prior: [
+   "wonder_trial_pair_label holds the span reading and the crossed form",
+   "wonder_trial_inside holds coverage and dimension, and says no corpus writes an overlap",
+   "wonder_trial_permeability holds the label reading",
+   "wonder_trial_said holds how a labeled body is said",
+   "the pair-label plan holds half labels and labeled capsules as open questions"
+  ]
+  new: [
+   "The spoken reader's break is by wall kind, not by crossing.",
+   "A crossing cannot keep two streams' events apart, since the crossed words are under both labels.",
+   "Interleaving two streams needs no crossing.",
+   "The overlap the babble offers to the gap already has a written form in crossed labels."
+  ]
+ }
+
+ word_joins: .{
+  underscore: "node_count -- parser 0/0/1 -- line whole -- said: node count"
+  hump: "nodeCount -- parser 0/0/1 -- line whole -- said: nodeCount"
+  hyphen: "node-count -- parser 0/0/1 -- line whole -- said: node-count"
+  hyphen_rule: "The lexer keeps a hyphen inside a name, so there is no minus sign."
+  dot: "node.count -- parser 0/0/1 -- line whole -- said: node.count"
+  dot_rule: "Alone a dotted name is one word; inside a body the line reader makes it two parts."
+  bond: "node~count -- parser 0/0/2 -- line whole, bond ~ tight -- said: node, potential, count"
+  bond_rule: "node^count, node&count and node@count read the same way, as ascension, subject and perspective."
+  other_marks: "node!count -- parser 0/0/2 -- line whole -- said: node!count"
+  other_marks_rule: "node=count and node*count read the same way: a mark that is not one of the four joins stays a letter of the word."
+  relations: [
+   "node/count -- parser 0/0/1 -- line whole -- said: node/count -- the parser's tree is a projection chain",
+   "node:count -- parser 0/0/1 -- line whole -- said: node:count -- the parser's tree is a binding",
+   "node|count -- parser 0/0/1 -- line whole -- said: node|count -- the parser's tree is an alternative chain"
+  ]
+  edges: [
+   "_node -- parser 0/0/1 -- line whole -- said: node",
+   "node_ -- parser 0/0/1 -- line whole -- said: node"
+  ]
+  spw_names: "By lexer token over 1,316 tracked .spw surfaces here: 150,953 names; 77.9% have no join, 17.9% an underscore, 2.4% more than one kind, 1.2% a dot, 0.4% a capital hump alone (566 tokens), 0.3% a hyphen."
+  code_names: "Of 123 capital-hump compounds declared in seven seed sources: about 60 are noun on noun (SlotReading, BraceEdge, labelEnd), 34 lead with a verb or a predicate word (readLine, sayWord, isBrace, sameMarks), 24 end in a preposition (tokensOf, pairAt, pivotsOf), 5 lead with a selector (innerStart, maxDepth)."
+  code_lattice: "Of those 123, 14 have three or more humps and 56 sit in a first-hump cluster and a last-hump cluster both."
+  counterexamples: [
+   "readLine and sayWord: the kind of thing is on the left",
+   "tokensOf and pairAt: the right hump is a relation waiting for something outside the word",
+   "atLineStart: the preposition leads, and three humps need a grouping",
+   "PairLabelScan: a pair-label scan, or a pair's label scan",
+   "maxDepth: the left hump selects; it is not a topic"
+  ]
+  readings_sides: [
+   "head right: the left hump says about what, the right what kind, which holds for the noun-on-noun half",
+   "act left: in a verb-led name the left hump acts and the right is what it acts on, which is the arms reading itself and puts the kind on the left",
+   "open right: a preposition tail is an arm left open, as a trailing mark is",
+   "no sides: humps are a clustering key a host keeps and say nothing"
+  ]
+  readings_naming: [
+   "a capital is spelling and is never said",
+   "a hump is said as a gap, as an underscore is, so nodeCount and node_count are said alike",
+   "humps are spans in the reading for a host to cluster, never said",
+   "every join in a word has a name of its own: gap, hump, hyphen, seam"
+  ]
+  prior: [
+   "wonder_trial_underscore counts the joiner inside a word at about a fifth of all words and says any reading has to leave it alone",
+   "wonder_trial_dot holds the seam",
+   "wonder_trial_said holds kept place against kept_place",
+   "the spoken reader takes a host's word function, the one seat where a hump could be said"
+  ]
+  new: [
+   "The share of each join in .spw names, with the capital alone at 0.4%.",
+   "Three classes of code name where head right fails.",
+   "Lattice, not tree, holds in code names: 56 of 123 sit in both clusters.",
+   "A leading or trailing underscore is dropped in speech."
+  ]
+ }
+
+ join_or_mark: .{
+  join: "!~ba -- parser 0/0/2 -- line whole, bond ~ tight -- said: action potential, ba"
+  mark: "~!ba -- parser 0/0/2 -- line whole, no bond -- said: potential action ba"
+  trace_join: "The line reader's join is the last of ~ ^ & @ outside every pair that has text on both sides and the same spacing on both; any text counts, so the lone ! is a left side."
+  trace_said: "A bond is said between its sides: the left side's mark, the bond's name, the right side's word."
+  trace_phrase: "The words action potential come from how clauses are joined: a mark clause is followed by a space and a bond clause by a comma."
+  trace_mark: "In ~!ba the ! is not a join mark and the ~ has nothing before it, so the line is one word whose two leading marks are said in turn."
+  table: [
+   "prefix pairs XYba, 144: 48 a join (every pair whose second mark is ^ ~ @ or &), 95 two marks, 1 one name",
+   "postfix pairs baXY, 144: 48 a join (first mark ^ ~ @ or &), 96 said as one unbroken word",
+   "between two names aXYb, 144: 79 a join, 65 unbroken",
+   "around a name XbaY, 144: every one says the leading mark and keeps the trailing one in the word"
+  ]
+  more_rows: [
+   "@~ba -- parser 0/0/2 -- line whole, bond ~ tight -- said: perspective potential, ba",
+   "~@ba -- parser 0/0/2 -- line whole, bond @ tight -- said: potential perspective, ba",
+   "!!ba -- parser 0/0/2 -- line whole -- said: action action ba",
+   "~~again -- parser 0/0/2 -- line whole, bond ~ tight -- said: potential potential, again"
+  ]
+  fused: [
+   "#!ba -- parser 0/0/1 -- line whole -- said: focus ba",
+   "!#ba -- parser 0/0/2 -- line whole -- said: action vibration ba"
+  ]
+  fused_rule: "The spoken reader's mark table holds four two-character names (anchor, lens, focus, coupling), so one pair in 144 is said as one name."
+  coupling: "a<>b -- parser 0/0/2 -- line rest '<>b' -- said: a, unread <>b [unread 3]"
+  against_theory: [
+   "act-chains reads XYname as a prefix chain that touches the operand on its right and nothing on its left",
+   "it takes an operand to be a name or a bound, so a lone ! is not one",
+   "it binds the nearest mark first, so !~x is ! over ~ over x",
+   "it asks that every mark written appear on the side it was written",
+   "the line reader's join meets none of these for the 48 pairs"
+  ]
+  runtime: "!~x -- parser 0/0/2 -- line whole, bond ~ tight -- said: action potential, x -- through runSpw it comes back as nothing and a deferred wrapper, as wonder_trial_prime_actualize records"
+  readings: [
+   "chain: two acts on ba, nearest first, act now on what was primed",
+   "bond with an empty side: the ! stands alone and potential ties it to ba, which is today's reading",
+   "a join needs an operand on each side, so a bare mark is never a side",
+   "by dialect: whether a run before a name chains or joins is a setting"
+  ]
+  prior: [
+   "wonder_trial_prime_actualize records that the parser reads !~x as two operations and readLine as a compound",
+   "wonder_trial_joins holds bond against operator",
+   "act-chains holds the units, the structure laws and the pairs",
+   "line-kit asks whether a product records the stack it was read under"
+  ]
+  new: [
+   "The rule's extent and its cause: the second mark alone decides, in a third of all prefix pairs.",
+   "The first mark of such a pair belongs to no fragment.",
+   "The phrase action potential is made by clause spacing, and 47 other pairs are made the same way.",
+   "The fused name for #! stands beside the never-one rule in the one reader a listener hears."
+  ]
+ }
+
+ trailing: .{
+  after_name: "ba! -- parser 0/0/2 -- line whole, the mark inside the word -- said: ba!"
+  after_name_pivot: "The pivot reader's fragment for ba! is ba with ! after it: the one reader that hears a mark after a name."
+  doubled: "ba!! -- parser 0/0/3 -- line whole -- said: ba!!, with nothing counted unread"
+  both_sides: "?ba? -- parser 0/0/1 -- line whole -- said: wonder ba?"
+  setting: "foo= -- parser 0/0/2 -- line whole -- said: foo="
+  lone_scene: "(ba)! -- parser 0/0/2 -- line whole -- said: scene ba, action"
+  lone_concept: "<ba>! -- parser 0/0/2 -- line whole -- said: concept ba, action"
+  lone_scene_pivot: "For both the pivot reader's fragment is ba inside its wall with ! outside after it."
+  lone_mode: "[ba]! -- parser 0/0/2 -- line rest '!' -- said: mode ba, action"
+  lone_body: "{ba}! -- parser 0/0/2 -- line rest '!' -- said: definition, ba; action"
+  lone_mode_pivot: "For both the pivot reader sees no mark."
+  after_word_walls: [
+   "day{wake}! -- parser 0/0/2 -- line rest '!' -- said: day, definition, wake; action",
+   "day[warm]! -- parser 0/0/2 -- line rest '!' -- said: day, mode warm, action",
+   "day(home)! -- parser 0/0/2 -- line rest '!' -- said: day, scene home, action",
+   "day<food>! -- parser 0/0/1 -- line rest '!' -- said: day, concept food, action"
+  ]
+  after_concept_tree: "The parser reads day<food>! as one relation from day through food to a bare !."
+  before_a_word: "ba! next -- parser 0/0/2 -- line rest ' next' -- said: ba!, next"
+  before_a_word_tree: "The parser gives next to the ! as its modifier."
+  forward_in_speech: "day{wake}! next -- parser 0/0/2 -- line rest '! next' -- said: day, definition, wake; action next"
+  forward_heard: "The mark written after the body is said as the next word's prefix."
+  in_a_body: "day{wake!, eat} -- parser 0/0/1 -- line whole, separator , parts 2 -- said: day, definition, list of 2: wake!, eat"
+  join_tail: "data~! -- parser 0/0/3 -- line whole, bond ~ tight -- said: data, potential, action"
+  join_tail_rule: "A trailing run that starts with a join mark is read as a bond whose right side has no name."
+  after_scene_bond: [
+   "(oath_stone)=@boof -- parser 0/0/2 -- line whole, bond @ tight -- said: scene oath stone, configuration perspective, boof",
+   "(oath_stone)= -- parser 0/0/2 -- line whole -- said: scene oath stone, configuration",
+   "[oath_stone]= -- parser 0/0/2 -- line rest '=' -- said: mode oath stone, configuration",
+   "home(oath_stone)= -- parser 0/0/2 -- line rest '=' -- said: home, scene oath stone, configuration"
+  ]
+  readings: [
+   "consequence: a mark after a name acts on what the name yields",
+   "source: a trailing mark says who holds or witnessed the clause",
+   "glue: a space ends the chain, so the mark stays on the name it touches",
+   "forward: a bare mark takes the next spaced word, which the parser does today",
+   "prose: a ? or ! after a word is punctuation and stays text"
+  ]
+  prior: [
+   "wonder_trial_observer_postfix holds the readings",
+   "its 2026-11-16 row says a mark after walls reads in all three readers while one glued after a name does not",
+   "act-chains holds the glue law and the modifier finding",
+   "line-items says exist? and door~ are postfix and stay prose",
+   "operators.spw lists x! as a proposed postfix",
+   "journal 2026-11-14 holds the postfix rows per host, spw.quest's act panel among them"
+  ]
+  new: [
+   "The card's row is narrower than written: a mark after walls reads in the line reader only after a lone scene or concept.",
+   "The spoken reader counts a trailing mark as read, so its share of lines with nothing unread includes them.",
+   "Before a spaced word the mark changes sides in speech.",
+   "The pivot reader offers a side pivot whose result the spoken reader cannot say."
+  ]
+ }
+
+ evaluation: .{
+  claim: "The babble says a step of evaluation is a line one nuance from the last, a pivot the evaluator picks."
+  pivot_law: "The pivot reader holds a pivot to a law: the line reader finds every name the line held."
+  pivot_kinds: "Its seven kinds change a mark's side, a mark, a wall, a bond, a spacing, the order of a bond's sides, or where a tight mark attaches."
+  prime_to_act: "~ba -- parser 0/0/1 -- line whole -- said: potential ba -- its three pivots are ba~, ?ba and ^ba"
+  prime_to_act_dial: "!ba is not among them: on the default order of marks ~ sits between ^ and ?, so primed to actualized is two turns."
+  ask_to_value: "?ba -- parser 0/0/1 -- line whole -- said: wonder ba -- its three pivots are ba?, *ba and ~ba, so asked to valued is one turn"
+  no_substitution: "%height[@side*2] -- parser 0/0/1 -- line whole -- said: measure height, mode perspective side*2 -- its seven pivots move or turn a mark or turn the wall"
+  no_substitution_read: "No pivot puts a value where @side stands; the sheet computes 3 beside the line and the line does not change."
+  what_fits: "A change of one name's state is a turn of its mark."
+  what_does_not: "Putting a value for a reference, taking one side of a choice and dropping the done head of a sequence each lose a name, which the pivot law forbids."
+  readings: [
+   "two families: a pivot keeps every name, and a yield is a step that may lose one",
+   "the dial is the evaluator: a host passes an order of marks in which each state's next state is its neighbour",
+   "beside the line: the line never changes and values are notes on it, as the sheet works today",
+   "receipt: each step is written afterward as a line of its own"
+  ]
+  prior: [
+   "wonder_trial_turn holds pivot, cast, constraint and receipt as readings of one move",
+   "wonder_trial_prime_actualize holds primed and actualized as marks, states or aspects",
+   "wonder_trial_evaluation_core and wonder_trial_reference_position hold the model and the read",
+   "line-kit holds pivots as a planned product"
+  ]
+  new: [
+   "The pivot law and reduction are at odds, so evaluation as navigation covers state changes of one name and nothing that consumes one.",
+   "On the default dial the step that spw.quest and factshift.center both make, primed then actualized, is not one pivot."
+  ]
+ }
+}
+
+^"kernel"{
+ sequence: .{
+  form: "day{wake; eat; sleep} -- parser 0/0/1 -- line whole, separator ; parts 3 -- said: day, definition, sequence of 3: wake, eat, sleep"
+  computes: "The runtime gives a body its last value, for ; and for , alike."
+  seat: "Held in every reader; not told apart from a list in value."
+ }
+ choice: .{
+  form: "wake | eat -- parser 0/0/1 -- line rest ' | eat' -- said: wake, unread |, eat [unread 1]"
+  guard: "?[hungry]{ eat } -- parser 0/0/1 -- line whole, parts 1 -- said: wonder mode hungry, definition, eat"
+  guard_or_else: "?[hungry]{ eat } | { sleep } -- parser 0/0/1 -- line rest ' | { sleep }' -- said: wonder mode hungry, definition, eat; unread |, definition, sleep [unread 1]"
+  computes: "The runtime returns the first side of a bar that holds: { a | b } evaluates to a."
+  guard_true: "?[true]{ yes } -- parser 0/0/1 -- line whole -- said: wonder mode true, definition, yes -- runSpw value true"
+  guard_false: "?[false]{ yes } -- parser 0/0/1 -- line whole -- said: wonder mode false, definition, yes -- runSpw value true as well"
+  seat: "Held in the parser and the runtime for the bar; empty in the line reader and the spoken reader; no guard that tells true from false."
+ }
+ loop: .{
+  form: "No form: loop{ ~again @loop } reads and evaluates to loop; ^day{ %n[@n+1] } is refused as a cycle; step[i=1..13]{ ~again } reads and nothing walks the range."
+  rows: "The probe rows for those three lines are under threads, loops."
+  seat: "Empty."
+ }
+ binding: .{
+  form: "@side: 1.5 -- parser 0/0/1 -- line rest ' 1.5' -- said: perspective key side, 1.5"
+  in_the_runtime: "*x{5} @x -- parser 0/0/2 -- line rest ' @x' -- said: value x, definition, 5; perspective x -- through runSpw it gives 5 and an observation of x holding nothing"
+  computes: "The runtime has no environment; in the sheet %side[1.5] binds."
+  seat: "Held in the parser as a binding; the line reader leaves the value unread; computes in the sheet only."
+ }
+ application: .{
+  form: "double(4) -- parser 0/0/1 -- line whole -- said: double, scene 4"
+  through: "#[1, 2, 3] / @double -- parser 0/0/1 -- line rest ' / @double' -- said: vibration mode, list of 3: 1, 2, 3, unread /, perspective double [unread 1]"
+  open_term: "^double{ %x[_] %out[@x*2] } -- parser 0/0/1 -- line whole, parts 1 -- said: ascension double, definition, measure x, mode unread _, measure out, mode perspective x*2; end double [unread 1]"
+  open_term_result: "The sheet reports a syntax problem on x and an unknown reference on out."
+  seat: "Empty: the forms read, nothing applies, and a hole is refused by the sheet and unread in speech."
+ }
+ refer_back: .{
+  form: "@height: @side -- parser 0/0/1 -- line rest ' @side' -- said: perspective key height, perspective side"
+  path: "@point/x -- parser 0/0/1 -- line whole -- said: perspective point/x"
+  computes: "In the sheet only, in any order, with a cycle refused."
+  seat: "Held in the parser as a reference; computes in the sheet."
+ }
+ smallest_line_that_computes: "^day{ %side[1.5] %height[@side*2] } -- parser 0/0/1 -- line whole, parts 1 -- said: ascension day, definition, measure side, mode 1.5, measure height, mode perspective side*2; end day"
+ smallest_result: "The sheet gives side 1.5 and height 3: a binding, a reference and arithmetic."
+ sheet_lacks: "^day{ %a[2] %b[3] %pick[@a|@b] } -- parser 0/0/1 -- line whole, parts 1 -- said: ascension day, definition, measure a, mode 2, measure b, mode 3, measure pick, mode perspective a|, perspective, b; end day"
+ sheet_lacks_result: "The sheet gives a and b and a syntax problem on pick: it has no choice, no loop, no open term and no modulus."
+ two_halves: "The constructs sit in two evaluators that do not meet: the runtime has sequence and choice and no names; the sheet has names, references and arithmetic and no choice."
+ prior: [
+  "wonder_trial_evaluation_core lists the runtime's missing environment and the sheet as the one evaluator with references",
+  "the same card names a minus sign, a comparison and the spaced = as what a recurrence needs first",
+  "wonder_trial_reference_position holds whether @name points or reads"
+ ]
+ new: [
+  "The runtime's bar is a working choice.",
+  "The runtime's wonder guard gives true for true and for false.",
+  "The two evaluators split the kernel between them."
+ ]
+}
+
+^"empty_seats"{
+ # Ordered by how soon a stranger writing first lines would reach for the form. The order is this session's guess.
+ a_note: .{
+  rows: [
+   "# a note -- parser 0/1/prose -- line rest ' a note' -- said: vibration a, note",
+   "// a note -- parser 0/1/prose -- line rest ' a note' -- said: unread //, a, note [unread 2]"
+  ]
+  state: "Misread in speech: the line and spoken readers do not know where prose opens."
+  held_by: "wonder_trial_quiet_fallback and act-chains structure.prose"
+ }
+ words_with_a_gap: .{
+  rows: ["hello world -- parser 0/0/2 -- line rest ' world' -- said: hello, world"]
+  state: "Unread by the line reader, and said with the same joiner as a comma."
+  held_by: "wonder_trial_gap"
+ }
+ comma_at_top: .{
+  rows: [
+   "hello, world -- parser 0/0/2 -- line rest ' world' -- said: hello,, world",
+   "a, b, c -- parser 0/0/3 -- line rest ' b, c' -- said: a,, b,, c"
+  ]
+  state: "Misread: the comma is kept as a letter and then a joiner is added."
+  held_by: "No card holds a list outside a body."
+ }
+ sentence_marks: .{
+  rows: [
+   "don't -- parser 0/0/2 -- line whole -- said: don't",
+   "is it open? -- parser 0/0/4 -- line rest ' it open?' -- said: is, it, open?",
+   "wake up! -- parser 0/0/3 -- line rest ' up!' -- said: wake, up!"
+  ]
+  state: "Unsaid: the closing mark, and the parser splits each sentence into statements."
+  held_by: "line-items stay_prose and wonder_trial_reader_modes"
+ }
+ naming_a_value: .{
+  rows: [
+   "a = 1 -- parser 0/0/3 -- line rest ' = 1' -- said: a, configuration 1",
+   "a: 1 -- parser 0/0/1 -- line rest ' 1' -- said: key a, 1",
+   "a:1 -- parser 0/0/1 -- line whole -- said: a:1",
+   "a=1 -- parser 0/0/3 -- line whole -- said: a=1"
+  ]
+  state: "Misread: the spaced = is said as a mark on the 1, and the tight forms are said unbroken."
+  held_by: "wonder_trial_spaced_equals and wonder_trial_scales"
+ }
+ a_sum: .{
+  rows: [
+   "1 + 2 -- parser 0/0/1 -- line rest ' + 2' -- said: 1, unread +, 2 [unread 1]",
+   "x = y + 1 -- parser 0/0/2 -- line rest ' = y + 1' -- said: x, configuration y, unread +, 1 [unread 1]"
+  ]
+  state: "Unread in the line and spoken readers; the runtime returns the + unevaluated."
+  held_by: "wonder_trial_math_scope"
+ }
+ a_minus: .{
+  rows: [
+   "2 - 1 -- parser 1/0/2 -- line rest ' - 1' -- said: 2, unread -, 1 [unread 1]",
+   "-1 -- parser 1/0/1 -- line whole -- said: -1",
+   "a - b -- parser 1/0/2 -- line rest ' - b' -- said: a, unread -, b [unread 1]"
+  ]
+  state: "Unread: the one seat here where the parser reports an error."
+  held_by: "wonder_trial_number_forms"
+ }
+ a_comparison: .{
+  rows: [
+   "a < b -- parser 0/1/prose -- line rest ' < b' -- said: a, unread <, b [unread 1]",
+   "a == b -- parser 0/1/prose -- line rest ' == b' -- said: a, configuration configuration b"
+  ]
+  state: "Unread: the parser falls to prose."
+  held_by: "wonder_trial_comparison"
+ }
+ a_call: .{
+  rows: [
+   "f(x) -- parser 0/0/1 -- line whole -- said: f, scene x",
+   "f(x, y) -- parser 0/0/1 -- line whole -- said: f, scene, list of 2: x, y"
+  ]
+  state: "Reads in every reader; nothing applies."
+  held_by: "wonder_trial_scene and wonder_trial_evaluation_core"
+ }
+ an_arrow: .{
+  rows: [
+   "a -> b -- parser 0/0/1 -- line rest ' -> b' -- said: a, unread ->, b [unread 2]",
+   "a => b -- parser 0/0/2 -- line rest ' => b' -- said: a, configuration unread >, b [unread 1]"
+  ]
+  state: "Read by the parser; unread or misread in speech."
+  held_by: "No card holds the arrows; act-chains decomposition lists both pairs."
+ }
+ if_and_or: .{
+  rows: [
+   "if hungry then eat -- parser 0/0/4 -- line rest ' hungry then eat' -- said: if, hungry, then, eat",
+   "a | b -- parser 0/0/1 -- line rest ' | b' -- said: a, unread |, b [unread 1]",
+   "a && b -- parser 0/0/3 -- line rest ' && b' -- said: a, subject subject b"
+  ]
+  state: "Words are four words; the bar is unread above the parser; a doubled & is said as two marks on b."
+  held_by: "wonder_trial_pipe"
+ }
+ units_and_dates: .{
+  rows: [
+   "10% -- parser 0/0/2 -- line whole -- said: 10%",
+   "2026-11-16 -- parser 2/0/3 -- line whole -- said: 2026-11-16"
+  ]
+  state: "Unsaid, and the date is two errors."
+  held_by: "wonder_trial_number_forms and wonder_trial_until"
+ }
+ a_mark_after: .{
+  rows: [
+   "x? -- parser 0/0/2 -- line whole -- said: x?",
+   "ba! -- parser 0/0/2 -- line whole -- said: ba!"
+  ]
+  state: "Unsaid, and counted as read."
+  held_by: "wonder_trial_observer_postfix"
+ }
+ a_list_of_lists: .{
+  rows: ["day{wake; eat, nap; sleep} -- parser 0/0/1 -- line whole, separator ; parts 3 -- said: day, definition, sequence of 3: wake, eat,, nap, sleep"]
+  state: "Misread: one level of separator."
+  held_by: "Nearest is wonder_trial_gap's axis reading."
+ }
+ again: .{
+  rows: ["loop{ ~again @loop } -- parser 0/0/1 -- line whole -- said: loop, definition, potential again, perspective loop"]
+  state: "Reads; nothing repeats."
+  held_by: "Nearest is wonder_trial_evaluation_core."
+ }
+ doubles_and_coupling: .{
+  rows: [
+   "a<>b -- parser 0/0/2 -- line rest '<>b' -- said: a, unread <>b [unread 3]",
+   "((ba)) -- parser 0/0/1 -- line rest, the whole line -- said: unread ((ba)) [unread 6]",
+   "<<ba>> -- parser 0/0/1 -- line rest, the whole line -- said: unread <<ba>> [unread 6]"
+  ]
+  state: "Read by the parser; unread by the line and spoken readers."
+  held_by: "The seed's doubling row; no card."
+ }
+ a_label_elsewhere: .{
+  rows: [
+   "[_B b ]_B -- parser 0/0/2 -- line rest '_B' -- said: mode B, b, B",
+   "^_A -- parser 0/0/1 -- line whole -- said: ascension A",
+   "^A -- parser 0/0/1 -- line whole -- said: ascension A"
+  ]
+  state: "Unheard: a label off a body pair, and the underscore of a marked label."
+  held_by: "The pair-label plan's open questions and wonder_trial_operator_label"
+ }
+}
+
+^"broken"{
+ label_particles_must_cross: [
+  "Babble: two event streams written on one line must cross. Contradicted.",
+  "The interleaved line of four labeled pairs has no crossing.",
+  "voice{la; la} || drum{tum; tum} is two statements under the grammar's parallel separator.",
+  "A crossing merges the two streams where they cross, since the crossed words sit under both labels."
+ ]
+ label_particles_only: [
+  "Babble: labels are the only construct that crosses the tree. Contradicted.",
+  "A reference crosses it by name: loop{ ~again @loop } holds a Reference to loop inside loop's body, unresolved by every reader.",
+  "operational-topography counted 15,924 path references out of 32,155 bodies."
+ ]
+ bar_seat: [
+  "Babble: the bar is an empty seat. Weaker than stated.",
+  "The lexer has | and || as connectors.",
+  "The grammar chains | inside one expression and ranks || beside ; as the schedule pair.",
+  "The interpreter's bar case returns the first argument that holds.",
+  "act-chains names | the mark that offers an alternative, and wonder_trial_pipe holds three readings.",
+  "Choice has a token, a tree and a value; fork has a token and a tree and no value; the seat is empty in the line reader and the spoken reader."
+ ]
+ separators_clock: [
+  "Babble: commas are lanes, semicolons a strip, a space an overlap. Weaker than stated.",
+  "Lanes are already || in the grammar and two theory surfaces.",
+  "The runtime gives a comma body and a semicolon body one value.",
+  "The parser reads every gap as a boundary between expressions.",
+  "Overlap already has a written form in crossed labels."
+ ]
+ evaluation_is_navigation: [
+  "Babble: a step of evaluation is a pivot. Weaker than stated.",
+  "A pivot must keep every name; substitution, choice and sequence each lose one.",
+  "Primed to actualized is two turns on the default order."
+ ]
+ humps_sides: [
+  "Babble: the left hump says about what, the right what kind. Holds for about half of 123 code names here.",
+  "34 lead with a verb or predicate word and 24 end in a preposition.",
+  "The lattice half of the claim holds."
+ ]
+ babbling_phrase: [
+  "Babble: a babble that lands on a real phrase (action potential) is how babble becomes talk.",
+  "The phrase is made by clause spacing, and 47 other pairs are made the same way.",
+  "Doubling is not always two marks: ~~again is said potential potential, again, a bond."
+ ]
+ loops_modulus: [
+  "Babble: a modulus after a name could be a loop's mark.",
+  "Today chapter%13 is three statements and one unbroken word.",
+  "act-chains already gives a % after a name the effect of a read that counts each beat, with 13 a new term by the glue law.",
+  "The quantity reader takes a percent sign after a number as a percent, and the sheet reports a syntax problem on @chapter%13."
+ ]
+ seed_separators_row: [
+  "Measured row corrected: with a tight dot between, the line reader finds three parts and says tight of 3.",
+  "Only a dot with a gap beside it gives one part.",
+  "~> is a fourth separator, said movement."
+ ]
+ seed_crossing_row: [
+  "Measured row corrected: the spoken reader breaks on {_A [_B }_A ]_B because one pair is a mode.",
+  "{_A {_B x }_A }_B has the same one crossing and is said with nothing unread."
+ ]
+ card_postfix_row: [
+  "Card row narrowed: wonder_trial_observer_postfix says a mark after walls reads in all three readers.",
+  "(oath_stone)= reads whole in the line reader; [oath_stone]= and home(oath_stone)= leave the = as rest.",
+  "It reads in the line reader after a lone scene or concept only."
+ ]
+}
+
+^"wonders"{
+ what_is_the_comma_for: "If ; and || already part a strip from lanes, what is left for the comma: company whose order says nothing, a third kind of time, or only a layout?"
+ may_a_mark_be_a_side: "Is a join only ever between two operands, or may a bare mark stand as one side of a bond, a seat a host fills later?"
+ is_a_crossing_a_chord: "If the stretch two labeled spans share is the overlap, does the gap go back to its own card unburdened, and is the order of ends (end A; end B) enough for a listener to hear a crossing?"
+ does_a_yield_belong_with_pivots: "Is a step that yields a value a second family beside the pivots, one allowed to lose a name, and should primed to actualized be one turn on a host's dial?"
+ which_is_the_back_edge: "Is the way back the name (@loop, a reference today), the label (^_A, a labeled operation today), or neither until a loop can say when it ends?"
+ should_said_and_counted_agree: "A trailing mark, a leading underscore and the fused #! each pass as read while a listener loses a distinction; should what is counted unread be what a listener could not tell apart?"
+}
+
+^"unverified"{
+ heard: "No line was heard; every spoken result is the reader's text, read as a string."
+ dialects: "Every probe ran the default dialect; separators, labels and trailing marks were not run under the other seven."
+ seed_rows_not_rerun: "Not run again here: the seed's doubling row for [[ba]], pivot_counts, dialects, humps, wall_turn, tokens, spw_forms, trace, pins and canvas_motion. The dial's order was read in the code, not run."
+ hump_classes: "The classes of code names come from a word list over seven files, not from reading each name; some are misfiled (joinName is a noun pair, sameBond a predicate), so the counts are approximate."
+ canvas_names: "factshift.center's 37 query names were not read here; the seed's humps row is taken as given."
+ site_plans: "The site consumer's plans on overlapping selection spans are cited from the workbench's plan stream, not read."
+ name_count: "The join count used the prose lex profile over git ls-files with _archive left out; names inside strings are not counted."
+ runtime: "The runtime was run once per line through runSpw with default options."
+ guard: "Why ?[false]{ yes } gives true was read at the interpreter's wonder case and not traced into how the mode reaches it."
+ sheet_modulus: "The sheet's refusal of @chapter%13 was read from its output, not traced in its code."
+ seat_order: "The order of empty seats is a guess at a stranger's first lines; no stranger was watched."
+ consumers: "No consumer tree was read; counts for the story consumer and the site consumer are quoted from the cards."
+ unread_share: "How many of the corpus's lines pass as read because of a trailing mark was not counted."
+ theory_fit: "The act-chains structure laws are proposed, not settled; set against them means measured against a proposal."
+}
+
+^"sources"{
+ join_rule: "packages/spw-seed/src/line/read.ts:239 (joinOf), :246 (any text on each side), :247 (spaced alike)"
+ separators_line: "packages/spw-seed/src/line/names.ts:60 (four separators in order), packages/spw-seed/src/line/read.ts:276 (partsOf), :284 (tight and loose dot)"
+ lead_pairs: "packages/spw-seed/src/line/read.ts:141 (only a scene or concept leads), :151 (a word runs to a wall or a space)"
+ join_marks: "packages/spw-seed/src/line/names.ts:48"
+ spoken_marks: "packages/spw-seed/src/experimental/spoken.ts:59 (mark names, four of two characters), :78 (join names, beside among them)"
+ spoken_word: "packages/spw-seed/src/experimental/spoken.ts:203 (leading marks only), :458 (an underscore said as a gap)"
+ spoken_cuts: "packages/spw-seed/src/experimental/spoken.ts:271 (; , ~> and no tight dot)"
+ spoken_bond: "packages/spw-seed/src/experimental/spoken.ts:326 (a compound's sides), :423 (a space after a mark clause)"
+ spoken_labels: "packages/spw-seed/src/experimental/spoken.ts:444 (labels kept for body pairs only)"
+ pivots: "packages/spw-seed/src/experimental/pivots.ts:48 (order of marks), :125 (splitMarks reads marks after a name), :197 (outside marks), :260 (every name kept)"
+ pair_labels: "packages/spw-seed/src/experimental/pair-labels.ts:19 (a label makes a class), :252 (crossings), :285 (labels around an offset)"
+ lexer_connectors: "packages/spw-seed/src/lexer/profiles.ts:27 (|| parallel schedule, | , ; sequential schedule)"
+ lexer_names: "packages/spw-seed/src/lexer/matchers/identifiers.ts:11 (hyphen and tight dot inside a name)"
+ grammar_schedule: "packages/spw-seed/src/grammar/expressions.ts:1117 (plain connectors chain), :1128 (the schedule pair)"
+ tree_sequence: "packages/spw-seed/src/types/ast/nodes.ts:93 (a sequence and its separators)"
+ runtime_bar: "packages/spw-runtime/src/interpreter/interpreter.ts:325 (first argument that holds), :272 (wonder as a guard)"
+ sheet: "packages/spw-seed/src/experimental/physics/sheet.ts:1 (terms, references, a cycle reported), :244 (a term is marked %), packages/spw-seed/src/experimental/quantity.ts:58 (a percent sign as a unit)"
+ desugar: "packages/spw-seed/src/normalize.ts:22 (a label written onto an empty body)"
+ act_chains: "docs/theory/spw/act-chains.spw:18 (relation marks), :22 (never one), :28 (prefix position), :47 (glue), :48 (nearest), :50 (whole), :75 (percent), :85 (prime and act), :153 (a mark acting twice)"
+ schedule_theory: "docs/theory/spw/mutation-flow-automata.spw:328, docs/theory/spw/flow-protocol-sigils.spw:48"
+ looper: "docs/theory/spw/looper-architecture.spw:1, docs/theory/spw/math-modeling.spw:35"
+ line_items: "docs/theory/spw/line-items.spw:52 (a newline plays ;), :71 (postfix stays prose)"
+ operators: "docs/theory/spw/operators.spw:117 (x! proposed), :171 (data~!)"
+ trials: ".agents/plans/interpretation-trials/interpretation-trials.spw:35 (spaced_equals), :66 (scene), :112 (joins), :127 (pipe), :214 (quiet_fallback), :290 (prime_actualize), :306 (observer_postfix), :338 (comparison), :383 (dot), :464 (gap), :580 (until), :596 (number_forms), :614 (math_scope), :699 (turn), :788 (pair_label), :807 (underscore), :826 (operator_label), :843 (reader_modes), :861 (said), :921 (inside), :958 (scales), :977 (evaluation_core), :996 (reference_position)"
+ line_kit: ".agents/plans/line-kit/wip.spw:43 (agreement), :89 (read_under), :96 (known partings)"
+ pair_label_plan: ".agents/plans/pair-label-reading/wip.spw:57 (a label makes a class)"
+ topography: ".agents/plans/operational-topography/wip.spw:158 (references out of bodies), :167 (pair_labels_ast)"
+ journal: ".spw/caches/journal/2026-11-14-marks-memory-timing.spw:137 (the sheet is acyclic), :353 (postfix today), :415 (scheduled is ; and ||)"
+ scratch: "babble/semantics-scratch: t1 to t10 probe line files, pairs.mts (the 144 pairs), name-joins.mts, humps.mts, kernel3.mts and kernel4.mts (sheet and runtime), around.mts, deep.mts"
+}
