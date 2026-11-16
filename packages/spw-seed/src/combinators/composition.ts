@@ -35,11 +35,12 @@ export function sequence<T extends Parser<unknown>[]>(
   ...parsers: T
 ): Parser<UnwrapParsers<T>> {
   return function* sequenceParser(stream, depth): Generator<ParseEvent, ParseResult<UnwrapParsers<T>>, void> {
+    const trace = stream.keepRuleTrace
     const pos = getPosition(stream)
     const results: unknown[] = []
     let totalConsumed = 0
 
-    yield {
+    if (trace) yield {
       type: 'enter',
       rule: 'sequence',
       position: pos,
@@ -64,7 +65,7 @@ export function sequence<T extends Parser<unknown>[]>(
       if (!result.success) {
         reset(stream)
 
-        yield {
+        if (trace) yield {
           type: 'backtrack',
           rule: 'sequence',
           position: pos,
@@ -77,7 +78,7 @@ export function sequence<T extends Parser<unknown>[]>(
           depth,
         }
 
-        yield {
+        if (trace) yield {
           type: 'exit',
           rule: 'sequence',
           position: pos,
@@ -95,7 +96,7 @@ export function sequence<T extends Parser<unknown>[]>(
 
     unmark(stream)
 
-    yield {
+    if (trace) yield {
       type: 'exit',
       rule: 'sequence',
       position: getPosition(stream),
@@ -113,10 +114,11 @@ export function sequence<T extends Parser<unknown>[]>(
  */
 export function choice<T>(...parsers: Parser<T>[]): Parser<T> {
   return function* choiceParser(stream, depth): Generator<ParseEvent, ParseResult<T>, void> {
+    const trace = stream.keepRuleTrace
     const pos = getPosition(stream)
     const errors: ErrorEventData[] = []
 
-    yield {
+    if (trace) yield {
       type: 'enter',
       rule: 'choice',
       position: pos,
@@ -142,7 +144,7 @@ export function choice<T>(...parsers: Parser<T>[]): Parser<T> {
       if (result.success) {
         unmark(stream)
 
-        yield {
+        if (trace) yield {
           type: 'exit',
           rule: 'choice',
           position: getPosition(stream),
@@ -160,7 +162,7 @@ export function choice<T>(...parsers: Parser<T>[]): Parser<T> {
         errors.push(result.error)
       }
 
-      yield {
+      if (trace) yield {
         type: 'backtrack',
         rule: 'choice',
         position: pos,
@@ -174,7 +176,7 @@ export function choice<T>(...parsers: Parser<T>[]): Parser<T> {
       }
     }
 
-    yield {
+    if (trace) yield {
       type: 'exit',
       rule: 'choice',
       position: pos,
@@ -201,11 +203,12 @@ export function choice<T>(...parsers: Parser<T>[]): Parser<T> {
  */
 export function many<T>(parser: Parser<T>): Parser<T[]> {
   return function* manyParser(stream, depth): Generator<ParseEvent, ParseResult<T[]>, void> {
+    const trace = stream.keepRuleTrace
     const pos = getPosition(stream)
     const results: T[] = []
     let totalConsumed = 0
 
-    yield {
+    if (trace) yield {
       type: 'enter',
       rule: 'many',
       position: pos,
@@ -237,7 +240,7 @@ export function many<T>(parser: Parser<T>): Parser<T[]> {
       totalConsumed += result.consumed
     }
 
-    yield {
+    if (trace) yield {
       type: 'exit',
       rule: 'many',
       position: getPosition(stream),
@@ -255,9 +258,10 @@ export function many<T>(parser: Parser<T>): Parser<T[]> {
  */
 export function many1<T>(parser: Parser<T>): Parser<T[]> {
   return function* many1Parser(stream, depth): Generator<ParseEvent, ParseResult<T[]>, void> {
+    const trace = stream.keepRuleTrace
     const pos = getPosition(stream)
 
-    yield {
+    if (trace) yield {
       type: 'enter',
       rule: 'many1',
       position: pos,
@@ -276,7 +280,7 @@ export function many1<T>(parser: Parser<T>): Parser<T[]> {
 
     const firstResult = firstStep.value
     if (!firstResult.success) {
-      yield {
+      if (trace) yield {
         type: 'exit',
         rule: 'many1',
         position: pos,
@@ -304,7 +308,7 @@ export function many1<T>(parser: Parser<T>): Parser<T[]> {
       totalConsumed += restResult.consumed
     }
 
-    yield {
+    if (trace) yield {
       type: 'exit',
       rule: 'many1',
       position: getPosition(stream),
@@ -322,9 +326,10 @@ export function many1<T>(parser: Parser<T>): Parser<T[]> {
  */
 export function optional<T>(parser: Parser<T>): Parser<T | undefined> {
   return function* optionalParser(stream, depth): Generator<ParseEvent, ParseResult<T | undefined>, void> {
+    const trace = stream.keepRuleTrace
     const pos = getPosition(stream)
 
-    yield {
+    if (trace) yield {
       type: 'enter',
       rule: 'optional',
       position: pos,
@@ -345,7 +350,7 @@ export function optional<T>(parser: Parser<T>): Parser<T | undefined> {
     if (step.value.success) {
       unmark(stream)
 
-      yield {
+      if (trace) yield {
         type: 'exit',
         rule: 'optional',
         position: getPosition(stream),
@@ -359,7 +364,7 @@ export function optional<T>(parser: Parser<T>): Parser<T | undefined> {
 
     reset(stream)
 
-    yield {
+    if (trace) yield {
       type: 'exit',
       rule: 'optional',
       position: pos,

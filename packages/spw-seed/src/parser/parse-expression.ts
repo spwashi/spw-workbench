@@ -52,7 +52,7 @@ export function parseExpression(
     return true
   })
 
-  const stream = createTokenStream(filteredTokens, opts.contextMode)
+  const stream = createTokenStream(filteredTokens, opts.contextMode, opts.eventPolicy === 'trace')
   const parseGen = sequenceNode(stream, 0)
   let parseStep = parseGen.next()
 

@@ -56,9 +56,10 @@ export function sepBy<T, S>(
   separator: Parser<S>
 ): Parser<T[]> {
   return function* sepByParser(stream, depth): Generator<ParseEvent, ParseResult<T[]>, void> {
+    const trace = stream.keepRuleTrace
     const pos = getPosition(stream)
 
-    yield {
+    if (trace) yield {
       type: 'enter',
       rule: 'sepBy',
       position: pos,
@@ -78,7 +79,7 @@ export function sepBy<T, S>(
 
     if (!firstStep.value.success) {
       reset(stream)
-      yield {
+      if (trace) yield {
         type: 'exit',
         rule: 'sepBy',
         position: pos,
@@ -130,7 +131,7 @@ export function sepBy<T, S>(
       totalConsumed += itemStep.value.consumed
     }
 
-    yield {
+    if (trace) yield {
       type: 'exit',
       rule: 'sepBy',
       position: getPosition(stream),
@@ -180,9 +181,10 @@ export function sepByOptionalKept<T, S>(
   separator: Parser<S>
 ): Parser<KeptSeparation<T, S>> {
   return function* sepByOptionalKeptParser(stream, depth): Generator<ParseEvent, ParseResult<KeptSeparation<T, S>>, void> {
+    const trace = stream.keepRuleTrace
     const pos = getPosition(stream)
 
-    yield {
+    if (trace) yield {
       type: 'enter',
       rule: 'sepByOptional',
       position: pos,
@@ -234,7 +236,7 @@ export function sepByOptionalKept<T, S>(
       }
     }
 
-    yield {
+    if (trace) yield {
       type: 'exit',
       rule: 'sepByOptional',
       position: getPosition(stream),
@@ -256,9 +258,10 @@ export function between<O, C, T>(
   content: Parser<T>
 ): Parser<T> {
   return function* betweenParser(stream, depth): Generator<ParseEvent, ParseResult<T>, void> {
+    const trace = stream.keepRuleTrace
     const pos = getPosition(stream)
 
-    yield {
+    if (trace) yield {
       type: 'enter',
       rule: 'between',
       position: pos,
@@ -278,7 +281,7 @@ export function between<O, C, T>(
 
     if (step.value.success) {
       const [, contentResult] = step.value.value!
-      yield {
+      if (trace) yield {
         type: 'exit',
         rule: 'between',
         position: getPosition(stream),
@@ -289,7 +292,7 @@ export function between<O, C, T>(
       return { success: true, value: contentResult, consumed: step.value.consumed }
     }
 
-    yield {
+    if (trace) yield {
       type: 'exit',
       rule: 'between',
       position: pos,

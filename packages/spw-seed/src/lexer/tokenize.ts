@@ -49,6 +49,7 @@ export function* tokenize(
   const stringMatcher = createStringMatcher(lexProfile.stringQuotes)
   let streamDepth = 0
 
+  const trace = (options.eventPolicy ?? 'trace') === 'trace'
   const matchers: TokenMatcher[] = [
     matchWhitespace,
     matchLineComment,
@@ -76,7 +77,7 @@ export function* tokenize(
     matchComma,
   ]
 
-  yield {
+  if (trace) yield {
     type: 'enter',
     rule: 'tokenize',
     position: getPosition(state),
@@ -197,7 +198,7 @@ export function* tokenize(
     depth,
   }
 
-  yield {
+  if (trace) yield {
     type: 'exit',
     rule: 'tokenize',
     position: getPosition(state),

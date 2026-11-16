@@ -27,8 +27,9 @@ export function token<T extends TokenType>(
   return function* tokenParser(stream, depth): Generator<ParseEvent, ParseResult<Token<T>>, void> {
     const pos = getPosition(stream)
     const tok = current(stream)
+    const trace = stream.keepRuleTrace
 
-    yield {
+    if (trace) yield {
       type: 'enter',
       rule: `token(${expectedType}${expectedKind ? ':' + expectedKind : ''})`,
       position: pos,
@@ -40,7 +41,7 @@ export function token<T extends TokenType>(
     if (tok.type === expectedType && (!expectedKind || tok.kind === expectedKind)) {
       advance(stream)
 
-      yield {
+      if (trace) yield {
         type: 'match',
         rule: `token(${expectedType})`,
         position: pos,
@@ -49,7 +50,7 @@ export function token<T extends TokenType>(
         depth,
       }
 
-      yield {
+      if (trace) yield {
         type: 'exit',
         rule: `token(${expectedType})`,
         position: getPosition(stream),
@@ -61,7 +62,7 @@ export function token<T extends TokenType>(
       return { success: true, value: tok as Token<T>, consumed: 1 }
     }
 
-    yield {
+    if (trace) yield {
       type: 'exit',
       rule: `token(${expectedType})`,
       position: pos,
@@ -96,8 +97,9 @@ export function tokenOneOf<T extends TokenType>(
   return function* tokenOneOfParser(stream, depth): Generator<ParseEvent, ParseResult<Token<T>>, void> {
     const pos = getPosition(stream)
     const tok = current(stream)
+    const trace = stream.keepRuleTrace
 
-    yield {
+    if (trace) yield {
       type: 'enter',
       rule: `tokenOneOf(${types.join('|')})`,
       position: pos,
@@ -109,7 +111,7 @@ export function tokenOneOf<T extends TokenType>(
     if (types.includes(tok.type as T)) {
       advance(stream)
 
-      yield {
+      if (trace) yield {
         type: 'match',
         rule: `tokenOneOf`,
         position: pos,
@@ -118,7 +120,7 @@ export function tokenOneOf<T extends TokenType>(
         depth,
       }
 
-      yield {
+      if (trace) yield {
         type: 'exit',
         rule: `tokenOneOf`,
         position: getPosition(stream),
@@ -130,7 +132,7 @@ export function tokenOneOf<T extends TokenType>(
       return { success: true, value: tok as Token<T>, consumed: 1 }
     }
 
-    yield {
+    if (trace) yield {
       type: 'exit',
       rule: `tokenOneOf`,
       position: pos,
@@ -159,8 +161,9 @@ export function literal(value: string): Parser<Token> {
   return function* literalParser(stream, depth): Generator<ParseEvent, ParseResult<Token>, void> {
     const pos = getPosition(stream)
     const tok = current(stream)
+    const trace = stream.keepRuleTrace
 
-    yield {
+    if (trace) yield {
       type: 'enter',
       rule: `literal("${value}")`,
       position: pos,
@@ -172,7 +175,7 @@ export function literal(value: string): Parser<Token> {
     if (tok.value === value) {
       advance(stream)
 
-      yield {
+      if (trace) yield {
         type: 'match',
         rule: `literal`,
         position: pos,
@@ -181,7 +184,7 @@ export function literal(value: string): Parser<Token> {
         depth,
       }
 
-      yield {
+      if (trace) yield {
         type: 'exit',
         rule: `literal`,
         position: getPosition(stream),
@@ -193,7 +196,7 @@ export function literal(value: string): Parser<Token> {
       return { success: true, value: tok, consumed: 1 }
     }
 
-    yield {
+    if (trace) yield {
       type: 'exit',
       rule: `literal`,
       position: pos,

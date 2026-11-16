@@ -30,7 +30,7 @@ export function* parseStream(
   }
 
   const lexProfile = resolveLexProfile(opts.lexProfile)
-  const lexGen = tokenize(input, 0, { profile: lexProfile })
+  const lexGen = tokenize(input, 0, { profile: lexProfile, eventPolicy: opts.eventPolicy })
   let lexStep = lexGen.next()
 
   while (!lexStep.done) {
@@ -46,7 +46,7 @@ export function* parseStream(
     return true
   })
 
-  const stream = createTokenStream(filteredTokens, opts.contextMode)
+  const stream = createTokenStream(filteredTokens, opts.contextMode, opts.eventPolicy === 'trace')
   const parseGen = seedNode(stream, 0)
   let parseStep = parseGen.next()
 

@@ -32,10 +32,13 @@ export function lazy<T>(fn: () => Parser<T>): Parser<T> {
 }
 
 /**
- * Give a parser a name for error messages
+ * Give a parser a name for traces and error messages.
+ * When the stream is not keeping a rule trace, the name adds no events.
  */
 export function named<T>(name: string, parser: Parser<T>): Parser<T> {
   return function* namedParser(stream, depth): Generator<ParseEvent, ParseResult<T>, void> {
+    if (!stream.keepRuleTrace) return yield* parser(stream, depth + 1)
+
     const pos = getPosition(stream)
 
     yield {

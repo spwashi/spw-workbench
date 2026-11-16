@@ -13,9 +13,18 @@ describe('parse product disclosure', () => {
     expect(none.tokens).toEqual(trace.tokens)
     expect(none.gaps).toEqual(trace.gaps)
     expect(none.ast).toEqual(trace.ast)
-    expect(none.eventCounts.generated).toBe(trace.eventCounts.generated)
-    expect(diagnostics.eventCounts.generated).toBe(trace.eventCounts.generated)
+    const withoutStamp = (events: Array<{ timestamp: number }>) =>
+      events.map(({ timestamp: _timestamp, ...event }) => event)
+    expect(withoutStamp(none.errors)).toEqual(withoutStamp(trace.errors))
+    expect(withoutStamp(none.warnings)).toEqual(withoutStamp(diagnostics.warnings))
+    expect(withoutStamp(none.warnings)).toEqual(withoutStamp(trace.warnings))
+    expect(none.eventCounts.generated).toBe(diagnostics.eventCounts.generated)
+    expect(none.eventCounts.generated).toBeLessThan(trace.eventCounts.generated)
     expect(none.eventCounts.retained).toBe(0)
+    expect(trace.events.some(event => event.type === 'enter')).toBe(true)
+    expect(trace.events.filter(event => event.type === 'exit')).toHaveLength(
+      trace.events.filter(event => event.type === 'enter').length,
+    )
     expect(diagnostics.events.every(event => event.type === 'error' || event.type === 'warning')).toBe(true)
     expect(trace.eventCounts.retained).toBeGreaterThan(diagnostics.eventCounts.retained)
   })
@@ -50,9 +59,8 @@ describe('parse product disclosure', () => {
     expect(shallow.products.map(product => product.product)).toEqual([
       SOURCE_PRODUCT_IDS.tokens,
     ])
-    expect(shallowTokens.data.events.generated).toBeLessThan(
-      structuralProduct.data.events.generated,
-    )
+    expect(shallowTokens.data.events.generated).toBe(structuralProduct.data.events.generated)
+    expect(structuralProduct.data.ast).toBeDefined()
   })
 
   it('publishes each requested depth when it becomes available', () => {

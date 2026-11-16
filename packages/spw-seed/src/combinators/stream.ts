@@ -36,11 +36,18 @@ export interface TokenStream {
   proseGround: boolean
   /** Set when a structured read falls back to prose. */
   stop?: ParseStop
+  /**
+   * When false, combinators build no rule-trace events. Errors and warnings
+   * still yield. The parse sets this from its event policy so a parser stays
+   * `(stream, depth)`.
+   */
+  keepRuleTrace: boolean
 }
 
 export function createTokenStream(
   tokens: Token[],
-  contextMode: 'low' | 'high' = 'low'
+  contextMode: 'low' | 'high' = 'low',
+  keepRuleTrace: boolean = true,
 ): TokenStream {
   return {
     tokens,
@@ -50,6 +57,7 @@ export function createTokenStream(
     streamDepth: 0,
     furthest: 0,
     proseGround: false,
+    keepRuleTrace,
   }
 }
 

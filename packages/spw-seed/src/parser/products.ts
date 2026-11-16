@@ -232,7 +232,7 @@ function runSourcePipeline(
   }
 
   const lexProfile = resolveLexProfile(opts.lexProfile)
-  const lexGen = tokenize(preparedSource, 0, { profile: lexProfile, planStream })
+  const lexGen = tokenize(preparedSource, 0, { profile: lexProfile, planStream, eventPolicy: opts.eventPolicy })
   let lexStep = lexGen.next()
   while (!lexStep.done) {
     observeEvent(lexStep.value)
@@ -292,7 +292,7 @@ function runSourcePipeline(
     if (!opts.includeComments && token.type === 'COMMENT') return false
     return true
   })
-  const stream = createTokenStream(filteredTokens, opts.contextMode)
+  const stream = createTokenStream(filteredTokens, opts.contextMode, opts.eventPolicy === 'trace')
   const parseGen = seedNode(stream, 0)
   let parseStep = parseGen.next()
   while (!parseStep.done) {
