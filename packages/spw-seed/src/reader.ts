@@ -28,6 +28,8 @@ export type { SlotReading, SlotSpan, LinePart, LineCompound, LineChange, SlotKey
 // A line said in names, and a click for every brace: for a page that gives a line an accessible name or a sound.
 // Both are experimental (spw.spoken/1, spw.pair-sound/1) and may change.
 export { SPOKEN_NAMES, SPOKEN_NAMES_SITE, SPOKEN_SCHEMA, spokenLine, unsaid } from './experimental/spoken'
+export { ACT_MARKS, PIVOTS_SCHEMA, PIVOT_NAMES, pivotReadCounts, pivotsOf, readFragments, splitMarks } from './experimental/pivots'
+export type { Bond as PivotBond, Fragment as PivotFragment, Pivot, PivotKind, PivotNames, PivotOptions, PivotReadBack } from './experimental/pivots'
 export type { SpokenClause, SpokenLine, SpokenNames, SpokenOptions, SpokenRole } from './experimental/spoken'
 export { PAIR_LABELS_SCHEMA, scanPairLabels, pairLabelsAround } from './experimental/pair-labels'
 export type { BraceEdge, BracePair, PairLabelScan } from './experimental/pair-labels'

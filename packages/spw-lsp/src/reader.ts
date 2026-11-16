@@ -23,6 +23,7 @@ export { readLine, readAt, writeLine, writeAt, joinParts, slotHash, SLOT_KEYS, S
 export type { SlotReading, SlotSpan, LineChange, SlotHash, SlotKey, BondName } from '@spwashi/spw-seed'
 // A line said in names (an accessible name, a text face) and a click for every brace. Experimental.
 export { spokenLine, unsaid, SPOKEN_NAMES, SPOKEN_NAMES_SITE, SPOKEN_SCHEMA } from '@spwashi/spw-seed'
+export { pivotsOf, readFragments, pivotReadCounts, splitMarks, ACT_MARKS, PIVOT_NAMES, PIVOTS_SCHEMA } from '@spwashi/spw-seed'
 export { scanPairLabels, pairLabelsAround, pairSound, renderClick, renderPairSound, renderPhrase, wavBytes, labelTimbre, PAIR_SOUND } from '@spwashi/spw-seed'
 export type { SpokenLine, SpokenClause, SpokenNames, SpokenOptions, PairLabelScan, PairClick, PairSound } from '@spwashi/spw-seed'
 // The brace sound tuned in one line of Spw, and the pairs a caret leaves and enters. Experimental.

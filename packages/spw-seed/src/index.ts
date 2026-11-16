@@ -1043,6 +1043,13 @@ export {
   NUMBER_FORM_SCHEMA,
   isNumberForm,
   readNumberForm,
+  ACT_MARKS,
+  PIVOTS_SCHEMA,
+  PIVOT_NAMES,
+  pivotReadCounts,
+  pivotsOf,
+  readFragments,
+  splitMarks,
   COMMIT_LINES_SCHEMA,
   landCommit,
   landedLineText,
@@ -1215,3 +1222,4 @@ export type {
 export { DEFAULT_REVISION_ID_FORMS, REVISION_ID_FORMS, revisionIdForm, type RevisionIdForm } from './lexer/commit-ref'
 export type { CommitLine } from './experimental'
 export { SPW_FRAME_LINE, multiCharacterMarks, spwWordPattern } from './lexer/word-pattern'
+export type { Pivot, PivotBond, PivotFragment, PivotKind, PivotNames, PivotOptions, PivotReadBack } from './experimental'

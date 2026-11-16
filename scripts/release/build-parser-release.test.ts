@@ -255,6 +255,22 @@ describe('bundle:parser --allow-dirty into a temp directory', () => {
     }
   })
 
+  it('reader lists each fragment of a line, what surrounds it, and the lines one nuance away, each read back', async () => {
+    for (const form of ['min', 'debug']) {
+      const reader = await importBundle<{
+        readFragments: (line: string) => { fragments: Array<{ name: string; before: string[]; walls: string[]; sides: string[] }>; bonds: Array<{ mark: string; attaches: string[] }> }
+        pivotsOf: (line: string, options?: { order?: string[] }) => Array<{ kind: string; line: string; status: string; read: { line: boolean; parser: boolean; spoken: boolean } }>
+      }>(path.join(releaseDir, `reader.${form}.js`))
+      const read = reader.readFragments('=foo@(<bar>)')
+      assert.deepEqual(read.fragments.map((f) => [f.name, f.before, f.walls, f.sides]), [['foo', ['='], [], ['left']], ['bar', [], ['scene', 'concept'], ['right']]])
+      assert.deepEqual(read.bonds[0]!.attaches, ['after_left', 'before_right'])
+      const side = reader.pivotsOf('=foo@(<bar>)').find((p) => p.kind === 'side')!
+      assert.equal(side.line, 'foo=@(<bar>)')
+      assert.deepEqual(side.read, { line: true, parser: false, spoken: false })
+      assert.deepEqual(reader.pivotsOf('~foo', { order: ['~', '#', '^'] }).filter((p) => p.kind === 'mark').map((p) => p.line).sort(), ['#foo', '^foo'])
+    }
+  })
+
   it('reader says a line in names and gives its braces clicks a page can play', async () => {
     for (const form of ['min', 'debug']) {
       const reader = await importBundle<{

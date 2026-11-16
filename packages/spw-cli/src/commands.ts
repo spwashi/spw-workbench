@@ -52,6 +52,7 @@ import { printPairsHelp, runSpwPairsCli } from './pairs'
 import { printHearHelp, runSpwHearCli } from './hear'
 import { printRewriteHelp, runSpwRewriteCli } from './rewrite'
 import { printSheetHelp, runSpwSheetCli } from './sheet'
+import { printPivotHelp, runSpwPivotCli } from './pivot'
 import { printVcsHelp, runSpwVcsCli } from './vcs-cli'
 
 /**
@@ -396,6 +397,13 @@ export const COMMANDS: CommandSpec[] = [
   },
 
   // ── Shape ────────────────────────────────────────────────────
+  {
+    name: 'pivot',
+    group: 'shape',
+    summary: 'Show each fragment of a line, what surrounds it, and the lines one nuance away, each read back',
+    printHelp: () => printPivotHelp(),
+    run: (_invoked, args) => runSpwPivotCli(args),
+  },
   {
     name: 'format',
     group: 'shape',

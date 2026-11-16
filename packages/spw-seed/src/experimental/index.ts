@@ -61,6 +61,8 @@ export {
 
 export type { SpokenClause, SpokenLine, SpokenNames, SpokenOptions, SpokenRole } from './spoken'
 export { SPOKEN_NAMES, SPOKEN_NAMES_SITE, SPOKEN_SCHEMA, spokenLine, unsaid } from './spoken'
+export type { Bond as PivotBond, Fragment as PivotFragment, Pivot, PivotKind, PivotNames, PivotOptions, PivotReadBack } from './pivots'
+export { ACT_MARKS, PIVOTS_SCHEMA, PIVOT_NAMES, pivotReadCounts, pivotsOf, readFragments, splitMarks } from './pivots'
 export type { PairClick, PairSound, PairSoundSettings, RenderOptions } from './sound/pair-sound'
 export {
   OVERTONES,
