@@ -11,7 +11,7 @@
  gist: "Editor plugins read and act on wip.spw plan facts through standard LSP products, one fact model."
  touches: [~"packages/spw-lsp/src/handlers/outline.ts", ~"scripts/plans/plan-index.ts", ~".agents/scripts/agent-lib.sh"]
  entry: ~"./PLAN.md"
- next: "~[commit_ref_vscode_test]: an extension-host runner (vscode-spw has none), then a test that opens a fixture plan and checks hover, the commitRef token, the link, and the commit view; then ~[land_commit_action]."
+ next: "~[outline_plan_facts] and ~[land_commit_completion]: both are server-side and testable in the language server's own suite, so all three editors receive them with no client code; ~[commit_ref_vscode_test] waits on an extension-host runner, which vscode-spw has lacked since 2026-10-27."
 }
 
 ^["edges"]{
@@ -116,6 +116,7 @@
  >>[2026-10-27 13:52] note — plan_frame_lenses now reads what each open question unblocks from the wonder block its ?[label] points at, under the schema form adopted 2026-10-27; it needs vscode-authoring-probe-loop wonder_fields_read.
  >>[2026-11-06 17:24] observe — A mounted consumer routed three asks here (2026-10-27; ranks 5, 6 and 17): plan.shape/1, plan.rules/1 and a twinkle lens. Its notebooks keep facts in a different shape (anchor #>plan_<slug>_wip, a quoted ^"cache" with status, next_commit, files_hot, gate and last_stream, a probe stream type), and its scripts/lib/plan-wip.mjs, maintain-plan-directory-indexes, plan-twinkle and wonder each read them. Its audit:plans holds three rules (notebook behind its Status, a gate waiting on the owner with no wonder holding the question, a planned status whose gate opens on nothing); the two newest found 4 and 5 plans on the day they landed. This bears on ?[extractor_home]: an extractor in seed that reads a declared shape is the one the consumer could import.
  >>[2026-11-06 20:20] note — Evidence for ?[declared_shape]: the consumer's plans now each open on a head line #>slug[operation]{concepts}(scene)<projection>, which seed's slot reader reads whole. A declared shape could start from that line (operation, concepts, scene, projection) and leave the cache and stream to the rest of the notebook; plan-tooling-design plans the same line for the workbench's own cards.
+ >>[2026-11-16 06:47] observe — Read 2026-11-16: ~[land_commit_action] landed in 6716d590 as the code action only (landCandidates and landCommitActions in handlers/land-commit.ts, wired in editing.ts); completion after ]( did not, and is now ~[land_commit_completion]. Since the same commit commit-refs.ts asks detectVcs for the workspace's revision id forms, so PLAN.md's line that git calls stay in commit-refs.ts is rewritten. The next move had waited on an extension-host runner since 2026-10-27; it now names two server-side commits every editor receives.
 }
 
 ^["open"]{
@@ -140,7 +141,8 @@
  .[commit_view_vscode](00c6a56e): "&[vscode] — commit links open inside VS Code: a read-only diff document, and the changes view through the Git extension"
  .[commit_ref_beyond_plans](a80a5df7): "&[lsp] — one hash resolution strategy: landed refs take a commitRef token, and every hash git confirms hovers and links to its commit"
  ~[commit_ref_vscode_test]: "![vscode] — extension test on a fixture plan with a known commit: hover, token, link, open, and completion; an unknown hash gets the note and no link"
- ~[land_commit_action]: "&[lsp] — on a ~[name] line in ^[\"commits\"], completion after ]( and a code action offer recent commits with their subjects and rewrite the line to .[name](hash): \"subject\"; the same move as plan-tooling-design ~[settle_verb] --ship"
+ .[land_commit_action](6716d590): "^seed[seed,lsp,cli,runtime] — land a planned commit from its line in a plan, read revision ids in the forms a workspace uses (git SHA-1 or SHA-256, jj change ids), and let git name the Spw frame a change sits in"
+ ~[land_commit_completion]: "&[lsp] — completion after ]( on a ~[name] line in ^[\"commits\"] offers the candidates the land code action already finds (landCandidates), so typing reaches the same rewrite to .[name](hash): \"subject\""
  ~[plan_name_completion]: "&[lsp] — ~#next_commit: \" offers the planned ~[name]s, ~#resolved( the open ?[label]s, ~#dropped( the planned names, and a stream entry body this file's names"
  ~[plan_name_navigation]: "&[lsp] — go-to-definition and references for plan names: ~#next_commit, ~#resolved(label), a mention in an entry and another plan's ~\"../x/wip.spw#name\" reach the ~[name], .[name] or ?[label] line (needs directive-lattice ~[plan_name_fragments])"
  ~[schema_key_completion]: "&[lsp] — inside ^[\"cache\"]{ and the card, the keys .agents/plans/_schema/wip.spw declares and the file lacks; phase: # offers the phases; the card glyph offers the lanes"
@@ -162,9 +164,9 @@
  ~#rebased_at: "2026-10-12"
  ~#hygiene_split: "none"
  ~#files_hot: ".agents/plans/plan-plugin-integration/PLAN.md, .agents/plans/plan-plugin-integration/wip.spw"
- ~#next_commit: "commit_ref_vscode_test"
+ ~#next_commit: "outline_plan_facts"
  ~#open_count: "6"
- ~#last_stream: "2026-11-06 20:20"
+ ~#last_stream: "2026-11-16 06:47"
  ~#taste_debt: ""
 }
 

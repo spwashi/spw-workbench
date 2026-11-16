@@ -64,9 +64,9 @@ The slice, in order:
 3. `~[commit_view_vscode]`: the link opens the commit in VS Code's multi-diff view through the built-in Git extension API, or else in a read-only `spw-commit:` document. It never opens an untitled buffer (scorecard bug 7). Landed in `00c6a56e`.
 4. `~[commit_ref_beyond_plans]`: the same hover and link for journal, stream, and episode hashes that git confirms (`?[prose_hashes]`). Landed in `a80a5df7`; `1ea9ac14` later gave other hash-shaped runs a `hashlike` token.
 5. `~[commit_ref_vscode_test]`.
-6. `~[land_commit_action]`: completion and a code action that turn `~[name]` into `.[name](hash): "subject"`.
+6. `~[land_commit_action]`: a code action that turns `~[name]` into `.[name](hash): "subject"`. Landed in `6716d590`; completion after `](` is `~[land_commit_completion]`.
 
-Git calls stay in `commit-refs.ts` for this slice. `local-numbering-vcs` `~[lsp_adapter]` moves them behind the VCS adapter later, and its id pattern widens the hash form to SHA-256 and jj ids. `editor-reading-hierarchy` `~[commit_frame_roles]` uses the token type.
+Since `6716d590`, `commit-refs.ts` asks `detectVcs` which revision id forms the workspace uses (git SHA-1, SHA-256, jj change ids). `local-numbering-vcs` `~[lsp_adapter]` still owns moving `upstream-bridge.ts` behind the adapter. `editor-reading-hierarchy` `~[commit_frame_roles]` uses the token type.
 
 ## Files
 

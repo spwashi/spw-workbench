@@ -10,12 +10,12 @@
  gist: "VS Code, IntelliJ and Neovim each run the same inspection instruments from the CLI: source products, fingerprint, memory, performance and projection"
  touches: [~"extensions/vscode-spw/src/instruments", ~"extensions/intellij-spw/src/main/kotlin/com/spwashi/spw", ~"extensions/neovim-spw/lua/spw"]
  entry: ~"./PLAN.md"
- next: "~[parity_fixture]: one saved file and one selection through all five instruments in each editor, outputs diffed after stripping timings."
+ next: "~[parity_fixture], starting with no editor running: the argument lists each editor builds for an instrument (extensions/vscode-spw/src/instruments/cli-invocation.ts, extensions/neovim-spw/lua/spw/cli.lua, SpwCliInvocation.kt) compared as data, then each distinct invocation run once on one saved file and one selection, outputs diffed after stripping timings; then ~[cards_or_text]."
 }
 
 ^["edges"]{
  supersedes: [~"../_archive/editor-cli-instruments/wip.spw"]
- shares: [~"../neovim-spw-surfaces/wip.spw", ~"../vscode-authoring-probe-loop/wip.spw", ~"../intellij-lsp4ij/wip.spw", ~"../vscode-lsp-roadmap/wip.spw"]
+ shares: [~"../neovim-spw-surfaces/wip.spw", ~"../vscode-authoring-probe-loop/wip.spw", ~"../intellij-lsp4ij/wip.spw", ~"../vscode-lsp-roadmap/wip.spw", ~"../cli-sense-reorientation/wip.spw", ~"../line-kit/wip.spw"]
 }
 
 ^["roots"]{
@@ -57,6 +57,7 @@
  ~[readonly_reports]: "&[vscode] — instrument reports open through a read-only content provider, so closing them asks nothing (scorecard bug 7; host.ts 57, commands.ts, instruments/commands.ts 215)"
  ~[buffer_truth_rows]: ".[tooling] — record per editor and instrument whether it reads the saved file, the buffer, or a selection (hosts/jetbrains-instruments.spw guard); answers ?[unsaved_buffers]"
  ~[one_buffer_probe]: "&[lsp] — one probe takes the buffer text and answers form, stack, tokens, structure, and trace; Neovim and IntelliJ ship the bundled server (consumer rank 3)"
+ ~[cards_or_text]: "&[editors] — a report opens in the Spw language only when it parses as a card, and as plain text otherwise, so no editor paints a report's prose as operators; proof: the Form report (form --resonance --spw, 22 parse errors at 2026-11-16) opens as text in all three editors until cli-sense-reorientation ~[spw_cards_parse] passes, then as Spw"
 }
 
 ^["cache"]{
@@ -66,7 +67,7 @@
  ~#files_hot: "extensions/vscode-spw/src/instruments, extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwInstrumentActions.kt, extensions/neovim-spw/lua/spw/instruments.lua"
  ~#next_commit: "parity_fixture"
  ~#open_count: "3"
- ~#last_stream: "2026-11-06 18:10"
+ ~#last_stream: "2026-11-16 06:47"
 }
 
 ^["done"]{
@@ -79,4 +80,5 @@
  >>[2026-10-13 11:59] revise — The three editors' instruments landed (99e6d993, 155cfd57, 1bb4f68d); next is the parity fixture. Scorecard bug 7 now sits in this plan's own output path: reports open as dirty untitled documents (host.ts 57 and seven other call sites); readonly_reports owns it.
  >>[2026-10-25 20:40] note — A mounted consumer asks (2026-10-25, rank 3, one_probe) for one request that takes buffer text and answers form, stack, tokens, structure, and trace. Today VS Code probes the live buffer through the LSP, Neovim passes a range through --text and otherwise reads the saved file, and IntelliJ reads the saved file; Neovim and IntelliJ still start the server with npm run lsp instead of the bundled dist/server/spw-lsp.cjs. Neovim three-step inspect is the shape the consumer wants the other two to show.
  >>[2026-11-06 18:10] note — The owner wonders about stages or canvases in factshift.center that read one script along a projection gradient; held as interpretation-trials wonder_trial_stages. The source products tokens, structure and trace (spw.progressive-product/1, spw inspect --through) are the first rungs any host stage would read.
+ >>[2026-11-16 06:47] observe — The instruments' receipts are the intermediate forms the owner asked on 2026-11-16 to travel across contexts when the Spw form is chosen. All three editors ask the CLI for the Form instrument's Spw form (cli-invocation.ts with output spw, cli.lua, SpwCliInvocation.kt), and VS Code opens it in the Spw language; that output carries 22 parse errors today, so the receipt every editor shows is not yet a card every reader reads alike. cards_or_text added. The parity fixture can start with no editor running, by comparing the invocations each editor builds as data.
 }

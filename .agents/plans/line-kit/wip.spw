@@ -16,7 +16,7 @@
 ^["edges"]{
  needs: [~"../brace-slot-reading/wip.spw"]
  feeds: [~"../onboarding-quest/wip.spw", ~"../ground-edge-reading/wip.spw", ~"../editor-reading-hierarchy/wip.spw"]
- shares: [~"../parser-releases/wip.spw", ~"../interpretation-trials/wip.spw", ~"../cli-sense-reorientation/wip.spw"]
+ shares: [~"../parser-releases/wip.spw", ~"../interpretation-trials/wip.spw", ~"../cli-sense-reorientation/wip.spw", ~"../form-geometry-editor/wip.spw", ~"../editor-inspection-instruments/wip.spw", ~"../fragment-pointers/wip.spw"]
 }
 
 ^["roots"]{
@@ -45,6 +45,7 @@
  no_host_names: "seed carries no consumer's vocabulary; a host passes its own slot names to the record view, and SLOT_NAMES keeps only the reader names"
  digestible_features: "features are plain data with stable keys and plain-word names, a short description in words, and a Spw line of their own, so a shelf, a canvas or an agent can use them without reading seed"
  types_from_the_build: "hosts type the kit from types cut with the build (parser-releases typed_variants), never from a hand-copied file"
+ spw_form: "every line.* product has a Spw form: a card seed parses and reads back into the same data, so a host in any context (the CLI's --spw, an editor's instrument report, a browser host, a plugin's emit) holds the same intermediate form; the owner asked on 2026-11-16 that tooling's intermediate forms travel across contexts when the Spw form is chosen, read here as this card law"
 }
 
 ^["intake"]{
@@ -85,6 +86,7 @@
  ?[features_shape]: "Which features earn a stable key in line.features/1, and what does the short description say first: the order departures, the joins, or the depth?"
  ?[convenience_surface]: "What should a writer be shown about the conveniences and learned shapes they use? Readings offered: what each shorthand stands for (its expansion); what it costs a reader, a listener or a machine (characters, tokens, spoken clauses); which shapes a writer repeats and how often; or what a tool did for them that they did not write (a default, a rewrite). One report can hold all four; which comes first is the owner's."
  ?[sugar_in_strings]: "desugar rewrites a shorthand that is only mentioned inside a quoted string, and the runtime pipeline runs it on source. Is a string's inside ever meant to expand, or is this a loss to fix? It decides ~[desugar_leaves_strings]."
+ ?[read_under]: "Should a line.* product also record the dialect and profile stack it was read under, so a browser host replays an editor's path-detected reading without the path? Measured 2026-11-16: the parser reads 15 pivot lines alike under all eight dialects, and the line reader and spoken reader take no dialect, so a recorded stack carries nothing yet; it matters once a reader treats chaining as a dialect setting (docs/theory/spw/act-chains.spw profiles)."
 }
 
 ^["commits"]{
@@ -107,7 +109,10 @@
  ~[line_codec]: "^seed[line] — toSpw64, fromSpw64 and the #spw64= fragment grammar in seed, with the law that decoding an encoded line gives it back byte for byte; the codec is base64url, without padding, of the text's UTF-8 bytes behind #spw64=, as five implementations across three hosts already agree (probed 2026-11-09); they drop their copies (intake one_codec)"
  ~[top_level_split]: "^seed[line] — expressions(text) returns each top-level expression of a file with its span, from the same reading the kit uses, so no host counts braces by hand (intake top_level_split)"
  ~[kit_in_reader]: "&[reader] — the kit exported from seed's reader slice and the language server's reader, asserted on reader.min.js and reader.debug.js in test:parser-release"
+ .[pivot_reader](339728cf): "^seed[seed,cli,lsp,release,plans] — read each fragment of a line with what surrounds it, and offer the lines one nuance away, each read back by the line reader, the parser and the spoken reader"
+ .[pivot_conservation](f0bba2d3): "^seed[seed,cli,plans] — keep every name through a pivot, read marks outside walls and body parts as fragments, and write a tight bond's mark onto either side"
  ~[pivots]: "^seed[line] — pivots(reading): the readings one edit away (a slot dropped, a mark turned, a part added or removed), each with the change that makes it, so a host offers the next lines without a writer of its own (line.pivots/1)"
+ ~[kit_cards]: "^seed[line] — each line.* product writes its Spw form and reads it back (features, query, breaks, pivots), with the law that reading a product's card gives the product back; spw pivot and spw say print it when the Spw form is chosen (with cli-sense-reorientation ~[spw_cards_parse])"
 }
 
 ^["stream"]{
@@ -126,6 +131,8 @@
  >>[2026-11-13 16:31] surprise — The expander rewrites inside quoted strings. desugar of note: "write home{} and ?_how" gives note: "write {_home }_home and ?(how)". The runtime pipeline calls it on the source when desugaring is on (pipeline/stages.ts), so a string that mentions a shorthand reaches the runtime changed. Nearly every one of the 131 written matches is such a mention. A convenience whose consequence nobody sees is the case the owner's sentence names.
  >>[2026-11-13 16:31] observe — What a shorthand costs, in units that exist. Over the 101 lines the expander changes: 14,289 characters become 14,682, 831 tokens become 921, and spoken clauses go from 1,291 to 1,325. Said aloud the two sides differ in kind as well as length: home{} is said home, definition, and its expansion is said definition, labeled home; end home; ?_how is said wonder how, and ?(how) is said wonder scene how. So the short form and the long form are not said alike, and a listener hears which one was written.
  >>[2026-11-13 16:31] revise — Four small commits join the list after line_features, which they read: a report of the shorthand a text writes, the expander leaving strings alone, the report's cost columns, and the repeated shapes a file holds. Each is read-only except the second. Opened convenience_surface and sugar_in_strings.
+ >>[2026-11-16 06:47] observe — The pivot reader landed beside the kit, not in it (339728cf, f0bba2d3): pivotsOf(line) in experimental/pivots.ts turns a mark, moves it to the other side of its name or its walls, turns a wall, turns, spaces or exchanges a bond, and writes a tight bond onto either side, each read back by the line reader, the parser and the spoken reader, with every name kept. ~[pivots] stays planned: a slot dropped and a part added or removed did not land, nor alternatives drawn from a shelf or rhyme index, and the product is a function of a line, not of a reading. Against the kit's laws, by kind: side, mark, bond, spacing and attach each change one span; an outside side moves marks across the walls, a removal and an insertion; a wall turn writes through writeLine, which can move the slot (kept~[pace]{quiet} becomes kept~{quiet}<pace>); an exchange rewrites the whole bond. splitMarks re-reads the word's text, which one_reading forbids, until ~[mark_span] gives marks a span of their own. The schema stays spw.pivots/1 until the reader moves into the kit as line.pivots/1.
+ >>[2026-11-16 06:47] revise — Owner direction 2026-11-16: tooling's intermediate forms should travel across contexts when the Spw form is chosen. Read here as a card law over every line.* product, with the stack a product was read under held as ?[read_under]; design gains spw_form and commits gain kit_cards. The CLI half (one spelling, every Spw-form output parses) sits in cli-sense-reorientation, the editor half in editor-inspection-instruments, the plugin half in first-plugin.
 }
 
 ^["cache"]{
@@ -134,8 +141,8 @@
  ~#rebased_at: ""
  ~#files_hot: "packages/spw-seed/src/line"
  ~#next_commit: "any_pair_leads"
- ~#open_count: "4"
- ~#last_stream: "2026-11-13 16:31"
+ ~#open_count: "5"
+ ~#last_stream: "2026-11-16 06:47"
 }
 
 ^["done"]{

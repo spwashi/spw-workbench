@@ -10,7 +10,7 @@
  gist: "Census, graph and query accept one shared glob selection; verb names and aliases already landed."
  touches: [~"packages/spw-seed/src/ir", ~"packages/spw-cli/src/fs-walk.ts", ~"packages/spw-cli/src/corpus-scan.ts", ~"packages/spw-cli/src/commands.ts", ~"packages/spw-cli/src/emit"]
  entry: ~"./cli-sense-reorientation.spw"
- next: "~[output_contract_table]: one table test over every command that prints rows, so --json, --quiet and the format flag are spelled one way; then ~[glob_fixture_tests]. Loading command modules only when their command runs would take most of the 0.29 s every command pays before it starts."
+ next: "~[output_contract_table] with ~[spw_cards_parse] in the same table test: every verb's --json, --quiet and format flag spelled one way, and every Spw-form output parsing as a card (fails today on form, form --resonance and graph); then ~[glob_fixture_tests]. Loading command modules only when their command runs would take most of the 0.29 s every command pays before it starts."
 }
 
 ^["edges"]{
@@ -119,6 +119,8 @@
  >>[2026-11-13 17:00] implement — Three commands for readers that had none. spw say says each line in the names of its parts (spokenLine), with --clauses, --names site and --json. spw pairs lists labeled pairs, crossings and braces with no partner (scanPairLabels), and --at line:column gives the pairs around a place. spw hear writes a click per brace to a WAV file under an ear line; scripts/sound/pair-sound.ts is retired and npm run sound:pairs runs spw hear. Running say on crossed labels showed the spoken form naming a close by its open's label; it now names each close by the label the close carries.
  >>[2026-11-13 17:00] implement — Bare spw prints a start page read from the .spw tree it runs in, and spw help still prints all 44 commands. Outside a workspace it offers spw init. Inside, it says whether this is the workbench or a workspace that mounts it, suggests a walk through the workspace's own declared roots and index, lists the three surfaces changed most recently (tool-written folders left out), and ends with what reading the tree cost: 1,386 files in 173 ms here, 168 in 113 ms in a story consumer. A ^"start" frame in .spw/workspace.spw replaces the derived lines with the workspace's own, and recent: 0 skips the walk, leaving two files read.
  >>[2026-11-13 17:00] verify — Tests: flags read from every help page and named on it once per command; usage never read as a declaration; say matches spokenLine line by line; pairs reads labels, crossings, the unpaired and the pairs around a place; hear writes a RIFF file and reports an unknown ear word; the start page with no workspace, with derived lines, with recency ordered and tool folders left out, and with a ^"start" frame and recent: 0. Time on this machine: bare spw 1.35 s, of which 1.14 s is tsx starting and about 0.29 s is loading every command module before one runs.
+ >>[2026-11-16 06:47] observe — The Spw form, counted 2026-11-16 from help --json and each output parsed by seed: five commands declare --spw (doctor, census, graph, form, inspect), census alone also takes --format spw and gives the same card, and --as on pulse and mutate renames a label rather than choosing a form. On docs/theory/spw: doctor, census and inspect source print cards that parse with no error; graph --spw has one error, its broken targets written bare in a #[ ] set and rooted under docs/; form --spw prints the human report (14 errors), and form --resonance --spw, which all three editors run for the Form instrument and open as Spw, has 22. say, pairs and pivot print only text or JSON.
+ >>[2026-11-16 06:47] revise — Owner direction 2026-11-16: tooling's intermediate forms should travel across contexts when the Spw form is chosen. Commits gain spw_cards_parse, in the same table test as output_contract_table, and spw_form_everywhere; open gains spw_form_name, which also asks whether a workspace setting may choose the Spw form for every context.
 }
 
 ^["examples"]{
@@ -142,6 +144,7 @@
  ?[grain_axis]: "Should a verb say what it moves by (a line, a surface, a corpus, a workspace, a change) beside its cost group, and should help be read by grain, by cost, or both? wonder_trial_grain asks what a step moves by in the language; this is the same question for the tools."
  ?[product_spelling]: "One spelling for choosing a product: subcommands (spw form rhymes, as spw inspect source) or flags (spw inspect --source, as spw form --rhymes)? Subcommands make each product its own help page; flags keep a verb's products side by side."
  ?[edge_stance]: "Does an unreached surface declare which edge it is on (arriving or leaving), or do tools infer it from last touch and supersession? wonder_trial_distance holds the readings."
+ ?[spw_form_name]: "One name for choosing the Spw form across contexts: the CLI spells it --spw (doctor, census, graph, form, inspect) and --format spw (census only; parseViewFormat for query and select rejects spw), the editors' instruments ask for output 'spw', and the browser reader and a plugin's emit have none. Which spelling does the table enforce, and may a workspace setting choose the Spw form as every context's default?"
 }
 
 ^["commits"]{
@@ -150,6 +153,8 @@
  .[sense_verb_aliases](08e2bc1c): "&[canon-rewrite-v2] — land tip capability on upstream; phase 0 field clocks (census, measure and stack aliases first appear here) (with file_sense_plan)"
  .[declare_picomatch](e94b6bfb): "#[cli] — declare picomatch for the shared glob resolver"
  ~[output_contract_table]: "![cli] — one table test over every verb that prints rows: --json gives a versioned envelope, --quiet drops headers, and the chosen format is spelled one way; proof: the table fails today on query and select (--format beside --table) and on form (no --table), and passes once each is aligned"
+ ~[spw_cards_parse]: "![cli] — the output contract table parses every verb's Spw form: when Spw is the chosen form, the output is a card seed parses with no error (spw_card in .spw/conventions/cli.spw) and holds the facts its --json envelope holds; proof: fails at 2026-11-16 on form --spw (14 errors), form --resonance --spw (22; the editors' Form instrument) and graph --spw (1, paths written bare in a set), passes on doctor, census and inspect source"
+ ~[spw_form_everywhere]: "&[cli] — every verb that prints a product offers its Spw form under the one spelling the table settles (say, pairs, pivot, query and select included), and the card's frame names its product and version, so a card read in another context says what it is"
  ~[lazy_command_modules]: "&[cli] — the registry imports a command's module only when that command runs or its help is asked for; proof: a timing test that loading the registry stays under a stated bound, and every command's help and run tests unchanged"
  ~[product_mode_rule]: "&[cli] — after ?[product_spelling]: the products form picks by flag become subcommands (spw form columns, spw form rhymes), or inspect's planes become flags, so one spelling holds; the old spelling routes for one era; proof: a test that each product is reached one way and the old way prints the new one"
  ~[grain_column]: "#[cli] — after ?[grain_axis]: each verb declares a grain (line, surface, corpus, workspace, change) beside its group, help --json carries it, and help can list by it; proof: a test that every verb has exactly one grain and the list by grain covers all 41"
@@ -180,8 +185,8 @@
  ~#rebased_at: "2026-10-12"
  ~#files_hot: ".agents/plans/cli-sense-reorientation/PLAN.md, .agents/plans/cli-sense-reorientation/wip.spw, packages/spw-cli/src/fs-walk.ts, packages/spw-seed/src/ir/slices.ts, packages/spw-cli/src/corpus-scan.ts"
  ~#next_commit: "output_contract_table"
- ~#open_count: "10"
- ~#last_stream: "2026-11-13 17:00"
+ ~#open_count: "11"
+ ~#last_stream: "2026-11-16 06:47"
  ~#taste_debt: "One parser-backed producer now proves the protocol, but a non-parser producer and compatibility review are still needed before the wider IR catalog or CLI rename sequence can rely on it."
 }
 
