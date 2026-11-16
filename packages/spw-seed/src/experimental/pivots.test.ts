@@ -1,5 +1,9 @@
+import { createHash } from 'node:crypto'
+import { execFileSync } from 'node:child_process'
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { readLine } from '../line'
+import { isKeySpan } from './key-span'
 import { ACT_MARKS, PIVOT_NAMES, pivotReadCounts, pivotsOf, readFragments, splitMarks } from './pivots'
 
 describe('fragments', () => {
@@ -115,6 +119,63 @@ describe('pivots', () => {
     const side = byKind('side')[0]!
     expect(side.read.spoken).toBe(false)
   })
+
+  it('reads a key without the colon when asked, and leaves the option off identical', () => {
+    const line = '%root: 293.66'
+    expect(pivotsOf(line)).toEqual(pivotsOf(line, { keys: false }))
+    expect(pivotsOf(line).map((p) => p.line)).toEqual(['root:% 293.66', '!root: 293.66', '$root: 293.66'])
+    const keyed = pivotsOf(line, { keys: true })
+    expect(readFragments(line, true).fragments[0]).toMatchObject({ name: 'root', before: ['%'] })
+    expect(keyed.map((p) => p.line)).toContain('root%: 293.66')
+    expect(keyed.map((p) => p.line)).not.toContain('root:% 293.66')
+    const turned = keyed.filter((p) => p.line === '!root: 293.66' || p.line === '$root: 293.66')
+    expect(turned).toHaveLength(2)
+    expect(turned.every((p) => p.read.line && p.read.parser && p.read.spoken)).toBe(true)
+  })
+
+  it('does not turn one character of a particle, or the colon into an equals', () => {
+    const lines = pivotsOf('~#goal: one', { keys: true }).map((p) => p.line)
+    expect(lines).not.toContain('~.goal: one')
+    expect(lines).not.toContain('~@goal: one')
+    expect(lines.every((item) => item.includes(':'))).toBe(true)
+    expect(isKeySpan('~#goal:', 0, 7)).toBe(true)
+    expect(isKeySpan(':', 0, 1)).toBe(false)
+  })
+
+  it('keeps the option off byte-identical over 500 lines of theory and canon', () => {
+    const files = execFileSync('git', ['ls-files', 'docs/theory/spw', '.spw'], { encoding: 'utf8' })
+      .split('\n')
+      .filter((file) => file.endsWith('.spw'))
+    const lines: string[] = []
+    for (const file of files) {
+      for (const line of readFileSync(file, 'utf8').split('\n')) {
+        const text = line.trim()
+        if (!text || text.startsWith('//')) continue
+        lines.push(text)
+        if (lines.length >= 500) break
+      }
+      if (lines.length >= 500) break
+    }
+    expect(lines).toHaveLength(500)
+    const hash = createHash('sha256')
+    let keyed = 0
+    let gained = 0
+    for (const line of lines) {
+      const plain = pivotsOf(line)
+      hash.update(JSON.stringify(plain) + '\n')
+      expect(plain).toEqual(pivotsOf(line, { keys: false }))
+      const word = readLine(line).word
+      if (!isKeySpan(line, word.start, word.end)) continue
+      keyed += 1
+      const before = new Set(plain.filter((p) => p.read.line && p.read.parser && p.read.spoken).map((p) => p.line))
+      for (const pivot of pivotsOf(line, { keys: true })) {
+        if (pivot.read.line && pivot.read.parser && pivot.read.spoken && !before.has(pivot.line)) gained += 1
+      }
+    }
+    expect(hash.digest('hex')).toBe('fe3b7e9f557399550048b11a245a6e1831535f59af85292e2a4826317ecc4c11')
+    expect(keyed).toBe(162)
+    expect(gained).toBe(108)
+  }, 30_000)
 
   it('never throws and never returns the line it was given, over lines of every slot and bond', () => {
     const lines = ['x', '=x', 'x=', '~x[mode]', 'x{a, b}', '(x)', '<x>', '@x', 'a@b', 'a ~ b', 'a^b&c', '=foo@(<bar>)', '!hold[x]{y}(z)<w>', '#tag', '~*x']

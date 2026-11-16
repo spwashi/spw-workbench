@@ -27,6 +27,7 @@
  */
 
 import { readRange, type SlotReading, type SlotSpan } from '../line/read'
+import { isKeySpan } from './key-span'
 import { BONDS, PAIRS, SLOT_NAMES, type JoinMark, type PairKey, type Separator, type SlotKey } from '../line/names'
 import { scanPairLabels, type BraceEdge } from './pair-labels'
 
@@ -210,7 +211,7 @@ function sayWord(ctx: Ctx, word: SlotSpan, depth: number): string {
     push(ctx, { role: 'mark', says: names.marks[mark], start: at, end: at + mark.length, depth })
     at += mark.length
   }
-  const isKey = end - at > 1 && source[end - 1] === ':'
+  const isKey = isKeySpan(source, at, end)
   if (isKey) end -= 1
   if (end <= at) return ''
   const written = unquote(source.slice(at, end))

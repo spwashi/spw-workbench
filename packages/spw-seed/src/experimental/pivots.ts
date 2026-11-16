@@ -37,9 +37,11 @@
  * Experimental (spw.pivots/1).
  */
 
+import { lex } from '../lexer'
 import { parse } from '../parser'
 import { readLine, writeLine, type SlotReading } from '../line'
 import { BONDS, JOIN_MARKS, PAIRS, SLOT_NAMES, type BondName, type JoinMark, type PairKey, type SlotKey } from '../line/names'
+import { isKeySpan } from './key-span'
 import { SPOKEN_NAMES, spokenLine, type SpokenLine } from './spoken'
 
 export const PIVOTS_SCHEMA = 'spw.pivots/1' as const
@@ -119,6 +121,11 @@ export const PIVOT_NAMES: PivotNames = Object.freeze({
 export interface PivotOptions {
   /** The order a mark turns along: its neighbours in this order are the turns offered. Default ACT_MARKS. */
   order?: readonly string[]
+  /**
+   * Read a keyed line as a key, whose colon is not part of the name, and the
+   * rest of the line. Off, every line's pivots stay as they are.
+   */
+  keys?: boolean
 }
 
 /** A word split into its marks and its name: '~*foo' is before ~ * and foo, 'foo=' is foo and after =. */
@@ -153,8 +160,16 @@ interface Site {
 const NO_OUTSIDE = (): Fragment['outside'] => ({ before: [], after: [] })
 const pairKeys = (reading: SlotReading) => reading.order.filter((k): k is PairKey => k !== 'word')
 
+/** A mark inside a multi-character annotation or particle. A turn of that one character is not offered. */
+function markInParticle(text: string, index: number): boolean {
+  return lex(text, { eventPolicy: 'none' }).tokens.some((token) =>
+    (token.type === 'ANNOTATION' || token.type === 'PARTICLE') &&
+    token.span.end.offset - token.span.start.offset > 1 &&
+    index >= token.span.start.offset && index < token.span.end.offset)
+}
+
 /** Every fragment and bond of a line, each with a way to write a replacement back to the line. */
-function sites(line: string): Site[] {
+function sites(line: string, keys = false): Site[] {
   const out: Site[] = []
   type Up = (levelText: string) => string
   type Rewall = ((next: PairKey) => string) | null
@@ -170,8 +185,16 @@ function sites(line: string): Site[] {
       return
     }
     const word = reading.word.text
-    const split = splitMarks(word)
-    if (split.name) out.push({ fragment: { ...split, walls, outside: NO_OUTSIDE(), sides, slot: 'word' }, text: word, rewall, free, write: (text) => up(writeLine(reading, { slots: { word: text } })) })
+    const keyed = keys && isKeySpan(src, reading.word.start, reading.word.end)
+    const bare = keyed ? word.slice(0, -1) : word
+    const split = splitMarks(bare)
+    if (split.name) out.push({
+      fragment: { ...split, walls, outside: NO_OUTSIDE(), sides, slot: 'word' },
+      text: bare,
+      rewall,
+      free,
+      write: (text) => up(writeLine(reading, { slots: { word: keyed ? `${text}:` : text } })),
+    })
     const held = pairKeys(reading)
     const freeHere = (Object.keys(PAIRS) as PairKey[]).filter((k) => !held.includes(k))
     // A word of marks alone sits outside the walls written next to it: before the first pair after it, or after the last pair before it.
@@ -206,6 +229,19 @@ function sites(line: string): Site[] {
         up(prefix ? src.slice(0, ws) + src.slice(we, span.end) + turned + src.slice(span.end) : src.slice(0, span.start) + turned + src.slice(span.start, ws) + src.slice(we))
       claimed.outsideWrite = (marks) => up(writeLine(reading, { slots: { word: marks } }))
     }
+    // The value of a key is the rest of this reading, read on its own and written back after the colon.
+    if (keyed && pairKeys(reading).length === 0 && reading.end === src.length && reading.word.end < reading.end) {
+      const head = src.slice(0, reading.word.end)
+      for (const site of sites(src.slice(reading.word.end), keys)) {
+        out.push({
+          ...site,
+          write: (text) => up(head + site.write(text)),
+          rewall: site.rewall ? (next) => up(head + site.rewall!(next)) : null,
+          outsideSide: site.outsideSide ? () => up(head + site.outsideSide!()) : undefined,
+          outsideWrite: site.outsideWrite ? (marks) => up(head + site.outsideWrite!(marks)) : undefined,
+        })
+      }
+    }
   }
   const top = readLine(line)
   walk(top, [], [], (text) => text, null, [])
@@ -213,8 +249,8 @@ function sites(line: string): Site[] {
 }
 
 /** The fragments and bonds of a line. */
-export function readFragments(line: string): { fragments: Fragment[]; bonds: Bond[] } {
-  const all = sites(line)
+export function readFragments(line: string, keys = false): { fragments: Fragment[]; bonds: Bond[] } {
+  const all = sites(line, keys)
   return { fragments: all.flatMap((s) => (s.fragment ? [s.fragment] : [])), bonds: all.flatMap((s) => (s.bond ? [s.bond] : [])) }
 }
 
@@ -248,7 +284,8 @@ const sayings = (line: SpokenLine | null, role: string, says: string) => (line ?
 /** The lines one nuance away from a line, for every fragment and bond, each read back three ways. */
 export function pivotsOf(line: string, options: PivotOptions = {}, names: PivotNames = PIVOT_NAMES): Pivot[] {
   const order = options.order ?? ACT_MARKS
-  const all = sites(line)
+  const keys = options.keys === true
+  const all = sites(line, keys)
   const names0 = nameSet(all.flatMap((s) => (s.fragment ? [s.fragment] : [])))
   const statements0 = statements(line)
   const said0 = said(line, names)
@@ -256,8 +293,10 @@ export function pivotsOf(line: string, options: PivotOptions = {}, names: PivotN
   const out: Pivot[] = []
   const pushLine = (kind: PivotKind, site: Site, next: string, from: Record<string, unknown>, to: Record<string, unknown>, found: (back: Read) => boolean, moved: Moved[]) => {
     if (next === line || out.some((p) => p.line === next && p.kind === kind)) return
-    const back = readFragments(next)
-    const lineOk = readLine(next).rest === '' && nameSet(back.fragments) === names0 && found(back)
+    const back = readFragments(next, keys)
+    const reading = readLine(next)
+    const keyedLine = keys && isKeySpan(next, reading.word.start, reading.word.end)
+    const lineOk = (keyedLine || reading.rest === '') && nameSet(back.fragments) === names0 && found(back)
     const count = statements(next)
     const saidNext = said(next, names)
     const spokenOk = !!saidNext && saidNext.unread === 0 && moved.every((m) => sayings(saidNext, m.role, nameOf(m)) >= sayings(said0, m.role, nameOf(m)) + m.gain)
@@ -287,7 +326,11 @@ export function pivotsOf(line: string, options: PivotOptions = {}, names: PivotN
       // Mark: the nearest mark turned to its neighbours in the host's order.
       const nearestBefore = f.before.at(-1)
       const nearest = nearestBefore ?? f.after[0]
-      if (nearest !== undefined) {
+      const particleTurn = keys && nearest !== undefined && markInParticle(
+        joinMarks(f.before, f.name, f.after),
+        nearestBefore !== undefined ? f.before.length - 1 : f.before.length + f.name.length,
+      )
+      if (nearest !== undefined && !particleTurn) {
         for (const turned of turnsOf(nearest)) {
           const before = nearestBefore !== undefined ? [...f.before.slice(0, -1), turned] : f.before
           const after = nearestBefore !== undefined ? f.after : [turned, ...f.after.slice(1)]
