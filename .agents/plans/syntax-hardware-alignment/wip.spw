@@ -127,6 +127,8 @@
  >>[2026-11-13 22:59] observe — Evidence for minus_sign, read through the parse the lint and the commit gate both use. The parser rejects 162 minus signs across the three corpora (141 here, 21 in the story consumer, none in the site consumer), and only 7 sit before a digit: four dates in a quoted stream block and three digit ranges in the story consumer's plans. None is a sign. The rest are CSS custom property names, version and path hyphens, prose bullets and runs of dashes. Demand for a sign does not show as errors because writers route around it: the stream rule bans a minus before a digit, a consumer wrote a lead of 4 for a delay below zero, the theory surface traded its plus or minus for the concise form tonight, and the changelog's negative pan reads only through the settings reader. A sign fixture limited to a minus after a space or an opening mark and before a digit would move almost no line that exists today; its value is the workarounds it ends, not errors it clears.
  >>[2026-11-13 22:59] observe — Two thresholds for one reading. lint:spw passes a file whenever parse reports success, which allows recoverable lex errors; the commit gate's strict check fails a changed file on any error. 21 files here and 13 in the story consumer carry such errors and pass the lint, and each will block a commit the next time it is edited. Behind them: the minus above, the em dash (80 here, 37 there), the section sign (36, in one consumer), arrows, ellipses, curly quotes and a backslash, mostly in prose lines written without a comment mark. Any new character sits in one of three tiers: rejected (today), tolerated (lexed as text, meaning nothing), or meaningful (an operator); only the last is a naming question, and it waits on a census of what writers reach for.
  >>[2026-11-13 23:05] revise — Corrections to tonight's entries. The pre-commit hook does not parse .spw files: its review of them is pattern warnings, and the strict parse check lives in poll-review, which agents run before committing. So a file carrying a recoverable lex error passes lint:spw and fails poll-review when changed; it does not block a commit by itself. Also: the number scanner briefly read a percent as its number times one hundredth, which moved 114 of 1,001 percents written to one decimal by one bit (57 percent read just above 0.57); it divides again, and a sweep of those 1,001 holds it.
+ >>[2026-11-17 13:32] observe — Digraph priority and unknown glyphs verified in packages/spw-seed/src/lexer/matchers/containers.ts and tokenize.ts at 722c3ba9. While the lexer checks nRangeDepth before reading two closing parentheses as an n-range close, >> has no streamDepth check, so nested generic or capsule forms such as list<Module<T>> close as a stream delimiter instead of two closes. Likewise tokenize.ts drops unknown glyphs silently when unknownAsText is false instead of preserving a lossless span for math symbols (≤, ±, ∞) or trailing % units. Added ~[digraph_stack_closure] and ~[lossless_glyph_token].
+ >>[2026-11-17 13:32] note — Number theory convergence across workbench and consumers (2026-11-17): packages/spw-seed/src/experimental/physics.ts (spw.quantity-sheet/1 exact rationals and null space elimination), readNumberForm ratios, and seed math loops (orbit, detectPeriod, rangeFold) align directly with consumer number-theory artifacts (Archimedes 96-gon rational bounds and continued-fraction convergents 22/7 and 355/113, mod-clock residue multiplication and prime-period phyllotaxis mod 97, modular chapter equivalence mod 13, 16-step Euclidean pockets, and log2(3/2) Pythagorean comma convergents 1/2, 3/5, 7/12 vs 2^(7/12)). Added ?[convergent_ratios] and ~[convergent_ratio_fixtures] so convergents, modular cycles and trailing % dimensionless units become testable bridge fixtures alongside p18.
 }
 
 ^["open"]{
@@ -143,6 +145,8 @@
  ?[minus_sign]: "Decibels and a step down need a value below zero, and - is not a token: one error and the sign is lost. Is the answer a signed number (p18), a word for direction, as a second consumer chose when it wrote %lead[4] for %delay[-4], or both? Answer before ~[p18_sign_fixture]."
  ?[number_authority]: "Which reader says what a number is? The lexer takes digits and a decimal part; readEarcons hands text to JavaScript Number and so accepts 1e3, 0x1f4, .5 and +80. Should every reader beside the parser accept exactly what the lexer accepts, or may a reader accept more and say so? Answer before ~[earcons_one_number_reader]."
  ?[hole_as_name]: "Should the parser read a hole wherever a name may stand, so a shape written with holes (p17) parses as the line it stands for? Today it reads ~_ as ~ and _ apart, and _._._ as five expressions where a.b.c is one name."
+ ?[digraph_stack_closure]: "Should every paired-delimiter digraph (>> vs < <>, ]] vs [ ]) consult active container stack depth in containers.ts just as )) already consults nRangeDepth, so nested <a<b>> closes cleanly without turning into a stream closer?"
+ ?[convergent_ratios]: "Should quantity-sheet rationals and seed math orbit/period primitives share a continued-fraction / modular residue bridge (22/7, 355/113, log2(3/2) convergents, mod 13 / mod 97 cycles) as named fixtures alongside % dimensionless percents?"
 }
 
 ^["commits"]{
@@ -176,6 +180,10 @@
  ~[p18_date_time_fixture]: "^seed[lexer] — p18, after wonder_trial_number_forms: failing fixtures where 2026-11-26 is one token and a time is read as the owner decides, 12:30 being a binding today; proof: the fixtures pass and reading-drift lists every line whose reading changes"
  ~[ratio_reading_fixture]: "^seed[parser] — after ?[ratio_spelling]: failing fixtures where the chosen spelling of a ratio of two terms and of three reads as one node holding its terms, and a/b between names stays a projection; proof: the fixtures pass, reading-drift lists every line whose reading changes, and the runtime value of the chosen spelling is no longer its last term"
  ~[p19_arithmetic_scope_sample]: ".[samples] — p19, after wonder_trial_math_scope: samples/arithmetic.spw writes five formulas three ways (bare, in a scope, as nested frames) with what each reads as today"
+ ~[digraph_stack_closure]: "^seed[lexer] — stack-aware digraph closure for >> in containers.ts matching nRangeDepth, keeping nested list<Module<T>> and double-capsule delimiters distinct from unnested streams (after ?[digraph_stack_closure])"
+ ~[lossless_glyph_token]: "^seed[lexer] — preserve unknown non-ASCII symbols (such as mathematical glyphs and trailing %) as lossless diagnostic spans when unknownAsText is false rather than dropping bytes silently in tokenize.ts"
+ ~[trailing_percent_unit]: "^seed[number-form] — keep trailing % dimensionless ratio tokens whole and distinct across readNumberForm, readQuantity, and quantity-sheet expressions"
+ ~[convergent_ratio_fixtures]: ".[samples] — number-theory bridge fixtures linking spw.quantity-sheet/1 exact rationals and math loop periods with continued-fraction convergents (22/7, 355/113, Pythagorean comma 1/2, 3/5, 7/12) and modular residue rings (mod 12, mod 13, mod 97) (after ?[convergent_ratios])"
 }
 
 ^["done"]{
@@ -190,8 +198,8 @@
  ~#hygiene_split: "none"
  ~#files_hot: "packages/spw-seed/src/canonical/particles.ts, scripts/analyzers/spw-cut-gate.ts"
  ~#next_commit: "p1_p7_verdicts"
- ~#open_count: "13"
- ~#last_stream: "2026-11-13 23:05"
+ ~#open_count: "15"
+ ~#last_stream: "2026-11-17 13:32"
  ~#taste_debt: ""
 }
 
