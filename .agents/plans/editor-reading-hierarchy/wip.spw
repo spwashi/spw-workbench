@@ -142,6 +142,7 @@
  >>[2026-11-06 20:20] note — line-kit wrap_points gives highlightHtml a breaks option: a line may wrap where a slot closes, before a pair opens, after a separator or join mark, and a #> frame line hangs its slots. spw.quest does this today with a regex over painted HTML; an editor's soft wrap could read the same points.
  >>[2026-11-08 09:47] observe — degradation_diagnostic has a field case (2026-11-08): a second mounted consumer reads 22 of 59 surfaces as prose with its lint and editor silent. The owner names plugin improvements and documentation as the most inspectable surface for parser diffs, since interaction semantics, learnability and extensibility can be researched there directly; host-receipts editor_diff renders the before and after.
  >>[2026-11-13 23:00] observe — Narrow displays, measured in characters. About a quarter of all .spw lines are wider than 80 (23.8 percent here, 29.2 in the story consumer, 24.2 in the site consumer), but with strings and comments removed only 2.5, 4.7 and 1.8 percent still are; wider than 160 once strings are removed: 1,835, 60 and 957 lines. Most width is prose in a field, which the one claim per line rule makes on purpose and an editor can soft wrap if each continuation hangs at the column where the value starts; long structure is a small minority, and that is where a wrap should break at a join and say which container the continuation sits inside. Highlighting as the reader's model of a line: what a reader must tell apart at a glance should differ, an exponent's sign before its scale, a value from its uncertainty, a settled claim from a speculative one. Today a number is one token type and a claim's value is a name.
+ >>[2026-11-19 12:16] observe — Audited extensions/vscode-spw/syntaxes/spw.tmLanguage.json at f8684389: line 68 requires whitespace before four equals signs so hash-equals dividers without a space fall through to sigils and comparison operators; dialect-exp (line 284) and operators (line 521) match <<|>> and ((|)) unconditionally without stack context; ||, ~#(...) appositions and bare valence modifiers are missing from TextMate rules; and surface-decorations.ts still carries drifted operator labels (phaseAction, phasePotential). Added ~[tm_divider_and_digraph_rules].
 }
 
 ^["open"]{
@@ -183,6 +184,7 @@
  ~[census_after]: "![lsp] — rerun the census; record the fall in lenses, inlays, duplicates, and painted prose against ~[hierarchy_census]"
  ~[string_color_swatches]: "&[lsp] — a documentColor provider shows swatches for #rgb, #rrggbb, and #rrggbbaa inside strings, where colors live; a bare #8800ff stays a #tag"
  ~[host_injections]: "&[grammar] — injection grammars for an HTML semantic-expression attribute, a Markdown spw fence, and a commit episode block, each read through the lite scan (consumer rank 2)"
+ ~[tm_divider_and_digraph_rules]: "&[grammar] — fix hash-equals divider rule, bare valence modifiers, || connector, ~#(...) appositions, and stack-safe <<|>> / ((|)) rules in spw.tmLanguage.json (synced to IntelliJ via sync-grammar.mjs)"
  ~[degradation_diagnostic]: "&[lsp] — analysis.ts publishes parse warnings, prose-degradation first, at the position the structured parse stopped; today only a failed parse publishes (analysis.ts 51 to 75)"
  ~[far_closer_hint]: "&[lsp] — a closing brace far below its opener names the frame it closes, from the outline ranges; the depth-3 brace markers and countBracesOutsideStrings go"
  ~[degraded_region_roles]: "&[lsp] — after roles_from_lex and plan-stream-parse-health degradation_stop_position: the span after a prose-degradation stop paints as text, and the enclosing frame header carries one lens naming the stop line and token that jumps there"
@@ -200,7 +202,7 @@
  ~#files_hot: "packages/spw-lsp/src/handlers/display.ts, packages/spw-lsp/src/handlers/semantic-tokens.ts, extensions/vscode-spw/syntaxes/spw.tmLanguage.json"
  ~#next_commit: "hierarchy_census"
  ~#open_count: "9"
- ~#last_stream: "2026-11-13 23:00"
+ ~#last_stream: "2026-11-19 12:16"
  ~#taste_debt: "display.ts is 1332 lines at 55e79d2e, still twice the guard; moved hover and inlay builders should land in their own modules"
 }
 

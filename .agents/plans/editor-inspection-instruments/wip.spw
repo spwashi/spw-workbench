@@ -58,6 +58,7 @@
  ~[buffer_truth_rows]: ".[tooling] — record per editor and instrument whether it reads the saved file, the buffer, or a selection (hosts/jetbrains-instruments.spw guard); answers ?[unsaved_buffers]"
  ~[one_buffer_probe]: "&[lsp] — one probe takes the buffer text and answers form, stack, tokens, structure, and trace; Neovim and IntelliJ ship the bundled server (consumer rank 3)"
  ~[warm_outline_symbols]: "&[lsp] — reuse warm document parses (or pass eventPolicy: 'none') in outlineFromSource (packages/spw-lsp/src/handlers/outline.ts) and normalize legacy workspaceSymbols ^[\"...\"] labels in display.ts to clean canonical frame names"
+ ~[lsp_non_trace_parse]: "&[lsp] — pass eventPolicy diagnostics or none across ServerIndex (server-index.ts:401,423,455,516,611), anchor-lines.ts:113 and spw-selector.ts:489 so cold workspace scans and navigation inherit the bcf0da18 non-trace speedup"
  ~[cards_or_text]: "&[editors] — a report opens in the Spw language only when it parses as a card, and as plain text otherwise, so no editor paints a report's prose as operators; proof: the Form report (form --resonance --spw, 22 parse errors at 2026-11-16) opens as text in all three editors until cli-sense-reorientation ~[spw_cards_parse] passes, then as Spw"
 }
 
@@ -65,10 +66,10 @@
  ~#status: "active"
  ~#base_ref: "main@77599452"
  ~#rebased_at: "2026-10-12"
- ~#files_hot: "extensions/vscode-spw/src/instruments, extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwInstrumentActions.kt, extensions/neovim-spw/lua/spw/instruments.lua, packages/spw-lsp/src/handlers/outline.ts"
+ ~#files_hot: "extensions/vscode-spw/src/instruments, extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwInstrumentActions.kt, extensions/neovim-spw/lua/spw/instruments.lua, packages/spw-lsp/src/handlers/outline.ts, packages/spw-lsp/src/server-index.ts"
  ~#next_commit: "parity_fixture"
  ~#open_count: "3"
- ~#last_stream: "2026-11-17 13:32"
+ ~#last_stream: "2026-11-19 12:16"
 }
 
 ^["done"]{
@@ -83,4 +84,5 @@
  >>[2026-11-06 18:10] note — The owner wonders about stages or canvases in factshift.center that read one script along a projection gradient; held as interpretation-trials wonder_trial_stages. The source products tokens, structure and trace (spw.progressive-product/1, spw inspect --through) are the first rungs any host stage would read.
  >>[2026-11-16 06:47] observe — The instruments' receipts are the intermediate forms the owner asked on 2026-11-16 to travel across contexts when the Spw form is chosen. All three editors ask the CLI for the Form instrument's Spw form (cli-invocation.ts with output spw, cli.lua, SpwCliInvocation.kt), and VS Code opens it in the Spw language; that output carries 22 parse errors today, so the receipt every editor shows is not yet a card every reader reads alike. cards_or_text added. The parity fixture can start with no editor running, by comparing the invocations each editor builds as data.
  >>[2026-11-17 13:32] observe — Verified in packages/spw-lsp/src/handlers/outline.ts and display.ts at 722c3ba9: documentSymbols calls outlineFromSource(doc.text) which invokes parse(text) with default trace events enabled rather than reusing cached parse state or passing eventPolicy none, and workspaceSymbols still formats frame names with legacy ^["..."] brackets. Added ~[warm_outline_symbols] so editor outline/probe queries inherit the bcf0da18 non-trace speedup immediately.
+ >>[2026-11-19 12:16] observe — Audited remaining spw-lsp parse call sites at f8684389: server-index.ts (lines 401, 423, 455, 516, 611), anchor-lines.ts (line 113) and spw-selector.ts (line 489) all call parse(source) with default eventPolicy trace. Added ~[lsp_non_trace_parse] beside ~[warm_outline_symbols] so cold workspace indexing also skips rule-trace allocations.
 }

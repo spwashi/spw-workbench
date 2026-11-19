@@ -129,6 +129,8 @@
  >>[2026-11-13 23:05] revise — Corrections to tonight's entries. The pre-commit hook does not parse .spw files: its review of them is pattern warnings, and the strict parse check lives in poll-review, which agents run before committing. So a file carrying a recoverable lex error passes lint:spw and fails poll-review when changed; it does not block a commit by itself. Also: the number scanner briefly read a percent as its number times one hundredth, which moved 114 of 1,001 percents written to one decimal by one bit (57 percent read just above 0.57); it divides again, and a sweep of those 1,001 holds it.
  >>[2026-11-17 13:32] observe — Digraph priority and unknown glyphs verified in packages/spw-seed/src/lexer/matchers/containers.ts and tokenize.ts at 722c3ba9. While the lexer checks nRangeDepth before reading two closing parentheses as an n-range close, >> has no streamDepth check, so nested generic or capsule forms such as list<Module<T>> close as a stream delimiter instead of two closes. Likewise tokenize.ts drops unknown glyphs silently when unknownAsText is false instead of preserving a lossless span for math symbols (≤, ±, ∞) or trailing % units. Added ~[digraph_stack_closure] and ~[lossless_glyph_token].
  >>[2026-11-17 13:32] note — Number theory convergence across workbench and consumers (2026-11-17): packages/spw-seed/src/experimental/physics.ts (spw.quantity-sheet/1 exact rationals and null space elimination), readNumberForm ratios, and seed math loops (orbit, detectPeriod, rangeFold) align directly with consumer number-theory artifacts (Archimedes 96-gon rational bounds and continued-fraction convergents 22/7 and 355/113, mod-clock residue multiplication and prime-period phyllotaxis mod 97, modular chapter equivalence mod 13, 16-step Euclidean pockets, and log2(3/2) Pythagorean comma convergents 1/2, 3/5, 7/12 vs 2^(7/12)). Added ?[convergent_ratios] and ~[convergent_ratio_fixtures] so convergents, modular cycles and trailing % dimensionless units become testable bridge fixtures alongside p18.
+ >>[2026-11-19 12:16] decide — Owner endorsed promoting leading underscore immediately after an operator (op_name, such as ?_temperature beside ?temperature and %_heat beside %temperature) to a formal intrinsic coupling bit on Operation in spw-seed, generalizing the @_label special case in packages/spw-seed/src/grammar/expressions.ts:632-640 and connecting to interpretation-trials wonder_trial_underscore and wonder_trial_operator_label. Spoken phrasing in spoken.ts remains held in spoken-form until audio implications are reviewed. Added ~[intrinsic_op_coupling].
+ >>[2026-11-19 12:16] observe — Verified live on f8684389: punctuation.ts lexes ==, !=, <=, >= as COMPARISON, yet no grammar rule consumes COMPARISON (so ?[latency <= 400] degrades to prose); comments.ts lexes a double slash inside unquoted scheme URLs as a line comment; lite/scan.ts:188-197 also omits the streamDepth guard on >>; and .[number_form_reader] plus .[earcons_one_number_reader] landed in da7a62ca (placeholder hashes reconciled). Added ~[comparison_in_checks] and ~[url_comment_guard].
 }
 
 ^["open"]{
@@ -171,8 +173,8 @@
  ~[restating_stamp_hint]: "&[lsp,cli] — after ?[register_from_container]: a restating stamp gets a hint and a quick fix that removes it, and spw mutate can drop them across a corpus with a plan first; nothing is removed by default"
  ~[number_forms_today_table]: "![seed] — one table-driven test pins how the written number forms of the 2026-11-13 stream entry lex and parse today (tokens, errors, prose fallback), so a later lexer change shows as a diff of the table; proof: the test passes on the unchanged lexer and the count of other seed tests is unchanged"
  ~[number_forms_census]: "#[scripts] — scripts/analyzers/spw-number-census.ts counts NUMBER tokens by what stands tight against them (unit word, exponent, n/m, n..m, n:m, %, minus, other digit-led run) over a corpus root, as spw-register-census.ts counts stamps; proof: its test fires every detector on a seeded line, it finds 6,848 numbers, 41 unit words and 31 ranges at 61ac9bb6, and it is then run on the two mounted consumers"
- .[number_form_reader](next commit): "landed, see the stream of the same time"
- .[earcons_one_number_reader](next commit): "landed with number_form_reader"
+ .[number_form_reader](da7a62ca): "landed, see the stream of 2026-11-13 21:06"
+ .[earcons_one_number_reader](da7a62ca): "landed with number_form_reader"
  ~[runtime_number_is_number]: "![runtime] — a NUMBER literal reaches the runtime as a number while a quoted string stays a string; proof: a test that runSpw of 0.5 has a value of type number and that its magnitude is 0.5 and not 3, with the runtime suite otherwise unchanged; the source is in spw-runtime, so runtime-maintenance hears of it before it is cut"
  ~[p18_sign_fixture]: "^seed[lexer] — p18, after wonder_trial_number_forms and ?[minus_sign]: failing fixtures where x[-4] and %gain[-6] keep the sign and a-4 stays one name; proof: the fixtures pass and reading-drift lists every line whose reading changes"
  ~[p18_exponent_fixture]: "^seed[lexer] — p18, after wonder_trial_number_forms: failing fixtures where 1e3 and 6.02e23 are one token each and e3 alone stays a name; proof: the fixtures pass and reading-drift lists every line whose reading changes"
@@ -180,10 +182,13 @@
  ~[p18_date_time_fixture]: "^seed[lexer] — p18, after wonder_trial_number_forms: failing fixtures where 2026-11-26 is one token and a time is read as the owner decides, 12:30 being a binding today; proof: the fixtures pass and reading-drift lists every line whose reading changes"
  ~[ratio_reading_fixture]: "^seed[parser] — after ?[ratio_spelling]: failing fixtures where the chosen spelling of a ratio of two terms and of three reads as one node holding its terms, and a/b between names stays a projection; proof: the fixtures pass, reading-drift lists every line whose reading changes, and the runtime value of the chosen spelling is no longer its last term"
  ~[p19_arithmetic_scope_sample]: ".[samples] — p19, after wonder_trial_math_scope: samples/arithmetic.spw writes five formulas three ways (bare, in a scope, as nested frames) with what each reads as today"
- ~[digraph_stack_closure]: "^seed[lexer] — stack-aware digraph closure for >> in containers.ts matching nRangeDepth, keeping nested list<Module<T>> and double-capsule delimiters distinct from unnested streams (after ?[digraph_stack_closure])"
+ ~[digraph_stack_closure]: "^seed[lexer] — stack-aware digraph closure for >> in containers.ts and lite/scan.ts matching nRangeDepth, keeping nested list<Module<T>> and double-capsule delimiters distinct from unnested streams (after ?[digraph_stack_closure])"
  ~[lossless_glyph_token]: "^seed[lexer] — preserve unknown non-ASCII symbols (such as mathematical glyphs and trailing %) as lossless diagnostic spans when unknownAsText is false rather than dropping bytes silently in tokenize.ts"
  ~[trailing_percent_unit]: "^seed[number-form] — keep trailing % dimensionless ratio tokens whole and distinct across readNumberForm, readQuantity, and quantity-sheet expressions"
  ~[convergent_ratio_fixtures]: ".[samples] — number-theory bridge fixtures linking spw.quantity-sheet/1 exact rationals and math loop periods with continued-fraction convergents (22/7, 355/113, Pythagorean comma 1/2, 3/5, 7/12) and modular residue rings (mod 12, mod 13, mod 97) (after ?[convergent_ratios])"
+ ~[intrinsic_op_coupling]: "^seed[parser] — generalize the @_label special case in expressions.ts:632-640 into a formal coupling field (referential vs intrinsic) on Operation for op_name forms such as ?_temperature and %_heat"
+ ~[comparison_in_checks]: "^seed[parser] — consume COMPARISON tokens (==, !=, <=, >=) inside scoped ? checks (after wonder_trial_comparison)"
+ ~[url_comment_guard]: "^seed[lexer] — keep a double slash immediately after a scheme colon in unquoted URLs from opening a line comment in comments.ts"
 }
 
 ^["done"]{
@@ -199,7 +204,7 @@
  ~#files_hot: "packages/spw-seed/src/canonical/particles.ts, scripts/analyzers/spw-cut-gate.ts"
  ~#next_commit: "p1_p7_verdicts"
  ~#open_count: "15"
- ~#last_stream: "2026-11-17 13:32"
+ ~#last_stream: "2026-11-19 12:16"
  ~#taste_debt: ""
 }
 

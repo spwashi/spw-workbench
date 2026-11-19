@@ -114,6 +114,7 @@
  >>[2026-10-12 15:22] revise — Commits named per the convention in 90c58bbc: 0 landed, 4 planned, 0 dropped.
  >>[2026-10-13 11:59] revise — The caches (hosts/feature-radar.spw, editor_hosts_radar_263_gate) show the 263 gate is a rename in 2026.1.4, with the old names still working; the plugin extends them (SpwLspServerSupportProvider.kt 18, 133). The method matrix cannot gate JetBrains, which calls no spw/* method. Scorecard bugs 3 to 6 are still present and land here; panel_surfaces and custom_server_bridge would copy chrome, against the parity rule in hosts/host-parity-matrix.spw, and stay held.
  >>[2026-10-27 10:17] revise — Correction to 2026-10-12 12:48: the bundled TextMate grammar stopped drifting the same evening. 17b3a4a2 made it a copy generated from the VS Code grammar by extensions/intellij-spw/scripts/sync-grammar.mjs, with a --check mode that passed on 2026-10-27, so it carries dialect-exp. PLAN.md now says so and points the operator-table half at audit-ui-data-models client_palettes_from_table. The scorecard bugs behind the four fix commits are rows d3 to d6 of hosts/known-defects.spw, now a root beside hosts/feature-radar.spw, whose 263 gate row still lists the old-names check as unverified.
+ >>[2026-11-19 12:16] observe — Verified at f8684389: plugin.xml:53-62 still registers line-regex SpwFoldingBuilder and SpwStructureViewFactory unconditionally, shadowing LSP documentSymbol and foldingRange while the server is running; SpwLspServerSupportProvider.kt:87 also still launches npm run lsp rather than bundled dist/server/spw-lsp.cjs. Added ~[lsp_owns_outline_and_fold] gated on editor-inspection-instruments ~[warm_outline_symbols].
 }
 
 ^["open"]{
@@ -132,6 +133,7 @@
  ~[panel_surfaces]: "&[intellij] =surface[panels] — add annotation panel, workspace atlas panel, context strip widget"
  ~[rename_native_lsp_api]: "vocab[intellij] — extend LspIntegrationProvider and ProjectWideLspClientDescriptor (SpwLspServerSupportProvider.kt 18 and 133 extend the old names)"
  ~[fold_hash_rule]: "&[intellij] — the fold builder treats # as a comment only before whitespace, as the lexer does (scorecard bug 3; SpwFoldingBuilder.kt 121)"
+ ~[lsp_owns_outline_and_fold]: "&[intellij] — defer Structure View and folding to LSP when active, keeping SpwFoldingBuilder and SpwStructureViewFactory as offline fallback (after editor-inspection-instruments ~[warm_outline_symbols])"
  ~[gutter_nav_handler]: "&[intellij] — anchor gutter markers navigate to references (scorecard bug 6; SpwAnnotationLineMarkerProvider.kt 33)"
  ~[spellcheck_prose]: "&[intellij] — a spellcheck tokenizer for strings and hash-space prose (scorecard bug 5; SpwSpellcheckingStrategy.kt 9)"
  ~[commenter_form]: "&[editors] — every host writes the comment form chosen in ?[comment_form] (scorecard bug 4; SpwCommenter.kt 6 against both language-configuration.json files)"
@@ -145,7 +147,7 @@
  ~#files_hot: "extensions/intellij-spw/build.gradle.kts, extensions/intellij-spw/src/main/resources/META-INF/plugin.xml, extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/SpwLspServerSupportProvider.kt, extensions/intellij-spw/src/main/kotlin/com/spwashi/spw/settings/SpwLspConfigurable.kt"
  ~#next_commit: "native_lsp_audit"
  ~#open_count: "5"
- ~#last_stream: "2026-10-27 10:17"
+ ~#last_stream: "2026-11-19 12:16"
  ~#taste_debt: "Do not migrate for parity or deprecation alone. Before 263, compare the replacement native API and LSP4IJ against the shared mounted resolver, keep semantic ownership in the LSP, and avoid making any panel a second annotation or claim index."
 }
 
